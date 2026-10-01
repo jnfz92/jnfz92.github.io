@@ -500,7 +500,10 @@
     <section id="vocabulario">
       <div class="container">
         <div class="section-head">
-          <h2>8 palabras para hoy</h2>
+          <div>
+            <h2>8 palabras para hoy</h2>
+            <p id="daily-date" style="margin:8px 0 0;font-weight:750;color:var(--primary)"></p>
+          </div>
           <p>Un pequeño bloque diario de vocabulario común. Léelo, repítelo y úsalo en una frase.</p>
         </div>
 
@@ -593,6 +596,15 @@
   </footer>
 
   <script>
+    const dailyDate = document.getElementById('daily-date');
+    if (dailyDate) {
+      dailyDate.textContent = new Intl.DateTimeFormat('es-ES', {
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric'
+      }).format(new Date());
+    }
+
     const vocabulary = [
       ['Home', 'Casa / hogar'], ['Friend', 'Amigo/a'], ['Work', 'Trabajo / trabajar'], ['Food', 'Comida'],
       ['Today', 'Hoy'], ['Happy', 'Feliz'], ['Learn', 'Aprender'], ['Speak', 'Hablar'],
