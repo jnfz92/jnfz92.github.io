@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Blog sencillo para aprender inglés básico con vocabulario, frases, lecciones y práctica." />
-  <title>Easy English · Inglés básico</title>
+  <meta name="description" content="A simple blog for learning English with vocabulary, phrases, lessons, and practice." />
+  <title>Easy English · Learn English</title>
   <style>
     :root {
       --bg: #f7f5ef;
@@ -430,16 +430,16 @@
 <body>
   <header>
     <div class="container nav">
-      <a class="brand" href="#inicio" aria-label="Easy English, inicio">
+      <a class="brand" href="#inicio" aria-label="Easy English, home">
         <span class="brand-mark">EN</span>
         <span>Easy English</span>
       </a>
-      <nav aria-label="Navegación principal">
+      <nav aria-label="Main navigation">
         <ul>
-          <li><a href="#lecciones">Lecciones</a></li>
-          <li><a href="#vocabulario">Vocabulario</a></li>
-          <li><a href="#entretenimiento">Series y películas</a></li>
-          <li><a href="#practica">Práctica</a></li>
+          <li><a href="#lecciones">Lessons</a></li>
+          <li><a href="#vocabulario">Vocabulary</a></li>
+          <li><a href="#entretenimiento">TV & movies</a></li>
+          <li><a href="#practica">Practice</a></li>
         </ul>
       </nav>
     </div>
@@ -448,19 +448,19 @@
   <main>
     <div class="container hero" id="inicio">
       <div class="hero-copy">
-        <span class="eyebrow">Inglés desde cero</span>
-        <h1>Aprende inglés poco a poco.</h1>
-        <p>Lecciones explicadas a fondo, vocabulario cotidiano, ejercicios y una categoría de series y películas para aprender inglés desde cero sin complicaciones.</p>
+        <span class="eyebrow">English from the beginning</span>
+        <h1>Learn English step by step.</h1>
+        <p>Clear lessons, everyday vocabulary, exercises, and TV and movie practice to help you build your English step by step.</p>
         <div class="hero-actions">
-          <a class="button primary" href="#lecciones">Empezar a aprender</a>
-          <a class="button" href="#practica">Hacer una práctica</a>
+          <a class="button primary" href="#lecciones">Start learning</a>
+          <a class="button" href="#practica">Try a practice</a>
         </div>
       </div>
 
       <article class="hero-card">
-        <div class="lesson-no">Frase del día</div>
+        <div class="lesson-no">Phrase of the day</div>
         <h2>How are you?</h2>
-        <p><strong>¿Cómo estás?</strong><br />Una de las preguntas más comunes para iniciar una conversación.</p>
+        <p><strong>A common greeting</strong><br />One of the most useful questions for starting a conversation.</p>
         <span class="mini-word">Hello!</span>
       </article>
     </div>
@@ -468,30 +468,30 @@
     <section id="lecciones">
       <div class="container">
         <div class="section-head">
-          <h2>Lecciones esenciales</h2>
-          <p>Conceptos básicos para empezar a construir frases útiles desde el primer día.</p>
+          <h2>Essential lessons</h2>
+          <p>Core concepts to help you build useful sentences from day one.</p>
         </div>
 
         <div class="grid">
           <article class="card">
-            <span class="tag">Lección 01</span>
-            <h3>Saludos y presentaciones</h3>
-            <p>Hello, good morning, my name is… Aprende a saludar y presentarte de forma natural.</p>
-            <p style="margin-top:18px"><a class="button" href="post/leccion-1-saludos.html">Leer artículo completo →</a></p>
+            <span class="tag">Lesson 01</span>
+            <h3>Greetings and introductions</h3>
+            <p>Hello, good morning, my name is… Learn to greet people and introduce yourself naturally.</p>
+            <p style="margin-top:18px"><a class="button" href="post/leccion-1-saludos.html">Read full article →</a></p>
           </article>
 
           <article class="card">
-            <span class="tag">Lección 02</span>
-            <h3>El verbo “to be”</h3>
-            <p>I am, you are, he is. La base para describir quién eres, cómo estás y dónde estás.</p>
-            <p style="margin-top:18px"><a class="button" href="post/leccion-2-to-be.html">Leer artículo completo →</a></p>
+            <span class="tag">Lesson 02</span>
+            <h3>The verb “to be”</h3>
+            <p>I am, you are, he is. The foundation for saying who you are, how you feel, and where you are.</p>
+            <p style="margin-top:18px"><a class="button" href="post/leccion-2-to-be.html">Read full article →</a></p>
           </article>
 
           <article class="card">
-            <span class="tag">Lección 03</span>
-            <h3>Preguntas sencillas</h3>
-            <p>What, where, who, when. Aprende a pedir información con estructuras fáciles de recordar.</p>
-            <p style="margin-top:18px"><a class="button" href="post/leccion-3-preguntas.html">Leer artículo completo →</a></p>
+            <span class="tag">Lesson 03</span>
+            <h3>Simple questions</h3>
+            <p>What, where, who, when. Learn easy structures for asking for information.</p>
+            <p style="margin-top:18px"><a class="button" href="post/leccion-3-preguntas.html">Read full article →</a></p>
           </article>
         </div>
       </div>
@@ -501,15 +501,15 @@
       <div class="container">
         <div class="section-head">
           <div>
-            <h2>8 palabras para hoy</h2>
+            <h2>8 words for today</h2>
             <p id="daily-date" style="margin:8px 0 0;font-weight:750;color:var(--primary)"></p>
           </div>
-          <p>Un pequeño bloque diario de vocabulario común. Léelo, repítelo y úsalo en una frase.</p>
+          <p>A small daily set of common vocabulary. Read it, repeat it, and use each word in a sentence.</p>
         </div>
 
         <div class="words" id="daily-words" aria-live="polite"></div>
         <noscript>
-          <p>Activa JavaScript para ver las 8 palabras del día.</p>
+          <p>Enable JavaScript to see today’s 8 words.</p>
         </noscript>
       </div>
     </section>
@@ -518,19 +518,19 @@
     <section id="entretenimiento">
       <div class="container">
         <div class="section-head">
-          <h2>Inglés con series y películas</h2>
-          <p>Una categoría para entrenar el oído con escenas reales, usar bien los subtítulos y convertir el entretenimiento en práctica.</p>
+          <h2>English with TV shows and movies</h2>
+          <p>Train your listening with real scenes, use subtitles effectively, and turn entertainment into English practice.</p>
         </div>
         <article class="card" style="background:#1f2933;color:white;border:0;display:grid;grid-template-columns:1.1fr .9fr;gap:28px;align-items:center">
           <div>
-            <span class="tag" style="background:#f4b860;color:#1f2933">Nueva categoría</span>
-            <h3 style="font-size:32px">Aprende escuchando inglés real</h3>
-            <p style="color:rgba(255,255,255,.72)">Método paso a paso, tipos de series recomendables, cómo elegir películas, estrategia de subtítulos, frases frecuentes y una rutina semanal para principiantes.</p>
-            <p style="margin-top:20px"><a class="button" href="post/entretenimiento.html">Explorar series y películas →</a></p>
+            <span class="tag" style="background:#f4b860;color:#1f2933">New category</span>
+            <h3 style="font-size:32px">Learn by listening to real English</h3>
+            <p style="color:rgba(255,255,255,.72)">A step-by-step method, beginner-friendly shows, movie selection, subtitle strategies, common phrases, and a weekly routine.</p>
+            <p style="margin-top:20px"><a class="button" href="post/entretenimiento.html">Explore TV & movies →</a></p>
           </div>
           <div style="padding:28px;border-radius:20px;background:#235347">
-            <strong style="font-size:22px">Rutina de una escena</strong>
-            <p style="color:rgba(255,255,255,.78)">1. Mira por contexto<br>2. Repite con subtítulos en inglés<br>3. Escucha sin leer<br>4. Imita 2–3 frases</p>
+            <strong style="font-size:22px">One-scene routine</strong>
+            <p style="color:rgba(255,255,255,.78)">1. Watch for context<br>2. Repeat with English subtitles<br>3. Listen without reading<br>4. Imitate 2–3 phrases</p>
           </div>
         </article>
       </div>
@@ -540,7 +540,7 @@
       <div class="container">
         <div class="section-head">
           <h2>Grammar, vocabulary & speaking</h2>
-          <p>New B1–C1 study guides in English, with bilingual English–Spanish examples, common mistakes, exercises and answers.</p>
+          <p>New B1–C1 study guides in English, with clear examples, common mistakes, exercises and answers.</p>
         </div>
         <div class="grid">
           <article class="card"><span class="tag">Grammar</span><h3>Negative Prefixes</h3><p>Un-, in-, im-, dis- and mis- with clear rules and examples.</p><p style="margin-top:18px"><a class="button" href="post/negative-prefixes.html">Read article →</a></p></article>
@@ -562,17 +562,17 @@
     <section id="practica">
       <div class="container practice">
         <div>
-          <span class="eyebrow">Mini práctica</span>
-          <h2>Comprueba lo aprendido</h2>
-          <p>Selecciona la traducción correcta. Los ejercicios cortos ayudan a recordar mejor lo que acabas de estudiar.</p>
+          <span class="eyebrow">Mini practice</span>
+          <h2>Check what you learned</h2>
+          <p>Choose the correct meaning. Short exercises help you remember what you have just studied.</p>
         </div>
 
         <div class="quiz">
-          <p class="question">¿Qué significa “Good morning”?</p>
+          <p class="question">When do you normally say “Good morning”?</p>
           <div class="options">
-            <button class="option" data-answer="wrong">Buenas noches</button>
-            <button class="option" data-answer="correct">Buenos días</button>
-            <button class="option" data-answer="wrong">Hasta luego</button>
+            <button class="option" data-answer="wrong">At night</button>
+            <button class="option" data-answer="correct">In the morning</button>
+            <button class="option" data-answer="wrong">When saying goodbye</button>
           </div>
           <p id="feedback" aria-live="polite"></p>
         </div>
@@ -581,24 +581,24 @@
 
     <div class="container newsletter">
       <div>
-        <h2>Una frase nueva cada día.</h2>
-        <p>La constancia gana a las sesiones eternas. Empieza con cinco minutos.</p>
+        <h2>A new phrase every day.</h2>
+        <p>Consistency beats endless study sessions. Start with five minutes.</p>
       </div>
-      <a class="button" href="#inicio">Volver arriba ↑</a>
+      <a class="button" href="#inicio">Back to top ↑</a>
     </div>
   </main>
 
   <footer>
     <div class="container footer-inner">
       <span>© 2026 Easy English</span>
-      <span>Hecho para aprender sin prisa.</span>
+      <span>Made for steady, stress-free learning.</span>
     </div>
   </footer>
 
   <script>
     const dailyDate = document.getElementById('daily-date');
     if (dailyDate) {
-      dailyDate.textContent = new Intl.DateTimeFormat('es-ES', {
+      dailyDate.textContent = new Intl.DateTimeFormat('en-GB', {
         day: 'numeric',
         month: 'long',
         year: 'numeric'
@@ -606,8 +606,8 @@
     }
 
     const vocabulary = [
-      ['Home', 'Casa / hogar'], ['Friend', 'Amigo/a'], ['Work', 'Trabajo / trabajar'], ['Food', 'Comida'],
-      ['Today', 'Hoy'], ['Happy', 'Feliz'], ['Learn', 'Aprender'], ['Speak', 'Hablar'],
+      ['Home', 'the place where you live'], ['Friend', 'a person you know and like'], ['Work', 'a job or an activity you do'], ['Food', 'things people eat'],
+      ['Today', 'this day'], ['Happy', 'feeling pleased or joyful'], ['Learn', 'gain knowledge or a skill'], ['Speak', 'talk using your voice'],
       ['Family', 'Familia'], ['Water', 'Agua'], ['Morning', 'Mañana'], ['Night', 'Noche'],
       ['Book', 'Libro'], ['House', 'Casa'], ['School', 'Escuela'], ['Street', 'Calle'],
       ['Money', 'Dinero'], ['Time', 'Tiempo'], ['Day', 'Día'], ['Week', 'Semana'],
@@ -659,10 +659,10 @@
 
         if (option.dataset.answer === 'correct') {
           option.classList.add('correct');
-          feedback.textContent = '✓ Correcto. “Good morning” significa “Buenos días”.';
+          feedback.textContent = '✓ Correcto. “Good morning” significa “In the morning”.';
         } else {
           option.classList.add('wrong');
-          feedback.textContent = 'Casi. Prueba otra opción.';
+          feedback.textContent = 'Not quite. Try another option.';
         }
       });
     });
