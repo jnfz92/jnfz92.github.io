@@ -504,16 +504,10 @@
           <p>Un pequeño bloque diario de vocabulario común. Léelo, repítelo y úsalo en una frase.</p>
         </div>
 
-        <div class="words">
-          <div class="word"><strong>Home</strong><span>Casa / hogar</span></div>
-          <div class="word"><strong>Friend</strong><span>Amigo/a</span></div>
-          <div class="word"><strong>Work</strong><span>Trabajo / trabajar</span></div>
-          <div class="word"><strong>Food</strong><span>Comida</span></div>
-          <div class="word"><strong>Today</strong><span>Hoy</span></div>
-          <div class="word"><strong>Happy</strong><span>Feliz</span></div>
-          <div class="word"><strong>Learn</strong><span>Aprender</span></div>
-          <div class="word"><strong>Speak</strong><span>Hablar</span></div>
-        </div>
+        <div class="words" id="daily-words" aria-live="polite"></div>
+        <noscript>
+          <p>Activa JavaScript para ver las 8 palabras del día.</p>
+        </noscript>
       </div>
     </section>
 
@@ -599,6 +593,51 @@
   </footer>
 
   <script>
+    const vocabulary = [
+      ['Home', 'Casa / hogar'], ['Friend', 'Amigo/a'], ['Work', 'Trabajo / trabajar'], ['Food', 'Comida'],
+      ['Today', 'Hoy'], ['Happy', 'Feliz'], ['Learn', 'Aprender'], ['Speak', 'Hablar'],
+      ['Family', 'Familia'], ['Water', 'Agua'], ['Morning', 'Mañana'], ['Night', 'Noche'],
+      ['Book', 'Libro'], ['House', 'Casa'], ['School', 'Escuela'], ['Street', 'Calle'],
+      ['Money', 'Dinero'], ['Time', 'Tiempo'], ['Day', 'Día'], ['Week', 'Semana'],
+      ['Help', 'Ayudar / ayuda'], ['Need', 'Necesitar'], ['Want', 'Querer'], ['Know', 'Saber / conocer'],
+      ['Think', 'Pensar'], ['Feel', 'Sentir'], ['Make', 'Hacer / crear'], ['Take', 'Tomar / llevar'],
+      ['Give', 'Dar'], ['Find', 'Encontrar'], ['Come', 'Venir'], ['Go', 'Ir'],
+      ['Good', 'Bueno/a'], ['Bad', 'Malo/a'], ['Easy', 'Fácil'], ['Difficult', 'Difícil'],
+      ['Early', 'Temprano'], ['Late', 'Tarde'], ['Always', 'Siempre'], ['Never', 'Nunca'],
+      ['Sometimes', 'A veces'], ['Together', 'Juntos/as'], ['Again', 'Otra vez'], ['Because', 'Porque'],
+      ['Before', 'Antes'], ['After', 'Después'], ['Enough', 'Suficiente'], ['Maybe', 'Quizás'],
+      ['Weather', 'Tiempo / clima'], ['Travel', 'Viajar / viaje'], ['Question', 'Pregunta'], ['Answer', 'Respuesta'],
+      ['Change', 'Cambiar / cambio'], ['Start', 'Empezar'], ['Finish', 'Terminar'], ['Remember', 'Recordar']
+    ];
+
+    function dailyVocabulary() {
+      const now = new Date();
+      const dateKey = Number(String(now.getFullYear()) + String(now.getMonth() + 1).padStart(2, '0') + String(now.getDate()).padStart(2, '0'));
+      let seed = dateKey;
+      const random = () => {
+        seed = (seed * 1664525 + 1013904223) >>> 0;
+        return seed / 4294967296;
+      };
+      const shuffled = [...vocabulary];
+      for (let i = shuffled.length - 1; i > 0; i--) {
+        const j = Math.floor(random() * (i + 1));
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+      }
+      return shuffled.slice(0, 8);
+    }
+
+    const dailyWords = document.getElementById('daily-words');
+    dailyVocabulary().forEach(([english, spanish]) => {
+      const item = document.createElement('div');
+      item.className = 'word';
+      const strong = document.createElement('strong');
+      strong.textContent = english;
+      const span = document.createElement('span');
+      span.textContent = spanish;
+      item.append(strong, span);
+      dailyWords.appendChild(item);
+    });
+
     const options = document.querySelectorAll('.option');
     const feedback = document.getElementById('feedback');
 
