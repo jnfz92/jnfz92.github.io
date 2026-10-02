@@ -292,6 +292,84 @@
       font-size: 14px;
     }
 
+    .phrase-groups {
+      display: grid;
+      gap: 34px;
+    }
+
+    .phrase-category {
+      display: grid;
+      gap: 14px;
+    }
+
+    .phrase-category h3 {
+      margin: 0;
+      font-size: 26px;
+      letter-spacing: -0.025em;
+    }
+
+    .phrase-articles {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .phrase-article {
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: var(--surface);
+    }
+
+    .phrase-article summary {
+      cursor: pointer;
+      padding: 18px 20px;
+      font-weight: 800;
+      list-style: none;
+    }
+
+    .phrase-article summary::-webkit-details-marker { display: none; }
+
+    .phrase-article summary::after {
+      content: "+";
+      float: right;
+      color: var(--primary);
+      font-size: 20px;
+    }
+
+    .phrase-article[open] summary::after { content: "−"; }
+
+    .phrase-list {
+      display: grid;
+      gap: 0;
+      padding: 0 20px 18px;
+    }
+
+    .phrase-item {
+      padding: 12px 0;
+      border-top: 1px solid var(--line);
+    }
+
+    .phrase-item strong {
+      display: block;
+      font-size: 16px;
+    }
+
+    .phrase-item span {
+      display: block;
+      margin-top: 3px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .phrase-source {
+      display: inline-block;
+      margin-top: 10px;
+      color: var(--primary);
+      font-size: 13px;
+      font-weight: 800;
+    }
+
     .practice {
       display: grid;
       grid-template-columns: .9fr 1.1fr;
@@ -411,6 +489,7 @@
       .grid { grid-template-columns: 1fr; }
       #entretenimiento .card { grid-template-columns: 1fr !important; }
       .words { grid-template-columns: repeat(2, 1fr); }
+      .phrase-articles { grid-template-columns: 1fr; }
       .practice { grid-template-columns: 1fr; }
       .section-head { align-items: start; flex-direction: column; }
       .newsletter { align-items: flex-start; flex-direction: column; }
@@ -439,6 +518,7 @@
           <li><a href="#lecciones">Lessons</a></li>
           <li><a href="#vocabulario">Vocabulary</a></li>
           <li><a href="#entretenimiento">TV & movies</a></li>
+          <li><a href="#frases">All phrases</a></li>
           <li><a href="#practica">Practice</a></li>
         </ul>
       </nav>
@@ -555,6 +635,255 @@
           <article class="card"><span class="tag">Speaking</span><h3>To Be Honest</h3><p>Use this conversational discourse marker naturally and appropriately.</p><p style="margin-top:18px"><a class="button" href="post/to-be-honest-discourse-marker.html">Read article →</a></p></article>
           <article class="card"><span class="tag">Speaking</span><h3>Nonetheless</h3><p>Formal contrast, punctuation and register for stronger writing.</p><p style="margin-top:18px"><a class="button" href="post/nonetheless-contrast.html">Read article →</a></p></article>
           <article class="card"><span class="tag">Speaking</span><h3>Polite Disagreement</h3><p>I beg to differ and other useful collaborative discussion phrases.</p><p style="margin-top:18px"><a class="button" href="post/polite-disagreement.html">Read article →</a></p></article>
+        </div>
+      </div>
+    </section>
+
+
+    <section id="frases">
+      <div class="container">
+        <div class="section-head">
+          <h2>All phrases</h2>
+          <p>Useful sentences and expressions from every article, grouped by category and lesson so you can review them in one place.</p>
+        </div>
+
+        <div class="phrase-groups">
+          <div class="phrase-category">
+            <h3>Essential lessons</h3>
+            <div class="phrase-articles">
+              <details class="phrase-article">
+                <summary>Greetings and Introductions</summary>
+                <div class="phrase-list">
+                  <div class="phrase-item"><strong>Hello!</strong></div>
+                  <div class="phrase-item"><strong>Hi!</strong></div>
+                  <div class="phrase-item"><strong>Good morning.</strong></div>
+                  <div class="phrase-item"><strong>Good afternoon.</strong></div>
+                  <div class="phrase-item"><strong>Good evening.</strong></div>
+                  <div class="phrase-item"><strong>Hi, I'm Alex.</strong></div>
+                  <div class="phrase-item"><strong>Hello, my name is Sara.</strong></div>
+                  <div class="phrase-item"><strong>What's your name?</strong></div>
+                  <div class="phrase-item"><strong>May I ask your name?</strong></div>
+                  <div class="phrase-item"><strong>How are you? — I'm fine, thanks.</strong></div>
+                  <div class="phrase-item"><strong>How's it going? — Pretty good!</strong></div>
+                  <div class="phrase-item"><strong>Goodbye.</strong></div>
+                  <div class="phrase-item"><strong>Bye!</strong></div>
+                  <div class="phrase-item"><strong>See you later.</strong></div>
+                  <div class="phrase-item"><strong>Have a nice day!</strong></div>
+                  <a class="phrase-source" href="post/leccion-1-saludos.html">Open article →</a>
+                </div>
+              </details>
+
+              <details class="phrase-article">
+                <summary>The Verb “To Be”</summary>
+                <div class="phrase-list">
+                  <div class="phrase-item"><strong>I am ready.</strong></div>
+                  <div class="phrase-item"><strong>She is here.</strong></div>
+                  <div class="phrase-item"><strong>They are busy.</strong></div>
+                  <div class="phrase-item"><strong>I am not tired.</strong></div>
+                  <div class="phrase-item"><strong>She isn't late.</strong></div>
+                  <div class="phrase-item"><strong>We aren't ready.</strong></div>
+                  <div class="phrase-item"><strong>Are you ready?</strong></div>
+                  <div class="phrase-item"><strong>Is she at home?</strong></div>
+                  <div class="phrase-item"><strong>Am I late?</strong></div>
+                  <div class="phrase-item"><strong>I'm Marta.</strong></div>
+                  <div class="phrase-item"><strong>I'm a designer.</strong></div>
+                  <div class="phrase-item"><strong>He is from Rome.</strong></div>
+                  <div class="phrase-item"><strong>We are hungry.</strong></div>
+                  <div class="phrase-item"><strong>The keys are on the table.</strong></div>
+                  <div class="phrase-item"><strong>I'm 25.</strong></div>
+                  <a class="phrase-source" href="post/leccion-2-to-be.html">Open article →</a>
+                </div>
+              </details>
+
+              <details class="phrase-article">
+                <summary>Simple Questions in English</summary>
+                <div class="phrase-list">
+                  <div class="phrase-item"><strong>What is your name?</strong></div>
+                  <div class="phrase-item"><strong>Where do you live?</strong></div>
+                  <div class="phrase-item"><strong>Who is she?</strong></div>
+                  <div class="phrase-item"><strong>When do you work?</strong></div>
+                  <div class="phrase-item"><strong>Why are you tired?</strong></div>
+                  <div class="phrase-item"><strong>How are you?</strong></div>
+                  <div class="phrase-item"><strong>Where are you?</strong></div>
+                  <div class="phrase-item"><strong>Who is he?</strong></div>
+                  <div class="phrase-item"><strong>Where does she work?</strong></div>
+                  <div class="phrase-item"><strong>How old are you?</strong></div>
+                  <div class="phrase-item"><strong>How much is it?</strong></div>
+                  <div class="phrase-item"><strong>How many?</strong></div>
+                  <div class="phrase-item"><strong>How often?</strong></div>
+                  <div class="phrase-item"><strong>How do you say ... in English?</strong></div>
+                  <a class="phrase-source" href="post/leccion-3-preguntas.html">Open article →</a>
+                </div>
+              </details>
+            </div>
+          </div>
+
+          <div class="phrase-category">
+            <h3>TV & Movies</h3>
+            <div class="phrase-articles">
+              <details class="phrase-article">
+                <summary>Learn English with TV Shows and Movies</summary>
+                <div class="phrase-list">
+                  <div class="phrase-item"><strong>What's going on?</strong></div>
+                  <div class="phrase-item"><strong>Are you okay?</strong></div>
+                  <div class="phrase-item"><strong>I don't know.</strong></div>
+                  <div class="phrase-item"><strong>Come on!</strong></div>
+                  <div class="phrase-item"><strong>Wait a minute.</strong></div>
+                  <div class="phrase-item"><strong>What do you mean?</strong></div>
+                  <div class="phrase-item"><strong>That's great!</strong></div>
+                  <div class="phrase-item"><strong>See you later.</strong></div>
+                  <a class="phrase-source" href="post/entretenimiento.html">Open article →</a>
+                </div>
+              </details>
+            </div>
+          </div>
+
+          <div class="phrase-category">
+            <h3>Grammar</h3>
+            <div class="phrase-articles">
+              <details class="phrase-article">
+                <summary>Negative Prefixes</summary>
+                <div class="phrase-list">
+                  <div class="phrase-item"><strong>After losing his contract, he found himself unemployed for several months.</strong><span>Después de perder su contrato, estuvo desempleado durante varios meses.</span></div>
+                  <div class="phrase-item"><strong>The information was inaccurate.</strong><span>La información era imprecisa.</span></div>
+                  <div class="phrase-item"><strong>I misunderstood the question.</strong><span>Malinterpreté la pregunta.</span></div>
+                  <a class="phrase-source" href="post/negative-prefixes.html">Open article →</a>
+                </div>
+              </details>
+
+              <details class="phrase-article">
+                <summary>Never vs. Haven’t … Yet</summary>
+                <div class="phrase-list">
+                  <div class="phrase-item"><strong>I have never been to New York.</strong><span>Nunca he estado en Nueva York.</span></div>
+                  <div class="phrase-item"><strong>I haven't received the confirmation email yet.</strong><span>Todavía no he recibido el correo de confirmación.</span></div>
+                  <div class="phrase-item"><strong>Have you spoken to Marta yet?</strong><span>¿Ya has hablado con Marta?</span></div>
+                  <div class="phrase-item"><strong>Have you finished yet?</strong></div>
+                  <div class="phrase-item"><strong>I've never written a novel.</strong></div>
+                  <div class="phrase-item"><strong>I haven't finished my novel yet.</strong></div>
+                  <a class="phrase-source" href="post/present-perfect-never-yet.html">Open article →</a>
+                </div>
+              </details>
+
+              <details class="phrase-article">
+                <summary>Might for Possibility</summary>
+                <div class="phrase-list">
+                  <div class="phrase-item"><strong>He might come.</strong></div>
+                  <div class="phrase-item"><strong>She might need help.</strong></div>
+                  <div class="phrase-item"><strong>Take an umbrella; it might rain later.</strong><span>Lleva un paraguas; puede que llueva más tarde.</span></div>
+                  <div class="phrase-item"><strong>She might be at work.</strong><span>Puede que ella esté en el trabajo.</span></div>
+                  <div class="phrase-item"><strong>The shop might not be open.</strong><span>Puede que la tienda no esté abierta.</span></div>
+                  <div class="phrase-item"><strong>I might not go out tonight.</strong></div>
+                  <a class="phrase-source" href="post/modal-verb-might.html">Open article →</a>
+                </div>
+              </details>
+
+              <details class="phrase-article">
+                <summary>Direct & Reported Speech</summary>
+                <div class="phrase-list">
+                  <div class="phrase-item"><strong>“I am tired,” she said. → She said that she was tired.</strong><span>«Estoy cansada», dijo. → Dijo que estaba cansada.</span></div>
+                  <div class="phrase-item"><strong>“I have finished.” → He said he had finished.</strong><span>«He terminado». → Dijo que había terminado.</span></div>
+                  <div class="phrase-item"><strong>“I haven't submitted the report yet,” he explained. → He explained that he hadn't submitted the report yet.</strong><span>«Todavía no he entregado el informe», explicó. → Explicó que todavía no lo había entregado.</span></div>
+                  <a class="phrase-source" href="post/direct-reported-speech.html">Open article →</a>
+                </div>
+              </details>
+            </div>
+          </div>
+
+          <div class="phrase-category">
+            <h3>Vocabulary</h3>
+            <div class="phrase-articles">
+              <details class="phrase-article">
+                <summary>Currently</summary>
+                <div class="phrase-list">
+                  <div class="phrase-item"><strong>She is currently preparing for her Cambridge examination.</strong><span>Actualmente se está preparando para su examen de Cambridge.</span></div>
+                  <div class="phrase-item"><strong>I normally work from home.</strong><span>Normalmente trabajo desde casa.</span></div>
+                  <div class="phrase-item"><strong>This expression is commonly used.</strong><span>Esta expresión se usa comúnmente.</span></div>
+                  <div class="phrase-item"><strong>I currently work.</strong></div>
+                  <div class="phrase-item"><strong>I am currently working.</strong></div>
+                  <a class="phrase-source" href="post/currently-meaning-use.html">Open article →</a>
+                </div>
+              </details>
+
+              <details class="phrase-article">
+                <summary>Revenue Office & Supporters</summary>
+                <div class="phrase-list">
+                  <div class="phrase-item"><strong>He went to the local revenue office to ask about his tax return.</strong><span>Fue a la oficina de Hacienda local para preguntar por su declaración de impuestos.</span></div>
+                  <div class="phrase-item"><strong>Thousands of supporters gathered outside the stadium.</strong><span>Miles de aficionados se reunieron fuera del estadio.</span></div>
+                  <div class="phrase-item"><strong>The charity has many supporters.</strong><span>La organización benéfica tiene muchos colaboradores.</span></div>
+                  <a class="phrase-source" href="post/revenue-office-supporters.html">Open article →</a>
+                </div>
+              </details>
+
+              <details class="phrase-article">
+                <summary>Take Off</summary>
+                <div class="phrase-list">
+                  <div class="phrase-item"><strong>The flight is scheduled to take off at 8:30 a.m.</strong><span>El vuelo está programado para despegar a las 8:30.</span></div>
+                  <div class="phrase-item"><strong>Please take off your coat.</strong><span>Por favor, quítate el abrigo.</span></div>
+                  <div class="phrase-item"><strong>Her consultancy really took off last year.</strong><span>Su consultoría despegó de verdad el año pasado.</span></div>
+                  <div class="phrase-item"><strong>He took two days off to recover.</strong><span>Se tomó dos días libres para recuperarse.</span></div>
+                  <a class="phrase-source" href="post/phrasal-verb-take-off.html">Open article →</a>
+                </div>
+              </details>
+
+              <details class="phrase-article">
+                <summary>Inspire People</summary>
+                <div class="phrase-list">
+                  <div class="phrase-item"><strong>Her story inspired many people.</strong><span>Su historia inspiró a muchas personas.</span></div>
+                  <div class="phrase-item"><strong>The teacher inspired me to study languages.</strong><span>El profesor me inspiró a estudiar idiomas.</span></div>
+                  <div class="phrase-item"><strong>Great leaders inspire people to exceed their own expectations.</strong><span>Los grandes líderes inspiran a las personas a superar sus propias expectativas.</span></div>
+                  <a class="phrase-source" href="post/inspire-people-collocation.html">Open article →</a>
+                </div>
+              </details>
+            </div>
+          </div>
+
+          <div class="phrase-category">
+            <h3>Speaking & Discourse</h3>
+            <div class="phrase-articles">
+              <details class="phrase-article">
+                <summary>Opinion & Speculation</summary>
+                <div class="phrase-list">
+                  <div class="phrase-item"><strong>I reckon we should finish this task first.</strong><span>Creo que deberíamos terminar esta tarea primero.</span></div>
+                  <div class="phrase-item"><strong>I guess they changed the date because of the weather.</strong><span>Supongo que cambiaron la fecha por el tiempo.</span></div>
+                  <div class="phrase-item"><strong>I believe continuous learning is important.</strong><span>Creo que el aprendizaje continuo es importante.</span></div>
+                  <div class="phrase-item"><strong>It seems like the update fixed the problem.</strong><span>Parece que la actualización solucionó el problema.</span></div>
+                  <a class="phrase-source" href="post/opinion-speculation-expressions.html">Open article →</a>
+                </div>
+              </details>
+
+              <details class="phrase-article">
+                <summary>To Be Honest</summary>
+                <div class="phrase-list">
+                  <div class="phrase-item"><strong>To be honest, I found the first module difficult.</strong><span>Sinceramente, el primer módulo me pareció difícil.</span></div>
+                  <div class="phrase-item"><strong>To be honest, I'd rather stay home.</strong><span>La verdad, preferiría quedarme en casa.</span></div>
+                  <div class="phrase-item"><strong>I don't like it, to be honest.</strong><span>No me gusta, la verdad.</span></div>
+                  <a class="phrase-source" href="post/to-be-honest-discourse-marker.html">Open article →</a>
+                </div>
+              </details>
+
+              <details class="phrase-article">
+                <summary>Nonetheless</summary>
+                <div class="phrase-list">
+                  <div class="phrase-item"><strong>The task was difficult. Nonetheless, we completed it on time.</strong><span>La tarea era difícil. No obstante, la terminamos a tiempo.</span></div>
+                  <div class="phrase-item"><strong>The schedule was demanding; nonetheless, everyone completed the course.</strong><span>El horario era exigente; no obstante, todos completaron el curso.</span></div>
+                  <div class="phrase-item"><strong>The evidence was limited. Nonetheless, the team continued the study.</strong><span>Las pruebas eran limitadas. No obstante, el equipo continuó el estudio.</span></div>
+                  <a class="phrase-source" href="post/nonetheless-contrast.html">Open article →</a>
+                </div>
+              </details>
+
+              <details class="phrase-article">
+                <summary>Polite Disagreement</summary>
+                <div class="phrase-list">
+                  <div class="phrase-item"><strong>I beg to differ; face-to-face interaction still has important advantages.</strong><span>Permíteme discrepar; la interacción cara a cara sigue teniendo ventajas importantes.</span></div>
+                  <div class="phrase-item"><strong>Sorry, but I disagree with that point.</strong><span>Lo siento, pero no estoy de acuerdo con ese punto.</span></div>
+                  <div class="phrase-item"><strong>I see your point, but I think there is another factor to consider.</strong><span>Entiendo tu punto, pero creo que hay otro factor que considerar.</span></div>
+                  <div class="phrase-item"><strong>That's true to some extent, but…</strong></div>
+                  <div class="phrase-item"><strong>I'm not sure I agree because…</strong></div>
+                  <a class="phrase-source" href="post/polite-disagreement.html">Open article →</a>
+                </div>
+              </details>
+            </div>
+          </div>
         </div>
       </div>
     </section>
