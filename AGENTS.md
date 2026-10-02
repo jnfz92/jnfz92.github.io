@@ -149,3 +149,11 @@ Antes de dar la tarea por terminada comprobar:
 - [ ] El sitio sigue siendo responsive.
 - [ ] Los cambios están en GitHub.
 - [ ] Se ha enviado el email de publicación si Gmail está conectado.
+## 11. Frases y ejemplos bilingües
+
+- Todas las frases, ejemplos y expresiones en inglés que se publiquen en el blog deben incluir también su traducción al español cuando tengan valor didáctico para el lector.
+- Esta regla se aplica especialmente a las secciones de frases, ejemplos, vocabulario, gramática, speaking, ejercicios y contenido de series y películas.
+- No dejar frases de ejemplo únicamente en inglés dentro de listados bilingües o secciones de estudio, salvo que exista una razón editorial explícita.
+- Mantener la traducción inmediatamente junto a la frase original para facilitar la comparación.
+- Si se añade una nueva colección de frases a `index.html` o a cualquier artículo de `/post/`, comprobar antes de publicar que todas las entradas del conjunto sean bilingües.
+
