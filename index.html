@@ -3,498 +3,414 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Easy English: inglés práctico y bilingüe con lecciones, gramática, vocabulario, speaking, listening y ejercicios." />
-  <title>Easy English · Inglés práctico paso a paso</title>
+  <meta name="description" content="Easy English: blog de inglés con artículos de gramática, vocabulario, speaking, listening y lecciones." />
+  <title>Easy English · Blog de inglés</title>
   <style>
     :root{
-      --bg:#f6f7f4;
+      --bg:#f7f7f4;
       --surface:#ffffff;
-      --surface-2:#eef3ef;
-      --ink:#15221d;
-      --muted:#66736d;
-      --line:#dde5df;
-      --brand:#174f3f;
-      --brand-2:#226b56;
-      --accent:#f2b85b;
-      --danger:#b84d45;
-      --radius:22px;
-      --shadow:0 18px 55px rgba(23,79,63,.10);
-      --max:1160px;
+      --ink:#17211c;
+      --muted:#68736d;
+      --line:#e1e6e2;
+      --brand:#1f5a49;
+      --brand-soft:#e9f0ec;
+      --radius:18px;
+      --max:1120px;
     }
 
     *{box-sizing:border-box}
-    html{scroll-behavior:smooth}
     body{
       margin:0;
       font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
       color:var(--ink);
-      background:
-        radial-gradient(circle at 92% 0%,rgba(242,184,91,.18),transparent 28rem),
-        linear-gradient(180deg,#fafbf9 0%,var(--bg) 38%,#f2f5f2 100%);
+      background:var(--bg);
       line-height:1.6;
     }
+
     a{color:inherit;text-decoration:none}
     button{font:inherit}
-    .container{width:min(var(--max),calc(100% - 32px));margin-inline:auto}
-    .skip-link{position:absolute;left:-999px;top:0}
-    .skip-link:focus{left:16px;top:16px;z-index:100;background:#fff;padding:10px 14px;border-radius:10px}
+    .container{width:min(var(--max),calc(100% - 32px));margin:auto}
 
     header{
-      position:sticky;top:0;z-index:30;
-      border-bottom:1px solid rgba(221,229,223,.85);
-      background:rgba(250,251,249,.88);
-      backdrop-filter:blur(16px);
+      border-bottom:1px solid var(--line);
+      background:rgba(247,247,244,.96);
+      position:sticky;
+      top:0;
+      z-index:20;
     }
-    .nav{min-height:72px;display:flex;align-items:center;justify-content:space-between;gap:24px}
-    .brand{display:flex;align-items:center;gap:11px;font-weight:900;letter-spacing:-.025em}
-    .brand-mark{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;color:#fff;background:var(--brand);font-size:13px;box-shadow:0 8px 20px rgba(23,79,63,.2)}
-    .nav-links{display:flex;align-items:center;gap:22px;list-style:none;margin:0;padding:0;color:var(--muted);font-size:14px;font-weight:750}
-    .nav-links a:hover{color:var(--brand)}
-    .nav-cta{padding:10px 14px;border-radius:12px;background:var(--brand);color:#fff}
-    .menu-btn{display:none;border:1px solid var(--line);background:#fff;border-radius:12px;padding:9px 12px;font-weight:800;color:var(--ink)}
 
-    main{overflow:hidden}
-    .hero{padding:78px 0 42px;display:grid;grid-template-columns:1.05fr .95fr;gap:58px;align-items:center}
-    .eyebrow{display:inline-flex;align-items:center;gap:8px;padding:7px 11px;border-radius:999px;background:#e5eee9;color:var(--brand);font-size:12px;font-weight:900;letter-spacing:.08em;text-transform:uppercase}
-    .hero h1{font-size:clamp(50px,7vw,88px);line-height:.95;letter-spacing:-.065em;margin:18px 0 22px;max-width:780px}
-    .hero h1 span{color:var(--brand)}
-    .hero-copy{max-width:680px;font-size:19px;color:var(--muted);margin:0 0 28px}
-    .actions{display:flex;flex-wrap:wrap;gap:12px}
-    .btn{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:0 18px;border-radius:14px;border:1px solid var(--line);background:#fff;font-weight:850;transition:.2s ease}
-    .btn:hover{transform:translateY(-2px);box-shadow:0 10px 25px rgba(21,34,29,.08)}
-    .btn.primary{background:var(--brand);border-color:var(--brand);color:#fff}
-    .btn.soft{background:var(--surface-2);border-color:transparent;color:var(--brand)}
-    .hero-note{margin-top:18px;color:var(--muted);font-size:13px;font-weight:700}
+    .nav{
+      min-height:70px;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:24px;
+    }
 
-    .hero-panel{position:relative;border-radius:30px;padding:28px;background:var(--brand);color:#fff;box-shadow:var(--shadow);overflow:hidden;min-height:480px}
-    .hero-panel:before{content:"";position:absolute;width:260px;height:260px;border-radius:50%;right:-90px;bottom:-95px;background:var(--accent)}
-    .panel-top{display:flex;justify-content:space-between;gap:12px;align-items:center;position:relative;z-index:2}
-    .panel-label{font-size:12px;text-transform:uppercase;letter-spacing:.1em;font-weight:900;color:rgba(255,255,255,.68)}
-    .level-pill{padding:6px 10px;border-radius:999px;background:rgba(255,255,255,.12);font-size:12px;font-weight:850}
-    .hero-panel h2{position:relative;z-index:2;margin:92px 0 12px;font-size:40px;line-height:1.03;letter-spacing:-.04em;max-width:430px}
-    .hero-panel p{position:relative;z-index:2;max-width:420px;color:rgba(255,255,255,.76)}
-    .lesson-list{position:relative;z-index:2;margin-top:28px;display:grid;gap:10px}
-    .lesson-row{display:flex;justify-content:space-between;gap:16px;align-items:center;padding:12px 14px;border:1px solid rgba(255,255,255,.12);border-radius:14px;background:rgba(255,255,255,.06);font-size:14px}
-    .lesson-row strong{font-size:13px}
-    .lesson-row span{color:rgba(255,255,255,.65);font-size:12px}
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      font-weight:900;
+      letter-spacing:-.02em;
+    }
 
-    .stats{padding:16px 0 34px}
-    .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
-    .stat{padding:18px;border:1px solid var(--line);border-radius:18px;background:rgba(255,255,255,.72)}
-    .stat strong{display:block;font-size:22px;letter-spacing:-.03em}
-    .stat span{font-size:13px;color:var(--muted)}
+    .brand-mark{
+      width:36px;
+      height:36px;
+      border-radius:10px;
+      display:grid;
+      place-items:center;
+      background:var(--brand);
+      color:white;
+      font-size:13px;
+    }
 
-    section{padding:70px 0}
-    .section-head{display:flex;justify-content:space-between;align-items:end;gap:30px;margin-bottom:28px}
-    .section-head h2{font-size:clamp(34px,4vw,52px);letter-spacing:-.045em;line-height:1.02;margin:8px 0 0}
-    .section-head p{max-width:540px;color:var(--muted);margin:0}
+    .nav a:last-child{
+      color:var(--brand);
+      font-weight:800;
+      font-size:14px;
+    }
 
-    .path-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
-    .path-card{padding:24px;border:1px solid var(--line);border-radius:22px;background:var(--surface)}
-    .path-no{width:34px;height:34px;display:grid;place-items:center;border-radius:10px;background:var(--brand);color:#fff;font-size:12px;font-weight:900;margin-bottom:22px}
-    .path-card h3{font-size:21px;margin:0 0 8px}
-    .path-card p{color:var(--muted);margin:0 0 18px;font-size:14px}
-    .text-link{font-weight:850;color:var(--brand);font-size:14px}
+    .hero{
+      padding:72px 0 42px;
+      max-width:760px;
+    }
 
-    .feature-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
-    .card{padding:24px;border:1px solid var(--line);border-radius:22px;background:var(--surface);box-shadow:0 8px 24px rgba(21,34,29,.035)}
-    .tag{display:inline-flex;padding:6px 9px;border-radius:999px;background:var(--surface-2);color:var(--brand);font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:.07em}
-    .card h3{font-size:23px;letter-spacing:-.025em;margin:16px 0 9px}
-    .card p{color:var(--muted);margin:0 0 18px}
-    .card.dark{background:#1d2b26;color:#fff;border-color:#1d2b26}
-    .card.dark p{color:rgba(255,255,255,.68)}
-    .card.dark .tag{background:var(--accent);color:#1d2b26}
-    .card.dark .text-link{color:#fff}
+    .eyebrow{
+      color:var(--brand);
+      font-size:12px;
+      text-transform:uppercase;
+      letter-spacing:.1em;
+      font-weight:900;
+    }
 
-    .library-shell{border:1px solid var(--line);border-radius:28px;background:rgba(255,255,255,.82);padding:22px}
-    .filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}
-    .filter{border:1px solid var(--line);background:#fff;border-radius:999px;padding:8px 12px;font-weight:800;font-size:13px;color:var(--muted);cursor:pointer}
-    .filter.active,.filter:hover{background:var(--brand);border-color:var(--brand);color:#fff}
-    .library{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
-    .article{padding:18px;border:1px solid var(--line);border-radius:18px;background:#fff}
-    .article small{display:block;color:var(--brand);font-weight:900;text-transform:uppercase;letter-spacing:.07em;margin-bottom:8px}
-    .article h3{font-size:18px;line-height:1.2;margin:0 0 8px}
-    .article p{font-size:13px;color:var(--muted);margin:0 0 14px}
+    h1{
+      margin:12px 0 16px;
+      font-size:clamp(46px,7vw,76px);
+      line-height:.98;
+      letter-spacing:-.055em;
+    }
 
-    .daily{display:grid;grid-template-columns:.78fr 1.22fr;gap:24px;align-items:stretch}
-    .daily-intro{padding:32px;border-radius:26px;background:#e9efe9}
-    .daily-intro h2{font-size:42px;line-height:1.02;letter-spacing:-.04em;margin:14px 0}
-    .daily-intro p{color:var(--muted)}
-    .words{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
-    .word{padding:19px;border-radius:18px;border:1px solid var(--line);background:#fff}
-    .word strong{display:block;font-size:20px}
-    .word span{color:var(--muted);font-size:13px}
+    .hero p{
+      margin:0;
+      color:var(--muted);
+      font-size:18px;
+      max-width:680px;
+    }
 
-    .practice{display:grid;grid-template-columns:.9fr 1.1fr;gap:22px;padding:34px;border-radius:28px;background:#1d2b26;color:#fff}
-    .practice h2{font-size:42px;line-height:1.05;letter-spacing:-.04em;margin:12px 0}
-    .practice p{color:rgba(255,255,255,.66)}
-    .quiz{padding:24px;border-radius:22px;background:#fff;color:var(--ink)}
-    .question{font-weight:900;font-size:19px;margin:0 0 16px}
-    .options{display:grid;gap:10px}
-    .option{width:100%;padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:#fff;text-align:left;cursor:pointer}
-    .option:hover{border-color:var(--brand)}
-    .option.correct{background:#e3efe8;border-color:var(--brand);color:var(--brand);font-weight:800}
-    .option.wrong{background:#fbe8e6;border-color:var(--danger)}
-    #feedback{min-height:24px;margin:14px 0 0;font-weight:800}
+    .blog{
+      padding:20px 0 80px;
+    }
 
-    .cta{margin:10px auto 72px;padding:32px;border-radius:26px;background:var(--accent);display:flex;align-items:center;justify-content:space-between;gap:24px}
-    .cta h2{margin:0 0 4px;font-size:30px;letter-spacing:-.035em}
-    .cta p{margin:0;color:#564527}
+    .filters{
+      display:flex;
+      flex-wrap:wrap;
+      gap:9px;
+      margin-bottom:28px;
+    }
 
-    footer{border-top:1px solid var(--line);padding:30px 0 44px;color:var(--muted);font-size:13px}
-    .footer{display:flex;justify-content:space-between;gap:20px;align-items:flex-start}
-    .footer-links{display:flex;flex-wrap:wrap;gap:12px;margin-top:8px;font-weight:750}
+    .filter{
+      border:1px solid var(--line);
+      background:var(--surface);
+      color:var(--muted);
+      border-radius:999px;
+      padding:9px 14px;
+      cursor:pointer;
+      font-weight:800;
+      font-size:13px;
+    }
+
+    .filter:hover,
+    .filter.active{
+      background:var(--brand);
+      color:white;
+      border-color:var(--brand);
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:16px;
+    }
+
+    .card{
+      display:flex;
+      flex-direction:column;
+      min-height:245px;
+      padding:22px;
+      background:var(--surface);
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      transition:transform .2s ease,border-color .2s ease;
+    }
+
+    .card:hover{
+      transform:translateY(-3px);
+      border-color:#c9d6cf;
+    }
+
+    .tag{
+      align-self:flex-start;
+      padding:5px 9px;
+      border-radius:999px;
+      background:var(--brand-soft);
+      color:var(--brand);
+      font-size:11px;
+      font-weight:900;
+      text-transform:uppercase;
+      letter-spacing:.07em;
+    }
+
+    .card h2{
+      margin:16px 0 9px;
+      font-size:22px;
+      line-height:1.15;
+      letter-spacing:-.025em;
+    }
+
+    .card p{
+      margin:0 0 20px;
+      color:var(--muted);
+      font-size:14px;
+    }
+
+    .read{
+      margin-top:auto;
+      color:var(--brand);
+      font-weight:850;
+      font-size:14px;
+    }
+
+    .empty{
+      display:none;
+      padding:28px;
+      border:1px dashed var(--line);
+      border-radius:var(--radius);
+      color:var(--muted);
+      background:var(--surface);
+    }
+
+    footer{
+      border-top:1px solid var(--line);
+      padding:28px 0 40px;
+      color:var(--muted);
+      font-size:13px;
+    }
 
     @media(max-width:900px){
-      .hero{grid-template-columns:1fr;gap:34px;padding-top:54px}
-      .hero-panel{min-height:410px}
-      .stats-grid{grid-template-columns:repeat(2,1fr)}
-      .path-grid{grid-template-columns:repeat(2,1fr)}
-      .feature-grid,.library{grid-template-columns:repeat(2,1fr)}
-      .daily,.practice{grid-template-columns:1fr}
-      .nav-links{display:none;position:absolute;left:16px;right:16px;top:72px;padding:16px;border:1px solid var(--line);border-radius:18px;background:#fff;box-shadow:var(--shadow);flex-direction:column;align-items:stretch}
-      .nav-links.open{display:flex}
-      .menu-btn{display:block}
-      .nav-cta{text-align:center}
+      .grid{grid-template-columns:repeat(2,1fr)}
     }
+
     @media(max-width:600px){
       .container{width:min(var(--max),calc(100% - 22px))}
-      section{padding:54px 0}
-      .hero h1{font-size:48px}
-      .hero-copy{font-size:17px}
-      .hero-panel{padding:22px;min-height:390px}
-      .hero-panel h2{font-size:34px;margin-top:72px}
-      .stats-grid,.path-grid,.feature-grid,.library,.words{grid-template-columns:1fr}
-      .section-head{align-items:flex-start;flex-direction:column}
-      .daily-intro,.practice{padding:24px}
-      .cta,.footer{flex-direction:column;align-items:flex-start}
+      .hero{padding-top:50px}
+      h1{font-size:48px}
+      .grid{grid-template-columns:1fr}
+      .card{min-height:auto}
     }
   </style>
 </head>
 <body>
-  <a class="skip-link" href="#contenido">Saltar al contenido</a>
-
   <header>
     <div class="container nav">
-      <a class="brand" href="#inicio" aria-label="Easy English, inicio">
+      <a class="brand" href="index.html">
         <span class="brand-mark">EN</span>
         <span>Easy English</span>
       </a>
-      <button class="menu-btn" id="menuBtn" aria-expanded="false" aria-controls="mainNav">Menú</button>
-      <ul class="nav-links" id="mainNav">
-        <li><a href="#ruta">Ruta</a></li>
-        <li><a href="#destacados">Destacados</a></li>
-        <li><a href="#biblioteca">Biblioteca</a></li>
-        <li><a href="#vocabulario">Vocabulario</a></li>
-        <li><a href="#practica">Práctica</a></li>
-        <li><a class="nav-cta" href="category/lessons.html">Empezar a estudiar</a></li>
-      </ul>
+      <a href="#articulos">Artículos</a>
     </div>
   </header>
 
-  <main id="contenido">
-    <div class="container" id="inicio">
+  <main>
+    <div class="container">
       <section class="hero">
-        <div>
-          <span class="eyebrow">Inglés práctico · A1 → C1</span>
-          <h1>Aprende inglés con una ruta <span>clara y útil.</span></h1>
-          <p class="hero-copy">Lecciones bilingües, gramática, vocabulario, speaking, listening y ejercicios. Sin ruido: entra, elige tu nivel y sigue estudiando.</p>
-          <div class="actions">
-            <a class="btn primary" href="#ruta">Ver la ruta de estudio →</a>
-            <a class="btn" href="#biblioteca">Explorar artículos</a>
-          </div>
-          <p class="hero-note">Contenido pensado para hispanohablantes · ejemplos con traducción · práctica incluida.</p>
-        </div>
-
-        <aside class="hero-panel" aria-label="Lecciones para empezar">
-          <div class="panel-top">
-            <span class="panel-label">Empieza por aquí</span>
-            <span class="level-pill">Nivel A1</span>
-          </div>
-          <h2>Tres lecciones para construir tu base.</h2>
-          <p>Empieza con saludos, el verbo <em>to be</em> y preguntas sencillas. Después avanza a gramática y comunicación real.</p>
-          <div class="lesson-list">
-            <a class="lesson-row" href="post/leccion-1-saludos.html"><strong>01 · Greetings</strong><span>Saludos e introducciones →</span></a>
-            <a class="lesson-row" href="post/leccion-2-to-be.html"><strong>02 · To be</strong><span>La base de muchas frases →</span></a>
-            <a class="lesson-row" href="post/leccion-3-preguntas.html"><strong>03 · Questions</strong><span>Preguntar con seguridad →</span></a>
-          </div>
-        </aside>
+        <span class="eyebrow">Blog de inglés</span>
+        <h1>Artículos para aprender inglés.</h1>
+        <p>Gramática, vocabulario, speaking, listening y lecciones prácticas. Elige una categoría y entra directamente al contenido.</p>
       </section>
-    </div>
 
-    <div class="stats">
-      <div class="container stats-grid">
-        <div class="stat"><strong>A1 → C1</strong><span>Progresión por niveles</span></div>
-        <div class="stat"><strong>18+</strong><span>Guías y artículos publicados</span></div>
-        <div class="stat"><strong>5 áreas</strong><span>Grammar, vocabulary, speaking, lessons y listening</span></div>
-        <div class="stat"><strong>Bilingüe</strong><span>Inglés con apoyo en español</span></div>
-      </div>
-    </div>
-
-    <section id="ruta">
-      <div class="container">
-        <div class="section-head">
-          <div>
-            <span class="eyebrow">Ruta de estudio</span>
-            <h2>Qué estudiar y en qué orden.</h2>
-          </div>
-          <p>Una estructura sencilla para no perderte entre artículos: base, construcción de frases, comunicación y exposición a inglés real.</p>
+      <section class="blog" id="articulos">
+        <div class="filters" aria-label="Filtrar artículos por categoría">
+          <button class="filter active" data-filter="all">Todos</button>
+          <button class="filter" data-filter="lesson">Lessons</button>
+          <button class="filter" data-filter="grammar">Grammar</button>
+          <button class="filter" data-filter="vocabulary">Vocabulary</button>
+          <button class="filter" data-filter="speaking">Speaking</button>
+          <button class="filter" data-filter="listening">Listening</button>
         </div>
 
-        <div class="path-grid">
-          <article class="path-card">
-            <span class="path-no">01</span>
-            <h3>Fundamentos</h3>
-            <p>Saludos, <em>to be</em>, preguntas y estructuras esenciales para empezar a comunicarte.</p>
-            <a class="text-link" href="category/lessons.html">Ir a Lessons →</a>
+        <div class="grid" id="articleGrid">
+          <article class="card" data-cat="lesson">
+            <span class="tag">Lesson</span>
+            <h2>Greetings and introductions</h2>
+            <p>Saludos y presentaciones para situaciones cotidianas.</p>
+            <a class="read" href="post/leccion-1-saludos.html">Leer artículo →</a>
           </article>
-          <article class="path-card">
-            <span class="path-no">02</span>
-            <h3>Gramática útil</h3>
-            <p>Modales, present perfect, reported speech, prefijos y otras estructuras frecuentes.</p>
-            <a class="text-link" href="category/grammar.html">Ir a Grammar →</a>
-          </article>
-          <article class="path-card">
-            <span class="path-no">03</span>
-            <h3>Vocabulario</h3>
-            <p>Palabras, phrasal verbs y colocaciones para ampliar lo que puedes entender y expresar.</p>
-            <a class="text-link" href="category/vocabulary.html">Ir a Vocabulary →</a>
-          </article>
-          <article class="path-card">
-            <span class="path-no">04</span>
-            <h3>Speaking & listening</h3>
-            <p>Opiniones, desacuerdo, fluidez, series y películas para practicar inglés real.</p>
-            <a class="text-link" href="category/speaking.html">Ir a Speaking →</a>
-          </article>
-        </div>
-      </div>
-    </section>
 
-    <section id="destacados">
-      <div class="container">
-        <div class="section-head">
-          <div>
-            <span class="eyebrow">Selección rápida</span>
-            <h2>Artículos para avanzar hoy.</h2>
-          </div>
-          <p>Una mezcla de gramática, speaking y listening para practicar habilidades distintas sin tener que buscar demasiado.</p>
-        </div>
-
-        <div class="feature-grid">
-          <article class="card">
-            <span class="tag">Grammar · B1</span>
-            <h3>Never vs. Haven’t … Yet</h3>
-            <p>Cómo usar el present perfect para experiencias y acciones esperadas que todavía no han ocurrido.</p>
-            <a class="text-link" href="post/present-perfect-never-yet.html">Estudiar artículo →</a>
+          <article class="card" data-cat="lesson">
+            <span class="tag">Lesson</span>
+            <h2>The verb “to be”</h2>
+            <p>Am, is y are explicados desde cero con ejemplos claros.</p>
+            <a class="read" href="post/leccion-2-to-be.html">Leer artículo →</a>
           </article>
-          <article class="card">
+
+          <article class="card" data-cat="lesson">
+            <span class="tag">Lesson</span>
+            <h2>Simple questions</h2>
+            <p>What, where, who y when en estructuras sencillas.</p>
+            <a class="read" href="post/leccion-3-preguntas.html">Leer artículo →</a>
+          </article>
+
+          <article class="card" data-cat="grammar">
+            <span class="tag">Grammar</span>
+            <h2>Negative Prefixes</h2>
+            <p>Un-, in-, im-, dis- y mis- con reglas y ejemplos.</p>
+            <a class="read" href="post/negative-prefixes.html">Leer artículo →</a>
+          </article>
+
+          <article class="card" data-cat="grammar">
+            <span class="tag">Grammar</span>
+            <h2>Never vs. Haven’t … Yet</h2>
+            <p>Present perfect para experiencias y acciones todavía no terminadas.</p>
+            <a class="read" href="post/present-perfect-never-yet.html">Leer artículo →</a>
+          </article>
+
+          <article class="card" data-cat="grammar">
+            <span class="tag">Grammar</span>
+            <h2>Might for Possibility</h2>
+            <p>Cómo expresar posibilidades presentes y futuras.</p>
+            <a class="read" href="post/modal-verb-might.html">Leer artículo →</a>
+          </article>
+
+          <article class="card" data-cat="grammar">
+            <span class="tag">Grammar</span>
+            <h2>Direct & Reported Speech</h2>
+            <p>Backshift, pronombres y expresiones temporales.</p>
+            <a class="read" href="post/direct-reported-speech.html">Leer artículo →</a>
+          </article>
+
+          <article class="card" data-cat="vocabulary">
+            <span class="tag">Vocabulary</span>
+            <h2>Currently</h2>
+            <p>Significado, posición y el falso amigo con “actualmente”.</p>
+            <a class="read" href="post/currently-meaning-use.html">Leer artículo →</a>
+          </article>
+
+          <article class="card" data-cat="vocabulary">
+            <span class="tag">Vocabulary</span>
+            <h2>Revenue Office & Supporters</h2>
+            <p>Dos términos útiles explicados según el contexto.</p>
+            <a class="read" href="post/revenue-office-supporters.html">Leer artículo →</a>
+          </article>
+
+          <article class="card" data-cat="vocabulary">
+            <span class="tag">Vocabulary</span>
+            <h2>Take Off</h2>
+            <p>Un phrasal verb muy común con varios significados.</p>
+            <a class="read" href="post/phrasal-verb-take-off.html">Leer artículo →</a>
+          </article>
+
+          <article class="card" data-cat="vocabulary">
+            <span class="tag">Vocabulary</span>
+            <h2>Inspire People</h2>
+            <p>Colocaciones y estructuras naturales con inspire.</p>
+            <a class="read" href="post/inspire-people-collocation.html">Leer artículo →</a>
+          </article>
+
+          <article class="card" data-cat="speaking">
             <span class="tag">Speaking</span>
-            <h3>Polite disagreement</h3>
-            <p>Formas naturales y educadas de mostrar desacuerdo sin sonar agresivo.</p>
-            <a class="text-link" href="post/polite-disagreement.html">Practicar expresiones →</a>
+            <h2>Opinion & Speculation</h2>
+            <p>Expresiones para opinar y especular con naturalidad.</p>
+            <a class="read" href="post/opinion-speculation-expressions.html">Leer artículo →</a>
           </article>
-          <article class="card dark">
+
+          <article class="card" data-cat="speaking">
+            <span class="tag">Speaking</span>
+            <h2>To Be Honest</h2>
+            <p>Cómo usar este discourse marker correctamente.</p>
+            <a class="read" href="post/to-be-honest-discourse-marker.html">Leer artículo →</a>
+          </article>
+
+          <article class="card" data-cat="speaking">
+            <span class="tag">Speaking</span>
+            <h2>Nonetheless</h2>
+            <p>Cómo expresar contraste en speaking y writing.</p>
+            <a class="read" href="post/nonetheless-contrast.html">Leer artículo →</a>
+          </article>
+
+          <article class="card" data-cat="speaking">
+            <span class="tag">Speaking</span>
+            <h2>Polite Disagreement</h2>
+            <p>Formas educadas y naturales de mostrar desacuerdo.</p>
+            <a class="read" href="post/polite-disagreement.html">Leer artículo →</a>
+          </article>
+
+          <article class="card" data-cat="speaking">
+            <span class="tag">Speaking</span>
+            <h2>Think Before You Speak</h2>
+            <p>Estrategias para hablar con más claridad y seguridad.</p>
+            <a class="read" href="post/think-before-you-speak.html">Leer artículo →</a>
+          </article>
+
+          <article class="card" data-cat="speaking">
+            <span class="tag">Speaking</span>
+            <h2>Truco del bolígrafo para el examen oral</h2>
+            <p>Una técnica práctica para entrenar fluidez y respuesta oral.</p>
+            <a class="read" href="post/truco-boligrafo-examen-oral-ingles.html">Leer artículo →</a>
+          </article>
+
+          <article class="card" data-cat="speaking">
+            <span class="tag">Speaking</span>
+            <h2>Political English</h2>
+            <p>Vocabulario y frases para debate, opinión y argumentación.</p>
+            <a class="read" href="post/political-english-vocabulary-debate-phrases.html">Leer artículo →</a>
+          </article>
+
+          <article class="card" data-cat="listening">
             <span class="tag">Listening</span>
-            <h3>English with TV & movies</h3>
-            <p>Una rutina sencilla para convertir escenas, subtítulos y repetición en práctica de listening.</p>
-            <a class="text-link" href="post/entretenimiento.html">Ver método →</a>
+            <h2>English with TV & Movies</h2>
+            <p>Un método sencillo para aprender inglés con contenido audiovisual.</p>
+            <a class="read" href="post/entretenimiento.html">Leer artículo →</a>
+          </article>
+
+          <article class="card" data-cat="listening">
+            <span class="tag">Listening</span>
+            <h2>The Rings of Power · Season 1</h2>
+            <p>Práctica de listening con subtítulos en inglés.</p>
+            <a class="read" href="post/the-rings-of-power-season-1-english-subtitles.html">Leer artículo →</a>
           </article>
         </div>
-      </div>
-    </section>
 
-    <section id="biblioteca">
-      <div class="container">
-        <div class="section-head">
-          <div>
-            <span class="eyebrow">Biblioteca</span>
-            <h2>Todo el contenido, ordenado.</h2>
-          </div>
-          <p>Filtra por tema y entra directamente en la guía que necesitas.</p>
-        </div>
-
-        <div class="library-shell">
-          <div class="filters" aria-label="Filtros de artículos">
-            <button class="filter active" data-filter="all">Todos</button>
-            <button class="filter" data-filter="lesson">Lessons</button>
-            <button class="filter" data-filter="grammar">Grammar</button>
-            <button class="filter" data-filter="vocabulary">Vocabulary</button>
-            <button class="filter" data-filter="speaking">Speaking</button>
-            <button class="filter" data-filter="listening">Listening</button>
-          </div>
-
-          <div class="library" id="library">
-            <article class="article" data-cat="lesson"><small>Lesson</small><h3>Greetings and introductions</h3><p>Saludos y presentaciones para situaciones cotidianas.</p><a class="text-link" href="post/leccion-1-saludos.html">Abrir →</a></article>
-            <article class="article" data-cat="lesson"><small>Lesson</small><h3>The verb “to be”</h3><p>Am, is y are explicados desde cero.</p><a class="text-link" href="post/leccion-2-to-be.html">Abrir →</a></article>
-            <article class="article" data-cat="lesson"><small>Lesson</small><h3>Simple questions</h3><p>What, where, who y when en estructuras simples.</p><a class="text-link" href="post/leccion-3-preguntas.html">Abrir →</a></article>
-
-            <article class="article" data-cat="grammar"><small>Grammar</small><h3>Negative Prefixes</h3><p>Un-, in-, im-, dis- y mis- con reglas y ejemplos.</p><a class="text-link" href="post/negative-prefixes.html">Abrir →</a></article>
-            <article class="article" data-cat="grammar"><small>Grammar</small><h3>Never vs. Haven’t … Yet</h3><p>Experiencia y acciones aún no terminadas.</p><a class="text-link" href="post/present-perfect-never-yet.html">Abrir →</a></article>
-            <article class="article" data-cat="grammar"><small>Grammar</small><h3>Might for Possibility</h3><p>Posibilidades presentes y futuras.</p><a class="text-link" href="post/modal-verb-might.html">Abrir →</a></article>
-            <article class="article" data-cat="grammar"><small>Grammar</small><h3>Direct & Reported Speech</h3><p>Backshift, pronombres y expresiones temporales.</p><a class="text-link" href="post/direct-reported-speech.html">Abrir →</a></article>
-
-            <article class="article" data-cat="vocabulary"><small>Vocabulary</small><h3>Currently</h3><p>Uso, posición y el falso amigo con “actualmente”.</p><a class="text-link" href="post/currently-meaning-use.html">Abrir →</a></article>
-            <article class="article" data-cat="vocabulary"><small>Vocabulary</small><h3>Revenue Office & Supporters</h3><p>Dos términos útiles según el contexto.</p><a class="text-link" href="post/revenue-office-supporters.html">Abrir →</a></article>
-            <article class="article" data-cat="vocabulary"><small>Vocabulary</small><h3>Take Off</h3><p>Phrasal verb con varios significados habituales.</p><a class="text-link" href="post/phrasal-verb-take-off.html">Abrir →</a></article>
-            <article class="article" data-cat="vocabulary"><small>Vocabulary</small><h3>Inspire People</h3><p>Colocaciones y estructuras naturales con inspire.</p><a class="text-link" href="post/inspire-people-collocation.html">Abrir →</a></article>
-
-            <article class="article" data-cat="speaking"><small>Speaking</small><h3>Opinion & Speculation</h3><p>Expresar opinión y especular con naturalidad.</p><a class="text-link" href="post/opinion-speculation-expressions.html">Abrir →</a></article>
-            <article class="article" data-cat="speaking"><small>Speaking</small><h3>To Be Honest</h3><p>Cómo usar este discourse marker sin abusar de él.</p><a class="text-link" href="post/to-be-honest-discourse-marker.html">Abrir →</a></article>
-            <article class="article" data-cat="speaking"><small>Speaking</small><h3>Nonetheless</h3><p>Contraste formal y cohesión en speaking y writing.</p><a class="text-link" href="post/nonetheless-contrast.html">Abrir →</a></article>
-            <article class="article" data-cat="speaking"><small>Speaking</small><h3>Polite Disagreement</h3><p>Discrepar de forma educada y clara.</p><a class="text-link" href="post/polite-disagreement.html">Abrir →</a></article>
-            <article class="article" data-cat="speaking"><small>Speaking</small><h3>Think Before You Speak</h3><p>Estrategias para ganar claridad y confianza al hablar.</p><a class="text-link" href="post/think-before-you-speak.html">Abrir →</a></article>
-            <article class="article" data-cat="speaking"><small>Speaking</small><h3>Truco del bolígrafo</h3><p>Práctica para el examen oral de inglés.</p><a class="text-link" href="post/truco-boligrafo-examen-oral-ingles.html">Abrir →</a></article>
-            <article class="article" data-cat="speaking"><small>Speaking</small><h3>Political English</h3><p>Vocabulario y frases para debate y argumentación.</p><a class="text-link" href="post/political-english-vocabulary-debate-phrases.html">Abrir →</a></article>
-
-            <article class="article" data-cat="listening"><small>Listening</small><h3>English with TV & Movies</h3><p>Método práctico para aprender con contenido audiovisual.</p><a class="text-link" href="post/entretenimiento.html">Abrir →</a></article>
-            <article class="article" data-cat="listening"><small>Listening</small><h3>The Rings of Power · Season 1</h3><p>Trabajo con subtítulos ingleses y rutina de escucha.</p><a class="text-link" href="post/the-rings-of-power-season-1-english-subtitles.html">Abrir →</a></article>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section id="vocabulario">
-      <div class="container daily">
-        <div class="daily-intro">
-          <span class="eyebrow">Vocabulario diario</span>
-          <h2>8 palabras para hoy.</h2>
-          <p id="daily-date"></p>
-          <p>Una cantidad pequeña para que puedas repasarla de verdad. Lee, repite y crea una frase propia con cada palabra.</p>
-          <a class="btn soft" href="category/vocabulary.html">Ver más vocabulario →</a>
-        </div>
-        <div class="words" id="daily-words" aria-live="polite"></div>
-      </div>
-    </section>
-
-    <section id="practica">
-      <div class="container practice">
-        <div>
-          <span class="eyebrow">Mini práctica</span>
-          <h2>Comprueba lo que sabes.</h2>
-          <p>Ejercicios cortos para convertir la lectura en recuerdo activo.</p>
-        </div>
-        <div class="quiz">
-          <p class="question">¿Cuándo se usa normalmente “Good morning”?</p>
-          <div class="options">
-            <button class="option" data-answer="wrong">Por la noche</button>
-            <button class="option" data-answer="correct">Por la mañana</button>
-            <button class="option" data-answer="wrong">Para despedirse</button>
-          </div>
-          <p id="feedback" aria-live="polite"></p>
-        </div>
-      </div>
-    </section>
-
-    <div class="container cta">
-      <div>
-        <h2>Estudia poco, pero estudia con continuidad.</h2>
-        <p>Elige una lección, practica cinco minutos y vuelve mañana.</p>
-      </div>
-      <a class="btn primary" href="#inicio">Volver arriba ↑</a>
+        <div class="empty" id="emptyState">No hay artículos en esta categoría.</div>
+      </section>
     </div>
   </main>
 
   <footer>
-    <div class="container footer">
-      <div>
-        <strong style="color:var(--ink)">Easy English</strong>
-        <div class="footer-links">
-          <a href="category/lessons.html">Lessons</a>
-          <a href="category/grammar.html">Grammar</a>
-          <a href="category/vocabulary.html">Vocabulary</a>
-          <a href="category/speaking.html">Speaking</a>
-          <a href="category/tv-movies.html">TV & Movies</a>
-        </div>
-      </div>
-      <span>© 2026 · Easy English · Inglés práctico y bilingüe.</span>
-    </div>
+    <div class="container">© 2026 · Easy English</div>
   </footer>
 
   <script>
-    const menuBtn = document.getElementById('menuBtn');
-    const mainNav = document.getElementById('mainNav');
-    menuBtn?.addEventListener('click', () => {
-      const open = mainNav.classList.toggle('open');
-      menuBtn.setAttribute('aria-expanded', String(open));
-    });
-    mainNav?.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
-      mainNav.classList.remove('open');
-      menuBtn?.setAttribute('aria-expanded','false');
-    }));
-
     const filters = document.querySelectorAll('.filter');
-    const articles = document.querySelectorAll('.article');
+    const cards = document.querySelectorAll('.card');
+    const emptyState = document.getElementById('emptyState');
+
     filters.forEach(button => {
       button.addEventListener('click', () => {
-        filters.forEach(b => b.classList.remove('active'));
+        filters.forEach(item => item.classList.remove('active'));
         button.classList.add('active');
+
         const selected = button.dataset.filter;
-        articles.forEach(article => {
-          article.hidden = selected !== 'all' && article.dataset.cat !== selected;
+        let visible = 0;
+
+        cards.forEach(card => {
+          const show = selected === 'all' || card.dataset.cat === selected;
+          card.hidden = !show;
+          if(show) visible++;
         });
-      });
-    });
 
-    const vocabulary = [
-      ['Home','hogar / casa'],['Friend','amigo/a'],['Work','trabajo / trabajar'],['Food','comida'],
-      ['Today','hoy'],['Happy','feliz'],['Learn','aprender'],['Speak','hablar'],
-      ['Family','familia'],['Water','agua'],['Morning','mañana'],['Night','noche'],
-      ['Book','libro'],['House','casa'],['School','escuela'],['Street','calle'],
-      ['Money','dinero'],['Time','tiempo'],['Day','día'],['Week','semana'],
-      ['Help','ayudar / ayuda'],['Need','necesitar'],['Want','querer'],['Know','saber / conocer'],
-      ['Think','pensar'],['Feel','sentir'],['Make','hacer / crear'],['Take','tomar / llevar'],
-      ['Give','dar'],['Find','encontrar'],['Come','venir'],['Go','ir'],
-      ['Good','bueno/a'],['Bad','malo/a'],['Easy','fácil'],['Difficult','difícil'],
-      ['Early','temprano'],['Late','tarde'],['Always','siempre'],['Never','nunca'],
-      ['Sometimes','a veces'],['Together','juntos/as'],['Again','otra vez'],['Because','porque'],
-      ['Before','antes'],['After','después'],['Enough','suficiente'],['Maybe','quizás'],
-      ['Weather','tiempo / clima'],['Travel','viajar / viaje'],['Question','pregunta'],['Answer','respuesta'],
-      ['Change','cambiar / cambio'],['Start','empezar'],['Finish','terminar'],['Remember','recordar']
-    ];
-
-    const dateEl = document.getElementById('daily-date');
-    if(dateEl){
-      dateEl.textContent = new Intl.DateTimeFormat('es-ES',{day:'numeric',month:'long',year:'numeric'}).format(new Date());
-    }
-
-    function dailyVocabulary(){
-      const now = new Date();
-      const key = Number(String(now.getFullYear()) + String(now.getMonth()+1).padStart(2,'0') + String(now.getDate()).padStart(2,'0'));
-      let seed = key;
-      const random = () => {
-        seed = (seed * 1664525 + 1013904223) >>> 0;
-        return seed / 4294967296;
-      };
-      const shuffled = [...vocabulary];
-      for(let i=shuffled.length-1;i>0;i--){
-        const j = Math.floor(random()*(i+1));
-        [shuffled[i],shuffled[j]]=[shuffled[j],shuffled[i]];
-      }
-      return shuffled.slice(0,8);
-    }
-
-    const dailyWords = document.getElementById('daily-words');
-    dailyVocabulary().forEach(([english,spanish]) => {
-      const item = document.createElement('div');
-      item.className='word';
-      item.innerHTML = '<strong></strong><span></span>';
-      item.querySelector('strong').textContent = english;
-      item.querySelector('span').textContent = spanish;
-      dailyWords?.appendChild(item);
-    });
-
-    const options = document.querySelectorAll('.option');
-    const feedback = document.getElementById('feedback');
-    options.forEach(option => {
-      option.addEventListener('click', () => {
-        options.forEach(o => o.classList.remove('correct','wrong'));
-        if(option.dataset.answer === 'correct'){
-          option.classList.add('correct');
-          feedback.textContent = '✓ Correcto. “Good morning” se usa por la mañana.';
-        } else {
-          option.classList.add('wrong');
-          feedback.textContent = 'No exactamente. Prueba otra opción.';
-        }
+        emptyState.style.display = visible ? 'none' : 'block';
       });
     });
   </script>
