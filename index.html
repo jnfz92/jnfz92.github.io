@@ -479,6 +479,137 @@
       gap: 16px;
     }
 
+    .progress-strip {
+      padding: 18px 0;
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+      background: rgba(255,255,255,.45);
+    }
+
+    .progress-inner {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+    }
+
+    .progress-item {
+      padding: 14px 16px;
+      border-radius: 16px;
+      background: var(--surface);
+      border: 1px solid var(--line);
+    }
+
+    .progress-item strong {
+      display: block;
+      font-size: 18px;
+    }
+
+    .progress-item span {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .learning-path {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+    }
+
+    .path-step {
+      position: relative;
+      padding: 24px;
+      border-radius: 22px;
+      border: 1px solid var(--line);
+      background: var(--surface);
+    }
+
+    .path-step .step-no {
+      width: 34px;
+      height: 34px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      margin-bottom: 18px;
+      background: var(--primary);
+      color: white;
+      font-weight: 850;
+      font-size: 13px;
+    }
+
+    .path-step h3 { margin: 0 0 8px; }
+    .path-step p { margin: 0 0 16px; color: var(--muted); }
+
+    .roadmap-groups {
+      display: grid;
+      gap: 16px;
+    }
+
+    .roadmap-group {
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      background: var(--surface);
+      overflow: hidden;
+    }
+
+    .roadmap-group summary {
+      cursor: pointer;
+      list-style: none;
+      padding: 20px 22px;
+      font-size: 20px;
+      font-weight: 850;
+    }
+
+    .roadmap-group summary::-webkit-details-marker { display:none; }
+    .roadmap-group summary::after { content:"+"; float:right; color:var(--primary); }
+    .roadmap-group[open] summary::after { content:"−"; }
+
+    .roadmap-list {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0,1fr));
+      gap: 0 20px;
+      padding: 0 22px 22px;
+    }
+
+    .roadmap-item {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 13px 0;
+      border-top: 1px solid var(--line);
+    }
+
+    .roadmap-item span:first-child { font-weight: 700; }
+
+    .status {
+      flex: 0 0 auto;
+      padding: 4px 8px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 850;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+    }
+
+    .status.live { background: var(--primary-soft); color: var(--primary); }
+    .status.planned { background: #f3f4f1; color: var(--muted); }
+
+    .roadmap-note {
+      margin-top: 20px;
+      padding: 22px;
+      border-radius: 18px;
+      background: #efe9da;
+      color: var(--muted);
+    }
+
+    .footer-links {
+      display:flex;
+      flex-wrap:wrap;
+      gap:14px;
+      margin-top:10px;
+      font-weight:700;
+    }
+
     @media (max-width: 820px) {
       nav { display: none; }
       .hero {
@@ -493,6 +624,9 @@
       .practice { grid-template-columns: 1fr; }
       .section-head { align-items: start; flex-direction: column; }
       .newsletter { align-items: flex-start; flex-direction: column; }
+      .progress-inner { grid-template-columns: repeat(2,1fr); }
+      .learning-path { grid-template-columns: repeat(2,1fr); }
+      .roadmap-list { grid-template-columns: 1fr; }
     }
 
     @media (max-width: 520px) {
@@ -503,6 +637,7 @@
       .practice { padding: 22px; }
       .newsletter { padding: 28px; }
       .footer-inner { flex-direction: column; }
+      .progress-inner, .learning-path { grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -521,6 +656,8 @@
           <li><a href="category/speaking.html">Speaking</a></li>
           <li><a href="category/tv-movies.html">TV & movies</a></li>
           <li><a href="#blog">Blog</a></li>
+          <li><a href="#ruta">Learning path</a></li>
+          <li><a href="#roadmap">Roadmap</a></li>
           <li><a href="#frases">All phrases</a></li>
         </ul>
       </nav>
@@ -534,7 +671,8 @@
         <h1>Learn English step by step.</h1>
         <p>Clear lessons, everyday vocabulary, exercises, and TV and movie practice to help you build your English step by step.</p>
         <div class="hero-actions">
-          <a class="button primary" href="#lecciones">Start learning</a>
+          <a class="button primary" href="#ruta">Start learning</a>
+          <a class="button" href="#roadmap">See the full roadmap</a>
           <a class="button" href="#practica">Try a practice</a>
         </div>
       </div>
@@ -546,6 +684,33 @@
         <span class="mini-word">Hello!</span>
       </article>
     </div>
+
+    <div class="progress-strip">
+      <div class="container progress-inner">
+        <div class="progress-item"><strong>A1 → C1</strong><span>A clear progression from beginner foundations to advanced communication.</span></div>
+        <div class="progress-item"><strong>5 areas</strong><span>Lessons, grammar, vocabulary, speaking, and TV & movies.</span></div>
+        <div class="progress-item"><strong>Bilingual</strong><span>Useful English examples include Spanish support for easier study.</span></div>
+        <div class="progress-item"><strong>Practice first</strong><span>Articles include examples, exercises, answers, and mini challenges.</span></div>
+      </div>
+    </div>
+
+    <section id="ruta">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <span class="eyebrow">Your learning path</span>
+            <h2 style="margin-top:14px">Know what to study next.</h2>
+          </div>
+          <p>Use the blog as a course: build foundations first, then add grammar and vocabulary, and finally practise real communication.</p>
+        </div>
+        <div class="learning-path">
+          <article class="path-step"><span class="step-no">01</span><h3>Foundations</h3><p>Greetings, to be, questions, present simple, articles, pronouns and basic everyday English.</p><a class="button" href="category/lessons.html">Start A1 →</a></article>
+          <article class="path-step"><span class="step-no">02</span><h3>Build sentences</h3><p>Tenses, modals, comparatives, prepositions, phrasal verbs and high-frequency vocabulary.</p><a class="button" href="category/grammar.html">Study grammar →</a></article>
+          <article class="path-step"><span class="step-no">03</span><h3>Speak naturally</h3><p>Opinions, agreement, disagreement, clarification, presentations and exam speaking strategies.</p><a class="button" href="category/speaking.html">Improve speaking →</a></article>
+          <article class="path-step"><span class="step-no">04</span><h3>Use real English</h3><p>Train your ear with series, films, subtitles, recurring expressions and authentic listening routines.</p><a class="button" href="category/tv-movies.html">Train listening →</a></article>
+        </div>
+      </div>
+    </section>
 
     <section id="lecciones">
       <div class="container">
@@ -680,6 +845,135 @@
             <p style="margin-top:18px"><a class="button" href="post/think-before-you-speak.html">Read article →</a></p>
           </article>
         </div>
+      </div>
+    </section>
+
+    <section id="roadmap">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <span class="eyebrow">Editorial roadmap</span>
+            <h2 style="margin-top:14px">All the articles planned for Easy English.</h2>
+          </div>
+          <p>This is the working curriculum for the blog. Published guides stay marked as live; planned topics will become full articles progressively.</p>
+        </div>
+
+        <div class="roadmap-groups">
+          <details class="roadmap-group" open>
+            <summary>Foundations & Essential Lessons · A1–A2</summary>
+            <div class="roadmap-list">
+              <div class="roadmap-item"><span>Greetings and Introductions</span><span class="status live">Live</span></div>
+              <div class="roadmap-item"><span>The Verb “To Be”</span><span class="status live">Live</span></div>
+              <div class="roadmap-item"><span>Simple Questions in English</span><span class="status live">Live</span></div>
+              <div class="roadmap-item"><span>Subject Pronouns & Possessive Adjectives</span><span class="status planned">Planned</span></div>
+              <div class="roadmap-item"><span>A / An / The: Articles Made Simple</span><span class="status planned">Planned</span></div>
+              <div class="roadmap-item"><span>There Is / There Are</span><span class="status planned">Planned</span></div>
+              <div class="roadmap-item"><span>Have Got / Has Got</span><span class="status planned">Planned</span></div>
+              <div class="roadmap-item"><span>Present Simple: Daily Routines</span><span class="status planned">Planned</span></div>
+              <div class="roadmap-item"><span>Present Continuous: What Is Happening Now?</span><span class="status planned">Planned</span></div>
+              <div class="roadmap-item"><span>Past Simple: Regular & Irregular Verbs</span><span class="status planned">Planned</span></div>
+              <div class="roadmap-item"><span>Future with Will and Going To</span><span class="status planned">Planned</span></div>
+              <div class="roadmap-item"><span>Can / Can't for Ability and Permission</span><span class="status planned">Planned</span></div>
+            </div>
+          </details>
+
+          <details class="roadmap-group">
+            <summary>Grammar · A2–C1</summary>
+            <div class="roadmap-list">
+              <div class="roadmap-item"><span>Negative Prefixes</span><span class="status live">Live</span></div>
+              <div class="roadmap-item"><span>Present Perfect: Never vs. Haven’t … Yet</span><span class="status live">Live</span></div>
+              <div class="roadmap-item"><span>Might for Possibility</span><span class="status live">Live</span></div>
+              <div class="roadmap-item"><span>Direct & Reported Speech</span><span class="status live">Live</span></div>
+              <div class="roadmap-item"><span>Present Simple vs. Present Continuous</span><span class="status planned">Planned</span></div>
+              <div class="roadmap-item"><span>Past Simple vs. Present Perfect</span><span class="status planned">Planned</span></div>
+              <div class="roadmap-item"><span>Past Continuous and Interrupted Actions</span><span class="status planned">Planned</span></div>
+              <div class="roadmap-item"><span>Used To vs. Would</span><span class="status planned">Planned</span></div>
+              <div class="roadmap-item"><span>First, Second & Third Conditionals</span><span class="status planned">Planned</span></div>
+              <div class="roadmap-item"><span>Modal Verbs: Must, Have To, Should</span><span class="status planned">Planned</span></div>
+              <div class="roadmap-item"><span>Passive Voice</span><span class="status planned">Planned</span></div>
+              <div class="roadmap-item"><span>Relative Clauses: Who, Which, That</span><span class="status planned">Planned</span></div>
+              <div class="roadmap-item"><span>Gerunds and Infinitives</span><span class="status planned">Planned</span></div>
+              <div class="roadmap-item"><span>Wish / If Only</span><span class="status planned">Planned</span></div>
+              <div class="roadmap-item"><span>Inversion for Advanced English</span><span class="status planned">Planned</span></div>
+            </div>
+          </details>
+
+          <details class="roadmap-group">
+            <summary>Vocabulary & Real-Life English · A1–C1</summary>
+            <div class="roadmap-list">
+              <div class="roadmap-item"><span>Currently: Meaning and Use</span><span class="status live">Live</span></div>
+              <div class="roadmap-item"><span>Revenue Office & Supporters</span><span class="status live">Live</span></div>
+              <div class="roadmap-item"><span>Take Off: Phrasal Verb</span><span class="status live">Live</span></div>
+              <div class="roadmap-item"><span>Inspire People: Collocation</span><span class="status live">Live</span></div>
+              <div class="roadmap-item"><span>Political English: Vocabulary & Debate Phrases</span><span class="status live">Live</span></div>
+              <div class="roadmap-item"><span>100 Essential A1 Words</span><span class="status planned">Planned</span></div>
+              <div class="roadmap-item"><span>Food & Restaurant English</span><span class="status planned">Planned</span></div>
+              <div class="roadmap-item"><span>Travel & Airport English</span><span class="status planned">Planned</span></div>
+              <div class="roadmap-item"><span>Work & Office Vocabulary</span><span class="status planned">Planned</span></div>
+              <div class="roadmap-item"><span>Health & Body Vocabulary</span><span class="status planned">Planned</span></div>
+              <div class="roadmap-item"><span>Technology & Internet Vocabulary</span><span class="status planned">Planned</span></div>
+              <div class="roadmap-item"><span>Environment & Climate Vocabulary</span><span class="status planned">Planned</span></div>
+              <div class="roadmap-item"><span>Money, Banking & Personal Finance Vocabulary</span><span class="status planned">Planned</span></div>
+              <div class="roadmap-item"><span>50 Essential Phrasal Verbs</span><span class="status planned">Planned</span></div>
+              <div class="roadmap-item"><span>Common False Friends for Spanish Speakers</span><span class="status planned">Planned</span></div>
+            </div>
+          </details>
+
+          <details class="roadmap-group">
+            <summary>Speaking, Debate & Communication · B1–C1</summary>
+            <div class="roadmap-list">
+              <div class="roadmap-item"><span>Opinion & Speculation Expressions</span><span class="status live">Live</span></div>
+              <div class="roadmap-item"><span>To Be Honest</span><span class="status live">Live</span></div>
+              <div class="roadmap-item"><span>Nonetheless: Formal Contrast</span><span class="status live">Live</span></div>
+              <div class="roadmap-item"><span>Polite Disagreement</span><span class="status live">Live</span></div>
+              <div class="roadmap-item"><span>Political English: Vocabulary & Debate Phrases</span><span class="status live">Live</span></div>
+              <div class="roadmap-item"><span>The Pen Trick for Speaking Exams</span><span class="status live">Live</span></div>
+              <div class="roadmap-item"><span>How to Agree Naturally</span><span class="status planned">Planned</span></div>
+              <div class="roadmap-item"><span>How to Interrupt Politely</span><span class="status planned">Planned</span></div>
+              <div class="roadmap-item"><span>How to Ask for Clarification</span><span class="status planned">Planned</span></div>
+              <div class="roadmap-item"><span>How to Buy Time While Speaking</span><span class="status planned">Planned</span></div>
+              <div class="roadmap-item"><span>Linking Words for Speaking</span><span class="status planned">Planned</span></div>
+              <div class="roadmap-item"><span>Giving Presentations in English</span><span class="status planned">Planned</span></div>
+              <div class="roadmap-item"><span>Job Interview English</span><span class="status planned">Planned</span></div>
+              <div class="roadmap-item"><span>Cambridge B2 Speaking: Complete Guide</span><span class="status planned">Planned</span></div>
+              <div class="roadmap-item"><span>Cambridge C1 Speaking: Complete Guide</span><span class="status planned">Planned</span></div>
+            </div>
+          </details>
+
+          <details class="roadmap-group">
+            <summary>Writing & Exam English · B1–C1</summary>
+            <div class="roadmap-list">
+              <div class="roadmap-item"><span>How to Write a Clear Opinion Essay</span><span class="status planned">Planned</span></div>
+              <div class="roadmap-item"><span>Formal vs. Informal Emails</span><span class="status planned">Planned</span></div>
+              <div class="roadmap-item"><span>How to Write a Review</span><span class="status planned">Planned</span></div>
+              <div class="roadmap-item"><span>How to Write an Article</span><span class="status planned">Planned</span></div>
+              <div class="roadmap-item"><span>How to Write a Report</span><span class="status planned">Planned</span></div>
+              <div class="roadmap-item"><span>How to Write a Proposal</span><span class="status planned">Planned</span></div>
+              <div class="roadmap-item"><span>Linking Words for Essays</span><span class="status planned">Planned</span></div>
+              <div class="roadmap-item"><span>Common Writing Mistakes for Spanish Speakers</span><span class="status planned">Planned</span></div>
+              <div class="roadmap-item"><span>Cambridge B2 Writing: Complete Guide</span><span class="status planned">Planned</span></div>
+              <div class="roadmap-item"><span>Cambridge C1 Writing: Complete Guide</span><span class="status planned">Planned</span></div>
+            </div>
+          </details>
+
+          <details class="roadmap-group">
+            <summary>TV, Movies & Listening · A2–C1</summary>
+            <div class="roadmap-list">
+              <div class="roadmap-item"><span>Learn English with TV Shows and Movies</span><span class="status live">Live</span></div>
+              <div class="roadmap-item"><span>The Rings of Power: Season 1 English Subtitles</span><span class="status live">Live</span></div>
+              <div class="roadmap-item"><span>How to Use English Subtitles Correctly</span><span class="status planned">Planned</span></div>
+              <div class="roadmap-item"><span>Shadowing: Copy Native Rhythm and Pronunciation</span><span class="status planned">Planned</span></div>
+              <div class="roadmap-item"><span>10 Series for A2–B1 Learners</span><span class="status planned">Planned</span></div>
+              <div class="roadmap-item"><span>10 Series for B2–C1 Learners</span><span class="status planned">Planned</span></div>
+              <div class="roadmap-item"><span>Everyday Phrases from Sitcoms</span><span class="status planned">Planned</span></div>
+              <div class="roadmap-item"><span>Fantasy English: Vocabulary from Epic Series</span><span class="status planned">Planned</span></div>
+              <div class="roadmap-item"><span>Crime & Detective English</span><span class="status planned">Planned</span></div>
+              <div class="roadmap-item"><span>How to Train Listening Without Subtitles</span><span class="status planned">Planned</span></div>
+            </div>
+          </details>
+        </div>
+
+        <div class="roadmap-note"><strong>How this list works:</strong> it is a living editorial plan. New articles can be added, reordered or expanded as the blog grows, while published guides remain linked from the relevant category and the homepage.</div>
       </div>
     </section>
 
@@ -981,8 +1275,18 @@
 
   <footer>
     <div class="container footer-inner">
-      <span>© 2026 Easy English</span>
-      <span>Made for steady, stress-free learning.</span>
+      <div>
+        <strong style="color:var(--ink)">Easy English</strong>
+        <div class="footer-links">
+          <a href="#ruta">Learning path</a>
+          <a href="#roadmap">Article roadmap</a>
+          <a href="#frases">All phrases</a>
+          <a href="category/grammar.html">Grammar</a>
+          <a href="category/vocabulary.html">Vocabulary</a>
+          <a href="category/speaking.html">Speaking</a>
+        </div>
+      </div>
+      <span>© 2026 · Made for steady, practical learning.</span>
     </div>
   </footer>
 
