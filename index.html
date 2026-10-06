@@ -11,22 +11,23 @@
     a{color:inherit;text-decoration:none} button{font:inherit}.container{width:min(var(--max),calc(100% - 32px));margin:auto}
     header{border-bottom:1px solid var(--line);background:rgba(247,247,244,.96);position:sticky;top:0;z-index:20;backdrop-filter:blur(12px)}
     .nav{min-height:70px;display:flex;justify-content:space-between;align-items:center;gap:24px}.brand{display:flex;align-items:center;gap:10px;font-weight:900;letter-spacing:-.02em}
-    .brand-mark{width:36px;height:36px;border-radius:10px;display:grid;place-items:center;background:var(--brand);color:#fff;font-size:13px}.nav a:last-child{color:var(--brand);font-weight:800;font-size:14px}
+    .brand-mark{width:36px;height:36px;border-radius:10px;display:grid;place-items:center;background:var(--brand);color:#fff;font-size:13px}.nav a:last-child{color:var(--brand);font-weight:800;font-size:14px}.nav-links{display:flex;gap:16px;align-items:center}.nav-links a{color:var(--brand);font-weight:800;font-size:14px}
     .hero{padding:70px 0 38px;max-width:760px}.eyebrow{color:var(--brand);font-size:12px;text-transform:uppercase;letter-spacing:.1em;font-weight:900}
     h1{margin:12px 0 16px;font-size:clamp(46px,7vw,76px);line-height:.98;letter-spacing:-.055em}.hero p{margin:0;color:var(--muted);font-size:18px;max-width:680px}
-    .blog{padding:18px 0 80px}.filters{display:flex;flex-wrap:wrap;gap:9px;margin-bottom:28px}.filter{border:1px solid var(--line);background:var(--surface);color:var(--muted);border-radius:999px;padding:9px 14px;cursor:pointer;font-weight:800;font-size:13px}
+    .downloads{padding:6px 0 34px}.download-box{display:flex;justify-content:space-between;align-items:center;gap:24px;background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:24px}.download-box h2{margin:4px 0 6px;font-size:24px}.download-box p{margin:0;color:var(--muted);font-size:14px}.download-link{flex:0 0 auto;background:var(--brand);color:#fff;padding:11px 16px;border-radius:12px;font-weight:850;font-size:14px}.blog{padding:18px 0 80px}.filters{display:flex;flex-wrap:wrap;gap:9px;margin-bottom:28px}.filter{border:1px solid var(--line);background:var(--surface);color:var(--muted);border-radius:999px;padding:9px 14px;cursor:pointer;font-weight:800;font-size:13px}
     .filter:hover,.filter.active{background:var(--brand);color:#fff;border-color:var(--brand)}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
     .card{display:flex;flex-direction:column;min-height:260px;padding:22px;background:var(--surface);border:1px solid var(--line);border-radius:18px;transition:transform .2s ease,border-color .2s ease}
     .card:hover{transform:translateY(-3px);border-color:#c9d6cf}.meta{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin-bottom:15px}.tag{padding:5px 9px;border-radius:999px;background:var(--brand-soft);color:var(--brand);font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:.07em}
     time{font-size:12px;color:var(--muted);font-weight:700}.card h2{margin:0 0 9px;font-size:22px;line-height:1.15;letter-spacing:-.025em}.card p{margin:0 0 20px;color:var(--muted);font-size:14px}.read{margin-top:auto;color:var(--brand);font-weight:850;font-size:14px}
     .empty{display:none;padding:28px;border:1px dashed var(--line);border-radius:18px;color:var(--muted);background:var(--surface)}footer{border-top:1px solid var(--line);padding:28px 0 40px;color:var(--muted);font-size:13px}
-    @media(max-width:900px){.grid{grid-template-columns:repeat(2,1fr)}}@media(max-width:600px){.container{width:min(var(--max),calc(100% - 22px))}.hero{padding-top:50px}h1{font-size:48px}.grid{grid-template-columns:1fr}.card{min-height:auto}}
+    @media(max-width:900px){.grid{grid-template-columns:repeat(2,1fr)}}@media(max-width:700px){.download-box{align-items:flex-start;flex-direction:column}}@media(max-width:600px){.container{width:min(var(--max),calc(100% - 22px))}.hero{padding-top:50px}h1{font-size:48px}.grid{grid-template-columns:1fr}.card{min-height:auto}}
   </style>
 </head>
 <body>
-<header><div class="container nav"><a class="brand" href="index.html"><span class="brand-mark">EN</span><span>Easy English</span></a><a href="#articulos">Artículos</a></div></header>
+<header><div class="container nav"><a class="brand" href="index.html"><span class="brand-mark">EN</span><span>Easy English</span></a><div class="nav-links"><a href="downloads.html">PDF</a><a href="#articulos">Artículos</a></div></div></header>
 <main><div class="container">
 <section class="hero"><span class="eyebrow">Blog de inglés</span><h1>Artículos para aprender inglés.</h1><p>Gramática, vocabulario, speaking, listening y lecciones prácticas. Filtra por categoría o empieza por las publicaciones más recientes.</p></section>
+<section class="downloads" id="descargas"><div class="download-box"><div><span class="eyebrow">Descargas PDF</span><h2>Material para estudiar sin conexión</h2><p>Ya puedes descargar las dos recopilaciones de Easy English en PDF.</p></div><a class="download-link" href="downloads.html">Ver y descargar PDF ↓</a></div></section>
 <section class="blog" id="articulos">
 <div class="filters" aria-label="Filtrar artículos por categoría">
 <button class="filter active" data-filter="all">Todos</button><button class="filter" data-filter="lesson">Lessons</button><button class="filter" data-filter="grammar">Grammar</button><button class="filter" data-filter="vocabulary">Vocabulary</button><button class="filter" data-filter="speaking">Speaking</button><button class="filter" data-filter="listening">Listening</button>
