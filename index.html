@@ -610,6 +610,236 @@
       font-weight:700;
     }
 
+    body {
+      background:
+        linear-gradient(rgba(247,245,239,.94), rgba(247,245,239,.94)),
+        repeating-linear-gradient(0deg, rgba(31,41,51,.03) 0 1px, transparent 1px 5px);
+    }
+
+    .book-cover {
+      position: relative;
+      overflow: hidden;
+      margin-top: 34px;
+      padding: clamp(38px, 7vw, 86px);
+      min-height: 620px;
+      border-radius: 10px 34px 34px 10px;
+      background:
+        linear-gradient(90deg, rgba(0,0,0,.12), transparent 34px),
+        var(--primary);
+      color: #fff;
+      box-shadow: 0 32px 80px rgba(31,41,51,.18);
+      border-left: 12px solid #183d34;
+    }
+
+    .book-cover::before {
+      content:"";
+      position:absolute;
+      inset:18px;
+      border:1px solid rgba(255,255,255,.22);
+      border-radius:4px 22px 22px 4px;
+      pointer-events:none;
+    }
+
+    .book-cover::after {
+      content:"EASY ENGLISH";
+      position:absolute;
+      right:-42px;
+      top:50%;
+      transform:rotate(90deg) translateY(-50%);
+      transform-origin:center;
+      letter-spacing:.26em;
+      font-size:12px;
+      font-weight:900;
+      color:rgba(255,255,255,.45);
+    }
+
+    .cover-kicker {
+      display:inline-block;
+      font-size:13px;
+      letter-spacing:.18em;
+      text-transform:uppercase;
+      font-weight:900;
+      color:var(--accent);
+    }
+
+    .book-cover h1 {
+      max-width:820px;
+      margin:28px 0 20px;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size:clamp(52px,8vw,96px);
+      letter-spacing:-.055em;
+      line-height:.96;
+    }
+
+    .cover-subtitle {
+      max-width:650px;
+      margin:0 0 34px;
+      font-size:20px;
+      color:rgba(255,255,255,.78);
+    }
+
+    .cover-meta {
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin-top:42px;
+    }
+
+    .cover-meta span {
+      padding:7px 11px;
+      border:1px solid rgba(255,255,255,.22);
+      border-radius:999px;
+      font-size:12px;
+      font-weight:800;
+      color:rgba(255,255,255,.82);
+    }
+
+    .book-cover .button {
+      border-color:rgba(255,255,255,.3);
+      background:rgba(255,255,255,.08);
+      color:#fff;
+    }
+
+    .book-cover .button.primary {
+      background:var(--accent);
+      border-color:var(--accent);
+      color:#1f2933;
+    }
+
+    .book-page {
+      width:min(980px, calc(100% - 36px));
+      margin:42px auto 0;
+      background:#fffdf8;
+      border:1px solid #e8e1d4;
+      box-shadow:0 24px 60px rgba(31,41,51,.08);
+      border-radius:4px 20px 20px 4px;
+      padding:clamp(28px,5vw,58px);
+      position:relative;
+    }
+
+    .book-page::before {
+      content:"";
+      position:absolute;
+      left:18px;
+      top:20px;
+      bottom:20px;
+      width:1px;
+      background:#eee7dc;
+    }
+
+    .book-index-title {
+      text-align:center;
+      margin-bottom:10px;
+      font-family:Georgia,"Times New Roman",serif;
+      font-size:clamp(38px,5vw,60px);
+      letter-spacing:-.04em;
+    }
+
+    .book-index-subtitle {
+      text-align:center;
+      max-width:650px;
+      margin:0 auto 34px;
+      color:var(--muted);
+    }
+
+    .toc-list {
+      display:grid;
+      gap:0;
+      margin:0;
+      padding:0;
+      list-style:none;
+      counter-reset:chapter;
+    }
+
+    .toc-list li {
+      counter-increment:chapter;
+      display:grid;
+      grid-template-columns:auto 1fr auto;
+      align-items:end;
+      gap:12px;
+      padding:15px 0;
+      border-bottom:1px dotted #cfc6b8;
+    }
+
+    .toc-list li::before {
+      content:"Chapter " counter(chapter, decimal-leading-zero);
+      font-size:11px;
+      text-transform:uppercase;
+      letter-spacing:.12em;
+      font-weight:900;
+      color:var(--primary);
+    }
+
+    .toc-list a {
+      font-family:Georgia,"Times New Roman",serif;
+      font-size:21px;
+      font-weight:700;
+    }
+
+    .toc-list .toc-meta {
+      color:var(--muted);
+      font-size:13px;
+      white-space:nowrap;
+    }
+
+    .chapter-heading {
+      display:flex;
+      align-items:center;
+      gap:16px;
+      margin-bottom:26px;
+    }
+
+    .chapter-number {
+      flex:0 0 auto;
+      width:58px;
+      height:58px;
+      display:grid;
+      place-items:center;
+      border-radius:50%;
+      background:#1f2933;
+      color:#fff;
+      font-family:Georgia,"Times New Roman",serif;
+      font-size:20px;
+      font-weight:700;
+    }
+
+    .chapter-heading h2 {
+      margin:0;
+      font-family:Georgia,"Times New Roman",serif;
+    }
+
+    .chapter-heading p {
+      margin:4px 0 0;
+      color:var(--muted);
+    }
+
+    .chapter-separator {
+      width:min(1120px,calc(100% - 36px));
+      margin:20px auto 0;
+      display:flex;
+      align-items:center;
+      gap:18px;
+      color:#8c8375;
+      font-family:Georgia,"Times New Roman",serif;
+      font-style:italic;
+    }
+
+    .chapter-separator::before,
+    .chapter-separator::after {
+      content:"";
+      height:1px;
+      flex:1;
+      background:#d8d0c4;
+    }
+
+    .page-number {
+      text-align:center;
+      margin-top:28px;
+      color:#9a9185;
+      font-family:Georgia,"Times New Roman",serif;
+      font-size:13px;
+    }
+
     @media (max-width: 820px) {
       nav { display: none; }
       .hero {
@@ -638,6 +868,13 @@
       .newsletter { padding: 28px; }
       .footer-inner { flex-direction: column; }
       .progress-inner, .learning-path { grid-template-columns: 1fr; }
+      .book-cover { min-height:auto; padding:36px 28px; border-left-width:8px; }
+      .book-cover::after { display:none; }
+      .book-page { width:min(100% - 24px,980px); padding:28px 24px 34px 34px; }
+      .toc-list li { grid-template-columns:1fr; gap:4px; }
+      .toc-list li::before { margin-top:6px; }
+      .toc-list .toc-meta { white-space:normal; }
+      .chapter-heading { align-items:flex-start; }
     }
   </style>
 </head>
@@ -656,8 +893,9 @@
           <li><a href="category/speaking.html">Speaking</a></li>
           <li><a href="category/tv-movies.html">TV & movies</a></li>
           <li><a href="#blog">Blog</a></li>
-          <li><a href="#ruta">Learning path</a></li>
-          <li><a href="#roadmap">Roadmap</a></li>
+          <li><a href="#indice">Contents</a></li>
+          <li><a href="#ruta">Reading path</a></li>
+          <li><a href="#roadmap">Future chapters</a></li>
           <li><a href="#frases">All phrases</a></li>
         </ul>
       </nav>
@@ -665,25 +903,42 @@
   </header>
 
   <main>
-    <div class="container hero" id="inicio">
-      <div class="hero-copy">
-        <span class="eyebrow">English from the beginning</span>
-        <h1>Learn English step by step.</h1>
-        <p>Clear lessons, everyday vocabulary, exercises, and TV and movie practice to help you build your English step by step.</p>
+    <div class="container" id="inicio">
+      <section class="book-cover" aria-labelledby="book-title">
+        <span class="cover-kicker">A practical English book in progress</span>
+        <h1 id="book-title">Easy English</h1>
+        <p class="cover-subtitle">From your first sentences to confident real-world English. A bilingual book of lessons, vocabulary, grammar, speaking, listening and practice — built chapter by chapter.</p>
         <div class="hero-actions">
-          <a class="button primary" href="#ruta">Start learning</a>
-          <a class="button" href="#roadmap">See the full roadmap</a>
-          <a class="button" href="#practica">Try a practice</a>
+          <a class="button primary" href="#indice">Open the book →</a>
+          <a class="button" href="#ruta">Follow the reading path</a>
+          <a class="button" href="#roadmap">See future chapters</a>
         </div>
-      </div>
-
-      <article class="hero-card">
-        <div class="lesson-no">Phrase of the day</div>
-        <h2>How are you?</h2>
-        <p><strong>A common greeting</strong><br />One of the most useful questions for starting a conversation.</p>
-        <span class="mini-word">Hello!</span>
-      </article>
+        <div class="cover-meta">
+          <span>Levels A1 → C1</span>
+          <span>English + Spanish</span>
+          <span>Examples + exercises</span>
+          <span>Living edition · 2026</span>
+        </div>
+      </section>
     </div>
+
+    <section id="indice" class="book-page">
+      <div class="cover-kicker" style="color:var(--primary);display:block;text-align:center">Table of contents</div>
+      <h2 class="book-index-title">Contents</h2>
+      <p class="book-index-subtitle">Read from the beginning like a course, or jump directly to the chapter you need. Published material is linked throughout the book.</p>
+      <ol class="toc-list">
+        <li><a href="#ruta">How to use this book</a><span class="toc-meta">A1 → C1 reading path</span></li>
+        <li><a href="#lecciones">Foundations</a><span class="toc-meta">Essential lessons · A1–A2</span></li>
+        <li><a href="#grammar-vocabulary-speaking">Grammar, vocabulary & speaking</a><span class="toc-meta">A2–C1</span></li>
+        <li><a href="#vocabulario">Daily vocabulary</a><span class="toc-meta">8 words each day</span></li>
+        <li><a href="#entretenimiento">Listening with TV & movies</a><span class="toc-meta">Real English</span></li>
+        <li><a href="#blog">Communication notes</a><span class="toc-meta">Practical reading</span></li>
+        <li><a href="#frases">Phrase reference</a><span class="toc-meta">Bilingual review</span></li>
+        <li><a href="#practica">Practice & self-check</a><span class="toc-meta">Exercises</span></li>
+        <li><a href="#roadmap">Future chapters</a><span class="toc-meta">Editorial roadmap</span></li>
+      </ol>
+      <div class="page-number">i</div>
+    </section>
 
     <div class="progress-strip">
       <div class="container progress-inner">
@@ -693,6 +948,8 @@
         <div class="progress-item"><strong>Practice first</strong><span>Articles include examples, exercises, answers, and mini challenges.</span></div>
       </div>
     </div>
+
+    <div class="chapter-separator">Part I · Start here</div>
 
     <section id="ruta">
       <div class="container">
@@ -711,6 +968,8 @@
         </div>
       </div>
     </section>
+
+    <div class="chapter-separator">Part II · Foundations</div>
 
     <section id="lecciones">
       <div class="container">
@@ -747,6 +1006,8 @@
       </div>
     </section>
 
+    <div class="chapter-separator">Part III · Words in use</div>
+
     <section id="vocabulario">
       <div class="container">
         <div class="section-head">
@@ -767,6 +1028,8 @@
       </div>
     </section>
 
+
+    <div class="chapter-separator">Part IV · Listening & culture</div>
 
     <section id="entretenimiento">
       <div class="container">
@@ -797,6 +1060,8 @@
         </article>
       </div>
     </section>
+
+    <div class="chapter-separator">Part V · Build your English</div>
 
     <section id="grammar-vocabulary-speaking">
       <div class="container">
@@ -831,6 +1096,8 @@
 
 
 
+    <div class="chapter-separator">Part VI · Communication</div>
+
     <section id="blog">
       <div class="container">
         <div class="section-head">
@@ -847,6 +1114,8 @@
         </div>
       </div>
     </section>
+
+    <div class="chapter-separator">Appendix A · Future chapters</div>
 
     <section id="roadmap">
       <div class="container">
@@ -976,6 +1245,8 @@
         <div class="roadmap-note"><strong>How this list works:</strong> it is a living editorial plan. New articles can be added, reordered or expanded as the blog grows, while published guides remain linked from the relevant category and the homepage.</div>
       </div>
     </section>
+
+    <div class="chapter-separator">Appendix B · Phrase reference</div>
 
     <section id="frases">
       <div class="container">
@@ -1244,6 +1515,8 @@
       </div>
     </section>
 
+    <div class="chapter-separator">Workbook · Practice</div>
+
     <section id="practica">
       <div class="container practice">
         <div>
@@ -1286,7 +1559,7 @@
           <a href="category/speaking.html">Speaking</a>
         </div>
       </div>
-      <span>© 2026 · Made for steady, practical learning.</span>
+      <span>© 2026 · Easy English · Living book edition.</span>
     </div>
   </footer>
 
