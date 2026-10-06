@@ -6,413 +6,64 @@
   <meta name="description" content="Easy English: blog de inglés con artículos de gramática, vocabulario, speaking, listening y lecciones." />
   <title>Easy English · Blog de inglés</title>
   <style>
-    :root{
-      --bg:#f7f7f4;
-      --surface:#ffffff;
-      --ink:#17211c;
-      --muted:#68736d;
-      --line:#e1e6e2;
-      --brand:#1f5a49;
-      --brand-soft:#e9f0ec;
-      --radius:18px;
-      --max:1120px;
-    }
-
-    *{box-sizing:border-box}
-    body{
-      margin:0;
-      font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-      color:var(--ink);
-      background:var(--bg);
-      line-height:1.6;
-    }
-
-    a{color:inherit;text-decoration:none}
-    button{font:inherit}
-    .container{width:min(var(--max),calc(100% - 32px));margin:auto}
-
-    header{
-      border-bottom:1px solid var(--line);
-      background:rgba(247,247,244,.96);
-      position:sticky;
-      top:0;
-      z-index:20;
-    }
-
-    .nav{
-      min-height:70px;
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      gap:24px;
-    }
-
-    .brand{
-      display:flex;
-      align-items:center;
-      gap:10px;
-      font-weight:900;
-      letter-spacing:-.02em;
-    }
-
-    .brand-mark{
-      width:36px;
-      height:36px;
-      border-radius:10px;
-      display:grid;
-      place-items:center;
-      background:var(--brand);
-      color:white;
-      font-size:13px;
-    }
-
-    .nav a:last-child{
-      color:var(--brand);
-      font-weight:800;
-      font-size:14px;
-    }
-
-    .hero{
-      padding:72px 0 42px;
-      max-width:760px;
-    }
-
-    .eyebrow{
-      color:var(--brand);
-      font-size:12px;
-      text-transform:uppercase;
-      letter-spacing:.1em;
-      font-weight:900;
-    }
-
-    h1{
-      margin:12px 0 16px;
-      font-size:clamp(46px,7vw,76px);
-      line-height:.98;
-      letter-spacing:-.055em;
-    }
-
-    .hero p{
-      margin:0;
-      color:var(--muted);
-      font-size:18px;
-      max-width:680px;
-    }
-
-    .blog{
-      padding:20px 0 80px;
-    }
-
-    .filters{
-      display:flex;
-      flex-wrap:wrap;
-      gap:9px;
-      margin-bottom:28px;
-    }
-
-    .filter{
-      border:1px solid var(--line);
-      background:var(--surface);
-      color:var(--muted);
-      border-radius:999px;
-      padding:9px 14px;
-      cursor:pointer;
-      font-weight:800;
-      font-size:13px;
-    }
-
-    .filter:hover,
-    .filter.active{
-      background:var(--brand);
-      color:white;
-      border-color:var(--brand);
-    }
-
-    .grid{
-      display:grid;
-      grid-template-columns:repeat(3,1fr);
-      gap:16px;
-    }
-
-    .card{
-      display:flex;
-      flex-direction:column;
-      min-height:245px;
-      padding:22px;
-      background:var(--surface);
-      border:1px solid var(--line);
-      border-radius:var(--radius);
-      transition:transform .2s ease,border-color .2s ease;
-    }
-
-    .card:hover{
-      transform:translateY(-3px);
-      border-color:#c9d6cf;
-    }
-
-    .tag{
-      align-self:flex-start;
-      padding:5px 9px;
-      border-radius:999px;
-      background:var(--brand-soft);
-      color:var(--brand);
-      font-size:11px;
-      font-weight:900;
-      text-transform:uppercase;
-      letter-spacing:.07em;
-    }
-
-    .card h2{
-      margin:16px 0 9px;
-      font-size:22px;
-      line-height:1.15;
-      letter-spacing:-.025em;
-    }
-
-    .card p{
-      margin:0 0 20px;
-      color:var(--muted);
-      font-size:14px;
-    }
-
-    .read{
-      margin-top:auto;
-      color:var(--brand);
-      font-weight:850;
-      font-size:14px;
-    }
-
-    .empty{
-      display:none;
-      padding:28px;
-      border:1px dashed var(--line);
-      border-radius:var(--radius);
-      color:var(--muted);
-      background:var(--surface);
-    }
-
-    footer{
-      border-top:1px solid var(--line);
-      padding:28px 0 40px;
-      color:var(--muted);
-      font-size:13px;
-    }
-
-    @media(max-width:900px){
-      .grid{grid-template-columns:repeat(2,1fr)}
-    }
-
-    @media(max-width:600px){
-      .container{width:min(var(--max),calc(100% - 22px))}
-      .hero{padding-top:50px}
-      h1{font-size:48px}
-      .grid{grid-template-columns:1fr}
-      .card{min-height:auto}
-    }
+    :root{--bg:#f7f7f4;--surface:#fff;--ink:#17211c;--muted:#68736d;--line:#e1e6e2;--brand:#1f5a49;--brand-soft:#e9f0ec;--max:1120px}
+    *{box-sizing:border-box} body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--ink);background:var(--bg);line-height:1.6}
+    a{color:inherit;text-decoration:none} button{font:inherit}.container{width:min(var(--max),calc(100% - 32px));margin:auto}
+    header{border-bottom:1px solid var(--line);background:rgba(247,247,244,.96);position:sticky;top:0;z-index:20;backdrop-filter:blur(12px)}
+    .nav{min-height:70px;display:flex;justify-content:space-between;align-items:center;gap:24px}.brand{display:flex;align-items:center;gap:10px;font-weight:900;letter-spacing:-.02em}
+    .brand-mark{width:36px;height:36px;border-radius:10px;display:grid;place-items:center;background:var(--brand);color:#fff;font-size:13px}.nav a:last-child{color:var(--brand);font-weight:800;font-size:14px}
+    .hero{padding:70px 0 38px;max-width:760px}.eyebrow{color:var(--brand);font-size:12px;text-transform:uppercase;letter-spacing:.1em;font-weight:900}
+    h1{margin:12px 0 16px;font-size:clamp(46px,7vw,76px);line-height:.98;letter-spacing:-.055em}.hero p{margin:0;color:var(--muted);font-size:18px;max-width:680px}
+    .blog{padding:18px 0 80px}.filters{display:flex;flex-wrap:wrap;gap:9px;margin-bottom:28px}.filter{border:1px solid var(--line);background:var(--surface);color:var(--muted);border-radius:999px;padding:9px 14px;cursor:pointer;font-weight:800;font-size:13px}
+    .filter:hover,.filter.active{background:var(--brand);color:#fff;border-color:var(--brand)}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+    .card{display:flex;flex-direction:column;min-height:260px;padding:22px;background:var(--surface);border:1px solid var(--line);border-radius:18px;transition:transform .2s ease,border-color .2s ease}
+    .card:hover{transform:translateY(-3px);border-color:#c9d6cf}.meta{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin-bottom:15px}.tag{padding:5px 9px;border-radius:999px;background:var(--brand-soft);color:var(--brand);font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:.07em}
+    time{font-size:12px;color:var(--muted);font-weight:700}.card h2{margin:0 0 9px;font-size:22px;line-height:1.15;letter-spacing:-.025em}.card p{margin:0 0 20px;color:var(--muted);font-size:14px}.read{margin-top:auto;color:var(--brand);font-weight:850;font-size:14px}
+    .empty{display:none;padding:28px;border:1px dashed var(--line);border-radius:18px;color:var(--muted);background:var(--surface)}footer{border-top:1px solid var(--line);padding:28px 0 40px;color:var(--muted);font-size:13px}
+    @media(max-width:900px){.grid{grid-template-columns:repeat(2,1fr)}}@media(max-width:600px){.container{width:min(var(--max),calc(100% - 22px))}.hero{padding-top:50px}h1{font-size:48px}.grid{grid-template-columns:1fr}.card{min-height:auto}}
   </style>
 </head>
 <body>
-  <header>
-    <div class="container nav">
-      <a class="brand" href="index.html">
-        <span class="brand-mark">EN</span>
-        <span>Easy English</span>
-      </a>
-      <a href="#articulos">Artículos</a>
-    </div>
-  </header>
+<header><div class="container nav"><a class="brand" href="index.html"><span class="brand-mark">EN</span><span>Easy English</span></a><a href="#articulos">Artículos</a></div></header>
+<main><div class="container">
+<section class="hero"><span class="eyebrow">Blog de inglés</span><h1>Artículos para aprender inglés.</h1><p>Gramática, vocabulario, speaking, listening y lecciones prácticas. Filtra por categoría o empieza por las publicaciones más recientes.</p></section>
+<section class="blog" id="articulos">
+<div class="filters" aria-label="Filtrar artículos por categoría">
+<button class="filter active" data-filter="all">Todos</button><button class="filter" data-filter="lesson">Lessons</button><button class="filter" data-filter="grammar">Grammar</button><button class="filter" data-filter="vocabulary">Vocabulary</button><button class="filter" data-filter="speaking">Speaking</button><button class="filter" data-filter="listening">Listening</button>
+</div>
+<div class="grid">
+<article class="card" data-cat="speaking"><div class="meta"><span class="tag">Speaking</span><time datetime="2026-10-06">6 oct 2026</time></div><h2>Political English</h2><p>Vocabulario y frases para debate, opinión y argumentación.</p><a class="read" href="post/political-english-vocabulary-debate-phrases.html">Leer artículo →</a></article>
+<article class="card" data-cat="speaking"><div class="meta"><span class="tag">Speaking</span><time datetime="2026-10-02">2 oct 2026</time></div><h2>Think Before You Speak</h2><p>Estrategias para hablar con más claridad y seguridad.</p><a class="read" href="post/think-before-you-speak.html">Leer artículo →</a></article>
+<article class="card" data-cat="speaking"><div class="meta"><span class="tag">Speaking</span><time datetime="2026-10-02">2 oct 2026</time></div><h2>Truco del bolígrafo para el examen oral</h2><p>Una técnica práctica para entrenar fluidez y respuesta oral.</p><a class="read" href="post/truco-boligrafo-examen-oral-ingles.html">Leer artículo →</a></article>
+<article class="card" data-cat="listening"><div class="meta"><span class="tag">Listening</span><time datetime="2026-10-02">2 oct 2026</time></div><h2>The Rings of Power · Season 1</h2><p>Práctica de listening con subtítulos en inglés.</p><a class="read" href="post/the-rings-of-power-season-1-english-subtitles.html">Leer artículo →</a></article>
 
-  <main>
-    <div class="container">
-      <section class="hero">
-        <span class="eyebrow">Blog de inglés</span>
-        <h1>Artículos para aprender inglés.</h1>
-        <p>Gramática, vocabulario, speaking, listening y lecciones prácticas. Elige una categoría y entra directamente al contenido.</p>
-      </section>
+<article class="card" data-cat="speaking"><div class="meta"><span class="tag">Speaking</span><time datetime="2026-10-01">1 oct 2026</time></div><h2>Polite Disagreement</h2><p>Formas educadas y naturales de mostrar desacuerdo.</p><a class="read" href="post/polite-disagreement.html">Leer artículo →</a></article>
+<article class="card" data-cat="speaking"><div class="meta"><span class="tag">Speaking</span><time datetime="2026-10-01">1 oct 2026</time></div><h2>Nonetheless</h2><p>Cómo expresar contraste en speaking y writing.</p><a class="read" href="post/nonetheless-contrast.html">Leer artículo →</a></article>
+<article class="card" data-cat="speaking"><div class="meta"><span class="tag">Speaking</span><time datetime="2026-10-01">1 oct 2026</time></div><h2>To Be Honest</h2><p>Cómo usar este discourse marker correctamente.</p><a class="read" href="post/to-be-honest-discourse-marker.html">Leer artículo →</a></article>
+<article class="card" data-cat="speaking"><div class="meta"><span class="tag">Speaking</span><time datetime="2026-10-01">1 oct 2026</time></div><h2>Opinion & Speculation</h2><p>Expresiones para opinar y especular con naturalidad.</p><a class="read" href="post/opinion-speculation-expressions.html">Leer artículo →</a></article>
 
-      <section class="blog" id="articulos">
-        <div class="filters" aria-label="Filtrar artículos por categoría">
-          <button class="filter active" data-filter="all">Todos</button>
-          <button class="filter" data-filter="lesson">Lessons</button>
-          <button class="filter" data-filter="grammar">Grammar</button>
-          <button class="filter" data-filter="vocabulary">Vocabulary</button>
-          <button class="filter" data-filter="speaking">Speaking</button>
-          <button class="filter" data-filter="listening">Listening</button>
-        </div>
+<article class="card" data-cat="vocabulary"><div class="meta"><span class="tag">Vocabulary</span><time datetime="2026-10-01">1 oct 2026</time></div><h2>Inspire People</h2><p>Colocaciones y estructuras naturales con inspire.</p><a class="read" href="post/inspire-people-collocation.html">Leer artículo →</a></article>
+<article class="card" data-cat="vocabulary"><div class="meta"><span class="tag">Vocabulary</span><time datetime="2026-10-01">1 oct 2026</time></div><h2>Take Off</h2><p>Un phrasal verb muy común con varios significados.</p><a class="read" href="post/phrasal-verb-take-off.html">Leer artículo →</a></article>
+<article class="card" data-cat="vocabulary"><div class="meta"><span class="tag">Vocabulary</span><time datetime="2026-10-01">1 oct 2026</time></div><h2>Revenue Office & Supporters</h2><p>Dos términos útiles explicados según el contexto.</p><a class="read" href="post/revenue-office-supporters.html">Leer artículo →</a></article>
+<article class="card" data-cat="vocabulary"><div class="meta"><span class="tag">Vocabulary</span><time datetime="2026-10-01">1 oct 2026</time></div><h2>Currently</h2><p>Significado, posición y el falso amigo con “actualmente”.</p><a class="read" href="post/currently-meaning-use.html">Leer artículo →</a></article>
 
-        <div class="grid" id="articleGrid">
-          <article class="card" data-cat="lesson">
-            <span class="tag">Lesson</span>
-            <h2>Greetings and introductions</h2>
-            <p>Saludos y presentaciones para situaciones cotidianas.</p>
-            <a class="read" href="post/leccion-1-saludos.html">Leer artículo →</a>
-          </article>
+<article class="card" data-cat="grammar"><div class="meta"><span class="tag">Grammar</span><time datetime="2026-10-01">1 oct 2026</time></div><h2>Direct & Reported Speech</h2><p>Backshift, pronombres y expresiones temporales.</p><a class="read" href="post/direct-reported-speech.html">Leer artículo →</a></article>
+<article class="card" data-cat="grammar"><div class="meta"><span class="tag">Grammar</span><time datetime="2026-10-01">1 oct 2026</time></div><h2>Might for Possibility</h2><p>Cómo expresar posibilidades presentes y futuras.</p><a class="read" href="post/modal-verb-might.html">Leer artículo →</a></article>
+<article class="card" data-cat="grammar"><div class="meta"><span class="tag">Grammar</span><time datetime="2026-10-01">1 oct 2026</time></div><h2>Never vs. Haven’t … Yet</h2><p>Present perfect para experiencias y acciones todavía no terminadas.</p><a class="read" href="post/present-perfect-never-yet.html">Leer artículo →</a></article>
+<article class="card" data-cat="grammar"><div class="meta"><span class="tag">Grammar</span><time datetime="2026-10-01">1 oct 2026</time></div><h2>Negative Prefixes</h2><p>Un-, in-, im-, dis- y mis- con reglas y ejemplos.</p><a class="read" href="post/negative-prefixes.html">Leer artículo →</a></article>
 
-          <article class="card" data-cat="lesson">
-            <span class="tag">Lesson</span>
-            <h2>The verb “to be”</h2>
-            <p>Am, is y are explicados desde cero con ejemplos claros.</p>
-            <a class="read" href="post/leccion-2-to-be.html">Leer artículo →</a>
-          </article>
-
-          <article class="card" data-cat="lesson">
-            <span class="tag">Lesson</span>
-            <h2>Simple questions</h2>
-            <p>What, where, who y when en estructuras sencillas.</p>
-            <a class="read" href="post/leccion-3-preguntas.html">Leer artículo →</a>
-          </article>
-
-          <article class="card" data-cat="grammar">
-            <span class="tag">Grammar</span>
-            <h2>Negative Prefixes</h2>
-            <p>Un-, in-, im-, dis- y mis- con reglas y ejemplos.</p>
-            <a class="read" href="post/negative-prefixes.html">Leer artículo →</a>
-          </article>
-
-          <article class="card" data-cat="grammar">
-            <span class="tag">Grammar</span>
-            <h2>Never vs. Haven’t … Yet</h2>
-            <p>Present perfect para experiencias y acciones todavía no terminadas.</p>
-            <a class="read" href="post/present-perfect-never-yet.html">Leer artículo →</a>
-          </article>
-
-          <article class="card" data-cat="grammar">
-            <span class="tag">Grammar</span>
-            <h2>Might for Possibility</h2>
-            <p>Cómo expresar posibilidades presentes y futuras.</p>
-            <a class="read" href="post/modal-verb-might.html">Leer artículo →</a>
-          </article>
-
-          <article class="card" data-cat="grammar">
-            <span class="tag">Grammar</span>
-            <h2>Direct & Reported Speech</h2>
-            <p>Backshift, pronombres y expresiones temporales.</p>
-            <a class="read" href="post/direct-reported-speech.html">Leer artículo →</a>
-          </article>
-
-          <article class="card" data-cat="vocabulary">
-            <span class="tag">Vocabulary</span>
-            <h2>Currently</h2>
-            <p>Significado, posición y el falso amigo con “actualmente”.</p>
-            <a class="read" href="post/currently-meaning-use.html">Leer artículo →</a>
-          </article>
-
-          <article class="card" data-cat="vocabulary">
-            <span class="tag">Vocabulary</span>
-            <h2>Revenue Office & Supporters</h2>
-            <p>Dos términos útiles explicados según el contexto.</p>
-            <a class="read" href="post/revenue-office-supporters.html">Leer artículo →</a>
-          </article>
-
-          <article class="card" data-cat="vocabulary">
-            <span class="tag">Vocabulary</span>
-            <h2>Take Off</h2>
-            <p>Un phrasal verb muy común con varios significados.</p>
-            <a class="read" href="post/phrasal-verb-take-off.html">Leer artículo →</a>
-          </article>
-
-          <article class="card" data-cat="vocabulary">
-            <span class="tag">Vocabulary</span>
-            <h2>Inspire People</h2>
-            <p>Colocaciones y estructuras naturales con inspire.</p>
-            <a class="read" href="post/inspire-people-collocation.html">Leer artículo →</a>
-          </article>
-
-          <article class="card" data-cat="speaking">
-            <span class="tag">Speaking</span>
-            <h2>Opinion & Speculation</h2>
-            <p>Expresiones para opinar y especular con naturalidad.</p>
-            <a class="read" href="post/opinion-speculation-expressions.html">Leer artículo →</a>
-          </article>
-
-          <article class="card" data-cat="speaking">
-            <span class="tag">Speaking</span>
-            <h2>To Be Honest</h2>
-            <p>Cómo usar este discourse marker correctamente.</p>
-            <a class="read" href="post/to-be-honest-discourse-marker.html">Leer artículo →</a>
-          </article>
-
-          <article class="card" data-cat="speaking">
-            <span class="tag">Speaking</span>
-            <h2>Nonetheless</h2>
-            <p>Cómo expresar contraste en speaking y writing.</p>
-            <a class="read" href="post/nonetheless-contrast.html">Leer artículo →</a>
-          </article>
-
-          <article class="card" data-cat="speaking">
-            <span class="tag">Speaking</span>
-            <h2>Polite Disagreement</h2>
-            <p>Formas educadas y naturales de mostrar desacuerdo.</p>
-            <a class="read" href="post/polite-disagreement.html">Leer artículo →</a>
-          </article>
-
-          <article class="card" data-cat="speaking">
-            <span class="tag">Speaking</span>
-            <h2>Think Before You Speak</h2>
-            <p>Estrategias para hablar con más claridad y seguridad.</p>
-            <a class="read" href="post/think-before-you-speak.html">Leer artículo →</a>
-          </article>
-
-          <article class="card" data-cat="speaking">
-            <span class="tag">Speaking</span>
-            <h2>Truco del bolígrafo para el examen oral</h2>
-            <p>Una técnica práctica para entrenar fluidez y respuesta oral.</p>
-            <a class="read" href="post/truco-boligrafo-examen-oral-ingles.html">Leer artículo →</a>
-          </article>
-
-          <article class="card" data-cat="speaking">
-            <span class="tag">Speaking</span>
-            <h2>Political English</h2>
-            <p>Vocabulario y frases para debate, opinión y argumentación.</p>
-            <a class="read" href="post/political-english-vocabulary-debate-phrases.html">Leer artículo →</a>
-          </article>
-
-          <article class="card" data-cat="listening">
-            <span class="tag">Listening</span>
-            <h2>English with TV & Movies</h2>
-            <p>Un método sencillo para aprender inglés con contenido audiovisual.</p>
-            <a class="read" href="post/entretenimiento.html">Leer artículo →</a>
-          </article>
-
-          <article class="card" data-cat="listening">
-            <span class="tag">Listening</span>
-            <h2>The Rings of Power · Season 1</h2>
-            <p>Práctica de listening con subtítulos en inglés.</p>
-            <a class="read" href="post/the-rings-of-power-season-1-english-subtitles.html">Leer artículo →</a>
-          </article>
-        </div>
-
-        <div class="empty" id="emptyState">No hay artículos en esta categoría.</div>
-      </section>
-    </div>
-  </main>
-
-  <footer>
-    <div class="container">© 2026 · Easy English</div>
-  </footer>
-
-  <script>
-    const filters = document.querySelectorAll('.filter');
-    const cards = document.querySelectorAll('.card');
-    const emptyState = document.getElementById('emptyState');
-
-    filters.forEach(button => {
-      button.addEventListener('click', () => {
-        filters.forEach(item => item.classList.remove('active'));
-        button.classList.add('active');
-
-        const selected = button.dataset.filter;
-        let visible = 0;
-
-        cards.forEach(card => {
-          const show = selected === 'all' || card.dataset.cat === selected;
-          card.hidden = !show;
-          if(show) visible++;
-        });
-
-        emptyState.style.display = visible ? 'none' : 'block';
-      });
-    });
-  </script>
+<article class="card" data-cat="listening"><div class="meta"><span class="tag">Listening</span><time datetime="2026-09-20">20 sep 2026</time></div><h2>English with TV & Movies</h2><p>Un método sencillo para aprender inglés con contenido audiovisual.</p><a class="read" href="post/entretenimiento.html">Leer artículo →</a></article>
+<article class="card" data-cat="lesson"><div class="meta"><span class="tag">Lesson</span><time datetime="2026-09-20">20 sep 2026</time></div><h2>Simple questions</h2><p>What, where, who y when en estructuras sencillas.</p><a class="read" href="post/leccion-3-preguntas.html">Leer artículo →</a></article>
+<article class="card" data-cat="lesson"><div class="meta"><span class="tag">Lesson</span><time datetime="2026-09-20">20 sep 2026</time></div><h2>The verb “to be”</h2><p>Am, is y are explicados desde cero con ejemplos claros.</p><a class="read" href="post/leccion-2-to-be.html">Leer artículo →</a></article>
+<article class="card" data-cat="lesson"><div class="meta"><span class="tag">Lesson</span><time datetime="2026-09-20">20 sep 2026</time></div><h2>Greetings and introductions</h2><p>Saludos y presentaciones para situaciones cotidianas.</p><a class="read" href="post/leccion-1-saludos.html">Leer artículo →</a></article>
+</div>
+<div class="empty" id="emptyState">No hay artículos en esta categoría.</div>
+</section>
+</div></main>
+<footer><div class="container">© 2026 · Easy English</div></footer>
+<script>
+const filters=document.querySelectorAll('.filter');const cards=document.querySelectorAll('.card');const empty=document.getElementById('emptyState');
+filters.forEach(button=>button.addEventListener('click',()=>{filters.forEach(x=>x.classList.remove('active'));button.classList.add('active');const f=button.dataset.filter;let visible=0;cards.forEach(card=>{const show=f==='all'||card.dataset.cat===f;card.hidden=!show;if(show)visible++;});empty.style.display=visible?'none':'block';}));
+</script>
 </body>
 </html>
