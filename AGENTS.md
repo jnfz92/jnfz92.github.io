@@ -157,3 +157,14 @@ Antes de dar la tarea por terminada comprobar:
 - Mantener la traducción inmediatamente junto a la frase original para facilitar la comparación.
 - Si se añade una nueva colección de frases a `index.html` o a cualquier artículo de `/post/`, comprobar antes de publicar que todas las entradas del conjunto sean bilingües.
 
+## 12. Formato obligatorio: HTML estático
+
+- Todos los artículos del blog deben ser archivos **HTML estáticos** con extensión `.html`.
+- Crear cada artículo directamente como `post/<slug>.html`.
+- No crear ni publicar artículos del blog en Markdown (`.md`).
+- No depender de Jekyll, layouts, front matter ni de una conversión Markdown → HTML para que un artículo funcione.
+- Cada artículo debe ser un documento HTML completo y seguir el diseño visual de los artículos existentes en `post/`.
+- Los enlaces de las tarjetas de `index.html` deben apuntar directamente al archivo `post/<slug>.html`.
+- Antes de dar un artículo por publicado, comprobar que el archivo `.html` existe y que el `href` de la portada coincide exactamente con esa ruta.
+- El artículo debe poder servirse correctamente como archivo estático, sin ningún paso de compilación.
+- Si se regenera o sustituye un artículo existente, mantener también este formato HTML estático.
