@@ -3,7 +3,7 @@
 << /Type /Catalog /Pages 2 0 R >>
 endobj
 2 0 obj
-<< /Type /Pages /Kids [4 0 R] /Count 1 >>
+<< /Type /Pages /Kids [4 0 R 6 0 R] /Count 2 >>
 endobj
 3 0 obj
 << /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>
@@ -12,7 +12,7 @@ endobj
 << /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R >> >> /Contents 5 0 R >>
 endobj
 5 0 obj
-<< /Length 3603 >>
+<< /Length 4329 >>
 stream
 BT
 /F1 9 Tf
@@ -36,7 +36,53 @@ T*
 T*
 (get off | bajarse | Phrasal verb | We get off at the next stop.) Tj
 T*
+(plan | plan | Future | I have a plan for tomorrow.) Tj
+T*
+(intention | intención | Future | My intention is to study more.) Tj
+T*
+(arrangement | plan acordado / arreglo | Future | We have an arrangement for Friday.) Tj
+T*
+(experience | experiencia | Present Perfect | I've had that experience before.) Tj
+T*
+(yet | todavía / ya | Present Perfect | I haven't finished yet.) Tj
+T*
+(since | desde | Present Perfect | I've lived here since 2024.) Tj
+T*
+(for | durante / desde hace | Present Perfect | I've worked here for two years.) Tj
+T*
+(routine | rutina | Verb tenses | I follow the same routine every day.) Tj
+T*
+(habit | hábito | Verb tenses | Reading is a useful habit.) Tj
+T*
+(currently | actualmente | Vocabulary | I'm currently studying English.) Tj
+T*
+(countable | contable | Grammar | Cars are countable nouns.) Tj
+T*
+(uncountable | incontable | Grammar | Pollution is uncountable.) Tj
+T*
+(information | información | Uncountable noun | I need some information.) Tj
+T*
+(advice | consejo\(s\) | Uncountable noun | She gave me some advice.) Tj
+T*
+(gerund | gerundio | Grammar | Reading is useful.) Tj
+T*
+(infinitive | infinitivo | Grammar | I want to learn.) Tj
+T*
+(stative verb | verbo de estado | Grammar | Know is a stative verb.) Tj
+T*
+(believe | creer | Stative verb | I believe you.) Tj
+T*
+(seem | parecer | Stative verb | It seems difficult.) Tj
+T*
+(understand | entender | Stative verb | I understand the question.) Tj
+T*
+(skimming | lectura rápida: idea general | Reading | Use skimming to understand the topic.) Tj
+T*
+(scanning | búsqueda rápida de datos | Reading | Use scanning to find a date.) Tj
+T*
 (key | clave / esencial | Vocabulary | Communication is key.) Tj
+T*
+(key characteristic | característica clave | Vocabulary | Speed is a key characteristic.) Tj
 T*
 (awareness | concienciación / conocimiento | Vocabulary | We need greater awareness.) Tj
 T*
@@ -90,6 +136,21 @@ T*
 T*
 (protect | proteger | Environment verb | We should protect the oceans.) Tj
 T*
+ET
+endstream
+endobj
+6 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R >> >> /Contents 7 0 R >>
+endobj
+7 0 obj
+<< /Length 409 >>
+stream
+BT
+/F1 9 Tf
+42 800 Td
+12 TL
+() Tj
+T*
 (prevent | prevenir / evitar | Environment verb | These measures prevent pollution.) Tj
 T*
 (pollute | contaminar | Environment verb | Factories can pollute rivers.) Tj
@@ -100,37 +161,21 @@ T*
 T*
 (beach.) Tj
 T*
-(currently | actualmente | Vocabulary | I'm currently studying English.) Tj
-T*
-(information | información | Uncountable noun | I need some information.) Tj
-T*
-(advice | consejo\(s\) | Uncountable noun | She gave me some advice.) Tj
-T*
-(skimming | lectura rápida para idea general | Reading | Use skimming to understand the) Tj
-T*
-(topic.) Tj
-T*
-(scanning | búsqueda rápida de datos | Reading | Use scanning to find a date.) Tj
-T*
-(believe | creer | Stative verb | I believe you.) Tj
-T*
-(seem | parecer | Stative verb | It seems difficult.) Tj
-T*
-(understand | entender | Stative verb | I understand the question.) Tj
-T*
 ET
 endstream
 endobj
 xref
-0 6
+0 8
 0000000000 65535 f 
 0000000009 00000 n 
 0000000058 00000 n 
-0000000115 00000 n 
-0000000212 00000 n 
-0000000338 00000 n 
+0000000121 00000 n 
+0000000218 00000 n 
+0000000344 00000 n 
+0000004725 00000 n 
+0000004851 00000 n 
 trailer
-<< /Size 6 /Root 1 0 R >>
+<< /Size 8 /Root 1 0 R >>
 startxref
-3993
+5311
 %%EOF
