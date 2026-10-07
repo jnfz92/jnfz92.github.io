@@ -26,5 +26,6 @@ jobs:
             echo "PDFs already up to date"
           else
             git commit -m "Build downloadable PDFs"
+            git pull --rebase origin main
             git push
           fi
