@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="Todas las frases y expresiones bilingües inglés-español de Easy English en una sola página de repaso.">
+<title>Todas las frases bilingües · Easy English</title>
+<style>
+:root{--bg:#f7f7f4;--surface:#fff;--ink:#17211c;--muted:#68736d;--line:#e1e6e2;--brand:#1f5a49;--soft:#e9f0ec}
+*{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:var(--bg);color:var(--ink);line-height:1.55}
+a{color:var(--brand)}.wrap{width:min(1050px,calc(100% - 28px));margin:auto}header{position:sticky;top:0;z-index:10;background:rgba(247,247,244,.96);border-bottom:1px solid var(--line);backdrop-filter:blur(12px)}
+.nav{min-height:66px;display:flex;justify-content:space-between;align-items:center;gap:16px}.brand,.back{font-weight:850;text-decoration:none}.hero{padding:56px 0 24px}.eyebrow{font-size:12px;text-transform:uppercase;letter-spacing:.09em;font-weight:900;color:var(--brand)}
+h1{font-size:clamp(38px,6vw,64px);line-height:1.02;letter-spacing:-.045em;margin:10px 0 14px}.lead{font-size:18px;color:var(--muted);max-width:760px}
+.tools{display:grid;grid-template-columns:1fr auto;gap:10px;margin:24px 0 12px}.search{width:100%;padding:13px 15px;border:1px solid var(--line);border-radius:12px;background:#fff;font:inherit}
+.toggle{padding:12px 15px;border:0;border-radius:12px;background:var(--brand);color:#fff;font-weight:800;cursor:pointer}.stats{color:var(--muted);font-size:14px;margin-bottom:28px}
+.group{margin:0 0 34px}.group h2{font-size:24px;margin:0 0 12px}.group h2 a{text-decoration:none}.cards{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.phrase{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px}.en{font-weight:800}.es{margin-top:7px;color:var(--muted)}body.hide-es .es{display:none}
+.empty{padding:28px;background:#fff;border:1px dashed var(--line);border-radius:14px;color:var(--muted)}footer{border-top:1px solid var(--line);padding:28px 0 40px;color:var(--muted);margin-top:50px}
+@media(max-width:700px){.cards{grid-template-columns:1fr}.tools{grid-template-columns:1fr}.nav{align-items:flex-start;flex-direction:column;padding:12px 0}}
+</style></head><body>
+<header><div class="wrap nav"><a class="brand" href="../index.html">EN · Easy English</a><a class="back" href="../index.html">← Volver al blog</a></div></header>
+<main class="wrap"><section class="hero"><span class="eyebrow">Repaso permanente</span><h1>Todas las frases bilingües</h1><p class="lead">Una sola página para repasar las frases, ejemplos y expresiones en inglés con su traducción al español. El contenido se obtiene de los artículos del blog.</p>
+<div class="tools"><input id="search" class="search" type="search" placeholder="Buscar en inglés o español…" aria-label="Buscar frases"><button id="toggle" class="toggle" type="button">Ocultar español</button></div><div id="stats" class="stats">Cargando frases…</div></section>
+<div id="content"></div></main><footer><div class="wrap">© 2026 Easy English · Frases en inglés + español</div></footer>
+<script>
+const postFiles=["b2-first-speaking-outstanding-people-selfie.html","countable-uncountable-nouns.html","currently-meaning-use.html","dictionary-word-reference-study.html","direct-reported-speech.html","english-tenses-overview.html","entretenimiento.html","future-going-to-present-continuous.html","gerund-infinitive.html","get-phrasal-verbs.html","inspire-people-collocation.html","leccion-1-saludos.html","leccion-2-to-be.html","leccion-3-preguntas.html","material-articulos-blog.html","material-english-study-notes.html","material-vocabulary-list.html","modal-verb-might.html","negative-prefixes.html","nonetheless-contrast.html","opinion-speculation-expressions.html","phrasal-verb-take-off.html","polite-disagreement.html","political-english-vocabulary-debate-phrases.html","pollution-environment-vocabulary.html","present-perfect-never-yet.html","present-perfect-vs-past-simple.html","protector-of-the-sea-vocabulary-tenses.html","revenue-office-supporters.html","skimming-scanning-reading.html","stative-verbs.html","the-rings-of-power-season-1-english-subtitles.html","think-before-you-speak.html","to-be-honest-discourse-marker.html","todos-los-tiempos-de-futuro-en-ingles.html","todos-los-tiempos-de-pasado-en-ingles.html","todos-los-tiempos-de-presente-en-ingles.html","truco-boligrafo-examen-oral-ingles.html","useful-vocabulary-review.html"];
+const clean=s=>(s||'').replace(/\s+/g,' ').trim();
+const pairs=[];
+function add(title,file,en,es){
+ en=clean(en);es=clean(es);
+ if(!en||!es||en.length<2||es.length<2)return;
+ const key=(en+'|||'+es).toLowerCase();
+ if(!pairs.some(x=>x.key===key))pairs.push({key,title,file,en,es});
+}
+function splitDash(text){
+ const t=clean(text), i=t.indexOf(' — ');
+ if(i>0){const a=t.slice(0,i),b=t.slice(i+3); if(a&&b)add(currentTitle,currentFile,a,b);}
+}
+let currentTitle='',currentFile='';
+async function readPost(file){
+ try{
+  const res=await fetch(file,{cache:'no-store'}); if(!res.ok)return;
+  const doc=new DOMParser().parseFromString(await res.text(),'text/html');
+  currentTitle=clean(doc.querySelector('h1')?.textContent)||file; currentFile=file;
+  doc.querySelectorAll('.example').forEach(el=>{
+   const span=el.querySelector('span');
+   if(span){let clone=el.cloneNode(true); clone.querySelectorAll('span').forEach(x=>x.remove()); add(currentTitle,file,clone.textContent,span.textContent);}
+   else splitDash(el.textContent);
+  });
+  doc.querySelectorAll('table').forEach(table=>{
+   const hs=[...table.querySelectorAll('tr:first-child th')].map(x=>clean(x.textContent).toLowerCase());
+   const ei=hs.findIndex(x=>x==='english'||x.includes('inglés'));
+   const si=hs.findIndex(x=>x==='español'||x.includes('spanish'));
+   [...table.querySelectorAll('tr')].slice(1).forEach(row=>{
+    const cells=[...row.children];
+    if(ei>=0&&si>=0&&cells[ei]&&cells[si]) add(currentTitle,file,cells[ei].textContent,cells[si].textContent);
+    cells.forEach(c=>splitDash(c.textContent));
+   });
+  });
+  doc.querySelectorAll('li,p,.warning,.note,.answer').forEach(el=>splitDash(el.textContent));
+  doc.querySelectorAll('.answer').forEach(box=>{
+   const ps=[...box.querySelectorAll(':scope > p')];
+   for(let i=0;i<ps.length-1;i++){
+    const a=clean(ps[i].textContent),b=clean(ps[i+1].textContent);
+    if(a&&b&&/[a-zA-Z]/.test(a)&&/[áéíóúñ¿¡]/i.test(b)) add(currentTitle,file,a,b);
+   }
+  });
+ }catch(e){}
+}
+function render(){
+ const q=clean(document.getElementById('search').value).toLowerCase();
+ const filtered=pairs.filter(x=>!q||(x.en+' '+x.es+' '+x.title).toLowerCase().includes(q));
+ const groups=new Map();
+ filtered.forEach(x=>{if(!groups.has(x.file))groups.set(x.file,{title:x.title,items:[]});groups.get(x.file).items.push(x);});
+ const root=document.getElementById('content'); root.innerHTML='';
+ [...groups].forEach(([file,g])=>{
+  const sec=document.createElement('section');sec.className='group';
+  const h=document.createElement('h2');const a=document.createElement('a');a.href=file;a.textContent=g.title+' ('+g.items.length+')';h.appendChild(a);sec.appendChild(h);
+  const cards=document.createElement('div');cards.className='cards';
+  g.items.forEach(x=>{const card=document.createElement('div');card.className='phrase';const en=document.createElement('div');en.className='en';en.textContent=x.en;const es=document.createElement('div');es.className='es';es.textContent=x.es;card.append(en,es);cards.appendChild(card);});
+  sec.appendChild(cards);root.appendChild(sec);
+ });
+ if(!filtered.length)root.innerHTML='<div class="empty">No se encontraron frases con esa búsqueda.</div>';
+ document.getElementById('stats').textContent=filtered.length+' frases mostradas de '+pairs.length+' · '+groups.size+' artículos';
+}
+(async()=>{for(const f of postFiles)await readPost(f);pairs.sort((a,b)=>a.title.localeCompare(b.title,'es'));render();})();
+document.getElementById('search').addEventListener('input',render);
+document.getElementById('toggle').addEventListener('click',e=>{document.body.classList.toggle('hide-es');e.currentTarget.textContent=document.body.classList.contains('hide-es')?'Mostrar español':'Ocultar español';});
+</script></body></html>
