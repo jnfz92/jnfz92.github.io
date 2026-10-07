@@ -4,7 +4,6 @@ on:
   push:
     branches: [main]
     paths:
-      - downloads.html
       - scripts/build-pdfs.mjs
       - .github/workflows/build-pdfs.yml
 permissions:
