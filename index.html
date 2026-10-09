@@ -28,6 +28,17 @@
 <main><div class="container">
 <section class="hero"><span class="eyebrow">Blog de inglés</span><h1>Artículos para aprender inglés.</h1><p>Gramática, vocabulario, speaking, listening y lecciones prácticas. Filtra por categoría o empieza por las publicaciones más recientes.</p></section>
 <section class="downloads" id="ingles-americano-destacado" aria-label="Artículo destacado: inglés americano"><div class="download-box" style="border:2px solid #1f5a49;background:#e9f0ec"><div><span class="eyebrow">Nuevo artículo · 9 de octubre</span><h2>🇺🇸 Inglés americano vs. 🇬🇧 inglés británico</h2><p>Aprende las diferencias entre los verbos: learned/learnt, got/gotten y más. Ejemplos y ejercicios explicados.</p></div><a class="download-link" href="post/ingles-americano-vs-britanico-diferencias-verbos.html">Leer artículo →</a></div></section>
+<section class="downloads" id="app-android" aria-label="Aplicación Android Easy English">
+  <div class="download-box" style="border:2px solid var(--brand);background:var(--brand-soft)">
+    <div>
+      <span class="eyebrow">App para Android</span>
+      <h2>📱 Easy English en tu móvil</h2>
+      <p>Descarga la aplicación de Easy English para estudiar desde Android. La descarga estará disponible aquí cuando se publique el archivo APK.</p>
+      <p id="apk-pending" style="margin-top:8px;font-size:13px">Estamos preparando el archivo de instalación.</p>
+    </div>
+    <a class="download-link" id="apk-download" href="downloads/EnglishAPK.apk" download="EnglishAPK.apk" style="display:none">⬇ Descargar APK para Android</a>
+  </div>
+</section>
 <section class="downloads" id="descargas"><div class="download-box"><div><span class="eyebrow">Descargas PDF</span><h2>Material para estudiar sin conexión</h2><p>Ya puedes descargar las dos recopilaciones de Easy English en PDF.</p></div><a class="download-link" href="downloads.html">Ver y descargar PDF ↓</a></div></section>
 <section class="downloads"><div class="download-box"><div><span class="eyebrow">Repaso bilingüe</span><h2>Todas las frases en inglés + español</h2><p>Consulta en una sola página las frases y expresiones del blog, con buscador y opción para ocultar la traducción.</p></div><a class="download-link" href="post/todas-las-frases-bilingues.html">Repasar frases →</a></div></section>
 <section class="downloads" id="examenes"><div class="download-box"><div><span class="eyebrow">Practica cada día</span><h2>Exámenes de inglés B1–B2</h2><p>20 preguntas por examen, respuestas seleccionables y corrección con explicaciones al terminar.</p></div><a class="download-link" href="examenes.html">Ver exámenes →</a></div></section>
@@ -104,6 +115,16 @@
 <script>
 const filters=document.querySelectorAll('.filter');const cards=document.querySelectorAll('.card');const empty=document.getElementById('emptyState');
 filters.forEach(button=>button.addEventListener('click',()=>{filters.forEach(x=>x.classList.remove('active'));button.classList.add('active');const f=button.dataset.filter;let visible=0;cards.forEach(card=>{const show=f==='all'||card.dataset.cat===f;card.hidden=!show;if(show)visible++;});empty.style.display=visible?'none':'block';}));
+
+// Mostrar el enlace solo si el APK realmente está publicado (evita descargas rotas).
+fetch('downloads/EnglishAPK.apk', {method:'HEAD', cache:'no-store'})
+  .then(response => {
+    if (!response.ok) return;
+    const button=document.getElementById('apk-download');
+    const pending=document.getElementById('apk-pending');
+    if (button) button.style.display='inline-block';
+    if (pending) pending.textContent='Archivo APK disponible para descargar en Android.';
+  }).catch(() => {});
 </script>
 </body>
 </html>
