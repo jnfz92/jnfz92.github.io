@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Tu perfil y progreso de lectura en Easy English.">
+<title>Mi perfil · Easy English</title>
+<style>
+:root{--bg:#f7f7f4;--surface:#fff;--ink:#17211c;--muted:#68736d;--line:#e1e6e2;--brand:#1f5a49;--soft:#e9f0ec}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;line-height:1.6}a{color:inherit;text-decoration:none}button,input{font:inherit}button{cursor:pointer}.container{width:min(1000px,calc(100% - 32px));margin:auto}
+header{background:var(--bg);border-bottom:1px solid var(--line)}.nav{min-height:72px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}.brand{font-weight:900;display:flex;gap:10px;align-items:center}.brand-mark{background:var(--brand);color:white;padding:7px;border-radius:9px}.back{color:var(--brand);font-weight:800}
+main{padding:42px 0 80px}.eyebrow{color:var(--brand);font-size:12px;font-weight:900;text-transform:uppercase;letter-spacing:.1em}h1{font-size:clamp(36px,6vw,55px);letter-spacing:-.04em;line-height:1.12;margin:12px 0}.intro{color:var(--muted);max-width:680px}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:19px;padding:24px;margin-top:22px}.panel h2{margin:0 0 14px;font-size:22px}label{display:block;font-weight:750;margin-bottom:6px}.form-row{display:flex;gap:10px;flex-wrap:wrap}.form-row input{flex:1;min-width:170px;border:1px solid var(--line);border-radius:11px;padding:11px 13px}.primary,.secondary{border:1px solid var(--brand);border-radius:11px;padding:11px 16px;font-weight:800}.primary{background:var(--brand);color:white}.secondary{background:white;color:var(--brand)}.muted{color:var(--muted);font-size:14px}.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:20px 0}.stat{background:var(--soft);padding:18px;border-radius:14px}.stat strong{font-size:30px;display:block;color:var(--brand)}.stat span{font-size:13px;color:var(--muted);font-weight:700}
+.meter{height:13px;background:#e1e6e2;overflow:hidden;border-radius:100px}.meter span{display:block;width:0;height:100%;background:var(--brand);transition:width .2s}.list{display:grid;gap:10px;margin-top:14px}.item{border:1px solid var(--line);border-radius:12px;padding:12px 14px;display:flex;align-items:center;justify-content:space-between;gap:12px}.item strong{display:block;font-size:14px}.item small{color:var(--muted)}.item a{color:var(--brand);text-decoration:underline}.item button{flex:none;font-size:12px;border:1px solid var(--line);background:white;border-radius:10px;padding:9px 11px;font-weight:800}.item button[aria-pressed=true]{background:var(--soft);border-color:var(--brand);color:var(--brand)}.toolbar{display:flex;gap:10px;flex-wrap:wrap}.toolbar input{flex:1;min-width:180px;padding:11px;border:1px solid var(--line);border-radius:10px}footer{border-top:1px solid var(--line);padding:25px 0;color:var(--muted);font-size:13px}
+:focus-visible{outline:3px solid #e9a640;outline-offset:3px}@media(max-width:600px){.stats{grid-template-columns:1fr}.panel{padding:18px}.item{align-items:flex-start;flex-wrap:wrap}.item button{margin-left:auto}}
+</style>
+</head>
+<body>
+<header><div class="container nav"><a class="brand" href="index.html"><span class="brand-mark">EN</span>Easy English</a><a class="back" href="index.html">← Volver al blog</a></div></header>
+<main class="container">
+<span class="eyebrow">Mi aprendizaje</span><h1>👤 Perfil de estudiante</h1>
+<p class="intro">Personaliza tu perfil y lleva el control de los artículos que has estudiado, como en la aplicación Easy English.</p>
+<section class="panel" aria-labelledby="nameTitle">
+<h2 id="nameTitle">Tu perfil</h2><label for="studentName">Tu nombre</label><div class="form-row"><input id="studentName" type="text" maxlength="50" autocomplete="nickname" placeholder="Escribe tu nombre"><button class="primary" id="saveName">Guardar nombre</button></div>
+<p class="muted" id="greeting" role="status">Introduce tu nombre para personalizar tu espacio.</p>
+<p class="muted">Tus datos se guardan únicamente en este navegador mediante almacenamiento local. No se crea una cuenta ni se sincroniza con la APK u otros dispositivos.</p>
+</section>
+<section class="panel" aria-labelledby="progressTitle"><h2 id="progressTitle">Progreso del blog</h2>
+<div class="stats"><div class="stat"><strong id="readStat">0</strong><span>Artículos leídos</span></div><div class="stat"><strong id="totalStat">0</strong><span>Artículos disponibles</span></div><div class="stat"><strong id="percentageStat">0%</strong><span>Progreso de lectura</span></div></div>
+<div class="meter" role="progressbar" aria-label="Progreso de lectura" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="readMeter"><span id="readBar"></span></div><p class="muted" id="readProgressText">Cargando artículos…</p>
+</section>
+<section class="panel" aria-labelledby="articlesTitle"><h2 id="articlesTitle">Mi biblioteca de artículos</h2><p class="muted">Marca manualmente como leído cada artículo al terminar de estudiarlo.</p><div class="toolbar"><input id="articleSearch" type="search" placeholder="Buscar artículos..." aria-label="Buscar artículos"><button class="secondary" id="onlyPending" aria-pressed="false">Mostrar pendientes</button></div><div id="articleList" class="list" aria-live="polite"></div></section>
+<section class="panel"><h2>Gestionar mi perfil</h2><p class="muted">Si reinicias el perfil, se borrarán el nombre y las lecturas guardadas en este navegador.</p><button class="secondary" id="resetProfile">Reiniciar mi perfil</button></section>
+</main><footer><div class="container">© 2026 · Easy English · <a href="index.html">Volver a los artículos</a></div></footer>
+<script>
+(function(){
+'use strict';
+const storageKey='easyEnglish.blogProfile.v1';
+const byId=id=>document.getElementById(id);
+const safeRead=()=>{try{const x=JSON.parse(localStorage.getItem(storageKey)||'{}');return x&&typeof x==='object'?x:{}}catch{return {}}};
+let saved=safeRead(),profile={name:typeof saved.name==='string'?saved.name:'',read:saved.read&&typeof saved.read==='object'&&!Array.isArray(saved.read)?saved.read:{}},articles=[],pendingOnly=false;
+const persist=()=>{try{localStorage.setItem(storageKey,JSON.stringify(profile))}catch{byId('greeting').textContent='No se pudo guardar: comprueba los permisos de almacenamiento del navegador.'}};
+function renderHeader(){byId('studentName').value=profile.name;byId('greeting').textContent=profile.name?'¡Hola, '+profile.name+'! Tu espacio de aprendizaje está listo.':'Introduce tu nombre para personalizar tu espacio.'}
+function render(){const done=articles.filter(a=>profile.read[a.href]).length;const total=articles.length;const pct=total?Math.round(done/total*100):0;byId('readStat').textContent=done;byId('totalStat').textContent=total;byId('percentageStat').textContent=pct+'%';byId('readBar').style.width=pct+'%';byId('readMeter').setAttribute('aria-valuenow',String(pct));byId('readProgressText').textContent=done+' de '+total+' artículos completados ('+pct+'%).';
+const term=byId('articleSearch').value.trim().toLocaleLowerCase('es');const list=byId('articleList');list.replaceChildren();let visible=0;
+articles.forEach(a=>{if(term&&!a.title.toLocaleLowerCase('es').includes(term))return;if(pendingOnly&&profile.read[a.href])return;visible++;const item=document.createElement('div');item.className='item';const detail=document.createElement('div');const title=document.createElement('strong');const link=document.createElement('a');link.href=a.href;link.textContent=a.title;title.appendChild(link);const sub=document.createElement('small');sub.textContent=profile.read[a.href]?'✓ Leído':'Pendiente';detail.append(title,sub);const button=document.createElement('button');button.type='button';button.textContent=profile.read[a.href]?'✓ Leído · desmarcar':'Marcar como leído';button.setAttribute('aria-pressed',String(Boolean(profile.read[a.href])));button.setAttribute('aria-label',(profile.read[a.href]?'Desmarcar':'Marcar como leído')+': '+a.title);button.addEventListener('click',()=>{if(profile.read[a.href])delete profile.read[a.href];else profile.read[a.href]=new Date().toISOString();persist();render()});item.append(detail,button);list.appendChild(item)});
+if(!visible){const p=document.createElement('p');p.className='muted';p.textContent=articles.length?'No hay artículos con esos filtros.':'No se pudieron cargar los artículos.';list.appendChild(p)}
+}
+byId('saveName').addEventListener('click',()=>{profile.name=byId('studentName').value.trim().slice(0,50);persist();renderHeader()});
+byId('studentName').addEventListener('keydown',e=>{if(e.key==='Enter')byId('saveName').click()});
+byId('articleSearch').addEventListener('input',render);
+byId('onlyPending').addEventListener('click',()=>{pendingOnly=!pendingOnly;byId('onlyPending').setAttribute('aria-pressed',String(pendingOnly));byId('onlyPending').textContent=pendingOnly?'Mostrar todos':'Mostrar pendientes';render()});
+byId('resetProfile').addEventListener('click',()=>{if(!confirm('¿Eliminar tu nombre y todo tu progreso de lectura de este navegador?'))return;profile={name:'',read:{}};persist();renderHeader();render()});
+renderHeader();
+fetch('index.html',{cache:'no-store'}).then(r=>{if(!r.ok)throw Error('No disponible');return r.text()}).then(html=>{const doc=new DOMParser().parseFromString(html,'text/html');const found=new Map();doc.querySelectorAll('article.card a.read[href]').forEach(a=>{const href=a.getAttribute('href');if(!href||!/^post\/[a-zA-Z0-9_./-]+\.html$/.test(href)||href.includes('..'))return;const title=a.closest('article')?.querySelector('h2')?.textContent.trim()||href;if(!found.has(href))found.set(href,{href,title})});articles=[...found.values()];render()}).catch(()=>{byId('readProgressText').textContent='No se pudo cargar la biblioteca. Vuelve a intentarlo con conexión.';render()});
+})();
+</script>
+</body></html>
