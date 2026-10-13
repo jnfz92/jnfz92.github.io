@@ -42,14 +42,77 @@ html{scroll-behavior:smooth}a:focus-visible,button:focus-visible,input:focus-vis
   
 /* Navegación igual que en Easy English Android */
 .unified-nav{display:flex;justify-content:center;gap:4px;max-width:850px;margin:12px auto;padding:7px;background:#fff;border:1px solid #e1e6e2;border-radius:17px}.unified-nav a{flex:1;min-width:0;text-align:center;padding:9px 3px;border-radius:12px;color:#68736d;text-decoration:none;font-size:12px;font-weight:800}.unified-nav a span{display:block;font-size:20px;line-height:25px}.unified-nav a[aria-current=page]{color:#1f5a49;background:#e9f0ec}.unified-nav a:hover{background:#e9f0ec;color:#1f5a49}@media(max-width:600px){body{padding-bottom:85px}.unified-nav{position:fixed;bottom:0;left:0;right:0;z-index:70;margin:0;max-width:none;border-radius:0;padding:8px 4px calc(8px + env(safe-area-inset-bottom));box-shadow:0 -6px 25px #17211c1a}.unified-nav a{font-size:11px;min-height:53px}}
+
+/* Easy English · portada editorial 2026 */
+:root{--bg:#f6f7f2;--surface:#fff;--ink:#19382c;--muted:#66776e;--line:#e0e8df;--brand:#176447;--brand-soft:#e8f3e9;--max:1180px}
+body{background:var(--bg);letter-spacing:-.01em}
+header{background:#ffffffeb;border-color:#e5ebe4;box-shadow:0 3px 22px #163b2410}
+header .nav{min-height:82px;flex-wrap:nowrap;gap:22px}
+.brand{font-size:21px;white-space:nowrap;letter-spacing:-.05em}
+.brand-mark{width:42px;height:42px;border-radius:13px;box-shadow:0 7px 15px #17644725}
+header .unified-nav{position:static;flex:1;display:block;width:auto;max-width:none;margin:0;padding:0;border:none;border-radius:0;background:transparent;box-shadow:none}
+.unified-nav .nav-inner{display:flex;align-items:center;justify-content:flex-end;gap:4px;border:0;background:transparent;padding:0;box-shadow:none}
+.unified-nav a{display:flex;align-items:center;justify-content:center;flex:0 0 auto;gap:8px;min-height:43px;padding:10px 14px;border-radius:12px;font-size:13px;line-height:1;font-weight:750;color:#596b61;transition:background .16s,color .16s}
+.unified-nav a span{font-size:inherit;line-height:inherit;display:inline}
+.unified-nav a svg{width:18px;height:18px}
+.unified-nav a:hover{background:#eff5f0;color:#176447}
+.unified-nav a[aria-current=page]{background:#e8f4eb;color:#176447}
+.hero{max-width:none;margin-top:34px;margin-bottom:28px;padding:0;display:grid;grid-template-columns:minmax(0,1.15fr) minmax(300px,.85fr);background:#183e30;color:white;border-radius:29px;overflow:hidden;box-shadow:0 22px 60px #1b48301e}
+.hero-copy{padding:clamp(33px,5vw,67px) clamp(28px,5vw,65px)}
+.hero .eyebrow{color:#a9e4ba;font-weight:800;letter-spacing:.15em}
+.hero h1{margin:24px 0 20px;font-size:clamp(48px,5.4vw,76px);line-height:1.02;letter-spacing:-.065em}
+.hero h1 em{color:#c2ecbc;font-style:normal}
+.hero p{color:#d8e8db;font-size:17px;max-width:540px;line-height:1.7}
+.hero .quick-links{margin-top:31px;gap:10px}
+.hero .quick-links a{display:inline-flex;align-items:center;background:#fff;border:none;color:#16573f;font-size:13px;border-radius:12px;padding:12px 16px;box-shadow:none}
+.hero .quick-links a:nth-child(n+2){background:#ffffff16;border:1px solid #ffffff44;color:white}
+.hero .quick-links a:hover{background:#d8f1d8;color:#154b37}
+.hero-note{font-size:10px;font-weight:900;letter-spacing:.13em;color:#96bfa6;margin-top:33px}
+.hero-note span{margin:0 8px;color:#d8ec99}
+.hero-art{position:relative;overflow:hidden;background:linear-gradient(155deg,#d5ebbc,#b4d7a1);min-height:470px;padding:35px;color:#194532;isolation:isolate}
+.hero-art:before{content:"";position:absolute;inset:12%;border:1px solid #2b75451c;border-radius:50%;transform:scale(1.35)}
+.art-kicker{position:relative;z-index:2;font-size:11px;letter-spacing:.23em;font-weight:900}
+.art-word{position:relative;z-index:2;margin:76px 0 0;font-size:clamp(83px,10vw,160px);line-height:1;font-weight:950;letter-spacing:-.095em;transform:rotate(-8deg);white-space:nowrap}
+.art-word span{color:#fbfaf3}
+.art-line{position:relative;z-index:2;font-size:clamp(22px,2.4vw,38px);font-weight:850;line-height:1.1;margin:55px 0 0 20px;letter-spacing:-.05em}
+.art-shape{position:absolute;z-index:1;border-radius:50%}.shape-one{width:250px;height:250px;background:#eff4df;right:-95px;top:-95px}.shape-two{width:165px;height:165px;background:#86be83;bottom:-65px;left:-50px}
+.art-sticker{position:absolute;z-index:3;right:37px;bottom:48px;width:93px;height:93px;display:grid;place-items:center;text-align:center;font-size:15px;font-weight:950;line-height:1.1;color:#fff;background:#1e7650;border-radius:50%;transform:rotate(13deg);box-shadow:0 13px 20px #16543126}
+.featured-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;padding-bottom:32px}
+.featured-grid .downloads{padding:0;min-width:0}
+.featured-grid .download-box{height:100%;min-height:225px;display:flex;flex-direction:column;align-items:stretch;justify-content:space-between;gap:25px;border:1px solid #e3ebe3!important;background:#fff!important;padding:26px;border-radius:20px;box-shadow:0 6px 22px #183d2910}
+.featured-grid .download-box:hover{border-color:#a3cdb4!important;box-shadow:0 14px 35px #183d2918}
+.featured-grid #ingles-americano-destacado .download-box{background:#eaf4e5!important;border-color:#dcead7!important}
+.featured-grid #examenes .download-box{background:#f1f4fb!important}
+.featured-grid .download-box h2{font-size:clamp(20px,2.2vw,27px);line-height:1.2;letter-spacing:-.035em}
+.featured-grid .download-link{align-self:flex-start;font-size:13px;background:#176447;border-radius:11px}
+.blog{border-top:1px solid #e0e9e0;padding-top:49px}
+.blog-head h2{font-size:clamp(29px,3.8vw,46px)}
+.blog-head .eyebrow{color:#398363}
+.filters{gap:8px}.filter{background:#fff;border:1px solid #dfe9df;padding:10px 17px;border-radius:11px}
+.filter.active,.filter:hover{background:#1b674a}
+.grid{gap:17px}.card{position:relative;background:#fff;border:1px solid #e1eae1;border-radius:18px;padding:26px;min-height:260px;box-shadow:0 3px 10px #143b2706}
+.card:before{content:"";height:4px;width:44px;border-radius:5px;background:#aacfb0;position:absolute;top:0;left:26px}
+.card h2{font-size:21px;line-height:1.25}.card p{line-height:1.65}.card:hover{transform:translateY(-5px);box-shadow:0 16px 35px #1d513015;border-color:#c3dac9}
+footer{background:#f1f5ed}
+@media(max-width:1000px){header .nav{gap:10px}.unified-nav a{gap:5px;padding:10px 8px}.unified-nav a svg{width:16px;height:16px}.hero-art{min-height:410px}.art-word{font-size:100px}}
+@media(max-width:760px){.hero{grid-template-columns:1fr}.hero-copy{padding:35px 28px}.hero-art{min-height:235px}.art-word{margin:18px 0 0;font-size:100px}.art-line{margin:12px 0 0;font-size:27px}.art-sticker{bottom:22px;right:22px;width:75px;height:75px;font-size:12px}.featured-grid{grid-template-columns:1fr}.featured-grid .download-box{min-height:auto}}
+@media(max-width:700px){body{padding-bottom:calc(100px + env(safe-area-inset-bottom))}header .nav{min-height:72px}.brand{font-size:20px}
+header .unified-nav{position:fixed;bottom:9px;left:10px;right:10px;z-index:80;width:auto;max-width:none;margin:0;background:transparent}
+.unified-nav .nav-inner{gap:3px;padding:7px 7px calc(7px + env(safe-area-inset-bottom));background:#fffffff0;border:1px solid #dfe9df;border-radius:23px;box-shadow:0 14px 40px #12382936;backdrop-filter:blur(20px)}
+.unified-nav a{flex:1;min-height:58px;display:flex;flex-direction:column;gap:5px;padding:8px 3px;font-size:10px;border-radius:16px}
+.unified-nav a span{font-size:10px;line-height:13px}.unified-nav a svg{width:20px;height:20px}
+.hero{margin-top:22px;border-radius:23px}.hero h1{font-size:clamp(45px,10vw,62px)}.hero p{font-size:16px}
+.featured-grid{gap:13px}.blog{padding-top:31px}}
+@media(max-width:390px){.hero .quick-links a{width:100%;justify-content:center}.hero-note{font-size:9px}.unified-nav a span{font-size:9px}}
+@media(prefers-reduced-motion:reduce){.unified-nav a,.card{transition:none}}
 </style>
 </head>
 <body>
 <a class="skip-link" href="#articulos">Saltar a los artículos</a>
-<header><div class="container nav"><a class="brand" href="index.html"><span class="brand-mark">EN</span><span>Easy English</span></a></div></header><nav class="unified-nav" aria-label="Navegación principal"><a href="index.html" aria-current="page"><span>⌂</span>Inicio</a><a href="index.html#articulos" ><span>▤</span>Artículos</a><a href="post/indice-de-dificultad.html" ><span>▧</span>Curso</a><a href="examenes.html" ><span>✎</span>Exámenes</a><a href="perfil.html" ><span>♙</span>Perfil</a></nav>
+<header><div class="container nav"><a class="brand" href="index.html"><span class="brand-mark">EN</span><span>Easy English</span></a><nav class="unified-nav" aria-label="Navegación principal"><div class="nav-inner"><a href="index.html" aria-current="page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10.25 12 3l9 7.25V21h-6.5v-6.5h-5V21H3z"/></svg><span>Inicio</span></a><a href="index.html#articulos"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h16v16H6a2 2 0 0 1-2-2V5zm0 13a2 2 0 0 1 2-2h14M8 8h8m-8 4h6"/></svg><span>Artículos</span></a><a href="post/indice-de-dificultad.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 3h14v18H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2m3 5h8m-8 4h6"/></svg><span>Curso</span></a><a href="examenes.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 3h10M7 7h10M7 11h10M7 15h10M7 19h10M3 3h1m-1 4h1m-1 4h1m-1 4h1m-1 4h1"/></svg><span>Exámenes</span></a><a href="perfil.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8"/></svg><span>Perfil</span></a></div></nav></div></header>
 <main><div class="container">
-<section class="hero"><span class="eyebrow">Blog de inglés</span><h1>Artículos para aprender inglés.</h1><p>Gramática, vocabulario, speaking, listening y lecciones prácticas. Filtra por categoría o empieza por las publicaciones más recientes.</p><div class="quick-links"><a href="#articulos">📚 Explorar artículos</a><a href="downloads.html">⬇ Descargar apuntes PDF</a><a href="examenes.html">✍ Practicar exámenes</a></div></section>
-<section class="downloads" id="ingles-americano-destacado" aria-label="Artículo destacado: inglés americano"><div class="download-box" style="border:2px solid #1f5a49;background:#e9f0ec"><div><span class="eyebrow">Nuevo artículo · 9 de octubre</span><h2>🇺🇸 Inglés americano vs. 🇬🇧 inglés británico</h2><p>Aprende las diferencias entre los verbos: learned/learnt, got/gotten y más. Ejemplos y ejercicios explicados.</p></div><a class="download-link" href="post/ingles-americano-vs-britanico-diferencias-verbos.html">Leer artículo →</a></div></section>
+<section class="hero"><div class="hero-copy"><span class="eyebrow">✦ Tu espacio para aprender inglés</span><h1>Inglés real.<br><em>A tu ritmo.</em></h1><p>Aprende con lecciones claras, expresiones que utilizarás de verdad y exámenes para medir tu progreso. Todo en un mismo lugar.</p><div class="quick-links"><a href="#articulos">📚 Explorar artículos</a><a href="downloads.html">⬇ Descargar apuntes PDF</a><a href="examenes.html">✍ Practicar exámenes</a></div><div class="hero-note">GRAMMAR <span>✳</span> VOCABULARY <span>✳</span> PRACTICE <span>✳</span> SPEAKING</div></div><aside class="hero-art" aria-hidden="true"><span class="art-kicker">YOUR DAILY ENGLISH</span><div class="art-word">Hello<span>.</span></div><div class="art-line">A little progress<br>every day.</div><div class="art-shape shape-one"></div><div class="art-shape shape-two"></div><span class="art-sticker">LET’S<br>LEARN ↗</span></aside></section>
+<div class="featured-grid"><section class="downloads" id="ingles-americano-destacado" aria-label="Artículo destacado: inglés americano"><div class="download-box" style="border:2px solid #1f5a49;background:#e9f0ec"><div><span class="eyebrow">Nuevo artículo · 9 de octubre</span><h2>🇺🇸 Inglés americano vs. 🇬🇧 inglés británico</h2><p>Aprende las diferencias entre los verbos: learned/learnt, got/gotten y más. Ejemplos y ejercicios explicados.</p></div><a class="download-link" href="post/ingles-americano-vs-britanico-diferencias-verbos.html">Leer artículo →</a></div></section>
 <section class="downloads" id="app-android" aria-label="Aplicación Android Easy English">
   <div class="download-box" style="border:2px solid var(--brand);background:var(--brand-soft)">
     <div>
@@ -64,7 +127,7 @@ html{scroll-behavior:smooth}a:focus-visible,button:focus-visible,input:focus-vis
 <section class="downloads" id="descargas"><div class="download-box"><div><span class="eyebrow">Descargas PDF</span><h2>Material para estudiar sin conexión</h2><p>Ya puedes descargar las dos recopilaciones de Easy English en PDF.</p></div><a class="download-link" href="downloads.html">Ver y descargar PDF ↓</a></div></section>
 <section class="downloads"><div class="download-box"><div><span class="eyebrow">Repaso bilingüe</span><h2>Todas las frases en inglés + español</h2><p>Consulta en una sola página las frases y expresiones del blog, con buscador y opción para ocultar la traducción.</p></div><a class="download-link" href="post/todas-las-frases-bilingues.html">Repasar frases →</a></div></section>
 <section class="downloads" id="examenes"><div class="download-box"><div><span class="eyebrow">Practica cada día</span><h2>Exámenes de inglés B1–B2</h2><p>20 preguntas por examen, respuestas seleccionables y corrección con explicaciones al terminar.</p></div><a class="download-link" href="examenes.html">Ver exámenes →</a></div></section>
-<section class="blog" id="articulos">
+</div><section class="blog" id="articulos">
 <div class="blog-head"><div><span class="eyebrow">Biblioteca de aprendizaje</span><h2>Explora las lecciones</h2><p>Encuentra rápidamente lo que necesitas estudiar.</p></div><label class="search-wrap" for="articleSearch">⌕ <input id="articleSearch" type="search" placeholder="Buscar por tema o palabra..." autocomplete="off"></label></div>
 <div class="filters" aria-label="Filtrar artículos por categoría">
 <button class="filter active" data-filter="all">Todos</button><button class="filter" data-filter="lesson">Lessons</button><button class="filter" data-filter="grammar">Grammar</button><button class="filter" data-filter="vocabulary">Vocabulary</button><button class="filter" data-filter="speaking">Speaking</button><button class="filter" data-filter="listening">Listening</button>
