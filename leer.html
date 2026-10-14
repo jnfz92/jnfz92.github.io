@@ -1,3 +1,52 @@
-<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="Lee artículos de Easy English desde Supabase."><title>Leer artículo · Easy English</title><link rel="stylesheet" href="assets/site.css?v=20261014"><style>main{max-width:950px;margin:32px auto;padding:0 16px}#notice{padding:18px;background:#eef5ef;border-radius:12px}#content{width:100%;border:0;min-height:80vh;display:block} .direct-link{margin:18px 0}iframe{background:white}</style></head><body class="ee-site ee-lesson"><header class="ee-header"><div class="ee-bar"><a class="ee-logo" href="index.html"><b aria-hidden="true">ee.</b>Easy English</a><nav class="ee-nav"><a href="articulos.html">Volver al blog</a></nav></div></header><main><p id="notice" role="status">Cargando artículo desde Supabase…</p><p class="direct-link" id="alternative" hidden></p><iframe id="content" title="Contenido del artículo" hidden></iframe></main><script>
-(async()=>{const slug=new URLSearchParams(location.search).get('slug');const message=document.getElementById('notice'),frame=document.getElementById('content'),alt=document.getElementById('alternative');if(!slug||!/^[a-z0-9-]+$/.test(slug)){message.textContent='Artículo no válido.';return}const fallback='post/'+slug+'.html';const link=document.createElement('a');link.href=fallback;link.textContent='Abrir la versión HTML de respaldo';alt.append(link);try{const url='https://wnluofonzteaqtlfshgy.supabase.co/rest/v1/articulos?select=html,titulo&slug=eq.'+encodeURIComponent(slug)+'&limit=1';const r=await fetch(url,{headers:{apikey:'sb_publishable_Ef-AXAapcwaPExEFS6kmug_tKLaulM8',Accept:'application/json'}});if(!r.ok)throw Error('Supabase '+r.status);const data=await r.json();if(!data.length)throw Error('Artículo no encontrado');document.title=data[0].titulo;let html=data[0].html;html=html.replace(/<head([^>]*)>/i,'<head$1><base href="'+new URL('post/',location.href).href+'">');frame.srcdoc=html;frame.hidden=false;frame.addEventListener('load',()=>{try{const d=frame.contentDocument;if(d){frame.style.height=Math.max(d.documentElement.scrollHeight,d.body?.scrollHeight||0,600)+'px';new ResizeObserver(()=>{frame.style.height=Math.max(d.documentElement.scrollHeight,d.body?.scrollHeight||0,600)+'px'}).observe(d.body)}}catch(e){}},{once:true});message.textContent='Artículo cargado desde Supabase.';}catch(e){message.textContent='No se pudo cargar desde Supabase. Puedes abrir la versión de respaldo.';alt.hidden=false}})();
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="Lecciones y artículos de Easy English desde Supabase.">
+<title>Leer artículo · Easy English</title>
+<link rel="stylesheet" href="assets/site.css?v=20261014">
+<style>main{max-width:1050px;margin:24px auto;padding:0 16px}#notice{padding:14px 18px;background:#eef5ef;border-radius:12px}#content{width:100%;min-height:80vh;display:block;border:0;background:#fff}#content[hidden]{display:none}footer{margin-top:28px}.ee-tools{display:flex;gap:14px;flex-wrap:wrap;padding:12px 0}</style>
+</head><body class="ee-site ee-lesson">
+<header class="ee-header"><div class="ee-bar"><a class="ee-logo" href="index.html"><b aria-hidden="true">ee.</b>Easy English</a><nav class="ee-nav" aria-label="Navegación"><a href="index.html">Inicio</a><a href="articulos.html">Artículos</a><a href="practicar.html">Exámenes</a><a href="perfil.html">Perfil</a></nav></div></header>
+<main><div class="ee-tools"><a href="articulos.html">← Volver a todos los artículos</a></div><p id="notice" role="status">Cargando artículo desde Supabase…</p><iframe id="content" title="Contenido de la lección" hidden></iframe><noscript>Para leer el artículo desde Supabase es necesario activar JavaScript. <a href="articulos.html">Volver al blog</a>.</noscript></main>
+<footer class="ee-footer"><div class="ee-footer-inner"><div><strong>Easy English</strong><p>Aprende inglés a tu ritmo.</p></div><nav><a href="articulos.html">Todos los artículos</a><a href="practicar.html">Practicar</a></nav></div></footer>
+<script>
+(async()=>{
+const slug=new URLSearchParams(location.search).get('slug');
+const status=document.getElementById('notice'),frame=document.getElementById('content');
+const failed=text=>{status.textContent=text+' ';const a=document.createElement('a');a.href='articulos.html';a.textContent='Volver al blog';status.append(a)};
+if(!slug||!/^[a-z0-9-]+$/.test(slug)){failed('Artículo no válido.');return}
+try{
+ const url='https://wnluofonzteaqtlfshgy.supabase.co/rest/v1/articulos?select=html,titulo,descripcion&slug=eq.'+encodeURIComponent(slug)+'&limit=1';
+ const res=await fetch(url,{headers:{apikey:'sb_publishable_Ef-AXAapcwaPExEFS6kmug_tKLaulM8',Accept:'application/json'}});
+ if(!res.ok)throw Error('HTTP '+res.status);
+ const data=await res.json();if(!data.length||!data[0].html)throw Error('Artículo no encontrado');
+ const article=data[0];document.title=article.titulo||'Artículo · Easy English';
+ if(article.descripcion){let meta=document.querySelector('meta[name="description"]');meta.content=article.descripcion}
+ const canonical=document.createElement('link');canonical.rel='canonical';canonical.href=location.origin+location.pathname+'?slug='+encodeURIComponent(slug);document.head.append(canonical);
+ const doc=new DOMParser().parseFromString(article.html,'text/html');
+ const base=document.createElement('base');base.href=new URL('post/',location.href).href;doc.head.prepend(base);
+ const resolveArticle=href=>{
+  try{const u=new URL(href,base.href);
+   if(u.origin!==location.origin)return null;
+   const match=u.pathname.match(/^\/post\/([a-z0-9-]+)\.html$/i);
+   return match?'leer.html?slug='+encodeURIComponent(match[1])+u.hash:null
+  }catch(e){return null}
+ };
+ for(const link of doc.querySelectorAll('a[href]')){
+   const href=link.getAttribute('href');if(!href||href.startsWith('#')||/^(mailto:|tel:|javascript:)/i.test(href))continue;
+   const mapped=resolveArticle(href);
+   if(mapped){link.setAttribute('href',new URL(mapped,location.href).href);link.target='_top'}
+   else {const url=new URL(href,base.href);if(url.origin===location.origin)link.target='_top';else {link.target='_blank';link.rel='noopener noreferrer'}}
+ }
+ frame.addEventListener('load',()=>{
+  try{
+   const d=frame.contentDocument;if(!d)return;
+   const resize=()=>{frame.style.height=Math.max(d.documentElement.scrollHeight,d.body?.scrollHeight||0,650)+'px'};
+   resize();if(typeof ResizeObserver!=='undefined'&&d.body)new ResizeObserver(resize).observe(d.body);
+   d.addEventListener('click',e=>{const link=e.target.closest?.('a[href]');if(!link)return;const dest=resolveArticle(link.href);if(dest){e.preventDefault();location.assign(dest)}});
+  }catch(error){console.warn('Ajuste de contenido no disponible',error)}
+ },{once:true});
+ frame.srcdoc='<!doctype html>\n'+doc.documentElement.outerHTML;
+ frame.hidden=false;status.hidden=true;
+}catch(error){console.error('Error de lectura',error);failed('No se pudo cargar el artículo desde Supabase.')}
+})();
 </script></body></html>
