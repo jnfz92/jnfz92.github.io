@@ -3,10 +3,20 @@
 <meta name="description" content="Lecciones y artículos de Easy English desde Supabase.">
 <title>Leer artículo · Easy English</title>
 <link rel="stylesheet" href="assets/site.css?v=20261014">
-<style>main{max-width:1050px;margin:24px auto;padding:0 16px}#notice{padding:14px 18px;background:#eef5ef;border-radius:12px}#content{width:100%;min-height:80vh;display:block;border:0;background:#fff}#content[hidden]{display:none}footer{margin-top:28px}.ee-tools{display:flex;gap:14px;flex-wrap:wrap;padding:12px 0}</style>
+<style>main{max-width:1050px;margin:24px auto;padding:0 16px}#notice{padding:14px 18px;background:#eef5ef;border-radius:12px}#content{width:100%;min-height:80vh;display:block;border:0;background:#fff}#content[hidden]{display:none}footer{margin-top:28px}.ee-tools{display:flex;gap:14px;flex-wrap:wrap;padding:12px 0}
+/* Índice por niveles: componentes nativos, sin iframe. */
+.course{max-width:1050px;margin:auto}.course-hero{padding:28px 0 12px}.course-hero h1{font-size:clamp(32px,5vw,52px);line-height:1.1;margin:12px 0}.course-hero p{max-width:750px;color:#557064}
+.course-jump{display:flex;flex-wrap:wrap;gap:10px;margin:22px 0 26px}.course-jump a{background:#e9f0ec;border-radius:30px;padding:10px 15px;font-weight:750;text-decoration:none;color:#17563e}
+.course-level{scroll-margin-top:90px;margin:24px 0 38px}.course-level h2{font-size:clamp(24px,3vw,33px);margin:0 0 4px}.course-level>p{color:#60776b;margin:0 0 18px}
+.course-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}
+.course-card{border:1px solid #dbe6dc;border-radius:15px;padding:20px;background:#fff;text-decoration:none!important;color:#173f30!important;display:flex;flex-direction:column;gap:9px;transition:border-color .15s}
+.course-card:hover,.course-card:focus-visible{border-color:#40865d}.course-card strong{font-size:18px;line-height:1.35}.course-card span{font-size:14px;color:#576d60}.course-card em{font-size:13px;color:#237c50;font-weight:750;font-style:normal;margin-top:auto}
+.course-note{padding:16px 19px;background:#fff7e5;border-radius:12px;border-left:4px solid #c08c37}
+@media(max-width:650px){.course-grid{grid-template-columns:1fr}.course-hero{padding-top:12px}}
+</style>
 </head><body class="ee-site ee-lesson">
 <header class="ee-header"><div class="ee-bar"><a class="ee-logo" href="index.html"><b aria-hidden="true">ee.</b>Easy English</a><nav class="ee-nav" aria-label="Navegación"><a href="index.html">Inicio</a><a href="articulos.html">Artículos</a><a href="practicar.html">Exámenes</a><a href="perfil.html">Perfil</a></nav></div></header>
-<main><div class="ee-tools"><a href="articulos.html">← Volver a todos los artículos</a></div><p id="notice" role="status">Cargando artículo desde Supabase…</p><iframe id="content" title="Contenido de la lección" hidden></iframe><noscript>Para leer el artículo desde Supabase es necesario activar JavaScript. <a href="articulos.html">Volver al blog</a>.</noscript></main>
+<main><div class="ee-tools"><a href="articulos.html">← Volver a todos los artículos</a></div><p id="notice" role="status">Cargando artículo desde Supabase…</p><div id="course" class="course" hidden></div><iframe id="content" title="Contenido de la lección" hidden></iframe><noscript>Para leer el artículo desde Supabase es necesario activar JavaScript. <a href="articulos.html">Volver al blog</a>.</noscript></main>
 <footer class="ee-footer"><div class="ee-footer-inner"><div><strong>Easy English</strong><p>Aprende inglés a tu ritmo.</p></div><nav><a href="articulos.html">Todos los artículos</a><a href="practicar.html">Practicar</a></nav></div></footer>
 <script>
 (async()=>{
@@ -24,7 +34,43 @@ try{
  const canonical=document.createElement('link');canonical.rel='canonical';canonical.href=location.origin+location.pathname+'?slug='+encodeURIComponent(slug);document.head.append(canonical);
  const doc=new DOMParser().parseFromString(article.html,'text/html');
  const base=document.createElement('base');base.href=new URL('post/',location.href).href;doc.head.prepend(base);
+
+ // El curso requiere enlaces y anclas reales, sin el marco de una página HTML completa.
+ if(slug==='indice-de-dificultad'){
+   const resp=await fetch('https://wnluofonzteaqtlfshgy.supabase.co/rest/v1/articulos?select=slug,titulo,descripcion,fecha_publicacion,categoria_slug&order=fecha_publicacion.desc.nullslast,titulo.asc&limit=1000',{headers:{apikey:'sb_publishable_Ef-AXAapcwaPExEFS6kmug_tKLaulM8',Accept:'application/json'}});
+   if(!resp.ok)throw Error('No se pudo consultar el catálogo: '+resp.status);
+   const all=await resp.json(), bySlug=new Map(all.map(a=>[a.slug,a])), used=new Set([slug]);
+   const aliases={ 'phrasal-verbs-with-get':'get-phrasal-verbs', 'agreeing-disagreeing':'polite-disagreement', 'expressing-opinions':'opinion-speculation-expressions', 'environment-vocabulary':'pollution-environment-vocabulary', 'adverbs-of-frequency':'todos-los-tiempos-de-presente-en-ingles', 'might':'modal-verb-might' };
+   const names=[['a1','A1 · Principiante','Saludos, preguntas y fundamentos del inglés.'],['a2','A2 · Básico','Gramática y vocabulario para desenvolverte con autonomía.'],['b1','B1 · Intermedio','Tiempos verbales, comprensión y comunicación.'],['b2','B2 · Intermedio alto','Expresión, argumentación y preparación de exámenes.'],['recursos','Recursos complementarios','Lecturas, recopilaciones y materiales de apoyo.']];
+   const groups=names.map(([id,title,description])=>{
+     const source=doc.getElementById(id);
+     const entries=source?[...source.querySelectorAll('a.card[href]')].map(link=>{
+       const url=new URL(link.getAttribute('href'),base.href);
+       const found=url.pathname.match(/\/post\/([a-z0-9-]+)\.html$/i);
+       return found?bySlug.get(aliases[found[1]]||found[1]):null
+     }).filter(a=>a&&!used.has(a.slug)): [];
+     for(const a of entries)used.add(a.slug);
+     return {id,title,description,entries};
+   });
+   const others=all.filter(a=>!used.has(a.slug));
+   groups.push({id:'otros',title:'Más artículos de Easy English',description:'Lecciones añadidas al blog sin una clasificación de nivel verificada.',entries:others});
+   const root=document.getElementById('course'),el=(tag,cl,text)=>{const node=document.createElement(tag);if(cl)node.className=cl;if(text!==undefined)node.textContent=text;return node};
+   const head=el('section','course-hero');head.append(el('p','', 'TU RUTA DE APRENDIZAJE'),el('h1','', 'Índice de dificultad A1–B2'),el('p','', 'Explora '+(all.length-1)+' artículos y recursos. Las secciones de A1 a B2 son orientativas y no sustituyen una evaluación oficial de nivel.'));
+   head.append(el('div','course-note','Los artículos nuevos aparecen en «Más artículos» hasta que tengan un nivel revisado. Puedes abrir cualquier lección directamente desde Supabase.'));
+   root.append(head);
+   const nav=el('nav','course-jump');nav.setAttribute('aria-label','Navegar por los niveles');for(const g of groups){const link=el('a','',g.title+' · '+g.entries.length);link.href='#'+g.id;nav.append(link)}root.append(nav);
+   for(const g of groups){
+     const section=el('section','course-level');section.id=g.id;section.append(el('h2','',g.title+' ('+g.entries.length+')'),el('p','',g.description));
+     const grid=el('div','course-grid');for(const article of g.entries){
+       const card=el('a','course-card');card.href='leer.html?slug='+encodeURIComponent(article.slug);
+       const title=(article.titulo||article.slug).replace(/\s*[·|–-]\s*Easy English\s*$/i,'');
+       card.append(el('strong','',title),el('span','',article.descripcion||'Lección de inglés en Easy English'),el('em','','Leer lección →'));grid.append(card);
+     }section.append(grid);root.append(section);
+   }
+   root.hidden=false;status.hidden=true;return;
+ }
  const aliases={ 'phrasal-verbs-with-get':'get-phrasal-verbs', 'agreeing-disagreeing':'polite-disagreement', 'expressing-opinions':'opinion-speculation-expressions', 'environment-vocabulary':'pollution-environment-vocabulary', 'adverbs-of-frequency':'todos-los-tiempos-de-presente-en-ingles', 'might':'modal-verb-might' };
+ if(slug!=='indice-de-dificultad'){doc.querySelector('body > header.ee-header')?.remove();doc.querySelector('body > footer.ee-footer')?.remove()}
  const resolveArticle=href=>{
   try{const u=new URL(href,base.href);
    if(u.origin!==location.origin)return null;
