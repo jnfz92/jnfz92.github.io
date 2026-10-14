@@ -80,10 +80,10 @@ const filters=[...document.querySelectorAll('.filter')],cards=[...document.query
 let category='all';
 function refreshArticles(){
 const term=query.value.trim().toLocaleLowerCase('es');let visible=0;
-cards.forEach(card=>{const show=(category==='all'||card.dataset.cat===category)&&(!term||card.textContent.toLocaleLowerCase('es').includes(term));card.hidden=!show;if(show)visible++});
+document.querySelectorAll('.blog .grid .card').forEach(card=>{const show=(category==='all'||card.dataset.cat===category)&&(!term||card.textContent.toLocaleLowerCase('es').includes(term));card.hidden=!show;if(show)visible++});
 empty.style.display=visible?'none':'block';empty.textContent=term?'No encontramos artículos con esa búsqueda. Prueba otra palabra.':'No hay artículos en esta categoría.';
 resultCount.textContent=visible+' artículos encontrados';
 }
 filters.forEach(button=>button.addEventListener('click',()=>{category=button.dataset.filter;filters.forEach(x=>{x.classList.toggle('active',x===button);x.setAttribute('aria-pressed',String(x===button))});refreshArticles()}));
-query.addEventListener('input',refreshArticles);filters.forEach(x=>x.setAttribute('aria-pressed',String(x.classList.contains('active'))));refreshArticles();
-</script></body></html>
+query.addEventListener('input',refreshArticles);filters.forEach(x=>x.setAttribute('aria-pressed',String(x.classList.contains('active'))));refreshArticles();document.addEventListener('easyenglish:articles-loaded',refreshArticles);
+</script><script src="assets/articulos-supabase.js?v=20261014" defer></script></body></html>
