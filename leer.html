@@ -50,7 +50,7 @@
   top.append(info,el(doc,'span','count',extra.length+' contenidos'));section.append(top);
   const cards=el(doc,'div','cards');
   for(const item of extra){
-   const card=el(doc,'a','card');card.href='leer.html?slug='+encodeURIComponent(item.slug);
+   const card=el(doc,'a','card');card.href=new URL('leer.html?slug='+encodeURIComponent(item.slug),location.href).href;
    card.append(el(doc,'strong','',(item.titulo||item.slug).replace(/\s*[·|–-]\s*Easy English\s*$/i,'')),el(doc,'span','go','Abrir lección →'));
    cards.append(card);
   }
@@ -70,13 +70,13 @@
   if(!doc.querySelector('main'))throw new Error('El contenido del artículo no incluye la sección principal');
   // El HTML del artículo se presenta como documento completo; no hay iframe ni dos cabeceras.
   const base=doc.createElement('base');base.href=baseURL.href;doc.head.prepend(base);
+  if(slug==='indice-de-dificultad')await completeIndex(doc);
   for(const link of doc.querySelectorAll('a[href]')){
    const value=link.getAttribute('href');
    if(!value||value[0]==='#'||/^(mailto:|tel:|javascript:)/i.test(value))continue;
    const found=originalSlug(value);
    if(found)link.href=new URL('leer.html?slug='+encodeURIComponent(found.slug)+found.hash,location.href).href;
   }
-  if(slug==='indice-de-dificultad')await completeIndex(doc);
   // La URL canónica y la descripción corresponden al artículo, no al cargador.
   const existing=doc.querySelector('link[rel="canonical"]');if(existing)existing.remove();
   const canonical=doc.createElement('link');canonical.rel='canonical';canonical.href=new URL('leer.html?slug='+encodeURIComponent(resolveSlug(slug)),location.href).href;doc.head.append(canonical);
