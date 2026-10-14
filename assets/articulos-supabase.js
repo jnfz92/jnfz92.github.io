@@ -1,10 +1,36 @@
-/* Catálogo dinámico Easy English: Supabase es la fuente; HTML estático como respaldo. */
+/* Fuente de artículos: Supabase. El HTML del repositorio ya no contiene /post/. */
 (()=>{'use strict';
-const URL='https://wnluofonzteaqtlfshgy.supabase.co/rest/v1/articulos?select=ruta,slug,titulo,descripcion,categoria_slug,fecha_publicacion,nivel&order=fecha_publicacion.desc.nullslast,titulo.asc&limit=1000';
+const API='https://wnluofonzteaqtlfshgy.supabase.co/rest/v1/';
 const KEY='sb_publishable_Ef-AXAapcwaPExEFS6kmug_tKLaulM8';
-const labels={grammar:'Grammar',vocabulary:'Vocabulary',speaking:'Speaking / Writing',listening:'Listening',lesson:'Lessons'};
-const heading=t=>t.replace(/\s*[·|–-]\s*Easy English\s*$/i,'');
-function makeCard(x){const card=document.createElement('article');card.className='card';card.dataset.cat=x.categoria_slug||'lesson';const meta=document.createElement('div');meta.className='meta';const tag=document.createElement('span');tag.className='tag';tag.textContent=labels[card.dataset.cat]||'Lesson';meta.append(tag);if(x.fecha_publicacion){const time=document.createElement('time');time.dateTime=x.fecha_publicacion;const d=new Date(x.fecha_publicacion+'T12:00:00');time.textContent=d.toLocaleDateString('es-ES',{day:'numeric',month:'short',year:'numeric'});meta.append(time)}const h=document.createElement('h2');h.textContent=heading(x.titulo||x.slug);const p=document.createElement('p');p.textContent=x.descripcion||'Aprende inglés con esta lección de Easy English.';const link=document.createElement('a');link.className='read';link.href='leer.html?slug='+encodeURIComponent(x.slug);link.textContent='Leer artículo →';card.append(meta,h,p,link);return card}
-async function load(){const response=await fetch(URL,{headers:{apikey:KEY,Accept:'application/json'}});if(!response.ok)throw Error('Consulta fallida: '+response.status);const data=await response.json();if(!Array.isArray(data)||!data.length)throw Error('No hay artículos en Supabase');const grid=document.querySelector('.ee-library .blog .grid')||document.querySelector('.ee-home .grid');if(!grid)return;grid.replaceChildren(...(document.body.classList.contains('ee-home')?data.slice(0,6):data).map(makeCard));if(document.body.classList.contains('ee-library')){document.dispatchEvent(new Event('easyenglish:articles-loaded'))}else{const heading=document.querySelector('#recentTitle');if(heading)heading.textContent='Últimos artículos desde Supabase';}}
-load().catch(err=>{console.warn('Easy English: utilizando catálogo HTML de respaldo',err)});
+const categoryPage=location.pathname.includes('/category/');
+const page=location.pathname.split('/').pop();
+const group={'grammar.html':'grammar','lessons.html':'lesson','speaking.html':'speaking','tv-movies.html':'listening','vocabulary.html':'vocabulary'}[page];
+const home=document.body.classList.contains('ee-home');
+const library=document.body.classList.contains('ee-library')&&!categoryPage;
+const grid=document.querySelector(library?'.blog .grid':home?'main .grid':'main .grid');
+if(!grid || !(home||library||group))return;
+const defaultNames={grammar:'Gramática',vocabulary:'Vocabulario',speaking:'Speaking y Writing',listening:'Listening',lesson:'Lecciones y exámenes'};
+const apiFetch=async path=>{const res=await fetch(API+path,{headers:{apikey:KEY,Accept:'application/json'}});if(!res.ok)throw Error('Supabase: '+res.status);return res.json()};
+function card(a,names){
+ const item=document.createElement('article');item.className='card';item.dataset.cat=a.categoria_slug||'lesson';
+ const meta=document.createElement('div');meta.className='meta';
+ const tag=document.createElement('span');tag.className='tag';tag.textContent=names[item.dataset.cat]||defaultNames[item.dataset.cat]||'Lección';meta.append(tag);
+ if(a.fecha_publicacion){const t=document.createElement('time');t.dateTime=a.fecha_publicacion;t.textContent=new Date(a.fecha_publicacion+'T12:00:00').toLocaleDateString('es-ES',{day:'numeric',month:'short',year:'numeric'});meta.append(t)}
+ const h=document.createElement('h2');h.textContent=(a.titulo||a.slug).replace(/\s*[·|–-]\s*Easy English\s*$/i,'');
+ const p=document.createElement('p');p.textContent=a.descripcion||'Lección de inglés con ejemplos y ejercicios.';
+ const link=document.createElement('a');link.className=categoryPage?'button':'read';
+ link.href=(categoryPage?'../':'')+'leer.html?slug='+encodeURIComponent(a.slug);link.textContent=categoryPage?'Leer artículo →':'Leer artículo →';
+ item.append(meta,h,p,link);return item;
+}
+async function load(){
+ const articles=await apiFetch('articulos?select=slug,titulo,descripcion,categoria_slug,fecha_publicacion&order=fecha_publicacion.desc.nullslast,titulo.asc&limit=1000');
+ if(!Array.isArray(articles)||!articles.length)throw Error('Sin artículos en Supabase');
+ let names={...defaultNames};
+ try{const cats=await apiFetch('categorias_blog?select=slug,nombre&order=orden.asc');for(const cat of cats)names[cat.slug]=cat.nombre}catch(e){console.warn('Nombres de categorías de respaldo',e)}
+ const shown=group?articles.filter(a=>a.categoria_slug===group):home?articles.slice(0,6):articles;
+ grid.replaceChildren(...shown.map(a=>card(a,names)));
+ if(!shown.length){const p=document.createElement('p');p.textContent='Todavía no hay artículos en esta categoría.';grid.append(p)}
+ if(library)document.dispatchEvent(new Event('easyenglish:articles-loaded'));
+}
+load().catch(e=>{console.error('No se pudo cargar el blog desde Supabase',e);grid.replaceChildren();const p=document.createElement('p');p.setAttribute('role','alert');p.textContent='No se han podido cargar los artículos. Inténtalo de nuevo más tarde.';grid.append(p);if(library)document.dispatchEvent(new Event('easyenglish:articles-loaded'))});
 })();
