@@ -24,11 +24,12 @@ try{
  const canonical=document.createElement('link');canonical.rel='canonical';canonical.href=location.origin+location.pathname+'?slug='+encodeURIComponent(slug);document.head.append(canonical);
  const doc=new DOMParser().parseFromString(article.html,'text/html');
  const base=document.createElement('base');base.href=new URL('post/',location.href).href;doc.head.prepend(base);
+ const aliases={ 'phrasal-verbs-with-get':'get-phrasal-verbs', 'agreeing-disagreeing':'polite-disagreement', 'expressing-opinions':'opinion-speculation-expressions', 'environment-vocabulary':'pollution-environment-vocabulary', 'adverbs-of-frequency':'todos-los-tiempos-de-presente-en-ingles', 'might':'modal-verb-might' };
  const resolveArticle=href=>{
   try{const u=new URL(href,base.href);
    if(u.origin!==location.origin)return null;
    const match=u.pathname.match(/^\/post\/([a-z0-9-]+)\.html$/i);
-   return match?'leer.html?slug='+encodeURIComponent(match[1])+u.hash:null
+   return match?'leer.html?slug='+encodeURIComponent(aliases[match[1]]||match[1])+u.hash:null
   }catch(e){return null}
  };
  for(const link of doc.querySelectorAll('a[href]')){
