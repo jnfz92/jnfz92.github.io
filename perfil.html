@@ -101,6 +101,7 @@ footer{background:#fffdfb}
  header .unified-nav a span{font-size:12px}
  header .unified-nav a svg{width:16px;height:16px}
 }
+.exam-grade{font-size:20px!important;color:#176449;white-space:nowrap}.item small{display:block;margin-top:3px}
 </style>
 <link rel="stylesheet" href="assets/site.css?v=20261013"><script src="assets/site.js?v=20261013" defer></script></head>
 <body class="ee-site ee-profile">
@@ -138,12 +139,35 @@ for(const a of articles){if(term&&!a.title.toLocaleLowerCase('es').includes(term
 if(!count){const p=document.createElement('p');p.className='muted';p.textContent=articles.length?'No hay artículos con esos filtros.':'No se pudieron cargar los artículos.';list.append(p)}
 }
 async function loadCloud(){if(!user)return;const [p,l]=await Promise.all([eeDb.from('perfiles').select('nombre').eq('usuario_id',user.id).maybeSingle(),eeDb.from('lecturas').select('articulo_url,leido_en').eq('usuario_id',user.id)]);if(p.error)throw p.error;if(l.error)throw l.error;profile={name:p.data?.nombre||'',read:Object.fromEntries((l.data||[]).map(r=>[r.articulo_url,r.leido_en]))};render();await results()}
-async function results(){const box=$('examHistory');box.replaceChildren();if(!user){$('examCount').textContent='0';$('bestScore').textContent='—';$('averageScore').textContent='—';box.textContent='Inicia sesión para ver tus notas.';return}
-const {data,error}=await eeDb.from('resultados').select('id,examen_id,aciertos,total,nota,fecha').order('fecha',{ascending:false}).limit(100);
-if(error){box.textContent='No se pudieron consultar las notas: '+error.message;return}
-const scores=data||[];$('examCount').textContent=String(scores.length);$('bestScore').textContent=scores.length?Math.max(...scores.map(x=>Number(x.nota)))+'%':'—';$('averageScore').textContent=scores.length?(scores.reduce((s,x)=>s+Number(x.nota),0)/scores.length).toFixed(1)+'%':'—';
-for(const r of scores.slice(0,15)){const el=document.createElement('div');el.className='item';el.textContent=new Date(r.fecha).toLocaleDateString('es-ES')+' · Examen '+r.examen_id+' · '+r.aciertos+'/'+r.total+' ('+r.nota+'%)';box.append(el)}
-if(!scores.length)box.textContent='Todavía no hay resultados. Puedes hacer tu primer examen.'}
+async function results(){
+ const box=$('examHistory');box.replaceChildren();
+ if(!user){$('examCount').textContent='—';$('bestScore').textContent='—';$('averageScore').textContent='—';return}
+ const activeUserId=user.id;
+ box.textContent='Cargando resultados…';
+ const [resultResponse,examResponse]=await Promise.all([
+  eeDb.from('resultados').select('id,examen_id,aciertos,total,nota,fecha').eq('usuario_id',activeUserId).order('fecha',{ascending:false}).limit(1000),
+  eeDb.from('examenes').select('id,titulo,fecha')
+ ]);
+ if(!user||user.id!==activeUserId)return;
+ box.replaceChildren();
+ if(resultResponse.error){box.textContent='No se pudieron consultar tus notas: '+resultResponse.error.message;return}
+ const scores=resultResponse.data||[],examNames=new Map((examResponse.data||[]).map(e=>[String(e.id),e.titulo]));
+ const nums=scores.map(x=>Number(x.nota)).filter(Number.isFinite);
+ $('examCount').textContent=String(scores.length);
+ $('bestScore').textContent=nums.length?Math.max(...nums).toFixed(1).replace(/\\.0$/,'')+'%':'—';
+ $('averageScore').textContent=nums.length?(nums.reduce((s,x)=>s+x,0)/nums.length).toFixed(1)+'%':'—';
+ for(const r of scores.slice(0,30)){
+  const el=document.createElement('div');el.className='item';
+  const info=document.createElement('div'),name=document.createElement('strong'),detail=document.createElement('small');
+  name.textContent=examNames.get(String(r.examen_id))||'Examen '+r.examen_id;
+  const date=new Date(r.fecha);
+  detail.textContent=(Number.isNaN(date.getTime())?'':date.toLocaleString('es-ES')+' · ')+r.aciertos+'/'+r.total+' aciertos';
+  const grade=document.createElement('strong');grade.textContent=Number(r.nota).toFixed(1).replace(/\\.0$/,'')+'%';grade.className='exam-grade';
+  info.append(name,detail);el.append(info,grade);box.append(el);
+ }
+ if(!scores.length)box.textContent='Aún no tienes resultados guardados. Empieza tu primer examen.';
+ if(examResponse.error){const p=document.createElement('p');p.className='muted';p.textContent='No se pudieron cargar los títulos de los exámenes.';box.append(p)}
+}
 async function changeUser(next){
  user=next;
  $('privateDashboard').hidden=!user;
