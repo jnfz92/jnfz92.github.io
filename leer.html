@@ -59,7 +59,7 @@
   if(final)final.before(section);
   else doc.querySelector('main')?.append(section);
   const jump=doc.querySelector('nav.jump');
-  if(jump){const link=el(doc,'a','','Más artículos ('+extra.length+')');link.href='#mas-articulos';jump.append(link)}
+  if(jump){const link=el(doc,'a','','Más artículos ('+extra.length+')');link.setAttribute('href','#mas-articulos');jump.append(link)}
  }
  if(!slug||!/^[a-z0-9-]+$/.test(slug)){status.textContent='El enlace no corresponde a un artículo válido.';return}
  try{
@@ -73,7 +73,9 @@
   if(slug==='indice-de-dificultad')await completeIndex(doc);
   for(const link of doc.querySelectorAll('a[href]')){
    const value=link.getAttribute('href');
-   if(!value||value[0]==='#'||/^(mailto:|tel:|javascript:)/i.test(value))continue;
+   if(!value)continue;
+   if(value[0]==='#'){link.href=location.origin+location.pathname+location.search+value;continue}
+   if(/^(mailto:|tel:|javascript:)/i.test(value))continue;
    const found=originalSlug(value);
    if(found)link.href=new URL('leer.html?slug='+encodeURIComponent(found.slug)+found.hash,location.href).href;
   }
