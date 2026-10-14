@@ -21,3 +21,59 @@ html{scroll-behavior:smooth;scroll-padding-top:110px}body.ee-site{margin:0;backg
 /* A filtered header would make the mobile fixed navigation relative to it. */
 .ee-site header.ee-header{backdrop-filter:none;background:#f5f7f1fa}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.ee-site .card,.ee-site .ee-path{transition:none;transform:none}.ee-site .hero-art{transform:none}}
+
+
+/* Easy English · Academia digital · sistema aprobado 2026-10-14 */
+:root{--ee-ink:#193a2a;--ee-green:#176447;--ee-lime:#bce5ab;--ee-bg:#f5f7f2;--ee-muted:#697d70;--ee-line:#e1e9e1;--bg:#f5f7f2;--brand:#176447;--ink:#193a2a;--soft:#eaf5ed;--accent:#bce5ab}
+body.ee-site{background:#f5f7f2;color:#193a2a}
+.ee-site header.ee-header{background:#fffffff0;box-shadow:0 5px 24px #163e2b0a;border-bottom:1px solid #e1e9e1}
+.ee-header .ee-bar{max-width:1200px;padding:15px 28px}
+.ee-logo b{background:#176447;color:#fff;box-shadow:0 6px 16px #17644726}
+.ee-nav a{border-radius:12px;font-weight:720}
+.ee-nav a[aria-current=page]{color:#176447;background:#e5f0e8}
+.ee-site .tag,.ee-site .level{border-radius:999px;letter-spacing:.08em;background:#eaf5ed;color:#176447;border-color:#e0eee2}
+.ee-site .card,.ee-site .panel,.ee-site fieldset,.ee-site .ee-path{border-radius:22px!important;border-color:#e2eae1!important;box-shadow:0 5px 22px #193a2a09}
+.ee-site .card:hover,.ee-site .ee-path:hover{box-shadow:0 18px 35px #193a2a13;border-color:#bdd5c3!important}
+.ee-site .card h2{font-weight:780;letter-spacing:-.035em}
+.ee-site .ee-path-icon{background:#eaf5ed!important;color:#176447!important;border-radius:14px}
+.ee-site .ee-path:nth-child(2) .ee-path-icon{background:#fff4dc!important;color:#a66f1a!important}
+.ee-site .ee-path:nth-child(3) .ee-path-icon{background:#e9eefd!important;color:#3f67ae!important}
+.ee-site .ee-section-heading h2{letter-spacing:-.045em}
+.ee-site .download-link,.ee-site .button,.ee-site .primary,.ee-site .cta,.ee-site button:not(.filter):not(.chip):not(.secondary):not(.ee-top){background:#176447;color:white;border-color:#176447}
+.ee-site .stat{background:#f2f8f0;border-radius:17px}
+.ee-site .ee-resource{border-radius:24px}
+.ee-site footer.ee-footer{background:#eef3ea}
+.ee-site .feedback{background:#edf6ee}
+.ee-site.ee-home .hero{background:#173f30!important;color:white!important;border-radius:28px!important;overflow:hidden!important;box-shadow:0 22px 54px #173f3023!important}
+.ee-site.ee-home .hero .hero-copy{padding:clamp(30px,5vw,65px)!important}
+.ee-site.ee-home .hero h1{color:#fff!important;font-size:clamp(44px,5.3vw,75px);letter-spacing:-.065em}
+.ee-site.ee-home .hero h1 em{color:#bce5ab!important}
+.ee-site.ee-home .hero p{color:#dfeee4!important;max-width:620px}
+.ee-site.ee-home .hero .eyebrow{color:#bce5ab!important}
+.ee-site.ee-home .hero-art{background:linear-gradient(150deg,#d8ecc5,#add49d)!important;color:#173f30!important}
+.ee-site.ee-home .art-word{color:#173f30!important}
+.ee-site.ee-home .quick-links a:first-child{background:white!important;color:#176447!important}
+.ee-site.ee-home .quick-links a:not(:first-child){border:1px solid #ffffff55!important;background:#ffffff15!important;color:#fff!important}
+.ee-site.ee-home .quick-links a:hover{filter:brightness(1.06)}
+.ee-site.ee-exam main{max-width:920px}
+.ee-site.ee-exam main>h1{font-size:clamp(38px,5vw,55px);line-height:1.1;letter-spacing:-.055em;margin:42px 0 14px}
+.ee-site.ee-exam main>.panel{margin:20px 0}
+.ee-site.ee-exam #exam fieldset{margin:22px 0;padding:26px;border-radius:18px!important}
+.ee-site.ee-exam #exam fieldset label{display:block;padding:10px 15px;border:1px solid #e2eae1;border-radius:12px;margin:9px 0;cursor:pointer;transition:background .15s,border-color .15s}
+.ee-site.ee-exam #exam fieldset label:hover{background:#f3f9f3;border-color:#b4d5ba}
+.ee-site.ee-exam #exam fieldset label:has(input:checked){background:#e8f3ea;border-color:#176447}
+.ee-site.ee-exam #connected{background:#eaf5ed;border-radius:14px;padding:14px 18px}
+.ee-site.ee-exam #history p{border-bottom:1px solid #e2eae1;padding:12px 0;margin:0}
+.ee-site.ee-exam select{min-height:50px}
+.ee-site.ee-profile .panel{border:1px solid #e2eae1!important;border-radius:22px!important;box-shadow:0 6px 24px #193a2a0b!important}
+.ee-site.ee-profile .hero{background:linear-gradient(125deg,#173f30,#216f4c)!important;border-radius:28px!important;border:0!important;max-width:none!important;padding:clamp(30px,4vw,48px)!important;color:white!important;margin:30px 0 25px!important}
+.ee-site.ee-profile .hero h1{color:#fff!important;letter-spacing:-.055em}
+.ee-site.ee-profile .hero .eyebrow{color:#bce5ab!important}
+.ee-site.ee-profile .hero .intro{color:#dceee0!important}
+.ee-site.ee-profile .hero .hero-actions a{background:#fff!important;color:#176447!important;border:0}
+.ee-site.ee-profile .hero .hero-actions a+ a{background:#ffffff17!important;color:white!important;border:1px solid #ffffff65}
+.ee-site.ee-profile .stat{background:#f1f7f0!important;border:1px solid #e2eee4!important}
+.ee-site.ee-profile .stat strong{color:#176447!important}
+.ee-site.ee-profile .primary{background:#176447!important}
+.ee-site.ee-profile .secondary{background:#fff!important;color:#176447!important}
+@media(max-width:700px){.ee-header .ee-bar{padding:13px 16px}.ee-nav a[aria-current=page]{background:#176447;color:#fff}.ee-site.ee-home .hero{border-radius:22px!important}.ee-site.ee-profile .hero{border-radius:22px!important}}
