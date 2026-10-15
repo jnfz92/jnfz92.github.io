@@ -1,5 +1,4 @@
 import fs from "node:fs";
-import vm from "node:vm";
 
 const decode=s=>s
   .replace(/&nbsp;/g," ").replace(/&amp;/g,"&").replace(/&quot;/g,'"')
@@ -55,34 +54,52 @@ function buildPdf(text,title){
   return Buffer.from(pdf,"latin1");
 }
 
-const response=await fetch('https://wnluofonzteaqtlfshgy.supabase.co/rest/v1/articulos?select=ruta,html&order=ruta.asc&limit=1000',{headers:{apikey:'sb_publishable_Ef-AXAapcwaPExEFS6kmug_tKLaulM8'}});
-if(!response.ok)throw new Error('Supabase HTTP '+response.status);
-const records=await response.json();
+
+/* Los artículos, colecciones y entradas de vocabulario provienen de Supabase.
+   Esta tarea se ejecuta con GitHub Actions y publica archivos estáticos. */
+const API='https://wnluofonzteaqtlfshgy.supabase.co/rest/v1/';
+const KEY='sb_publishable_Ef-AXAapcwaPExEFS6kmug_tKLaulM8';
+async function load(path) {
+  const res=await fetch(API+path,{headers:{apikey:KEY,Accept:'application/json'}});
+  if(!res.ok)throw new Error('Supabase '+res.status+': '+path);
+  return res.json();
+}
+const [records,collections,members,vocab]=await Promise.all([
+  load('articulos?select=ruta,html&order=ruta.asc&limit=1000'),
+  load('colecciones_material?select=id,slug,titulo,tipo,incluir_todos_articulos,nombre_archivo,fecha_publicacion&publicado=eq.true&order=slug.asc&limit=1000'),
+  load('coleccion_articulos?select=coleccion_id,articulo_slug,orden&order=orden.asc&limit=1000'),
+  load('vocabulario?select=termino_en,traduccion_es,categoria,ejemplo_en,orden&publicado=eq.true&order=orden.asc&limit=1000')
+]);
 if(records.length<50)throw new Error('Faltan artículos en Supabase: '+records.length);
+if(!collections.length)throw new Error('No hay colecciones de PDF publicadas');
 const htmlByFile=new Map(records.map(x=>[x.ruta.replace('post/',''),x.html]));
 const allPosts=[...htmlByFile.keys()].sort();
-const blogText="Easy English · Artículos del blog\n1 October 2026\n\nÍNDICE\n"+
-  allPosts.map((x,i)=>`${i+1}. ${titleOf(htmlByFile.get(x),x)}`).join("\n")+
-  "\n\n"+allPosts.map(x=>articleText("post/"+x)).join("\n\n------------------------------\n\n");
 
-const noteFiles=[
-"get-phrasal-verbs.html","future-going-to-present-continuous.html","present-perfect-vs-past-simple.html",
-"english-tenses-overview.html","countable-uncountable-nouns.html","gerund-infinitive.html",
-"stative-verbs.html","skimming-scanning-reading.html","useful-vocabulary-review.html",
-"dictionary-word-reference-study.html","pollution-environment-vocabulary.html"
-];
-const notesText="English Study Notes\n6 October 2026\n\n"+
-  noteFiles.filter(x=>htmlByFile.has(x)).map(x=>articleText("post/"+x)).join("\n\n------------------------------\n\n");
+function dateLabel(d){
+  return d?new Date(d+'T12:00:00').toLocaleDateString('es-ES',{day:'numeric',month:'long',year:'numeric'}):'';
+}
+function buildArticleCollection(c){
+  const files=c.incluir_todos_articulos
+    ?allPosts
+    :members.filter(m=>m.coleccion_id===c.id).sort((a,b)=>a.orden-b.orden)
+      .map(m=>m.articulo_slug+'.html').filter(name=>htmlByFile.has(name));
+  if(!files.length)throw new Error('Colección sin artículos: '+c.slug);
+  return c.titulo+'\n'+dateLabel(c.fecha_publicacion)+'\n\nÍNDICE\n'+
+    files.map((name,i)=>(i+1)+'. '+titleOf(htmlByFile.get(name),name)).join('\n')+
+    '\n\n'+files.map(name=>articleText('post/'+name)).join('\n\n------------------------------\n\n');
+}
+function buildVocabCollection(c){
+  if(!vocab.length)throw new Error('No hay entradas de vocabulario');
+  return c.titulo+'\n'+dateLabel(c.fecha_publicacion)+
+    '\n\nEnglish | Español | Category | Example\n'+
+    vocab.map(v=>[v.termino_en,v.traduccion_es,v.categoria,v.ejemplo_en||''].join(' | ')).join('\n');
+}
 
-const vocabText="English Vocabulary List\n6 October 2026\n\nEnglish | Español | Category | Example\nget up | levantarse | Phrasal verb | I get up at seven.\nget in | entrar / llegar | Phrasal verb | What time did you get in?\nget out | salir | Phrasal verb | Get out of the car.\nget off | bajarse | Phrasal verb | We get off at the next stop.\nplan | plan | Future | I have a plan for tomorrow.\nintention | intención | Future | My intention is to study more.\narrangement | plan acordado / arreglo | Future | We have an arrangement for Friday.\nexperience | experiencia | Present Perfect | I've had that experience before.\nyet | todavía / ya | Present Perfect | I haven't finished yet.\nsince | desde | Present Perfect | I've lived here since 2024.\nfor | durante / desde hace | Present Perfect | I've worked here for two years.\nroutine | rutina | Verb tenses | I follow the same routine every day.\nhabit | hábito | Verb tenses | Reading is a useful habit.\ncurrently | actualmente | Vocabulary | I'm currently studying English.\ncountable | contable | Grammar | Cars are countable nouns.\nuncountable | incontable | Grammar | Pollution is uncountable.\ninformation | información | Uncountable noun | I need some information.\nadvice | consejo(s) | Uncountable noun | She gave me some advice.\ngerund | gerundio | Grammar | Reading is useful.\ninfinitive | infinitivo | Grammar | I want to learn.\nstative verb | verbo de estado | Grammar | Know is a stative verb.\nbelieve | creer | Stative verb | I believe you.\nseem | parecer | Stative verb | It seems difficult.\nunderstand | entender | Stative verb | I understand the question.\nskimming | lectura rápida: idea general | Reading | Use skimming to understand the topic.\nscanning | búsqueda rápida de datos | Reading | Use scanning to find a date.\nkey | clave / esencial | Vocabulary | Communication is key.\nkey characteristic | característica clave | Vocabulary | Speed is a key characteristic.\nawareness | concienciación / conocimiento | Vocabulary | We need greater awareness.\nseabed | fondo marino | Environment | Plastic can reach the seabed.\nlorry | camión (UK) | Transport | A lorry delivered the goods.\ntruck | camión (US) | Transport | The truck is fully loaded.\nload | carga / cargar | Transport | They loaded the truck.\ncargo | carga / mercancía | Transport | The ship carries cargo.\npollution | contaminación | Environment | Pollution affects health.\nair pollution | contaminación del aire | Environment | Traffic causes air pollution.\nwater pollution | contaminación del agua | Environment | Water pollution harms wildlife.\nsoil pollution | contaminación del suelo | Environment | Chemicals can cause soil pollution.\nnoise pollution | contaminación acústica | Environment | Traffic creates noise pollution.\nplastic pollution | contaminación por plástico | Environment | Plastic pollution damages oceans.\nemissions | emisiones | Environment | Vehicle emissions affect air quality.\nwaste | residuos / desperdicio | Environment | We should reduce waste.\nlitter | basura tirada | Environment | Don't leave litter on the beach.\nsewage | aguas residuales | Environment | Sewage can contaminate rivers.\nlandfill | vertedero | Environment | Too much waste ends up in landfill.\nrecycling | reciclaje | Environment | Recycling saves resources.\nrenewable energy | energía renovable | Environment | Renewable energy can reduce emissions.\nclimate change | cambio climático | Environment | Climate change affects ecosystems.\nenvironment | medio ambiente | Environment | We must protect the environment.\nreduce | reducir | Environment verb | We need to reduce emissions.\nreuse | reutilizar | Environment verb | Reuse bags when possible.\nrecycle | reciclar | Environment verb | Recycle paper and glass.\nprotect | proteger | Environment verb | We should protect the oceans.\nprevent | prevenir / evitar | Environment verb | These measures prevent pollution.\npollute | contaminar | Environment verb | Factories can pollute rivers.\ndump | verter / tirar | Environment verb | Do not dump waste into the sea.\nclean up | limpiar / retirar residuos | Environment phrasal verb | Volunteers cleaned up the beach.";
-
-fs.mkdirSync("pdfs",{recursive:true});
-const outputs=[
- ["easy_english_articulos_01-10-2026.pdf",blogText,"Easy English - Artículos del blog"],
- ["english_apuntes_articulos_06-10-2026.pdf",notesText,"English Study Notes - 6 oct 2026"],
- ["vocabulary_list_06-10-2026.pdf",vocabText,"English Vocabulary List - 6 oct 2026"]
-];
-for(const [name,text,title] of outputs){
-  fs.writeFileSync("pdfs/"+name,buildPdf(text,title));
-  console.log("built",name,fs.statSync("pdfs/"+name).size,"bytes");
+fs.mkdirSync('pdfs',{recursive:true});
+for(const c of collections){
+  if(!/^[\w-]+\.pdf$/.test(c.nombre_archivo))throw new Error('Nombre de archivo PDF inválido');
+  const text=c.tipo==='vocabulario'?buildVocabCollection(c):buildArticleCollection(c);
+  const file='pdfs/'+c.nombre_archivo;
+  fs.writeFileSync(file,buildPdf(text,c.titulo));
+  console.log('built',file,fs.statSync(file).size,'bytes');
 }
