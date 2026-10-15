@@ -48,7 +48,7 @@
     return el;
   }
   try{
-    const endpoint='https://wnluofonzteaqtlfshgy.supabase.co/rest/v1/examenes?select=id,titulo,fecha,nivel,descripcion&publicado=eq.true&order=fecha.desc,id.desc';
+    const endpoint='https://wnluofonzteaqtlfshgy.supabase.co/rest/v1/examenes?select=id,titulo,fecha,nivel,descripcion,articulo_slug&publicado=eq.true&order=fecha.desc,id.desc';
     const res=await fetch(endpoint,{headers:{apikey:'sb_publishable_Ef-AXAapcwaPExEFS6kmug_tKLaulM8',Accept:'application/json'}});
     if(!res.ok)throw new Error('HTTP '+res.status);
     const exams=await res.json();
@@ -63,9 +63,9 @@
       append(card,'span','catalog-meta',exam.fecha?new Date(exam.fecha+'T12:00:00').toLocaleDateString('es-ES',{day:'numeric',month:'short',year:'numeric'}):'Sin fecha');
       const start=append(card,'a','catalog-go','Practicar y guardar nota ↗');
       start.href='practicar.html?examen='+encodeURIComponent(exam.id);
-      if(exam.fecha&&classics.has(exam.fecha)){
+      if(exam.articulo_slug||(exam.fecha&&classics.has(exam.fecha))){
         const classic=append(card,'a','catalog-secondary','Versión clásica sin iniciar sesión ↗');
-        classic.href=classics.get(exam.fecha);
+        classic.href=exam.articulo_slug?'leer.html?slug='+encodeURIComponent(exam.articulo_slug):classics.get(exam.fecha);
       }
       cards.append(card);
     }
