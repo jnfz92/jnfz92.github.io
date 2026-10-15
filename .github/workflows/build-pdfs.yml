@@ -1,11 +1,16 @@
 name: Build downloadable PDFs
 on:
   workflow_dispatch:
+  schedule:
+    - cron: '17 4 * * *' # Actualiza diariamente los PDF desde Supabase (UTC)
   push:
     branches: [main]
     paths:
       - scripts/build-pdfs.mjs
       - .github/workflows/build-pdfs.yml
+concurrency:
+  group: easy-english-pdfs
+  cancel-in-progress: false
 permissions:
   contents: write
 jobs:
