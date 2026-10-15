@@ -126,14 +126,20 @@ async function list(){
 }
 
 async function load(){
+  if(submitting)throw new Error('Hay una entrega en curso. Espera a que termine antes de cambiar de examen.');
   const requestedId=Number($('examlist').value);
   if(!requestedId)throw new Error('Selecciona un examen válido.');
   const selectedTitle=$('examlist').selectedOptions[0]?.textContent||'Examen';
   const version=++loadVersion;
-  const {data,error}=await eeDb.from('preguntas')
-    .select('id,orden,enunciado,opciones,fuente_url')
-    .eq('examen_id',requestedId).order('orden');
+  const [questionResponse,examResponse]=await Promise.all([
+    eeDb.from('preguntas')
+      .select('id,orden,enunciado,opciones,fuente_url')
+      .eq('examen_id',requestedId).order('orden'),
+    eeDb.from('examenes').select('lectura').eq('id',requestedId).maybeSingle()
+  ]);
+  const {data,error}=questionResponse;
   if(error)throw error;
+  if(examResponse.error)console.warn('No se pudo consultar el texto de lectura',examResponse.error);
   if(version!==loadVersion)return;
   if(!Array.isArray(data)||!data.length)throw new Error('Este examen no tiene preguntas publicadas.');
   examId=requestedId;questions=data;submitting=false;pendingResultId=null;
@@ -142,7 +148,23 @@ async function load(){
   $('loadedExam').hidden=false;
   $('loadedExam').textContent='Estás realizando: '+selectedTitle;
   const form=$('exam');form.replaceChildren();
+  const readingText=examResponse.data?.lectura||null;
+  const readingSource=questions.find(q=>q.orden>=17&&q.fuente_url&&
+    /Swietenia|DCA|divers|marine|seabed|Protector of the Sea/i.test(q.enunciado))?.fuente_url;
   for(const q of questions){
+    if(q.orden===17&&readingText){
+      const section=document.createElement('section');section.className='exam-reading';
+      const h=document.createElement('h3');h.textContent='Lectura para las preguntas 17–20';
+      const p=document.createElement('p');p.textContent=readingText;
+      section.append(h,p);form.append(section);
+    }else if(q.orden===17&&readingSource){
+      const section=document.createElement('section');section.className='exam-reading';
+      const h=document.createElement('h3');h.textContent='Lectura necesaria para las preguntas 17–20';
+      const p=document.createElement('p');p.textContent='Estas preguntas se basan en un artículo de lectura. Ábrelo en otra pestaña antes de responder.';
+      const a=document.createElement('a');a.href=articleLink(readingSource);
+      a.target='_blank';a.rel='noopener noreferrer';a.textContent='Leer Protector of the Sea ↗';
+      section.append(h,p,a);form.append(section);
+    }
     const fs=document.createElement('fieldset'),legend=document.createElement('legend');
     legend.textContent=q.orden+'. '+q.enunciado;fs.append(legend);
     // Se muestra un orden aleatorio, pero se envía a Supabase el índice ORIGINAL.
@@ -159,7 +181,7 @@ async function load(){
     });
     if(q.fuente_url){
       const a=document.createElement('a');a.href=articleLink(q.fuente_url);
-      a.textContent='Repasar lección';fs.append(a);
+      a.target='_blank';a.rel='noopener noreferrer';a.textContent='Repasar lección';fs.append(a);
     }
     const fb=document.createElement('div');
     fb.id='feedback-'+q.id;fb.className='feedback';fb.hidden=true;fs.append(fb);
