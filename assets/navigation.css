@@ -56,6 +56,7 @@
 }
 @media(max-width:790px){
  body{padding-bottom:calc(88px + env(safe-area-inset-bottom,0px))!important}
+ #ee-shared-header.ee-header{backdrop-filter:none!important}
  #ee-shared-header .ee-bar{padding:13px 17px!important}
  #ee-shared-header .ee-logo{font-size:18px!important}
  #ee-shared-header .ee-mobile-label{display:inline-block!important;font:700 11px system-ui,sans-serif!important;color:#68806e!important}
