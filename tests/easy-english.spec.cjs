@@ -41,10 +41,48 @@ test('Escape cierra menú móvil',async ({page})=>{
   await expect(page.locator('#ee-primary-navigation')).toBeHidden();
 });
 test('rutas HTML publicadas',async ({request})=>{
-  for(const p of ['index.html','articulos.html','leer.html','curso.html','examenes.html','practicar.html','perfil.html','actividades.html','comunidad.html','mensajes.html']){
+  for(const p of ['index.html','articulos.html','leer.html','curso.html','examenes.html','practicar.html','perfil.html','actividades.html','comunidad.html','mensajes.html','sugerencias.html']){
     const r=await request.get('/'+p);
     expect(r.status(),p+' => '+r.status()).toBe(200);
   }
+});
+test('sugerencias permite enviar y cambiar un voto sin escribir en producción',async ({page})=>{
+  let vote=null;
+  const calls=[];
+  await page.route(/\/rest\/v1\/rpc\//,async route=>{
+    const name=new URL(route.request().url()).pathname.split('/').pop();
+    const body=route.request().postDataJSON();
+    calls.push({name,body});
+    if(name==='listar_sugerencias'){
+      return route.fulfill({status:200,json:[{
+        id:7,titulo:'Mejorar biblioteca',descripcion:'Añadir filtros por nivel.',
+        me_gusta:4+(vote===1?1:0),no_me_gusta:1+(vote===-1?1:0),mi_voto:vote
+      }]});
+    }
+    if(name==='votar_sugerencia'){
+      vote=body.p_voto;
+      return route.fulfill({status:200,json:[]});
+    }
+    if(name==='enviar_sugerencia')return route.fulfill({status:200,json:8});
+    throw new Error('RPC inesperado: '+name);
+  });
+  await page.goto('/sugerencias.html');
+  await expect(page.getByRole('heading',{name:'Mejorar biblioteca'})).toBeVisible();
+  const dislike=page.locator('.suggestion-votes button').nth(1);
+  await dislike.click();
+  await expect(page.locator('.suggestion-votes button[aria-pressed="true"]')).toContainText('No me gusta · 2');
+  await page.locator('#suggestionTitle').fill('Añadir audios');
+  await page.locator('#suggestionDescription').fill('Incluir audio para practicar la pronunciación.');
+  await page.locator('#suggestionForm button[type="submit"]').click();
+  await expect(page.locator('#suggestionFormStatus')).toContainText('pendiente de revisión');
+  expect(calls.map(call=>call.name)).toEqual([
+    'listar_sugerencias','votar_sugerencia','listar_sugerencias','enviar_sugerencia'
+  ]);
+  expect(calls[1].body).toMatchObject({p_sugerencia_id:7,p_voto:-1});
+  expect(calls[3].body).toMatchObject({
+    p_titulo:'Añadir audios',
+    p_descripcion:'Incluir audio para practicar la pronunciación.'
+  });
 });
 test('catálogo Supabase simulado, filtros y búsqueda',async ({page})=>{
   await stub(page);

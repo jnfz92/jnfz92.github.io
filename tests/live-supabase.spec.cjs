@@ -14,6 +14,14 @@ test('el artículo real se abre desde Supabase y conserva la cabecera',async ({p
   await expect(page.getByText('No se pudo cargar este artículo desde Supabase')).toHaveCount(0);
 });
 
+test('sugerencias carga el listado público desde Supabase',async ({page})=>{
+  await page.goto('/sugerencias.html');
+  const status=page.locator('#suggestionListStatus');
+  await expect(status).not.toHaveText('Cargando sugerencias…',{timeout:20000});
+  await expect(status).toHaveAttribute('data-error','false');
+  await expect.poll(()=>page.locator('.suggestion-item, .suggestion-empty').count()).toBeGreaterThan(0);
+});
+
 test('catálogo de exámenes, curso y actividades se sirven sin errores HTTP',async ({request})=>{
   for(const path of ['examenes.html','curso.html','actividades.html','practicar.html']){
     const r=await request.get('/'+path);
