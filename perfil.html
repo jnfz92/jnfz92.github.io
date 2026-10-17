@@ -124,7 +124,7 @@ footer{background:#fffdfb}
 <p class="muted" id="greeting" role="status">Introduce tu nombre para personalizar tu espacio.</p>
 <p class="muted">Tu nombre y tus lecturas se sincronizan automáticamente con tu cuenta de Supabase.</p>
 </section>
-<section class="panel"><p class="section-kicker">Mis estadísticas</p><h2>Mis exámenes</h2><p class="muted">Resultados guardados en Supabase con tu cuenta.</p><div class="stats"><div class="stat"><strong id="examCount">0</strong><span>Exámenes realizados</span></div><div class="stat"><strong id="bestScore">—</strong><span>Mejor nota</span></div><div class="stat"><strong id="averageScore">—</strong><span>Nota media</span></div></div><div id="examHistory" class="list"></div><p><a class="back" href="practicar.html">Hacer un examen →</a></p></section><section class="panel" aria-labelledby="progressTitle"><p class="section-kicker">Mi evolución</p><h2 id="progressTitle">Progreso del blog</h2>
+<section class="panel ee-learning-overview" aria-labelledby="learningOverviewTitle"><span class="section-kicker">TODO TU APRENDIZAJE</span><h2 id="learningOverviewTitle">Mi progreso en un vistazo</h2><p class="muted">Lecturas, exámenes y actividades en un mismo lugar. Las notas originales se mantienen independientes.</p><div class="stats"><div class="stat"><strong id="learningReads">—</strong><span>Lecturas completadas</span></div><div class="stat"><strong id="learningExams">—</strong><span>Exámenes realizados</span></div><div class="stat"><strong id="learningActivities">—</strong><span>Actividades entregadas</span></div><div class="stat"><strong id="learningErrors">—</strong><span>Errores por repasar</span></div></div><p class="muted" id="learningStatus" role="status" aria-live="polite">Consultando tu progreso…</p><p><a class="back" href="practicar.html#cuaderno-fallos">✎ Repasar todos mis errores →</a> · <a class="back" href="actividades.html">Practicar actividades →</a></p><h3>Mis actividades recientes</h3><div id="learningActivityHistory" class="list"></div></section><section class="panel"><p class="section-kicker">Mis estadísticas</p><h2>Mis exámenes</h2><p class="muted">Resultados guardados en Supabase con tu cuenta.</p><div class="stats"><div class="stat"><strong id="examCount">0</strong><span>Exámenes realizados</span></div><div class="stat"><strong id="bestScore">—</strong><span>Mejor nota</span></div><div class="stat"><strong id="averageScore">—</strong><span>Nota media</span></div></div><div id="examHistory" class="list"></div><p><a class="back" href="practicar.html">Hacer un examen →</a></p></section><section class="panel" aria-labelledby="progressTitle"><p class="section-kicker">Mi evolución</p><h2 id="progressTitle">Progreso del blog</h2>
 <div class="stats"><div class="stat"><strong id="readStat">0</strong><span>Artículos leídos</span></div><div class="stat"><strong id="totalStat">0</strong><span>Artículos disponibles</span></div><div class="stat"><strong id="percentageStat">0%</strong><span>Progreso de lectura</span></div></div>
 <div class="meter" role="progressbar" aria-label="Progreso de lectura" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="readMeter"><span id="readBar"></span></div><p class="muted" id="readProgressText">Cargando artículos…</p>
 </section>
@@ -176,13 +176,61 @@ function updateSuggestedReading(chooseAnother=false){
 }
 function header(){$('studentName').value=profile.name;$('greeting').textContent=profile.name?'¡Hola, '+profile.name+'!':'Añade tu nombre para personalizar tu espacio.'}
 function render(){header();const done=articles.filter(a=>profile.read[a.href]).length,total=articles.length,pct=total?Math.round(done/total*100):0;
-$('readStat').textContent=done;$('totalStat').textContent=total;$('percentageStat').textContent=pct+'%';$('readBar').style.width=pct+'%';$('readMeter').setAttribute('aria-valuenow',String(pct));$('readProgressText').textContent=done+' de '+total+' artículos completados ('+pct+'%).';
+$('readStat').textContent=done;$('learningReads').textContent=cloudUserId===user?.id?String(done):'—';$('totalStat').textContent=total;$('percentageStat').textContent=pct+'%';$('readBar').style.width=pct+'%';$('readMeter').setAttribute('aria-valuenow',String(pct));$('readProgressText').textContent=done+' de '+total+' artículos completados ('+pct+'%).';
 const term=$('articleSearch').value.trim().toLocaleLowerCase('es'),list=$('articleList');list.replaceChildren();let count=0;
 for(const a of articles){if(term&&!a.title.toLocaleLowerCase('es').includes(term)||pendingOnly&&profile.read[a.href])continue;count++;const item=document.createElement('div');item.className='item';const detail=document.createElement('div'),title=document.createElement('strong'),link=document.createElement('a'),small=document.createElement('small'),btn=document.createElement('button');link.href=a.link||a.href;link.textContent=a.title;title.append(link);small.textContent=profile.read[a.href]?'✓ Leído':'Pendiente';detail.append(title,small);btn.type='button';btn.textContent=profile.read[a.href]?'✓ Leído · desmarcar':'Marcar como leído';btn.setAttribute('aria-pressed',String(Boolean(profile.read[a.href])));btn.onclick=async()=>{if(loading)return;loading=true;btn.disabled=true;const previous=profile.read[a.href];try{if(user){if(previous){const {error}=await eeDb.from('lecturas').delete().eq('usuario_id',user.id).eq('articulo_url',a.href);if(error)throw error;delete profile.read[a.href]}else{const now=new Date().toISOString(),{error}=await eeDb.from('lecturas').upsert({usuario_id:user.id,articulo_url:a.href,leido_en:now});if(error)throw error;profile.read[a.href]=now}}else{if(previous)delete profile.read[a.href];else profile.read[a.href]=new Date().toISOString();localSave()}render()}catch(e){status('Error guardando lectura: '+e.message)}finally{loading=false;btn.disabled=false}};item.append(detail,btn);list.append(item)}
 if(!count){const p=document.createElement('p');p.className='muted';p.textContent=articles.length?'No hay artículos con esos filtros.':'No se pudieron cargar los artículos.';list.append(p)}
 updateSuggestedReading();
 }
-async function loadCloud(){if(!user)return;const activeId=user.id;const [p,l]=await Promise.all([eeDb.from('perfiles').select('nombre').eq('usuario_id',activeId).maybeSingle(),eeDb.from('lecturas').select('articulo_url,leido_en').eq('usuario_id',activeId)]);if(!user||user.id!==activeId)return;if(p.error)throw p.error;if(l.error)throw l.error;profile={name:p.data?.nombre||'',read:Object.fromEntries((l.data||[]).map(r=>[r.articulo_url,r.leido_en]))};cloudUserId=activeId;render();await Promise.all([results(),loadStreak()])}
+async function loadCloud(){if(!user)return;const activeId=user.id;const [p,l]=await Promise.all([eeDb.from('perfiles').select('nombre').eq('usuario_id',activeId).maybeSingle(),eeDb.from('lecturas').select('articulo_url,leido_en').eq('usuario_id',activeId)]);if(!user||user.id!==activeId)return;if(p.error)throw p.error;if(l.error)throw l.error;profile={name:p.data?.nombre||'',read:Object.fromEntries((l.data||[]).map(r=>[r.articulo_url,r.leido_en]))};cloudUserId=activeId;render();await Promise.all([results(),loadStreak(),loadLearningOverview()])}
+async function loadLearningOverview(){
+ if(!user)return;
+ const owner=user.id,box=$('learningActivityHistory');
+ $('learningExams').textContent='—';$('learningActivities').textContent='—';
+ $('learningErrors').textContent='—';box.textContent='Consultando actividades…';
+ $('learningStatus').textContent='Consultando tu progreso en exámenes, actividades y errores…';
+ const [exams,activityCount,attempts,classicErrors,activityErrors,available]=await Promise.all([
+   eeDb.from('resultados').select('id',{count:'exact',head:true}).eq('usuario_id',owner),
+   eeDb.from('actividad_intentos').select('id',{count:'exact',head:true}).eq('usuario_id',owner),
+   eeDb.from('actividad_intentos').select('actividad_id,aciertos,evaluables,pendientes_revision,fecha')
+     .eq('usuario_id',owner).order('fecha',{ascending:false}).limit(8),
+   eeDb.from('preguntas_falladas').select('pregunta_id',{count:'exact',head:true})
+     .eq('usuario_id',owner).eq('dominada',false),
+   eeDb.from('actividad_fallos').select('pregunta_id',{count:'exact',head:true})
+     .eq('usuario_id',owner).eq('dominada',false),
+   eeDb.from('actividades').select('id,titulo,slug')
+ ]);
+ if(!user||user.id!==owner)return;
+ const errors=[exams.error,activityCount.error,attempts.error,classicErrors.error,activityErrors.error,available.error].filter(Boolean);
+ if(errors.length){
+   $('learningStatus').textContent='No se pudo obtener todo tu progreso: '+errors[0].message;
+   box.textContent='Vuelve a cargar tu perfil para consultar tus actividades.';
+   return;
+ }
+ $('learningExams').textContent=String(exams.count??0);
+ $('learningActivities').textContent=String(activityCount.count??0);
+ const pending=(classicErrors.count??0)+(activityErrors.count??0);
+ $('learningErrors').textContent=String(pending);
+ $('learningStatus').textContent=pending?
+   'Tienes '+pending+' preguntas pendientes de repaso: '+(classicErrors.count??0)+
+   ' de exámenes y '+(activityErrors.count??0)+' de actividades. Puedes repasarlas juntas.':
+   '🎉 ¡No tienes errores pendientes! Sigue practicando para consolidar lo aprendido.';
+ box.replaceChildren();
+ const names=new Map((available.data||[]).map(a=>[String(a.id),a]));
+ for(const r of attempts.data||[]){
+   const item=document.createElement('div');item.className='item';
+   const info=document.createElement('div'),title=document.createElement('strong');
+   const record=names.get(String(r.actividad_id));
+   if(record?.slug){const a=document.createElement('a');a.href='actividades.html?actividad='+encodeURIComponent(record.slug);a.textContent=record.titulo;title.append(a)}
+   else title.textContent='Actividad '+r.actividad_id;
+   const detail=document.createElement('small');
+   const dt=new Date(r.fecha),date=Number.isNaN(dt.getTime())?'':dt.toLocaleDateString('es-ES')+' · ';
+   detail.textContent=date+(r.evaluables?r.aciertos+'/'+r.evaluables+' correctas':'Entregada')+
+     (r.pendientes_revision?' · '+r.pendientes_revision+' en revisión':'');
+   info.append(title,detail);item.append(info);box.append(item);
+ }
+ if(!(attempts.data||[]).length)box.textContent='Todavía no has entregado actividades interactivas.';
+}
 async function loadStreak(){if(!user)return;const {data,error}=await eeDb.rpc('racha_actual');if(error){$('streakMessage').textContent='No se pudo cargar la racha: '+error.message;return}const r=Array.isArray(data)?data[0]:data;if(!r)return;$('streakCurrent').textContent=String(r.racha||0);$('streakBest').textContent=String(r.mejor_racha||0);$('streakDays').textContent=String(r.dias_total||0);$('streakMessage').textContent=r.hoy_completado?'✅ ¡Has cumplido tu objetivo de hoy!':'Completa hoy una lección o un examen para mantener tu racha.'}
 async function results(){
  const box=$('examHistory');box.replaceChildren();
@@ -216,6 +264,8 @@ async function results(){
 async function changeUser(next){
  user=next;
  suggestedHref=null;cloudUserId=null;
+ $('learningStatus').textContent='Consultando tu progreso…';$('learningActivityHistory').replaceChildren();
+ $('learningReads').textContent='—';$('learningExams').textContent='—';$('learningActivities').textContent='—';$('learningErrors').textContent='—';
  $('privateDashboard').hidden=!user;
  $('continueLink').hidden=!user;
  $('authForm').hidden=!!user;
