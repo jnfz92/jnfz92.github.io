@@ -8,7 +8,7 @@
 - `leer.html` descarga el HTML completo desde Supabase y reescribe enlaces entre lecciones, enlaces de navegación por anclas y rutas a los recursos.
 - `assets/articulos-supabase.js` genera el catálogo en `index.html`, `articulos.html` y `category/*.html`.
 - `404.html` permite conducir antiguas visitas a `/post/<slug>.html` hacia el lector. No es una redirección HTTP 301.
-- `scripts/build-pdfs.mjs` obtiene el HTML de Supabase; no debe depender de la carpeta `post/`.
+- Los PDF existentes se conservan como archivos históricos; no generar nuevos PDF ni añadir enlaces de descarga.
 - `public.paginas_blog` contiene copias de ocho páginas generales; **actualizar la copia** si se modifica una de esas ocho páginas en GitHub. Las páginas siguen sirviéndose desde GitHub Pages.
 
 ## Publicar un nuevo artículo

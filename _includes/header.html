@@ -2,7 +2,7 @@
 {% assign ee_file = page.path | split: '/' | last %}
 {% assign ee_section = 'inicio' %}
 {% if ee_file == 'articulos.html' or ee_file == 'leer.html' or ee_file == 'grammar.html' or ee_file == 'lessons.html' or ee_file == 'speaking.html' or ee_file == 'tv-movies.html' or ee_file == 'vocabulary.html' %}{% assign ee_section = 'articulos' %}{% endif %}
-{% if ee_file == 'curso.html' or ee_file == 'actividades.html' or ee_file == 'vocabulario.html' or ee_file == 'downloads.html' %}{% assign ee_section = 'curso' %}{% endif %}
+{% if ee_file == 'curso.html' or ee_file == 'actividades.html' or ee_file == 'vocabulario.html' %}{% assign ee_section = 'curso' %}{% endif %}
 {% if ee_file == 'examenes.html' or ee_file == 'practicar.html' %}{% assign ee_section = 'examenes' %}{% endif %}
 {% if ee_file == 'perfil.html' or ee_file == 'mensajes.html' %}{% assign ee_section = 'perfil' %}{% endif %}
 {% if ee_file == 'comunidad.html' %}{% assign ee_section = 'comunidad' %}{% endif %}

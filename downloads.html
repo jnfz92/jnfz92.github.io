@@ -3,36 +3,15 @@
 <!doctype html>
 <html lang="es">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="description" content="Descargas PDF de Easy English">
-<title>PDF · Easy English</title>
-<style>
-:root{--bg:#f7f7f4;--surface:#fff;--ink:#17211c;--muted:#68736d;--line:#e1e6e2;--brand:#1f5a49;--brand-soft:#e9f0ec}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;line-height:1.6}
-.wrap{width:min(1000px,calc(100% - 32px));margin:auto}header{border-bottom:1px solid var(--line);background:var(--bg)}
-nav{min-height:68px;display:flex;align-items:center;justify-content:space-between;gap:18px}.brand,.back{color:var(--brand);font-weight:800;text-decoration:none}
-.hero{padding:64px 0 34px}.eyebrow{font-weight:800;color:var(--brand);text-transform:uppercase;letter-spacing:.08em;font-size:12px}
-h1{font-size:clamp(40px,7vw,68px);line-height:1;letter-spacing:-.04em;margin:12px 0 18px}.lead{max-width:680px;color:var(--muted);font-size:18px}
-.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;padding-bottom:60px}.card{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:24px;display:flex;flex-direction:column;min-height:280px}
-.tag{align-self:flex-start;background:var(--brand-soft);color:var(--brand);border-radius:999px;padding:6px 10px;font-size:12px;font-weight:800}.card h2{font-size:24px;line-height:1.15;margin:18px 0 10px}.card p{color:var(--muted);flex:1}
-.download{display:inline-flex;align-items:center;justify-content:center;min-height:46px;border-radius:12px;background:var(--brand);color:#fff;text-decoration:none;font-weight:800;padding:10px 16px}
-.note{border-top:1px solid var(--line);padding:24px 0 40px;color:var(--muted);font-size:14px}
-@media(max-width:760px){.grid{grid-template-columns:1fr}.card{min-height:auto}.hero{padding-top:42px}}
-</style>
-<link rel="stylesheet" href="assets/site.css?v=20261013"><script src="assets/site.js?v=20261013" defer></script><link rel="stylesheet" href="/assets/navigation.css?v=20261017-unico2"><script src="/assets/navigation.js?v=20261017-unico2" defer></script></head>
-<body class="ee-site ee-downloads">
-{% include header.html %}<main class="wrap">
-<section class="hero"><div class="eyebrow">Descargas</div><h1>PDF para estudiar.</h1><p class="lead">Descarga los materiales de estudio. El catálogo se actualiza desde Supabase; los PDF actuales siguen alojados en GitHub.</p><p><a class="back" href="vocabulario.html">Explorar el vocabulario en línea →</a></p></section>
-<p id="downloadStatus" role="status" aria-live="polite">Consultando recursos publicados…</p><section class="grid" id="downloadGrid">
-<article class="card"><span class="tag">9 oct 2026</span><h2>Artículos del 9 de octubre</h2><p>7 artículos de gramática, ejercicios, speaking y vocabulario.</p><a class="download" href="pdfs/easy_english_articulos_09-10-2026.pdf" download>Descargar PDF ↓</a></article>
-<article class="card"><span class="tag">8 oct 2026</span><h2>Artículos del 8 de octubre</h2><p>50 verbos irregulares con ejemplos y ejercicios.</p><a class="download" href="pdfs/easy_english_articulos_08-10-2026.pdf" download>Descargar PDF ↓</a></article>
-<article class="card"><span class="tag">7 oct 2026</span><h2>Artículos del 7 de octubre</h2><p>4 artículos: presente, pasado, futuro y Protector of the Sea.</p><a class="download" href="pdfs/easy_english_articulos_07-10-2026.pdf" download>Descargar PDF ↓</a></article>
-<article class="card"><span class="tag">1 oct 2026</span><h2>Artículos del blog</h2><p>Recopilación de artículos de Easy English con índice para estudiar y repasar.</p><a class="download" href="pdfs/easy_english_articulos_01-10-2026.pdf" download>Descargar PDF ↓</a><a class="back" style="margin-top:12px" href="leer.html?slug=material-articulos-blog">Leer como artículo →</a></article>
-<article class="card"><span class="tag">6 oct 2026</span><h2>English Study Notes</h2><p>Apuntes de gramática, reading y vocabulario organizados en artículos de estudio.</p><a class="download" href="pdfs/english_apuntes_articulos_06-10-2026.pdf" download>Descargar PDF ↓</a><a class="back" style="margin-top:12px" href="leer.html?slug=material-english-study-notes">Leer como artículo →</a></article>
-<article class="card"><span class="tag">6 oct 2026</span><h2>English Vocabulary List</h2><p>Lista de vocabulario con inglés, español, categoría y ejemplo, incluido medio ambiente y contaminación.</p><a class="download" href="pdfs/vocabulary_list_06-10-2026.pdf" download>Descargar PDF ↓</a><a class="back" style="margin-top:12px" href="leer.html?slug=material-vocabulary-list">Leer como artículo →</a></article>
-</section>
-<div class="note">Si el navegador abre el PDF en una pestaña en lugar de descargarlo, usa el botón de descarga del visor PDF.</div>
-</main>
-<footer class="ee-footer"><div class="ee-footer-inner"><div><strong>Easy English</strong><p>Un poco de inglés. Un paso más cada día.</p><p>© 2026 Easy English</p></div><nav aria-label="Enlaces del pie"><a href="articulos.html">Artículos</a><a href="curso.html">Curso por niveles</a><a href="downloads.html">Apuntes PDF</a><a href="perfil.html">Mi progreso</a></nav></div></footer><script src="assets/recursos-supabase.js?v=20261015" defer></script></body>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta http-equiv="refresh" content="0;url=articulos.html">
+  <meta name="robots" content="noindex">
+  <title>Biblioteca · Easy English</title>
+  <script>location.replace('articulos.html');</script>
+</head>
+<body>
+  <p>Abriendo la biblioteca de artículos de Easy English…</p>
+  <p><a href="articulos.html">Ir a la biblioteca</a></p>
+</body>
 </html>

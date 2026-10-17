@@ -38,26 +38,21 @@ La APK Cordova 1.1.1 incorpora acceso al perfil online desde el arranque y desde
 
 `assets/navigation.js` y `assets/navigation.css` definen la barra inferior de la web en pantallas de hasta 760 px y el pie de página completo en escritorio y móvil. El **mismo orden y los mismos iconos** que en el modo offline de Android son: **Inicio, Artículos, Curso, Exámenes, Perfil**. El acceso activo se marca automáticamente, incluyendo páginas relacionadas (artículos, actividades, exámenes, comunidad y mensajes). La barra no aparece dos veces. Se deja espacio inferior para que no cubra los formularios y se recoloca «Volver arriba».
 
-Todas las páginas HTML incluyen estos dos recursos y `leer.html` también los incorpora al HTML de artículos obtenido de Supabase, que sustituye el documento inicial mediante `document.write`. Las páginas antiguas con pie de página lo sustituyen y las nuevas reciben el mismo pie. Los enlaces adicionales a Actividades, Vocabulario, PDF, Comunidad y Mensajes siguen disponibles en el pie de página y en las páginas correspondientes sin recargar la barra de cinco accesos.
+Todas Las páginas HTML incluyen estos dos recursos y `leer.html` también los incorpora al HTML de artículos obtenido de Supabase, que sustituye el documento inicial mediante `document.write`. Las páginas antiguas con pie de página lo sustituyen y las nuevas reciben el mismo pie. Los enlaces adicionales a Actividades, Vocabulario, Comunidad y Mensajes siguen disponibles en el pie de página y en las páginas correspondientes sin recargar la barra de cinco accesos.
 
 En `english-apk` la versión Cordova 1.1.2 alinea la barra inferior del curso sin conexión con este diseño; con conexión, la APK reutiliza directamente la web. Los avances del modo offline siguen siendo independientes.
 
 ## Publicar materiales
 
 - **Artículos:** `public.articulos`, renderizados por `leer.html?slug=...`. No añadir `post/*.html` a GitHub.
-- **PDF:** `public.recursos_descargables`, con `slug`, `titulo`, `descripcion`, `url_archivo`, `fecha_publicacion`, `orden` y `publicado`. Los seis PDF anteriores siguen alojados en `pdfs/` del repositorio. El listado de `downloads.html` se actualiza desde Supabase. `url_lectura` es opcional.
+- **PDF:** La generación y descarga de PDF se han retirado. Los archivos ya publicados en `pdfs/` se conservan como archivo histórico, pero no se generan ni se enlazan desde la web o la APK. Ejecutar `supabase/09_retirar_descargas_pdf.sql` en SQL Editor para sincronizar las copias de `index.html` y `downloads.html` en `public.paginas_blog`.
 - **Vocabulario:** `public.vocabulario`, con `termino_en`, `traduccion_es`, `categoria`, `ejemplo_en`, `orden` y `publicado`. Se muestra en `vocabulario.html`.
 - **Curso:** ordenar unidades en `public.unidades_curso` y asociar contenidos en `public.unidades_articulos`. Solo asignar niveles MCER verificados; usar «Sin especificar» cuando no estén confirmados. Se muestra en `curso.html`.
-- **Colecciones PDF:** `public.colecciones_material` define qué PDF genera `scripts/build-pdfs.mjs`. Si `incluir_todos_articulos=true`, se incluyen todos los artículos; en caso contrario, los artículos se seleccionan/ordenan mediante `public.coleccion_articulos`. Para una colección de tipo `vocabulario`, el script emplea las entradas públicas de `public.vocabulario`.
 - **Exámenes:** `public.examenes.articulo_slug` relaciona el examen evaluable con su artículo clásico. No confundir sus calificaciones: el clásico no guarda las notas del alumno.
-
-## Actualización de los PDF
-
-`.github/workflows/build-pdfs.yml` ejecuta el generador al modificar el script, manualmente desde GitHub Actions y una vez al día. **Los PDF físicos no se regeneran al instante al cambiar una tabla de Supabase.** Comprueba la ejecución y los PDF resultantes después de publicar una colección. El flujo hace commit en `main` si el contenido del PDF cambia.
 
 ## Respaldo HTML
 
-`index.html`, `articulos.html`, `category/*.html`, `examenes.html` y `downloads.html` mantienen tarjetas de respaldo si la consulta a Supabase falla. En el uso normal, JavaScript genera el catálogo desde Supabase. No eliminar los respaldos sin sustituirlos por una alternativa accesible.
+`index.html`, `articulos.html`, `category/*.html` y `examenes.html` mantienen tarjetas de respaldo si la consulta a Supabase falla. En el uso normal, JavaScript genera el catálogo desde Supabase. No eliminar los respaldos sin sustituirlos por una alternativa accesible. La antigua URL `downloads.html` redirige al catálogo de artículos.
 
 `public.paginas_blog` guarda copias de ocho páginas principales: mantenerlas sincronizadas cuando cambie el HTML de GitHub. Las páginas se publican desde GitHub, no directamente desde esa tabla.
 
