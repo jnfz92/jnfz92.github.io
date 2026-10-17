@@ -24,7 +24,7 @@
     const bar=text('div','ee-bar');
     const logo=text('a','ee-logo');
     logo.href=to('index.html');logo.setAttribute('aria-label','Easy English · Inicio');
-    const mark=text('b','','ee.');mark.setAttribute('aria-hidden','true');
+    const mark=document.createElement('img');mark.src=to('favicon.svg?v=20261017-ee');mark.width=39;mark.height=39;mark.alt='';mark.setAttribute('aria-hidden','true');
     logo.append(mark,document.createTextNode('Easy English'));
     const toggle=text('button','ee-nav-toggle');
     toggle.type='button';
