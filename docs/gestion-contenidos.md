@@ -27,7 +27,9 @@ Al entregar un examen con una sesión de Supabase Auth iniciada, el RPC `public.
 
 La clave primaria (`usuario_id`, `pregunta_id`) impide duplicados por alumno y pregunta. La tabla aplica RLS: el usuario autenticado solo consulta sus errores mediante `auth.uid() = usuario_id`; no se concede a los clientes acceso de escritura. Las soluciones permanecen en `private.soluciones`, no en las consultas del cuaderno.
 
-En `practicar.html#cuaderno-fallos` se muestran los errores personales paginados, pendientes y superados, con enlaces para repetir el examen completo o repasar la lección. Para evitar registrar como falladas las otras preguntas, el enlace permite **repetir el examen completo**, no entregar una sola pregunta al RPC. `perfil.html` enlaza al cuaderno. La APK conectada a la web comparte estos datos automáticamente sin recompilarse.
+En `practicar.html#cuaderno-fallos`, el botón **Empezar mi examen de errores** genera una tanda aleatoria de hasta 20 preguntas pendientes del alumno, tomadas de diferentes exámenes; nunca muestra las soluciones antes de la entrega. Se requiere responder todas las preguntas para corregir. También se conserva el historial paginado (pendientes/superadas) y los enlaces a las lecciones o exámenes originales. `perfil.html` enlaza al cuaderno. La APK online comparte estos datos automáticamente sin recompilarse.
+
+El RPC `public.entregar_repaso_fallos(uuid,jsonb)` comprueba `auth.uid()` y que cada pregunta enviada pertenezca a las pendientes de ese usuario, con un máximo de 20 por tanda. Corrige en el servidor desde `private.soluciones`, marca `dominada = true` si es correcta e incrementa `veces_fallada` si sigue fallándose. Los resultados de estos repasos se guardan de manera idempotente en `private.intentos_repaso_fallos` (RLS habilitada, sin permisos de lectura/escritura para clientes). **No modifica** `public.resultados` ni la nota del examen original. La corrección, explicaciones y puntuación solo se entregan al usuario después del envío; reintentar la misma entrega no vuelve a incrementar los fallos.
 
 ## Seguridad
 
