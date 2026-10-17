@@ -2,6 +2,28 @@
 
 **Fuente editorial:** Supabase `wnluofonzteaqtlfshgy`. **Presentación:** GitHub Pages. Los visitantes no tienen permisos de escritura en las tablas editoriales nuevas.
 
+## Motor universal de actividades (2026-10-17)
+
+**Entrada:** `curso.html` enlaza con `actividades.html`. Las actividades publicadas vinculadas a una unidad se muestran bajo esa unidad; también hay un catálogo general en `actividades.html`. El catálogo y las preguntas se leen dinámicamente de Supabase, tanto en la web como en la APK online.
+
+**Edición desde Supabase SQL Editor:** La migración `supabase/05_motor_actividades.sql` crea `public.actividades` (slug, título, descripción, destreza, unidad_id opcional, articulo_slug opcional, orden, publicado), `public.actividad_preguntas` y `private.actividad_soluciones`. No conceder permisos de edición a `anon` o `authenticated`. Publicar solo cuando estén completas las preguntas, sus claves objetivas y todos los recursos multimedia. El archivo `supabase/06_demo_actividades.sql` crea un ejemplo sin unidad, visible en el catálogo general y no presentado como examen oficial.
+
+**Tipos de preguntas** (`public.actividad_preguntas.tipo`):
+
+| tipo | configuracion JSONB pública | clave JSONB privada |
+| --- | --- | --- |
+| `seleccion` | `{"opciones":["opción A","opción B"]}` | `{"indice":1}` (base cero) |
+| `texto_corto` | `{}` | `{"alternativas":["written","otra forma válida"]}` |
+| `huecos` | `{"campos":["Hueco 1","Hueco 2"]}` | `{"campos":[["has","have"],["since"]]}` |
+| `transformacion` | `{"palabra_clave":"FOR"}` | `{"alternativas":["I have lived here for years."]}` |
+| `redaccion` | `{"min_palabras":140,"max_palabras":190}` | Sin clave: requiere revisión humana |
+
+Los tipos anteriores se pueden acompañar de **audio o imagen** en `medio_tipo='audio'|'imagen'`, `medio_url` HTTPS y `medio_alt` descriptivo. El medio es independiente del tipo de respuesta: por ejemplo, un listening de elección múltiple lleva `tipo='seleccion', medio_tipo='audio'`. Los audios o las imágenes deben estar alojados en una URL HTTPS accesible. No almacenar soluciones en `configuracion`, en `enunciado` ni en nombres de ficheros multimedia.
+
+**Guardar y corregir:** `public.entregar_actividad(p_actividad_id bigint,p_respuestas jsonb,p_intento_id uuid)` exige sesión y actividad publicada, comprueba que todas las preguntas pertenezcan a esa actividad y limita a 50 preguntas por entrega. Lee las soluciones en `private.actividad_soluciones`; devuelve la corrección *después* de entregar y guarda un intento por UUID en `public.actividad_intentos`. Las variantes cortas se comparan ignorando mayúsculas y espacios exteriores/repetidos. Los huecos solo se consideran correctos si todos lo son; se pueden definir variantes por hueco. Las redacciones se etiquetan `revision` sin calificarse automáticamente. **No hay todavía interfaz para que un profesor revise redacciones**: se requiere una funcionalidad posterior, no se debe asumir que se corrigen solas.
+
+**Privacidad y compatibilidad:** RLS permite consultar las actividades y preguntas publicadas sin cuenta, pero los intentos solamente a su autor con `auth.uid()`. Las soluciones privadas nunca se exponen por Data API. Se puede repetir una entrega tras un corte de red gracias a `p_intento_id` sin crear un intento duplicado. No se modifican `public.examenes`, `public.preguntas`, `public.resultados` ni el cuaderno de errores previo. Los errores de estas nuevas actividades se conservan en los intentos y **aún no se incorporan automáticamente al examen de errores original**.
+
 ## Publicar materiales
 
 - **Artículos:** `public.articulos`, renderizados por `leer.html?slug=...`. No añadir `post/*.html` a GitHub.
