@@ -4,6 +4,7 @@ test('Supabase público carga el catálogo real de artículos',async ({page})=>{
   await page.goto('/articulos.html');
   await expect.poll(async()=>page.locator('.blog .grid .card').count(),{timeout:20000}).toBeGreaterThanOrEqual(60);
   await expect(page.locator('.blog .grid a[href*="leer.html?slug="]').first()).toBeVisible();
+  await expect(page.locator('.blog .grid a[href*="leer.html?slug=como-usar-tiempos-verbales-carta-email-writing-b1-b2"]')).toHaveCount(1);
 });
 
 test('el artículo real se abre desde Supabase y conserva la cabecera',async ({page})=>{

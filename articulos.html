@@ -8,6 +8,7 @@ permalink: /articulos.html
 </div>
 <p class="result-count" id="resultCount" aria-live="polite"></p>
 <div class="grid">
+<article class="card" data-cat="speaking"><div class="meta"><span class="tag">Writing · B1–B2</span><time datetime="2026-10-17">17 oct 2026</time></div><h2>Cómo usar los tiempos verbales en una carta o email B1–B2</h2><p>Modelo completo, ejemplos de presente, pasado y futuro, condicionales y ejercicios para mejorar el Writing.</p><a class="read" href="leer.html?slug=como-usar-tiempos-verbales-carta-email-writing-b1-b2">Leer artículo →</a></article>
 <article class="card" data-cat="speaking"><div class="meta"><span class="tag">Writing · B2</span><time datetime="2026-10-14">14 oct 2026</time></div><h2>Cómo escribir un email en el B2 First (FCE)</h2><p>Plantillas, modelo traducido, ejemplos formales e informales y ejercicios.</p><a class="read" href="leer.html?slug=como-escribir-email-b2-first-fce">Leer artículo →</a></article>
 <article class="card" data-cat="vocabulary"><div class="meta"><span class="tag">Vocabulary</span><time datetime="2026-10-13">13 oct 2026</time></div><h2>Trying and succeeding: intentar y conseguirlo</h2><p>Give up, keep it up, try out y otras expresiones sobre esfuerzo y éxito. Ejemplos bilingües y ejercicios resueltos B1–B2.</p><a class="read" href="leer.html?slug=trying-and-succeeding-phrasal-verbs">Leer artículo →</a></article>
 
@@ -89,4 +90,4 @@ resultCount.textContent=visible+' contenidos encontrados';
 }
 filters.forEach(button=>button.addEventListener('click',()=>{category=button.dataset.filter;filters.forEach(x=>{x.classList.toggle('active',x===button);x.setAttribute('aria-pressed',String(x===button))});refreshArticles()}));
 query.addEventListener('input',refreshArticles);filters.forEach(x=>x.setAttribute('aria-pressed',String(x.classList.contains('active'))));refreshArticles();document.addEventListener('easyenglish:articles-loaded',refreshArticles);
-</script><script src="assets/articulos-supabase.js?v=20261015" defer></script></body></html>
+</script><script src="assets/articulos-supabase.js?v=20261017-writing" defer></script></body></html>
