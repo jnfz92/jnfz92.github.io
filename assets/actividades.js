@@ -268,8 +268,9 @@
       if(version===loadVersion)busy=false;
     }
   }
-  function back(){
-    if(busy)return;
+  function back(force=false){
+    if(busy&&!force)return;
+    if(force)busy=false;
     ++loadVersion;chosen=null;questions=[];pending=null;submitted=false;
     $('activitySessionPanel').hidden=true;$('activityCatalogPanel').hidden=false;
     $('activityQuestions').replaceChildren();renderCatalog();
@@ -284,7 +285,7 @@
     await loadAttempts();
   }
   eeDb.auth.onAuthStateChange(event=>{
-    if(event==='SIGNED_OUT'){user=null;attempts=[];back();renderCatalog();
+    if(event==='SIGNED_OUT'){user=null;attempts=[];back(true);renderCatalog();
       setText('activityAuthStatus','Sin sesión. Inicia sesión desde el perfil para guardar tus intentos.');}
   });
   Promise.all([loadCatalog(),refreshUser()]).catch(e=>
