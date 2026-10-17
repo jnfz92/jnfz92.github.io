@@ -149,11 +149,20 @@
       if(!available.length){
         reset();status.textContent='🎉 ¡No tienes preguntas falladas pendientes!';return;
       }
-      for(let i=available.length-1;i>0;i--){
-        const j=Math.floor(Math.random()*(i+1));
-        [available[i],available[j]]=[available[j],available[i]];
+      // Mezclar las fuentes con representación de ambas cuando existan errores
+      // en exámenes y actividades: no ocultar un único fallo nuevo entre muchos antiguos.
+      function shuffle(source){
+        for(let i=source.length-1;i>0;i--){
+          const j=Math.floor(Math.random()*(i+1));
+          [source[i],source[j]]=[source[j],source[i]];
+        }
       }
-      items=available.slice(0,REVISAR);
+      shuffle(classic);shuffle(activity);
+      const activityQuota=Math.min(activity.length,classic.length?Math.floor(REVISAR/2):REVISAR);
+      const classicQuota=Math.min(classic.length,REVISAR-activityQuota);
+      const activityCount=Math.min(activity.length,REVISAR-classicQuota);
+      items=[...classic.slice(0,classicQuota),...activity.slice(0,activityCount)];
+      shuffle(items);
       owner=user.id;attempts=null;answers=null;finished=false;
       start.disabled=false;
       status.textContent='Tu repaso: '+items.length+' de '+available.length+
