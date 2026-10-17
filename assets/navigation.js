@@ -4,19 +4,6 @@
   const source=document.currentScript?.src||location.href;
   const root=new URL('../',source);
   const to=page=>new URL(page,root).href;
-  const items=[
-    {page:'index.html',title:'Inicio',icon:'⌂'},
-    {page:'articulos.html',title:'Artículos',icon:'▤'},
-    {page:'curso.html',title:'Curso',icon:'▧'},
-    {page:'examenes.html',title:'Exámenes',icon:'✎'},
-    {page:'perfil.html',title:'Perfil',icon:'♙'}
-  ];
-  const resources=[
-    {page:'actividades.html',title:'Actividades'},
-    {page:'vocabulario.html',title:'Vocabulario'},
-    {page:'comunidad.html',title:'Comunidad'},
-    {page:'mensajes.html',title:'Mensajes'}
-  ];
   const headerItems=[
     {page:'index.html',title:'Inicio',icon:'<path d="M3 10 12 3l9 7v11h-6v-7H9v7H3z"/>'},
     {page:'articulos.html',title:'Artículos',icon:'<path d="M4 4h16v17H6a2 2 0 0 1-2-2V4zm0 14a2 2 0 0 1 2-2h14M8 8h8m-8 4h6"/>'},
@@ -39,7 +26,14 @@
     logo.href=to('index.html');logo.setAttribute('aria-label','Easy English · Inicio');
     const mark=text('b','','ee.');mark.setAttribute('aria-hidden','true');
     logo.append(mark,document.createTextNode('Easy English'));
+    const toggle=text('button','ee-nav-toggle');
+    toggle.type='button';
+    toggle.setAttribute('aria-label','Abrir menú de navegación');
+    toggle.setAttribute('aria-expanded','false');
+    toggle.setAttribute('aria-controls','ee-primary-navigation');
+    toggle.innerHTML='<span></span><span></span><span></span>';
     const nav=text('nav','ee-nav');nav.setAttribute('aria-label','Navegación principal');
+    nav.id='ee-primary-navigation';
     const path=location.pathname.toLowerCase().split('/').pop()||'index.html';
     const active=path==='comunidad.html'?'comunidad.html':activeSection();
     for(const item of headerItems){
@@ -53,8 +47,37 @@
       icon.setAttribute('aria-hidden','true');icon.innerHTML=item.icon;
       link.append(icon,text('span','',item.title));nav.append(link);
     }
-    bar.append(logo,nav,text('span','ee-mobile-label','Aprende a tu ritmo'));
+    bar.append(logo,toggle,nav);
     header.append(bar);document.body.prepend(header);
+  }
+  function setupMenu(){
+    const header=document.getElementById('ee-shared-header');
+    const toggle=header?.querySelector('.ee-nav-toggle');
+    const nav=header?.querySelector('.ee-nav');
+    if(!toggle||!nav)return;
+    const close=()=>{
+      header.classList.remove('ee-menu-open');
+      toggle.setAttribute('aria-expanded','false');
+      toggle.setAttribute('aria-label','Abrir menú de navegación');
+    };
+    toggle.addEventListener('click',()=>{
+      const open=toggle.getAttribute('aria-expanded')!=='true';
+      header.classList.toggle('ee-menu-open',open);
+      toggle.setAttribute('aria-expanded',String(open));
+      toggle.setAttribute('aria-label',open?'Cerrar menú de navegación':'Abrir menú de navegación');
+    });
+    nav.addEventListener('click',event=>{
+      if(event.target.closest('a'))close();
+    });
+    document.addEventListener('click',event=>{
+      if(!header.contains(event.target))close();
+    });
+    document.addEventListener('keydown',event=>{
+      if(event.key==='Escape'&&header.classList.contains('ee-menu-open')){
+        close();
+        toggle.focus();
+      }
+    });
   }
   function activeSection(){
     const path=location.pathname.toLowerCase().split('/').pop()||'index.html';
@@ -73,24 +96,12 @@
   }
   function attach(){
     ensureHeader();
+    setupMenu();
     if(document.getElementById('ee-shared-footer'))return;
-    const active=activeSection();
-    // Sustituye los pies incompletos o antiguos y también añade pie a las páginas nuevas.
+    // Replace old or incomplete footers and add the description when missing.
     const footer=text('footer','ee-footer');
     footer.id='ee-shared-footer';
-    const inner=text('div','ee-footer-inner');
-    const brand=text('div','ee-footer-brand');
-    brand.append(text('strong','','Easy English'),
-      text('p','','Un poco de inglés. Un paso más cada día.'),
-      text('p','','© 2026 Easy English'));
-    const links=text('nav','ee-footer-links');
-    links.setAttribute('aria-label','Enlaces del pie');
-    for(const item of [...items,...resources]){
-      const link=text('a','',item.title);link.href=to(item.page);
-      if(active===item.page)link.setAttribute('aria-current','page');
-      links.append(link);
-    }
-    inner.append(brand,links);footer.append(inner);
+    footer.append(text('p','ee-footer-description','Un poco de inglés. Un paso más cada día.'));
     const oldFooter=document.querySelector('footer.ee-footer, footer.site-footer');
     if(oldFooter)oldFooter.replaceWith(footer);
     else document.body.append(footer);
