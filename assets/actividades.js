@@ -233,9 +233,12 @@
       'Tu intento y las correcciones se han guardado en Supabase.');
     const again=element('button','activity-btn secondary','Volver a practicar');
     again.type='button';again.onclick=()=>openActivity(chosen);
-    summary.append(heading,details,again);summary.hidden=false;
+    const review=element('a','activity-btn secondary','Repasar todos mis errores →');
+    review.href='practicar.html#cuaderno-fallos';
+    review.style.cssText='display:inline-block;margin:9px 8px 4px 0;text-decoration:none;';
+    summary.append(heading,details,review,again);summary.hidden=false;
     $('activitySubmit').disabled=true;$('activitySubmit').textContent='Actividad terminada';
-    setText('activitySessionStatus','Intento registrado correctamente.');
+    setText('activitySessionStatus','Intento registrado. Los errores autocorregibles se añaden a tu repaso personal.');
     summary.scrollIntoView({behavior:'smooth',block:'center'});
     loadAttempts().catch(e=>console.warn(e));
   }
