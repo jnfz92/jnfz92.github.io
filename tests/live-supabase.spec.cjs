@@ -28,3 +28,16 @@ test('catálogo de exámenes, curso y actividades se sirven sin errores HTTP',as
     expect(r.status(),path).toBe(200);
   }
 });
+
+test('el índice A1–B2 agrupa los artículos adicionales sin saturar la pantalla', async ({page})=>{
+  await page.goto('/leer.html?slug=indice-de-dificultad');
+  await expect(page.getByRole('heading',{name:/Índice de dificultad/i})).toBeVisible({timeout:20000});
+  await expect(page.locator('#a1 a.card').first()).toBeVisible();
+  const extras=page.locator('#mas-articulos .index-extra-group');
+  await expect.poll(()=>extras.count(),{timeout:20000}).toBeGreaterThan(1);
+  const first=extras.first();
+  await expect(first).not.toHaveAttribute('open',/.+/);
+  await first.locator('summary').click();
+  await expect(first.locator('.index-extra-card').first()).toBeVisible();
+  await expect(page.locator('#ee-shared-header')).toHaveCount(1);
+});
