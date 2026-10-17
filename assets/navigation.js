@@ -33,51 +33,9 @@
     if(value!==undefined)e.textContent=value;
     return e;
   }
-  // El único header está en _includes/header.html; JS solo activa el botón móvil.
-  function attachHeaderControls(){
-    const h=document.getElementById('ee-shared-header');
-    const button=h?.querySelector('.ee-menu-toggle');
-    const nav=h?.querySelector('.ee-primary-nav');
-    if(!button||!nav)return;
-    button.addEventListener('click',()=>{
-      const opened=button.getAttribute('aria-expanded')!=='true';
-      button.setAttribute('aria-expanded',String(opened));
-      button.setAttribute('aria-label',opened?'Cerrar menú principal':'Abrir menú principal');
-      nav.classList.toggle('is-open',opened);
-    });
-    h.addEventListener('keydown',e=>{
-      if(e.key==='Escape'){
-        button.setAttribute('aria-expanded','false');
-        button.setAttribute('aria-label','Abrir menú principal');
-        nav.classList.remove('is-open');
-        button.focus();
-      }
-    });
-    nav.addEventListener('click',e=>{
-      if(e.target.closest('a')){
-        button.setAttribute('aria-expanded','false');
-        nav.classList.remove('is-open');
-      }
-    });
-  }
   function attach(){
-    if(document.getElementById('ee-bottom-nav'))return;
-    attachHeaderControls();
+    if(document.getElementById('ee-shared-footer'))return;
     const active=activeSection();
-    // La misma barra que el curso incluido en la APK, pero mediante enlaces reales.
-    const bottom=text('nav','ee-bottom-nav');
-    bottom.id='ee-bottom-nav';bottom.setAttribute('aria-label','Menú inferior');
-    for(const item of items){
-      const link=text('a','ee-bottom-link');
-      link.href=to(item.page);
-      const symbol=text('span','ee-bottom-icon',item.icon);
-      symbol.setAttribute('aria-hidden','true');
-      link.append(symbol,document.createTextNode(item.title));
-      if(active===item.page){
-        link.classList.add('active');link.setAttribute('aria-current','page');
-      }
-      bottom.append(link);
-    }
     // Sustituye los pies incompletos o antiguos y también añade pie a las páginas nuevas.
     const footer=text('footer','ee-footer');
     footer.id='ee-shared-footer';
@@ -97,7 +55,6 @@
     const oldFooter=document.querySelector('footer.ee-footer, footer.site-footer');
     if(oldFooter)oldFooter.replaceWith(footer);
     else document.body.append(footer);
-    document.body.append(bottom);
   }
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',attach,{once:true});
   else attach();
