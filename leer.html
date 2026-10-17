@@ -5,7 +5,7 @@ permalink: /leer.html
 <html lang="es"><head><link rel="icon" type="image/svg+xml" href="/favicon.svg?v=20261017-ee"><meta name="theme-color" content="#005B3C"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="description" content="Lecciones y artículos de Easy English.">
 <title>Cargando lección · Easy English</title>
-<link rel="stylesheet" href="assets/site.css?v=20261014">
+<link rel="preconnect" href="https://wnluofonzteaqtlfshgy.supabase.co" crossorigin>
 <style>body{font-family:system-ui,sans-serif;background:#f7f7f4;color:#17211c;margin:0}.loader{max-width:720px;margin:12vh auto;padding:24px}.loader a{color:#176447}</style><link rel="stylesheet" href="/assets/navigation.css?v=20261017-menu-fix2"><script src="/assets/navigation.js?v=20261017-menu-fix2" defer></script></head>
 <body>{% include header.html %}<main class="loader"><h1>Easy English</h1><p id="loading" role="status">Cargando el artículo desde Supabase…</p><p><a href="articulos.html">Volver al blog</a></p></main>
 <script>
@@ -38,31 +38,88 @@ permalink: /leer.html
   return node;
  }
  async function completeIndex(doc){
-  const list=await loadJSON('articulos?select=slug,titulo,descripcion&order=titulo.asc&limit=1000');
-  const used=new Set([slug]);
+  // El índice original sigue visible por niveles. El catálogo adicional se
+  // muestra por grupos cerrados para evitar más de cien tarjetas a la vista.
+  const list=await loadJSON('articulos?select=slug,titulo,descripcion,nivel,categoria_slug&order=titulo.asc&limit=1000');
+  const used=new Set([resolveSlug(slug)]);
   for(const a of doc.querySelectorAll('section.section a.card[href]')){
    const found=originalSlug(a.getAttribute('href'));
    if(found)used.add(found.slug);
   }
-  const extra=list.filter(a=>!used.has(a.slug));
+  const extra=list.filter(a=>!used.has(resolveSlug(a.slug)));
   if(!extra.length)return;
-  const section=el(doc,'section','section');
+  doc.body.classList.add('ee-difficulty-index');
+  const style=el(doc,'style');
+  style.textContent=`
+   .ee-site.ee-difficulty-index main.wrap{max-width:1120px;padding:20px 28px 64px}
+   .ee-site.ee-difficulty-index .hero{padding:42px 0 25px}
+   .ee-site.ee-difficulty-index .hero h1{max-width:900px}
+   .ee-site.ee-difficulty-index nav.jump{display:flex;gap:9px;flex-wrap:wrap;margin:22px 0}
+   .ee-site.ee-difficulty-index nav.jump a{background:#eaf1e5;border:1px solid #bdd0c0;border-radius:100px;padding:10px 16px;color:#176447;text-decoration:none;font-size:14px;font-weight:800}
+   .ee-site.ee-difficulty-index nav.jump a:focus-visible{outline:3px solid #648818;outline-offset:3px}
+   .ee-site.ee-difficulty-index .section{padding:25px 0;border-top:1px solid #dce4d9}
+   .ee-site.ee-difficulty-index .section-top{gap:16px;margin-bottom:14px}
+   .ee-site.ee-difficulty-index .section .cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+   .ee-site.ee-difficulty-index a.card{display:flex;min-height:125px;flex-direction:column;align-items:flex-start;gap:8px;text-decoration:none;padding:20px;border:1px solid #dce4d9;border-radius:16px;background:#fff}
+   .ee-site.ee-difficulty-index a.card strong{font-size:17px;line-height:1.35;color:#193a2a}
+   .ee-site.ee-difficulty-index a.card .go{margin-top:auto;padding-top:4px}
+   .ee-site.ee-difficulty-index .index-extra-intro{margin:3px 0 20px;color:#52695c}
+   .ee-site.ee-difficulty-index .index-extra-group{margin:12px 0;padding:0;background:#fff;border:1px solid #cad8cc;border-radius:15px;overflow:hidden}
+   .ee-site.ee-difficulty-index .index-extra-group>summary{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:18px 20px;cursor:pointer;list-style:none;background:#f0f5ed;color:#193a2a;font-size:16px;font-weight:800}
+   .ee-site.ee-difficulty-index .index-extra-group>summary::-webkit-details-marker{display:none}
+   .ee-site.ee-difficulty-index .index-extra-group>summary::after{content:"+";font-size:24px;line-height:1;color:#176447}
+   .ee-site.ee-difficulty-index .index-extra-group[open]>summary::after{content:"−"}
+   .ee-site.ee-difficulty-index .index-extra-group .index-extra-count{font-weight:600;font-size:13px;color:#52695c;margin-left:auto}
+   .ee-site.ee-difficulty-index .index-extra-group .index-extra-cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;padding:16px;background:#fff}
+   .ee-site.ee-difficulty-index a.index-extra-card{display:block;background:#fbfcf9;border:1px solid #dce4d9;border-radius:12px;padding:15px 16px;color:#193a2a;text-decoration:none;min-width:0}
+   .ee-site.ee-difficulty-index a.index-extra-card strong{display:block;font-size:15px;line-height:1.4;overflow-wrap:anywhere}
+   .ee-site.ee-difficulty-index a.index-extra-card span{display:block;color:#52695c;font-size:12px;margin-top:9px}
+   .ee-site.ee-difficulty-index a.index-extra-card:hover,.ee-site.ee-difficulty-index a.card:hover{border-color:#176447;background:#f4f9f4}
+   @media(max-width:650px){.ee-site.ee-difficulty-index main.wrap{padding:15px 16px 54px}.ee-site.ee-difficulty-index .section .cards,.ee-site.ee-difficulty-index .index-extra-group .index-extra-cards{grid-template-columns:1fr}.ee-site.ee-difficulty-index .section-top{align-items:flex-start;flex-direction:column;gap:0}.ee-site.ee-difficulty-index nav.jump a{font-size:13px;padding:9px 12px}}
+  `;
+  doc.head.append(style);
+  const section=el(doc,'section','section index-extra');
   section.id='mas-articulos';
   const top=el(doc,'div','section-top'),info=el(doc,'div');
-  info.append(el(doc,'span','level','Nuevas lecciones'),el(doc,'h2','','Más artículos y exámenes'),el(doc,'p','','Materiales publicados después del índice original, todavía sin nivel verificado.'));
-  top.append(info,el(doc,'span','count',extra.length+' contenidos'));section.append(top);
-  const cards=el(doc,'div','cards');
-  for(const item of extra){
-   const card=el(doc,'a','card');card.href=new URL('leer.html?slug='+encodeURIComponent(item.slug),location.href).href;
-   card.append(el(doc,'strong','',(item.titulo||item.slug).replace(/\s*[·|–-]\s*Easy English\s*$/i,'')),el(doc,'span','go','Abrir lección →'));
-   cards.append(card);
+  info.append(el(doc,'span','level','Biblioteca ampliada'),el(doc,'h2','','Más artículos por nivel'));
+  top.append(info,el(doc,'span','count',extra.length+' contenidos adicionales'));
+  section.append(top,el(doc,'p','index-extra-intro','Los artículos más recientes están agrupados por su nivel orientativo. Abre solo el grupo que quieras explorar.'));
+  const groups=[
+   {key:'A1-A2',title:'A1–A2 · Principiante y básico'},
+   {key:'A2-B1',title:'A2–B1 · Básico e intermedio'},
+   {key:'B1-B2',title:'B1–B2 · Intermedio y First'},
+   {key:'A2-B2',title:'A2–B2 · Varios niveles'},
+   {key:'Sin especificar',title:'Otros contenidos · Nivel por revisar'}
+  ];
+  const groupKey=a=>groups.some(g=>g.key===a.nivel)?a.nivel:'Sin especificar';
+  const categories={grammar:'Gramática',vocabulary:'Vocabulario',lesson:'Lecciones',speaking:'Speaking y Writing',listening:'Listening'};
+  for(const group of groups){
+   const items=extra.filter(item=>groupKey(item)===group.key);
+   if(!items.length)continue;
+   const details=el(doc,'details','index-extra-group');
+   const summary=el(doc,'summary');
+   summary.append(el(doc,'span','',group.title),el(doc,'span','index-extra-count',items.length+' artículos'));
+   details.append(summary);
+   const cards=el(doc,'div','index-extra-cards');
+   for(const item of items){
+    const card=el(doc,'a','index-extra-card');
+    card.href=new URL('leer.html?slug='+encodeURIComponent(item.slug),location.href).href;
+    const name=(item.titulo||item.slug).replace(/\s*[·|–-]\s*Easy English\s*$/i,'');
+    card.append(el(doc,'strong','',name),el(doc,'span','',categories[item.categoria_slug]||'Artículo'));
+    cards.append(card);
+   }
+   details.append(cards);
+   section.append(details);
   }
-  section.append(cards);
   const final=doc.querySelector('main .end');
   if(final)final.before(section);
   else doc.querySelector('main')?.append(section);
   const jump=doc.querySelector('nav.jump');
-  if(jump){const link=el(doc,'a','','Más artículos ('+extra.length+')');link.setAttribute('href','#mas-articulos');jump.append(link)}
+  if(jump){
+   const link=el(doc,'a','','Más artículos ('+extra.length+')');
+   link.setAttribute('href','#mas-articulos');
+   jump.append(link);
+  }
  }
  if(!slug||!/^[a-z0-9-]+$/.test(slug)){status.textContent='El enlace no corresponde a un artículo válido.';return}
  try{
