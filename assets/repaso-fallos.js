@@ -171,7 +171,8 @@
       summary.append(score,detail,next);summary.hidden=false;
       status.textContent='Repaso corregido y guardado en Supabase.';
       submit.disabled=true;submit.textContent='Repaso terminado';
-      if(typeof failedReview==='function')await failedReview();
+      try{if(typeof failedReview==='function')await failedReview();}
+      catch(refreshError){console.warn('No se pudo actualizar el listado de fallos',refreshError);}
       summary.scrollIntoView({behavior:'smooth',block:'center'});
     }catch(e){
       if(version!==requestVersion)return;
