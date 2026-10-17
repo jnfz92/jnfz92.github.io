@@ -21,6 +21,12 @@
 
 `public.paginas_blog` guarda copias de ocho páginas principales: mantenerlas sincronizadas cuando cambie el HTML de GitHub. Las páginas se publican desde GitHub, no directamente desde esa tabla.
 
+## Lectura aleatoria pendiente en el perfil
+
+Al abrir `perfil.html` con una sesión válida, se muestra automáticamente una tarjeta «Un artículo para ti». Cuando están disponibles el catálogo de `public.articulos` y las lecturas de `public.lecturas` del usuario, se elige al azar uno de los artículos todavía no leídos. «Sugerir otro» evita repetir la recomendación anterior cuando quedan varias opciones. El enlace lleva a `leer.html?slug=...`; «Ya lo he leído» guarda la lectura en Supabase y actualiza el progreso de la biblioteca.
+
+Cuando el alumno termina todos los artículos disponibles, se muestra una felicitación en vez de recomendar lecturas ya terminadas. Nunca se felicita si el catálogo está vacío o la carga no se ha completado. La recomendación se recalcula tras marcar o desmarcar lecturas y no aparece sin iniciar sesión.
+
 ## Cuaderno personal de errores
 
 Al entregar un examen con una sesión de Supabase Auth iniciada, el RPC `public.entregar_examen` guarda el intento en `public.resultados`. El trigger `trg_registrar_preguntas_falladas` ejecuta `private.registrar_preguntas_falladas()`: registra las preguntas contestadas incorrectamente o en blanco en `public.preguntas_falladas`, incrementa `veces_fallada` en nuevos errores y marca `dominada = true` cuando el usuario acierta esa pregunta en un examen posterior. Los registros de preguntas superadas permanecen como historial.
