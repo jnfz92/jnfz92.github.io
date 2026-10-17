@@ -1,0 +1,39 @@
+---
+---
+<!doctype html>
+<html lang="es"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="Curso de inglés de Easy English, organizado en unidades y niveles.">
+<title>Curso de inglés · Easy English</title>
+<link rel="stylesheet" href="assets/site.css?v=20261014">
+<style>
+body.ee-site{background:#f6f8f5;color:#193a2a}
+.course-wrap{width:min(1000px,calc(100% - 32px));margin:0 auto;padding:44px 0 80px}
+.course-hero{background:#173f30;border-radius:25px;padding:34px;color:#fff;margin-bottom:24px}
+.course-hero h1{font-size:clamp(34px,5vw,52px);color:#fff;margin:0 0 12px;line-height:1.1}
+.course-hero p{max-width:720px;color:#e4eee6;font-size:17px}
+.course-hero a{color:#fff;text-decoration:underline}
+#courseStatus{font-weight:700;color:#176447;margin:18px 0}
+.course-unit{background:#fff;border:1px solid #d9e8dc;border-radius:18px;padding:24px;margin:18px 0}
+.course-header h2{font-size:clamp(23px,3vw,30px);margin:7px 0}
+.course-header p{color:#526a5a;margin:0 0 14px}
+.course-level{display:inline-block;padding:5px 11px;border-radius:999px;background:#e7f2e9;color:#176447;font-size:12px;font-weight:800}
+.course-lessons{list-style:decimal;padding:0 0 0 22px;margin:12px 0 0}
+.course-lessons li{padding:12px 8px;border-bottom:1px solid #e7eee8}
+.course-lessons li:last-child{border:0}
+.course-lessons li::marker{color:#176447;font-weight:800}
+.course-lessons a{font-weight:800;color:#176447}
+.course-desc{font-size:14px;color:#607469;margin:5px 0 0}
+.course-end{padding:20px 0;color:#4c6254}
+.course-end a{color:#176447;font-weight:750}
+</style><link rel="stylesheet" href="/assets/navigation.css?v=20261017-unico2"><script src="/assets/navigation.js?v=20261017-unico2" defer></script></head>
+<body class="ee-site">{% include header.html %}
+<main class="course-wrap"><section class="course-hero"><h1>Tu ruta para aprender inglés.</h1>
+<p>Empieza por lo fundamental y avanza a tu ritmo. Las unidades y las lecciones se administran desde Supabase. Los contenidos sin nivel confirmado aparecen señalados.</p>
+<p><a href="actividades.html">✎ Abrir actividades interactivas →</a></p>
+<p><a href="leer.html?slug=indice-de-dificultad">Ver el índice de dificultad original</a></p></section>
+<p id="courseStatus" aria-live="polite" role="status">Cargando las unidades del curso…</p>
+<div id="courseUnits"></div>
+<p id="courseFallback" hidden><a href="leer.html?slug=indice-de-dificultad">Abrir el índice de dificultad →</a> · <a href="articulos.html">Ver todas las lecciones →</a></p>
+<div class="course-end"><p>¿Quieres explorar material adicional? <a href="articulos.html">Visita la biblioteca completa</a> o <a href="vocabulario.html">practica vocabulario</a>.</p></div>
+</main><script src="assets/curso-supabase.js?v=20261017a" defer></script></body></html>

@@ -1,0 +1,31 @@
+---
+---
+<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="Vocabulario inglés-español de Easy English con traducciones y ejemplos.">
+<title>Vocabulario · Easy English</title><link rel="stylesheet" href="assets/site.css?v=20261014">
+<style>
+body.ee-site{background:#f6f8f5;color:#193a2a}
+.vocab-wrap{max-width:1080px;margin:auto;padding:42px 18px 80px}
+.vocab-hero{padding:30px;background:#173f30;color:#fff;border-radius:24px}
+.vocab-hero h1{font-size:clamp(32px,5vw,50px);color:white;margin:0 0 12px}
+.vocab-hero p{color:#e3f0e7}
+.vocab-controls{display:flex;flex-wrap:wrap;gap:10px;margin:22px 0}
+.vocab-controls input,.vocab-controls select{font:inherit;min-height:46px;border:1px solid #bdd5c4;border-radius:12px;padding:9px 12px;background:white;color:#193a2a}
+.vocab-controls input{flex:2;min-width:220px}.vocab-controls select{flex:1;min-width:180px}
+.vocab-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.vocab-card{padding:19px 21px;border:1px solid #d7e5da;border-radius:18px;background:#fff}
+.vocab-head{display:flex;justify-content:space-between;gap:12px;align-items:start;flex-wrap:wrap}
+.vocab-card h2{font-size:22px;margin:0;color:#193a2a}
+.vocab-tag{border-radius:999px;padding:5px 9px;background:#e5f1e7;color:#176447;font-size:12px;font-weight:700}
+.vocab-es{font-weight:700;margin:9px 0}.vocab-example{font-style:italic;color:#556e5c;margin:5px 0 0}
+#vocabularyStatus{font-weight:700;color:#176447;margin:16px 0}
+@media(max-width:690px){.vocab-grid{grid-template-columns:1fr}}
+</style><link rel="stylesheet" href="/assets/navigation.css?v=20261017-unico2"><script src="/assets/navigation.js?v=20261017-unico2" defer></script></head><body class="ee-site">
+{% include header.html %}
+<main class="vocab-wrap"><section class="vocab-hero"><h1>Palabras que aprenderás a usar.</h1><p>Vocabulario inglés–español, traducciones y ejemplos organizados en Supabase.</p></section>
+<div class="vocab-controls"><input id="vocabularySearch" type="search" placeholder="Buscar en inglés o español…" aria-label="Buscar vocabulario"><select id="vocabularyCategory" aria-label="Filtrar por categoría"><option value="">Todas las categorías</option></select></div>
+<p id="vocabularyStatus" role="status" aria-live="polite">Cargando vocabulario…</p>
+<div id="vocabularyItems" class="vocab-grid"></div>
+<p id="vocabularyFallback" hidden><a href="pdfs/vocabulary_list_06-10-2026.pdf">Descargar la lista en PDF →</a></p>
+<p style="margin-top:32px"><a href="downloads.html">← Volver a descargas</a> · <a href="curso.html">Ir al curso</a></p>
+</main><script src="assets/vocabulario-supabase.js?v=20261015" defer></script></body></html>

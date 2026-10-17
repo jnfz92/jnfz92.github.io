@@ -1,0 +1,80 @@
+---
+---
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="Actividades interactivas de Easy English: test, huecos, transformaciones y escritura.">
+<title>Actividades · Easy English</title>
+<link rel="stylesheet" href="assets/site.css?v=20261014">
+<style>
+:root{--act-ink:#153e2c;--act-green:#176447;--act-line:#dae7dd}
+body.ee-site{background:#f7faf7;color:#19362a}
+.activity-shell{width:min(1050px,calc(100% - 32px));margin:0 auto;padding:32px 0 75px}
+.activity-hero{background:linear-gradient(120deg,#154936,#247454);padding:32px;border-radius:24px;color:#fff;margin:15px 0 24px}
+.activity-hero h1{font-size:clamp(28px,4vw,45px);margin:10px 0}
+.activity-hero p{max-width:70ch;color:#e7f7eb;line-height:1.65}
+.activity-panel{padding:24px;background:#fff;border:1px solid var(--act-line);border-radius:20px;margin:20px 0;box-shadow:0 8px 26px #193c2610}
+.activity-panel h2{font-size:24px;margin:2px 0 8px}
+.activity-panel [hidden],.activity-shell [hidden]{display:none!important}
+.activity-topline{display:flex;gap:12px;flex-wrap:wrap;align-items:center;justify-content:space-between}
+.activity-muted{color:#607466;line-height:1.6}
+.activity-kicker{font-size:12px;letter-spacing:.13em;font-weight:800;text-transform:uppercase;color:#35765c}
+.activity-hero .activity-kicker{color:#d5f6dd}
+.activity-count{font-size:14px;color:#4a6958}
+.activity-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(255px,1fr));gap:14px;margin-top:18px}
+.activity-card{background:#f8fbf8;border:1px solid #dce8df;border-radius:15px;padding:18px;display:flex;flex-direction:column;gap:10px}
+.activity-card h3{font-size:19px;line-height:1.35;margin:0}
+.activity-card p{margin:0;color:#526b5a}
+.activity-card small{font-weight:750;color:#427056}
+.activity-btn,.activity-card button,.activity-actions button{background:#176447;border:1px solid #176447;border-radius:10px;color:white;padding:11px 15px;font:inherit;font-weight:800;cursor:pointer}
+.activity-btn.secondary,.activity-actions button.secondary{background:white;color:#176447}
+.activity-card button{margin-top:auto;align-self:flex-start}
+.activity-btn:disabled,.activity-actions button:disabled{opacity:.6;cursor:wait}
+.activity-status{color:#355d48;font-size:14px;line-height:1.6}
+.activity-questions{display:grid;gap:20px;margin:18px 0}
+.activity-question{border:1px solid #d7e5da;border-radius:17px;padding:22px;min-width:0;background:#fff}
+.activity-question legend{font-size:17px;font-weight:800;line-height:1.5;max-width:95%;padding:0 8px}
+.activity-options{display:grid;gap:9px}
+.activity-options label{display:flex;gap:10px;align-items:flex-start;border:1px solid #d7e3d8;border-radius:11px;padding:12px;cursor:pointer}
+.activity-options label:has(input:checked){border-color:#176447;background:#eaf5eb}
+.activity-question input[type=radio]{accent-color:#176447;margin-top:6px}
+.activity-text,.activity-essay{box-sizing:border-box;width:100%;border:1px solid #b9d0c1;padding:13px;border-radius:11px;font:inherit;color:#153b29}
+.activity-essay{min-height:205px;resize:vertical;line-height:1.6}
+.activity-gap{margin:11px 0}
+.activity-gap label{display:block;font-weight:700;margin-bottom:5px}
+.activity-media{margin:14px 0;max-width:100%}
+.activity-media img{max-width:100%;max-height:430px;border-radius:13px;object-fit:contain}
+.activity-media audio{display:block;max-width:100%;width:min(550px,100%)}
+.activity-media figcaption{font-size:13px;color:#4f675b;margin-top:8px}
+.activity-hint{font-size:13px;color:#577460;margin:9px 0}
+.activity-feedback{white-space:pre-wrap;background:#f0f6f1;padding:15px;border-radius:12px;line-height:1.6;margin-top:15px}
+.activity-question.is-correct{border-left:5px solid #208c56}
+.activity-question.is-incorrect{border-left:5px solid #b66f24}
+.activity-question.is-review{border-left:5px solid #6477b3}
+.activity-summary{background:#eef8ee;padding:20px;border-radius:15px;margin-top:20px}
+.activity-summary strong{display:block;font-size:26px}
+.activity-actions{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+.activity-back{color:#176447;font-weight:800;text-decoration:underline}
+@media(max-width:600px){.activity-shell{padding-top:12px}.activity-panel,.activity-question{padding:17px}.activity-hero{padding:24px}}
+</style>
+<link rel="stylesheet" href="/assets/navigation.css?v=20261017-unico2"><script src="/assets/navigation.js?v=20261017-unico2" defer></script></head>
+<body class="ee-site">
+{% include header.html %}
+<main class="activity-shell">
+<section class="activity-hero"><span class="activity-kicker">EASY ENGLISH · PRACTICA</span><h1>Actividades de aprendizaje</h1><p>Practica a tu ritmo con preguntas de elección múltiple, huecos, transformaciones y respuestas escritas. Las actividades también pueden incluir audios e imágenes.</p></section>
+<section class="activity-panel" aria-labelledby="catalogTitle" id="activityCatalogPanel">
+<div class="activity-topline"><div><span class="activity-kicker">Tu ruta de aprendizaje</span><h2 id="catalogTitle">Elige una actividad</h2></div><a class="activity-back" href="curso.html">← Volver al curso</a></div>
+<p class="activity-muted" id="activityCatalogStatus" role="status">Consultando las actividades publicadas…</p>
+<div id="activityList" class="activity-list" aria-live="polite"></div></section>
+<section class="activity-panel" id="activitySessionPanel" hidden aria-labelledby="activitySessionTitle">
+<div class="activity-topline"><span class="activity-kicker" id="activitySkill"></span><button class="activity-btn secondary" id="activityBack" type="button">← Todas las actividades</button></div>
+<h2 id="activitySessionTitle">Actividad</h2><p class="activity-muted" id="activityDescription"></p>
+<p id="activitySessionStatus" class="activity-status" role="status" aria-live="polite"></p>
+<form id="activityForm"><div id="activityQuestions" class="activity-questions"></div><button id="activitySubmit" class="activity-btn" type="submit">Corregir y guardar actividad</button></form>
+<div id="activitySummary" class="activity-summary" role="status" hidden></div>
+</section>
+<section class="activity-panel"><h2>Tu cuenta</h2><p class="activity-muted" id="activityAuthStatus" role="status">Comprobando sesión…</p><p class="activity-muted">Puedes consultar las actividades sin iniciar sesión. Para entregar respuestas y guardar tu progreso, <a class="activity-back" href="perfil.html">inicia sesión desde tu perfil</a>.</p></section>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="supabase-config.js"></script>
+<script src="assets/actividades.js?v=20261017a"></script>
+</body></html>

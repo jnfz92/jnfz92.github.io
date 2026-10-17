@@ -1,5 +1,6 @@
 ---
-layout: home
+layout: default
+permalink: /presentacion-original/
 title: Inicio
 ---
 

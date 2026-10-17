@@ -6,18 +6,11 @@
   <title>{% if page.title %}{{ page.title }} · {% endif %}{{ site.title }}</title>
   <meta name="description" content="{{ page.excerpt | default: site.description | strip_html | normalize_whitespace | escape }}">
   <link rel="stylesheet" href="{{ '/assets/main.css' | relative_url }}">
-</head>
+  <link rel="stylesheet" href="{{ '/assets/site.css' | relative_url }}">
+<link rel="stylesheet" href="{{ '/assets/navigation.css' | relative_url }}?v=20261017-unico2"><script src="{{ '/assets/navigation.js' | relative_url }}?v=20261017-unico2" defer></script></head>
 <body>
-  <header class="site-header">
-    <div class="wrap header-inner">
-      <a class="brand" href="{{ '/' | relative_url }}"><span>FCE</span> English Lab</a>
-      <nav aria-label="Navegación principal">
-        <a href="{{ '/' | relative_url }}">Artículos</a>
-        <a href="{{ '/#categories' | relative_url }}">Categorías</a>
-        <a href="{{ '/#search' | relative_url }}">Buscar</a>
-      </nav>
-    </div>
-  </header>
+  {% include header.html %}
+
   <main>{{ content }}</main>
   <footer class="site-footer">
     <div class="wrap">

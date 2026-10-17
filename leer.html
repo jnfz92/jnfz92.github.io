@@ -1,3 +1,113 @@
-<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="Lee artículos de Easy English desde Supabase."><title>Leer artículo · Easy English</title><link rel="stylesheet" href="assets/site.css?v=20261014"><style>main{max-width:950px;margin:32px auto;padding:0 16px}#notice{padding:18px;background:#eef5ef;border-radius:12px}#content{width:100%;border:0;min-height:80vh;display:block} .direct-link{margin:18px 0}iframe{background:white}</style></head><body class="ee-site ee-lesson"><header class="ee-header"><div class="ee-bar"><a class="ee-logo" href="index.html"><b aria-hidden="true">ee.</b>Easy English</a><nav class="ee-nav"><a href="articulos.html">Volver al blog</a></nav></div></header><main><p id="notice" role="status">Cargando artículo desde Supabase…</p><p class="direct-link" id="alternative" hidden></p><iframe id="content" title="Contenido del artículo" hidden></iframe></main><script>
-(async()=>{const slug=new URLSearchParams(location.search).get('slug');const message=document.getElementById('notice'),frame=document.getElementById('content'),alt=document.getElementById('alternative');if(!slug||!/^[a-z0-9-]+$/.test(slug)){message.textContent='Artículo no válido.';return}const fallback='post/'+slug+'.html';const link=document.createElement('a');link.href=fallback;link.textContent='Abrir la versión HTML de respaldo';alt.append(link);try{const url='https://wnluofonzteaqtlfshgy.supabase.co/rest/v1/articulos?select=html,titulo&slug=eq.'+encodeURIComponent(slug)+'&limit=1';const r=await fetch(url,{headers:{apikey:'sb_publishable_Ef-AXAapcwaPExEFS6kmug_tKLaulM8',Accept:'application/json'}});if(!r.ok)throw Error('Supabase '+r.status);const data=await r.json();if(!data.length)throw Error('Artículo no encontrado');document.title=data[0].titulo;let html=data[0].html;html=html.replace(/<head([^>]*)>/i,'<head$1><base href="'+new URL('post/',location.href).href+'">');frame.srcdoc=html;frame.hidden=false;frame.addEventListener('load',()=>{try{const d=frame.contentDocument;if(d){frame.style.height=Math.max(d.documentElement.scrollHeight,d.body?.scrollHeight||0,600)+'px';new ResizeObserver(()=>{frame.style.height=Math.max(d.documentElement.scrollHeight,d.body?.scrollHeight||0,600)+'px'}).observe(d.body)}}catch(e){}},{once:true});message.textContent='Artículo cargado desde Supabase.';}catch(e){message.textContent='No se pudo cargar desde Supabase. Puedes abrir la versión de respaldo.';alt.hidden=false}})();
+---
+---
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="Lecciones y artículos de Easy English.">
+<title>Cargando lección · Easy English</title>
+<link rel="stylesheet" href="assets/site.css?v=20261014">
+<style>body{font-family:system-ui,sans-serif;background:#f7f7f4;color:#17211c;margin:0}.loader{max-width:720px;margin:12vh auto;padding:24px}.loader a{color:#176447}</style><link rel="stylesheet" href="/assets/navigation.css?v=20261017-unico2"><script src="/assets/navigation.js?v=20261017-unico2" defer></script></head>
+<body>{% include header.html %}<main class="loader"><h1>Easy English</h1><p id="loading" role="status">Cargando el artículo desde Supabase…</p><p><a href="articulos.html">Volver al blog</a></p></main>
+<script>
+(async function(){
+ const endpoint='https://wnluofonzteaqtlfshgy.supabase.co/rest/v1/';
+ const key='sb_publishable_Ef-AXAapcwaPExEFS6kmug_tKLaulM8';
+ const slug=new URLSearchParams(location.search).get('slug');
+ const status=document.getElementById('loading');
+ const aliases={'phrasal-verbs-with-get':'get-phrasal-verbs','agreeing-disagreeing':'polite-disagreement','expressing-opinions':'opinion-speculation-expressions','environment-vocabulary':'pollution-environment-vocabulary','adverbs-of-frequency':'todos-los-tiempos-de-presente-en-ingles','might':'modal-verb-might'};
+ const resolveSlug=s=>aliases[s]||s;
+ const headers={apikey:key,Accept:'application/json'};
+ const baseURL=new URL('post/',location.href);
+ function originalSlug(href){
+  try{
+   const u=new URL(href,baseURL);
+   if(u.origin!==location.origin)return null;
+   const match=u.pathname.match(/\/post\/(?:post\/)?([a-z0-9-]+)\.html$/i);
+   return match?{slug:resolveSlug(match[1]),hash:u.hash}:null;
+  }catch{return null}
+ }
+ async function loadJSON(query){
+  const response=await fetch(endpoint+query,{headers});
+  if(!response.ok)throw new Error('HTTP '+response.status);
+  return response.json();
+ }
+ function el(doc,tag,cls,text){
+  const node=doc.createElement(tag);
+  if(cls)node.className=cls;
+  if(text!==undefined)node.textContent=text;
+  return node;
+ }
+ async function completeIndex(doc){
+  const list=await loadJSON('articulos?select=slug,titulo,descripcion&order=titulo.asc&limit=1000');
+  const used=new Set([slug]);
+  for(const a of doc.querySelectorAll('section.section a.card[href]')){
+   const found=originalSlug(a.getAttribute('href'));
+   if(found)used.add(found.slug);
+  }
+  const extra=list.filter(a=>!used.has(a.slug));
+  if(!extra.length)return;
+  const section=el(doc,'section','section');
+  section.id='mas-articulos';
+  const top=el(doc,'div','section-top'),info=el(doc,'div');
+  info.append(el(doc,'span','level','Nuevas lecciones'),el(doc,'h2','','Más artículos y exámenes'),el(doc,'p','','Materiales publicados después del índice original, todavía sin nivel verificado.'));
+  top.append(info,el(doc,'span','count',extra.length+' contenidos'));section.append(top);
+  const cards=el(doc,'div','cards');
+  for(const item of extra){
+   const card=el(doc,'a','card');card.href=new URL('leer.html?slug='+encodeURIComponent(item.slug),location.href).href;
+   card.append(el(doc,'strong','',(item.titulo||item.slug).replace(/\s*[·|–-]\s*Easy English\s*$/i,'')),el(doc,'span','go','Abrir lección →'));
+   cards.append(card);
+  }
+  section.append(cards);
+  const final=doc.querySelector('main .end');
+  if(final)final.before(section);
+  else doc.querySelector('main')?.append(section);
+  const jump=doc.querySelector('nav.jump');
+  if(jump){const link=el(doc,'a','','Más artículos ('+extra.length+')');link.setAttribute('href','#mas-articulos');jump.append(link)}
+ }
+ if(!slug||!/^[a-z0-9-]+$/.test(slug)){status.textContent='El enlace no corresponde a un artículo válido.';return}
+ try{
+  const list=await loadJSON('articulos?select=html,titulo,descripcion&slug=eq.'+encodeURIComponent(resolveSlug(slug))+'&limit=1');
+  if(!list.length||!list[0].html)throw new Error('Artículo no encontrado');
+  const article=list[0];
+  const doc=new DOMParser().parseFromString(article.html,'text/html');
+  if(!doc.querySelector('main'))throw new Error('El contenido del artículo no incluye la sección principal');
+  // El HTML del artículo se presenta como documento completo; no hay iframe ni dos cabeceras.
+  const base=doc.createElement('base');base.href=baseURL.href;doc.head.prepend(base);
+  if(slug==='indice-de-dificultad')await completeIndex(doc);
+  for(const link of doc.querySelectorAll('a[href]')){
+   const value=link.getAttribute('href');
+   if(!value)continue;
+   if(value[0]==='#'){link.href=location.origin+location.pathname+location.search+value;continue}
+   if(/^(mailto:|tel:|javascript:)/i.test(value))continue;
+   const found=originalSlug(value);
+   if(found)link.href=new URL('leer.html?slug='+encodeURIComponent(found.slug)+found.hash,location.href).href;
+  }
+  // La URL canónica y la descripción corresponden al artículo, no al cargador.
+  const existing=doc.querySelector('link[rel="canonical"]');if(existing)existing.remove();
+  const canonical=doc.createElement('link');canonical.rel='canonical';canonical.href=new URL('leer.html?slug='+encodeURIComponent(resolveSlug(slug)),location.href).href;doc.head.append(canonical);
+  if(article.descripcion){let meta=doc.querySelector('meta[name="description"]');if(!meta){meta=doc.createElement('meta');meta.name='description';doc.head.append(meta)}meta.content=article.descripcion}
+  // El header del lector también se obtiene del único include Jekyll del cargador.
+  // Reemplaza el header editorial que venga en el HTML de Supabase.
+  const sharedHeader=document.getElementById('ee-shared-header');
+  const originalArticleHeader=doc.querySelector('body > header.ee-header, body > header.site-header');
+  if(sharedHeader){
+    const headerCopy=sharedHeader.cloneNode(true);
+    if(originalArticleHeader) originalArticleHeader.replaceWith(headerCopy);
+    else doc.body.prepend(headerCopy);
+  }
+  // El articulo llega como documento HTML completo desde Supabase.
+  // Cargar tambien la barra de navegacion en el documento sustituido.
+  const navStyle=doc.createElement('link');navStyle.rel='stylesheet';
+  navStyle.href=new URL('/assets/navigation.css?v=20261017-unico2',location.href).href;
+  doc.head.append(navStyle);
+  const navScript=doc.createElement('script');
+  navScript.src=new URL('/assets/navigation.js?v=20261017-unico2',location.href).href;
+  navScript.defer=true;doc.body.append(navScript);
+  document.open();
+  document.write('<!doctype html>\n'+doc.documentElement.outerHTML);
+  document.close();
+ }catch(err){
+  console.error('Error al mostrar el artículo',err);
+  status.textContent='No se pudo cargar este artículo desde Supabase. Inténtalo de nuevo más tarde.';
+ }
+})();
 </script></body></html>
