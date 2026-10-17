@@ -22,7 +22,17 @@ Los tipos anteriores se pueden acompañar de **audio o imagen** en `medio_tipo='
 
 **Guardar y corregir:** `public.entregar_actividad(p_actividad_id bigint,p_respuestas jsonb,p_intento_id uuid)` exige sesión y actividad publicada, comprueba que todas las preguntas pertenezcan a esa actividad y limita a 50 preguntas por entrega. Lee las soluciones en `private.actividad_soluciones`; devuelve la corrección *después* de entregar y guarda un intento por UUID en `public.actividad_intentos`. Las variantes cortas se comparan ignorando mayúsculas y espacios exteriores/repetidos. Los huecos solo se consideran correctos si todos lo son; se pueden definir variantes por hueco. Las redacciones se etiquetan `revision` sin calificarse automáticamente. **No hay todavía interfaz para que un profesor revise redacciones**: se requiere una funcionalidad posterior, no se debe asumir que se corrigen solas.
 
-**Privacidad y compatibilidad:** RLS permite consultar las actividades y preguntas publicadas sin cuenta, pero los intentos solamente a su autor con `auth.uid()`. Las soluciones privadas nunca se exponen por Data API. Se puede repetir una entrega tras un corte de red gracias a `p_intento_id` sin crear un intento duplicado. No se modifican `public.examenes`, `public.preguntas`, `public.resultados` ni el cuaderno de errores previo. Los errores de estas nuevas actividades se conservan en los intentos y **aún no se incorporan automáticamente al examen de errores original**.
+**Privacidad y compatibilidad:** RLS permite consultar las actividades y preguntas publicadas sin cuenta, pero los intentos solamente a su autor con `auth.uid()`. Las soluciones privadas nunca se exponen por Data API. Se puede repetir una entrega tras un corte de red gracias a `p_intento_id` sin crear un intento duplicado. No se modifican `public.examenes`, `public.preguntas`, `public.resultados` ni el cuaderno de errores previo. Los errores objetivos de las actividades se incorporan automáticamente al repaso unificado descrito más abajo. Las redacciones permanecen pendientes de revisión humana, sin contar como fallos.
+
+## Seguimiento del aprendizaje unificado (web y Android)
+
+El perfil `perfil.html` muestra un resumen conjunto de lecturas, exámenes tradicionales, actividades interactivas entregadas y errores pendientes de ambos sistemas. Cada nota de examen y cada respuesta conserva su valor propio: el resumen no mezcla calificaciones distintas. La consulta está restringida al usuario autenticado.
+
+`supabase/07_progreso_unificado.sql` crea `public.actividad_fallos`, visible mediante RLS solo a su dueño. Un trigger sobre `public.actividad_intentos` registra errores objetivos, incrementa los fallos repetidos y marca dominadas las respuestas acertadas. Los intentos idempotentes no duplican errores. `supabase/08_racha_actividades.sql` acredita las actividades interactivas en la racha diaria, además de las lecturas y los exámenes.
+
+`practicar.html#cuaderno-fallos` mezcla hasta 20 preguntas erróneas de exámenes y actividades en una misma tanda, con opciones múltiples, respuesta corta, huecos, transformaciones, imagen y audio cuando corresponda. Cada subconjunto se corrige en Supabase: `entregar_repaso_fallos` para exámenes y `entregar_repaso_actividades` para actividades. Los UUID de entrega se conservan para evitar duplicados tras fallos de conexión. La nota del examen original no se altera. El antiguo listado individual de fallos permanece oculto.
+
+La APK Cordova 1.1.1 incorpora acceso al perfil online desde el arranque y desde el curso incluido sin conexión. Con internet usa la web pública y el progreso de Supabase; el progreso del curso antiguo offline permanece independiente, no se sincroniza automáticamente.
 
 ## Publicar materiales
 
