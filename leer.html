@@ -5,7 +5,7 @@
 <meta name="description" content="Lecciones y artículos de Easy English.">
 <title>Cargando lección · Easy English</title>
 <link rel="stylesheet" href="assets/site.css?v=20261014">
-<style>body{font-family:system-ui,sans-serif;background:#f7f7f4;color:#17211c;margin:0}.loader{max-width:720px;margin:12vh auto;padding:24px}.loader a{color:#176447}</style><link rel="stylesheet" href="assets/navigation.css?v=20261017"><script src="assets/navigation.js?v=20261017" defer></script></head>
+<style>body{font-family:system-ui,sans-serif;background:#f7f7f4;color:#17211c;margin:0}.loader{max-width:720px;margin:12vh auto;padding:24px}.loader a{color:#176447}</style><link rel="stylesheet" href="/assets/navigation.css?v=20261017-unico2"><script src="/assets/navigation.js?v=20261017-unico2" defer></script></head>
 <body>{% include header.html %}<main class="loader"><h1>Easy English</h1><p id="loading" role="status">Cargando el artículo desde Supabase…</p><p><a href="articulos.html">Volver al blog</a></p></main>
 <script>
 (async function(){
@@ -97,10 +97,10 @@
   // El articulo llega como documento HTML completo desde Supabase.
   // Cargar tambien la barra de navegacion en el documento sustituido.
   const navStyle=doc.createElement('link');navStyle.rel='stylesheet';
-  navStyle.href=new URL('assets/navigation.css?v=20261017',location.href).href;
+  navStyle.href=new URL('/assets/navigation.css?v=20261017-unico2',location.href).href;
   doc.head.append(navStyle);
   const navScript=doc.createElement('script');
-  navScript.src=new URL('assets/navigation.js?v=20261017',location.href).href;
+  navScript.src=new URL('/assets/navigation.js?v=20261017-unico2',location.href).href;
   navScript.defer=true;doc.body.append(navScript);
   document.open();
   document.write('<!doctype html>\n'+doc.documentElement.outerHTML);
