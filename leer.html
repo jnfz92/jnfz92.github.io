@@ -1,7 +1,8 @@
 ---
+permalink: /leer.html
 ---
 <!doctype html>
-<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<html lang="es"><head><link rel="icon" type="image/svg+xml" href="/favicon.svg?v=20261017-ee"><meta name="theme-color" content="#005B3C"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="description" content="Lecciones y artículos de Easy English.">
 <title>Cargando lección · Easy English</title>
 <link rel="stylesheet" href="assets/site.css?v=20261014">
@@ -81,6 +82,8 @@
    const found=originalSlug(value);
    if(found)link.href=new URL('leer.html?slug='+encodeURIComponent(found.slug)+found.hash,location.href).href;
   }
+  // Mantener el favicon en el documento sustituido con HTML de Supabase.
+  const favicon=doc.createElement('link');favicon.rel='icon';favicon.type='image/svg+xml';favicon.href='/favicon.svg?v=20261017-ee';doc.head.append(favicon);
   // La URL canónica y la descripción corresponden al artículo, no al cargador.
   const existing=doc.querySelector('link[rel="canonical"]');if(existing)existing.remove();
   const canonical=doc.createElement('link');canonical.rel='canonical';canonical.href=new URL('leer.html?slug='+encodeURIComponent(resolveSlug(slug)),location.href).href;doc.head.append(canonical);

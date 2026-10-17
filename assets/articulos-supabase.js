@@ -10,7 +10,7 @@ const library=document.body.classList.contains('ee-library')&&!categoryPage;
 const grid=document.querySelector(library?'.blog .grid':home?'main .grid':'main .grid');
 if(!grid || !(home||library||group))return;
 const defaultNames={grammar:'Gramática',vocabulary:'Vocabulario',speaking:'Speaking y Writing',listening:'Listening',lesson:'Lecciones y exámenes'};
-const apiFetch=async path=>{const res=await fetch(API+path,{headers:{apikey:KEY,Accept:'application/json'}});if(!res.ok)throw Error('Supabase: '+res.status);return res.json()};
+const apiFetch=async path=>{const res=await fetch(API+path,{cache:'no-store',headers:{apikey:KEY,Accept:'application/json'}});if(!res.ok)throw Error('Supabase: '+res.status);return res.json()};
 function card(a,names){
  const item=document.createElement('article');item.className='card';const isExam=/^examen-ingles-b1-b2-/.test(a.slug);item.dataset.cat=isExam?'exam':(a.categoria_slug||'lesson');
  const meta=document.createElement('div');meta.className='meta';

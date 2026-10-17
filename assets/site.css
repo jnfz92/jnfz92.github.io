@@ -77,3 +77,6 @@ body.ee-site{background:#f5f7f2;color:#193a2a}
 .ee-site.ee-profile .primary{background:#176447!important}
 .ee-site.ee-profile .secondary{background:#fff!important;color:#176447!important}
 @media(max-width:700px){.ee-header .ee-bar{padding:13px 16px}.ee-nav a[aria-current=page]{background:#176447;color:#fff}.ee-site.ee-home .hero{border-radius:22px!important}.ee-site.ee-profile .hero{border-radius:22px!important}}
+
+/* e.e: marca visual unificada con el icono de Android y favicon. */
+.ee-header .ee-logo img{display:block;width:39px;height:39px;border-radius:10px;object-fit:contain;flex:none}
