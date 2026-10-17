@@ -1,0 +1,34 @@
+name: Auditar contraste WCAG (sin modificar web)
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+  workflow_run:
+    workflows: ["pages build and deployment"]
+    types: [completed]
+permissions:
+  contents: read
+jobs:
+  contrast:
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 24
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Instalar navegador y motor WCAG
+        run: |
+          npm install --no-save --no-package-lock @playwright/test@1.56.1 @axe-core/playwright@4
+          npx playwright install --with-deps chromium
+      - name: Analizar 19 paginas en escritorio y movil y los 145 articulos
+        run: node scripts/audit-wcag-contrast.cjs
+      - name: Subir resultados detallados
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: informe-contraste-wcag
+          path: reports/contrast-audit.json
+          if-no-files-found: warn
+          retention-days: 7
