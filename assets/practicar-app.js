@@ -232,6 +232,7 @@ async function load(){
       section.append(h,p,a);form.append(section);
     }
     const fs=document.createElement('fieldset'),legend=document.createElement('legend');
+    fs.id='pregunta-'+q.id;
     legend.textContent=q.orden+'. '+q.enunciado;fs.append(legend);
     // Se muestra un orden aleatorio, pero se envía a Supabase el índice ORIGINAL.
     q.displayOrder=q.opciones.map((_,i)=>i);
@@ -257,7 +258,14 @@ async function load(){
   submit.type='submit';submit.textContent='Corregir y guardar resultado';form.append(submit);
   updateProgress();
   message('Examen preparado: '+questions.length+' preguntas.');
-  form.scrollIntoView({behavior:'smooth',block:'start'});
+  const params=new URLSearchParams(location.search);
+  const targetId=Number(params.get('pregunta'));
+  const target=params.get('examen')===String(examId)&&targetId?
+    document.getElementById('pregunta-'+targetId):null;
+  if(target){
+    target.classList.add('exam-review-target');
+    target.scrollIntoView({behavior:'smooth',block:'center'});
+  }else form.scrollIntoView({behavior:'smooth',block:'start'});
 }
 function updateProgress(){
   const n=questions.filter(q=>Boolean($('exam').querySelector('input[name=question-'+q.id+']:checked'))).length;
@@ -318,14 +326,17 @@ $('exam').onsubmit=async e=>{
         '\n'+(sol.explicacion||'');
     }
     for(const input of $('exam').querySelectorAll('input'))input.disabled=true;
-    message('¡Examen corregido y guardado!');
+    message('¡Examen corregido y guardado! Tus fallos se guardan en el cuaderno personal.');
     $('scoreSummary').hidden=false;
     const summary=$('scoreSummary');summary.replaceChildren();
     const label=document.createElement('span');label.className='exam-section-tag';label.textContent='RESULTADO GUARDADO';
     const score=document.createElement('strong');score.textContent=(100*correct/questions.length).toFixed(1)+'%';
-    const explanation=document.createElement('p');explanation.textContent=correct+' de '+questions.length+' respuestas correctas. Revisa tus errores y explicaciones.';
+    const explanation=document.createElement('p');explanation.textContent=correct+' de '+questions.length+' respuestas correctas. Tus fallos están guardados para repasarlos.';
     const link=document.createElement('a');link.href='perfil.html';link.textContent='Ver mi progreso ↗';
-    summary.append(label,score,explanation,link);
+    const errorsLink=document.createElement('a');
+    errorsLink.href='#cuaderno-fallos';
+    errorsLink.textContent='Ir a mi cuaderno de errores ↘';
+    summary.append(label,score,explanation,link,document.createTextNode(' · '),errorsLink);
     await Promise.all([history(),failedReview()]);
     summary.scrollIntoView({behavior:'smooth',block:'center'});
   }catch(error){
