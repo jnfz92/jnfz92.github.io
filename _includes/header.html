@@ -1,0 +1,22 @@
+{% comment %}ÚNICA FUENTE DEL HEADER para todas las páginas de Easy English.{% endcomment %}
+{% assign ee_file = page.path | split: '/' | last %}
+{% assign ee_section = 'inicio' %}
+{% if ee_file == 'articulos.html' or ee_file == 'leer.html' or ee_file == 'grammar.html' or ee_file == 'lessons.html' or ee_file == 'speaking.html' or ee_file == 'tv-movies.html' or ee_file == 'vocabulary.html' %}{% assign ee_section = 'articulos' %}{% endif %}
+{% if ee_file == 'curso.html' or ee_file == 'actividades.html' or ee_file == 'vocabulario.html' or ee_file == 'downloads.html' %}{% assign ee_section = 'curso' %}{% endif %}
+{% if ee_file == 'examenes.html' or ee_file == 'practicar.html' %}{% assign ee_section = 'examenes' %}{% endif %}
+{% if ee_file == 'perfil.html' or ee_file == 'mensajes.html' %}{% assign ee_section = 'perfil' %}{% endif %}
+{% if ee_file == 'comunidad.html' %}{% assign ee_section = 'comunidad' %}{% endif %}
+<header class="ee-header ee-shared-header" id="ee-shared-header">
+  <div class="ee-bar">
+    <a class="ee-logo" href="{{ '/index.html' | relative_url }}" aria-label="Easy English · Inicio"><b aria-hidden="true">ee.</b>Easy English</a>
+    <nav class="ee-primary-nav" id="ee-primary-links" aria-label="Navegación principal">
+      <a class="ee-primary-link" href="{{ '/index.html' | relative_url }}"{% if ee_section == 'inicio' %} aria-current="page"{% endif %}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10 12 3l9 7v11h-6v-7H9v7H3z"/></svg><span>Inicio</span></a>
+      <a class="ee-primary-link" href="{{ '/articulos.html' | relative_url }}"{% if ee_section == 'articulos' %} aria-current="page"{% endif %}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16v17H6a2 2 0 0 1-2-2V4zm0 14a2 2 0 0 1 2-2h14M8 8h8m-8 4h6"/></svg><span>Artículos</span></a>
+      <a class="ee-primary-link" href="{{ '/curso.html' | relative_url }}"{% if ee_section == 'curso' %} aria-current="page"{% endif %}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 8 9-5 9 5-9 5-9-5zm4 3v7c3 3 7 3 10 0v-7m4-3v8"/></svg><span>Curso</span></a>
+      <a class="ee-primary-link" href="{{ '/examenes.html' | relative_url }}"{% if ee_section == 'examenes' %} aria-current="page"{% endif %}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 3h10v3H7zM7 4H4v17h16V4h-3M8 11h8m-8 5h5"/></svg><span>Exámenes</span></a>
+      <a class="ee-primary-link" href="{{ '/perfil.html' | relative_url }}"{% if ee_section == 'perfil' %} aria-current="page"{% endif %}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21v-2a5 5 0 0 1 5-5h6a5 5 0 0 1 5 5v2"/></svg><span>Perfil</span></a>
+      <a class="ee-primary-link" href="{{ '/comunidad.html' | relative_url }}"{% if ee_section == 'comunidad' %} aria-current="page"{% endif %}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3"/><path d="M3 20v-2a6 6 0 0 1 12 0v2M16 5a3 3 0 0 1 0 6m2 3a5 5 0 0 1 3 5v1"/></svg><span>Comunidad</span></a>
+    </nav>
+    <button class="ee-menu-toggle" type="button" aria-controls="ee-primary-links" aria-expanded="false" aria-label="Abrir menú principal">☰ Menú</button>
+  </div>
+</header>
