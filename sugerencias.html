@@ -1,0 +1,62 @@
+---
+permalink: /sugerencias.html
+---
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Propón mejoras para Easy English y vota por las ideas publicadas.">
+  <title>Sugerencias · Easy English</title>
+  <link rel="stylesheet" href="/assets/site.css?v=20261014">
+  <link rel="stylesheet" href="/assets/navigation.css?v=20261017-menu-fix2">
+  <script src="/assets/navigation.js?v=20261017-menu-fix2" defer></script>
+  <script src="/assets/sugerencias.js?v=20261017-sugerencias1" defer></script>
+  <style>
+    .suggestions-page{max-width:900px!important;padding-top:38px!important}
+    .suggestions-intro{max-width:720px;margin:0 auto 28px}
+    .suggestion-form,.suggestion-list{background:#fff;border:1px solid var(--ee-line);border-radius:20px;padding:clamp(20px,4vw,32px);margin:20px 0}
+    .suggestion-form label{display:block;margin:16px 0 6px;font-weight:750}
+    .suggestion-form input,.suggestion-form textarea{width:100%;padding:12px 14px;border:1px solid var(--ee-line);border-radius:11px;font:inherit;color:var(--ee-ink);background:#fff}
+    .suggestion-form textarea{min-height:120px;resize:vertical}
+    .suggestion-form button{margin-top:16px}
+    .suggestion-status{min-height:1.5em;margin:12px 0 0;color:var(--ee-green)}
+    .suggestion-status[data-error=true]{color:#a33b32}
+    .suggestion-items{display:grid;gap:14px}
+    .suggestion-item{border:1px solid var(--ee-line);border-radius:15px;padding:18px}
+    .suggestion-item h3{margin:0 0 8px;font-size:19px}
+    .suggestion-item p{white-space:pre-wrap;margin:0 0 14px}
+    .suggestion-votes{display:flex;gap:9px;flex-wrap:wrap}
+    .suggestion-votes button{min-height:40px;padding:8px 12px;border:1px solid var(--ee-line);border-radius:10px;background:#fff;color:var(--ee-ink);font:inherit;font-weight:700;cursor:pointer}
+    .suggestion-votes button[aria-pressed=true]{background:#eaf1e5;border-color:#8ba98e;color:var(--ee-green)}
+    .suggestion-votes button:disabled{opacity:.65;cursor:default}
+    .suggestion-empty{color:var(--ee-muted)}
+  </style>
+</head>
+<body class="ee-site">
+  {% include header.html %}
+  <main class="suggestions-page">
+    <section class="suggestions-intro">
+      <span class="eyebrow">Ideas para mejorar</span>
+      <h1>Sugerencias</h1>
+      <p class="lead">¿Qué te gustaría encontrar en Easy English? Comparte tu idea y ayuda a elegir las próximas mejoras.</p>
+      <p>No hace falta iniciar sesión. Las sugerencias se revisan y solo aparecen aquí cuando se publican.</p>
+    </section>
+    <form id="suggestionForm" class="suggestion-form">
+      <h2>Enviar una sugerencia</h2>
+      <label for="suggestionTitle">Título</label>
+      <input id="suggestionTitle" name="titulo" type="text" minlength="5" maxlength="100" required>
+      <label for="suggestionDescription">Cuéntanos más</label>
+      <textarea id="suggestionDescription" name="descripcion" minlength="10" maxlength="1000" required></textarea>
+      <button class="primary" id="suggestionSubmit" type="submit">Enviar sugerencia</button>
+      <p id="suggestionFormStatus" class="suggestion-status" role="status" aria-live="polite"></p>
+    </form>
+    <section class="suggestion-list" aria-labelledby="publishedSuggestionsTitle">
+      <h2 id="publishedSuggestionsTitle">Sugerencias publicadas</h2>
+      <p class="muted">Ordenadas por cantidad de “Me gusta”. Puedes cambiar tu voto desde este navegador.</p>
+      <p id="suggestionListStatus" class="suggestion-status" role="status" aria-live="polite">Cargando sugerencias…</p>
+      <div id="suggestionList" class="suggestion-items"></div>
+    </section>
+  </main>
+</body>
+</html>

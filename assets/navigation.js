@@ -10,7 +10,8 @@
     {page:'curso.html',title:'Curso',icon:'<path d="m3 8 9-5 9 5-9 5-9-5zm4 3v7c3 3 7 3 10 0v-7m4-3v8"/>'},
     {page:'examenes.html',title:'Exámenes',icon:'<path d="M7 3h10v3H7zM7 4H4v17h16V4h-3M8 11h8m-8 5h5"/>'},
     {page:'perfil.html',title:'Perfil',icon:'<circle cx="12" cy="8" r="4"/><path d="M4 21v-2a5 5 0 0 1 5-5h6a5 5 0 0 1 5 5v2"/>'},
-    {page:'comunidad.html',title:'Comunidad',icon:'<circle cx="9" cy="8" r="3"/><path d="M3 20v-2a6 6 0 0 1 12 0v2M16 5a3 3 0 0 1 0 6m2 3a5 5 0 0 1 3 5v1"/>'}
+    {page:'comunidad.html',title:'Comunidad',icon:'<circle cx="9" cy="8" r="3"/><path d="M3 20v-2a6 6 0 0 1 12 0v2M16 5a3 3 0 0 1 0 6m2 3a5 5 0 0 1 3 5v1"/>'},
+    {page:'sugerencias.html',title:'Sugerencias',icon:'<path d="M9 18h6m-5 4h4m-2-21a7 7 0 0 0-4 12.75c.62.43 1 1.05 1 1.75h6c0-.7.38-1.32 1-1.75A7 7 0 0 0 12 1z"/>'}
   ];
   function ensureHeader(){
     if(document.getElementById('ee-shared-header'))return;
@@ -88,6 +89,7 @@
     if(['curso.html','actividades.html','vocabulario.html'].includes(path))return 'curso.html';
     if(['examenes.html','practicar.html'].includes(path))return 'examenes.html';
     if(['perfil.html','comunidad.html','mensajes.html'].includes(path))return 'perfil.html';
+    if(path==='sugerencias.html')return 'sugerencias.html';
     return null;
   }
   function text(tag,cls,value){
