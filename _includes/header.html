@@ -7,46 +7,49 @@
 {% if ee_file == 'perfil.html' or ee_file == 'mensajes.html' %}{% assign ee_section = 'perfil' %}{% endif %}
 {% if ee_file == 'comunidad.html' %}{% assign ee_section = 'comunidad' %}{% endif %}
 <style id="ee-nav-click-fix">
-/* La barra inferior debe ser hija de un contenedor NO sticky ni filtrado:
-   en Safari/WebView los elementos position:fixed dentro de un sticky
-   con backdrop-filter pueden verse sin recibir el toque. */
+/* Menú superior único. Los enlaces permanecen en el flujo del documento:
+   nunca usar position:fixed para una navegación hija del header. */
+#ee-shared-header.ee-header{
+  position:relative!important;top:auto!important;z-index:1000!important;
+  transform:none!important;filter:none!important;
+  -webkit-backdrop-filter:none!important;backdrop-filter:none!important;
+  overflow:visible!important;isolation:isolate!important;
+}
+#ee-shared-header .ee-bar{
+  position:relative!important;transform:none!important;overflow:visible!important;
+}
+#ee-shared-header .ee-nav{
+  position:static!important;top:auto!important;right:auto!important;
+  bottom:auto!important;left:auto!important;
+  transform:none!important;filter:none!important;
+  display:flex!important;box-shadow:none!important;
+  background:transparent!important;border:0!important;backdrop-filter:none!important;
+  overflow:visible!important;z-index:auto!important;
+}
 #ee-shared-header .ee-nav a[href],
 #ee-shared-header .ee-logo[href]{
-  pointer-events:auto!important;
-  cursor:pointer!important;
-  touch-action:manipulation!important;
+  pointer-events:auto!important;cursor:pointer!important;
+  touch-action:manipulation!important;position:relative!important;
 }
-@media (max-width:790px){
-  #ee-shared-header.ee-header{
-    position:static!important;
-    top:auto!important;
-    z-index:auto!important;
-    isolation:auto!important;
-    transform:none!important;
-    filter:none!important;
-    -webkit-backdrop-filter:none!important;
-    backdrop-filter:none!important;
-    overflow:visible!important;
-    contain:none!important;
-  }
-  #ee-shared-header .ee-bar{
-    transform:none!important;
-    filter:none!important;
-    overflow:visible!important;
-    contain:none!important;
-  }
-  #ee-shared-header .ee-nav{
-    position:fixed!important;
-    z-index:2147483647!important;
-    pointer-events:auto!important;
-    visibility:visible!important;
-  }
-  #ee-shared-header .ee-nav a{
-    pointer-events:auto!important;
-    position:relative!important;
-    z-index:1!important;
-    touch-action:manipulation!important;
-  }
+@media(max-width:1050px){
+ #ee-shared-header .ee-bar{
+   flex-wrap:wrap!important;justify-content:space-between!important;
+ }
+ #ee-shared-header .ee-nav{
+   display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;
+   align-items:stretch!important;justify-items:stretch!important;
+   flex:1 0 100%!important;width:100%!important;max-width:none!important;
+   min-width:0!important;margin:0!important;padding:7px 0 0!important;
+   gap:5px!important;border-radius:0!important;
+ }
+ #ee-shared-header .ee-nav a[href]{
+   display:flex!important;flex-direction:column!important;
+   gap:4px!important;justify-content:center!important;align-items:center!important;
+   min-width:0!important;max-width:none!important;width:100%!important;
+   flex:none!important;padding:9px 3px!important;
+   font-size:12px!important;text-align:center!important;
+ }
+ #ee-shared-header .ee-mobile-label{display:none!important}
 }
 </style>
 <header class="ee-header" id="ee-shared-header">
