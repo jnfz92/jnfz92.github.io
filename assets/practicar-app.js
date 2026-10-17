@@ -46,30 +46,96 @@ async function history(){
   }
 }
 
-async function failedReview(){
-  const count=$('failedCount'),list=$('failedQuestions');
-  list.replaceChildren();
-  const {data:{user}}=await eeDb.auth.getUser();
-  if(!user){count.textContent='Inicia sesión para ver tus preguntas pendientes.';return}
-  const {data,error}=await eeDb.from('preguntas_falladas')
-    .select('pregunta_id,veces_fallada,ultimo_fallo,preguntas(enunciado,fuente_url)')
-    .eq('dominada',false).order('ultimo_fallo',{ascending:false}).limit(30);
-  if(error){count.textContent='No se pudieron cargar las preguntas: '+error.message;return}
-  count.textContent=data.length?
-    'Tienes '+data.length+' preguntas pendientes'+(data.length===30?' (se muestran las 30 más recientes)':'')+'.':
-    'No tienes preguntas falladas pendientes.';
-  for(const item of data){
-    const p=document.createElement('p');
-    p.textContent=(item.preguntas?.enunciado||'Pregunta '+item.pregunta_id)+
-      ' · Fallada '+item.veces_fallada+' vez/veces';
-    if(item.preguntas?.fuente_url){
-      const a=document.createElement('a');
-      a.href=articleLink(item.preguntas.fuente_url);
-      a.textContent=' · Repasar lección';p.append(a);
-    }
-    list.append(p);
-  }
+// La base de datos registra los fallos al entregar un examen; esta vista solo los consulta.
+const FAILED_PAGE_SIZE=20;
+let failedMode='pendientes',failedPage=0,failedRequest=0;
+const failedTabs={pendientes:()=>$('failedPending'),superadas:()=>$('failedMastered')};
+function setFailedMode(mode){
+  if(mode===failedMode)return;
+  failedMode=mode;failedPage=0;
+  failedReview().catch(fail);
 }
+function formatFailedDate(value){
+  const d=new Date(value);
+  return Number.isNaN(d.getTime())?'Sin fecha':d.toLocaleDateString('es-ES');
+}
+function renderFailedQuestion(item){
+  const q=item.preguntas||{},entry=document.createElement('article');
+  entry.className='failure-entry';
+  const heading=document.createElement('h4');
+  heading.textContent=q.enunciado||'Pregunta '+item.pregunta_id;
+  const info=document.createElement('p');
+  info.className='failure-meta';
+  info.textContent=(q.examenes?.titulo||'Examen '+(q.examen_id||''))+
+    ' · '+item.veces_fallada+' '+(item.veces_fallada===1?'fallo':'fallos')+
+    ' · Último fallo: '+formatFailedDate(item.ultimo_fallo);
+  const actions=document.createElement('div');
+  actions.className='failure-actions';
+  if(q.examen_id){
+    const exam=document.createElement('a');
+    exam.href='practicar.html?examen='+encodeURIComponent(q.examen_id)+'&pregunta='+encodeURIComponent(item.pregunta_id);
+    exam.textContent='Rehacer el examen ↗';
+    actions.append(exam);
+  }
+  if(q.fuente_url){
+    const link=document.createElement('a');
+    link.href=articleLink(q.fuente_url);
+    link.textContent='Repasar lección ↗';
+    actions.append(link);
+  }
+  entry.append(heading,info,actions);
+  return entry;
+}
+async function failedReview(append=false){
+  const request=++failedRequest;
+  const list=$('failedQuestions'),count=$('failedCount'),more=$('failedMore');
+  if(!append){failedPage=0;list.replaceChildren()}
+  more.hidden=true;
+  const {data:{user},error:authError}=await eeDb.auth.getUser();
+  if(request!==failedRequest)return;
+  if(authError)throw authError;
+  if(!user){
+    count.textContent='Inicia sesión para consultar tu cuaderno personal.';
+    $('failedPending').disabled=true;$('failedMastered').disabled=true;
+    $('failedPending').textContent='Pendientes';$('failedMastered').textContent='Superadas';
+    list.replaceChildren();
+    return;
+  }
+  for(const mode of ['pendientes','superadas']){
+    const tab=failedTabs[mode]();
+    tab.disabled=false;
+    tab.setAttribute('aria-pressed',String(failedMode===mode));
+  }
+  const query=mode=>eeDb.from('preguntas_falladas')
+    .select('pregunta_id',{count:'exact',head:true})
+    .eq('usuario_id',user.id).eq('dominada',mode==='superadas');
+  const [pending,mastered,rows]=await Promise.all([
+    query('pendientes'),query('superadas'),
+    eeDb.from('preguntas_falladas')
+      .select('pregunta_id,veces_fallada,ultimo_fallo,preguntas(enunciado,examen_id,fuente_url,examenes(titulo))',{count:'exact'})
+      .eq('usuario_id',user.id).eq('dominada',failedMode==='superadas')
+      .order('ultimo_fallo',{ascending:false})
+      .range(failedPage*FAILED_PAGE_SIZE,(failedPage+1)*FAILED_PAGE_SIZE-1)
+  ]);
+  if(request!==failedRequest)return;
+  for(const response of [pending,mastered,rows])if(response.error)throw response.error;
+  $('failedPending').textContent='Pendientes ('+(pending.count||0)+')';
+  $('failedMastered').textContent='Superadas ('+(mastered.count||0)+')';
+  count.textContent='Guardadas en tu cuenta: '+(pending.count||0)+' pendientes · '+
+    (mastered.count||0)+' superadas. Nadie más puede consultar tus errores.';
+  for(const item of rows.data||[])list.append(renderFailedQuestion(item));
+  if(!list.children.length){
+    const message=document.createElement('p');
+    message.textContent=failedMode==='pendientes'?
+      'No tienes errores pendientes. ¡Buen trabajo!':
+      'Aún no tienes preguntas superadas. Se marcarán cuando aciertes al repetir el examen.';
+    list.append(message);
+  }
+  more.hidden=(failedPage*FAILED_PAGE_SIZE+(rows.data||[]).length)>=(rows.count||0);
+}
+$('failedPending').onclick=()=>setFailedMode('pendientes');
+$('failedMastered').onclick=()=>setFailedMode('superadas');
+$('failedMore').onclick=()=>{failedPage++;failedReview(true).catch(fail)};
 
 $('login').onsubmit=async e=>{
   e.preventDefault();
@@ -166,6 +232,7 @@ async function load(){
       section.append(h,p,a);form.append(section);
     }
     const fs=document.createElement('fieldset'),legend=document.createElement('legend');
+    fs.id='pregunta-'+q.id;
     legend.textContent=q.orden+'. '+q.enunciado;fs.append(legend);
     // Se muestra un orden aleatorio, pero se envía a Supabase el índice ORIGINAL.
     q.displayOrder=q.opciones.map((_,i)=>i);
@@ -191,7 +258,14 @@ async function load(){
   submit.type='submit';submit.textContent='Corregir y guardar resultado';form.append(submit);
   updateProgress();
   message('Examen preparado: '+questions.length+' preguntas.');
-  form.scrollIntoView({behavior:'smooth',block:'start'});
+  const params=new URLSearchParams(location.search);
+  const targetId=Number(params.get('pregunta'));
+  const target=params.get('examen')===String(examId)&&targetId?
+    document.getElementById('pregunta-'+targetId):null;
+  if(target){
+    target.classList.add('exam-review-target');
+    target.scrollIntoView({behavior:'smooth',block:'center'});
+  }else form.scrollIntoView({behavior:'smooth',block:'start'});
 }
 function updateProgress(){
   const n=questions.filter(q=>Boolean($('exam').querySelector('input[name=question-'+q.id+']:checked'))).length;
@@ -252,14 +326,17 @@ $('exam').onsubmit=async e=>{
         '\n'+(sol.explicacion||'');
     }
     for(const input of $('exam').querySelectorAll('input'))input.disabled=true;
-    message('¡Examen corregido y guardado!');
+    message('¡Examen corregido y guardado! Tus fallos se guardan en el cuaderno personal.');
     $('scoreSummary').hidden=false;
     const summary=$('scoreSummary');summary.replaceChildren();
     const label=document.createElement('span');label.className='exam-section-tag';label.textContent='RESULTADO GUARDADO';
     const score=document.createElement('strong');score.textContent=(100*correct/questions.length).toFixed(1)+'%';
-    const explanation=document.createElement('p');explanation.textContent=correct+' de '+questions.length+' respuestas correctas. Revisa tus errores y explicaciones.';
+    const explanation=document.createElement('p');explanation.textContent=correct+' de '+questions.length+' respuestas correctas. Tus fallos están guardados para repasarlos.';
     const link=document.createElement('a');link.href='perfil.html';link.textContent='Ver mi progreso ↗';
-    summary.append(label,score,explanation,link);
+    const errorsLink=document.createElement('a');
+    errorsLink.href='#cuaderno-fallos';
+    errorsLink.textContent='Ir a mi cuaderno de errores ↘';
+    summary.append(label,score,explanation,link,document.createTextNode(' · '),errorsLink);
     await Promise.all([history(),failedReview()]);
     summary.scrollIntoView({behavior:'smooth',block:'center'});
   }catch(error){
