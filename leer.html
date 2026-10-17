@@ -1,10 +1,12 @@
+---
+---
 <!doctype html>
 <html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="description" content="Lecciones y artículos de Easy English.">
 <title>Cargando lección · Easy English</title>
 <link rel="stylesheet" href="assets/site.css?v=20261014">
 <style>body{font-family:system-ui,sans-serif;background:#f7f7f4;color:#17211c;margin:0}.loader{max-width:720px;margin:12vh auto;padding:24px}.loader a{color:#176447}</style><link rel="stylesheet" href="assets/navigation.css?v=20261017"><script src="assets/navigation.js?v=20261017" defer></script></head>
-<body><main class="loader"><h1>Easy English</h1><p id="loading" role="status">Cargando el artículo desde Supabase…</p><p><a href="articulos.html">Volver al blog</a></p></main>
+<body>{% include header.html %}<main class="loader"><h1>Easy English</h1><p id="loading" role="status">Cargando el artículo desde Supabase…</p><p><a href="articulos.html">Volver al blog</a></p></main>
 <script>
 (async function(){
  const endpoint='https://wnluofonzteaqtlfshgy.supabase.co/rest/v1/';
@@ -83,6 +85,15 @@
   const existing=doc.querySelector('link[rel="canonical"]');if(existing)existing.remove();
   const canonical=doc.createElement('link');canonical.rel='canonical';canonical.href=new URL('leer.html?slug='+encodeURIComponent(resolveSlug(slug)),location.href).href;doc.head.append(canonical);
   if(article.descripcion){let meta=doc.querySelector('meta[name="description"]');if(!meta){meta=doc.createElement('meta');meta.name='description';doc.head.append(meta)}meta.content=article.descripcion}
+  // El header del lector también se obtiene del único include Jekyll del cargador.
+  // Reemplaza el header editorial que venga en el HTML de Supabase.
+  const sharedHeader=document.getElementById('ee-shared-header');
+  const originalArticleHeader=doc.querySelector('body > header.ee-header, body > header.site-header');
+  if(sharedHeader){
+    const headerCopy=sharedHeader.cloneNode(true);
+    if(originalArticleHeader) originalArticleHeader.replaceWith(headerCopy);
+    else doc.body.prepend(headerCopy);
+  }
   // El articulo llega como documento HTML completo desde Supabase.
   // Cargar tambien la barra de navegacion en el documento sustituido.
   const navStyle=doc.createElement('link');navStyle.rel='stylesheet';
