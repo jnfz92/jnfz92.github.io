@@ -34,6 +34,14 @@ El perfil `perfil.html` muestra un resumen conjunto de lecturas, exámenes tradi
 
 La APK Cordova 1.1.1 incorpora acceso al perfil online desde el arranque y desde el curso incluido sin conexión. Con internet usa la web pública y el progreso de Supabase; el progreso del curso antiguo offline permanece independiente, no se sincroniza automáticamente.
 
+## Menú inferior y pie de página compartidos
+
+`assets/navigation.js` y `assets/navigation.css` definen la barra inferior de la web en pantallas de hasta 760 px y el pie de página completo en escritorio y móvil. El **mismo orden y los mismos iconos** que en el modo offline de Android son: **Inicio, Artículos, Curso, Exámenes, Perfil**. El acceso activo se marca automáticamente, incluyendo páginas relacionadas (artículos, actividades, exámenes, comunidad y mensajes). La barra no aparece dos veces. Se deja espacio inferior para que no cubra los formularios y se recoloca «Volver arriba».
+
+Todas las páginas HTML incluyen estos dos recursos y `leer.html` también los incorpora al HTML de artículos obtenido de Supabase, que sustituye el documento inicial mediante `document.write`. Las páginas antiguas con pie de página lo sustituyen y las nuevas reciben el mismo pie. Los enlaces adicionales a Actividades, Vocabulario, PDF, Comunidad y Mensajes siguen disponibles en el pie de página y en las páginas correspondientes sin recargar la barra de cinco accesos.
+
+En `english-apk` la versión Cordova 1.1.2 alinea la barra inferior del curso sin conexión con este diseño; con conexión, la APK reutiliza directamente la web. Los avances del modo offline siguen siendo independientes.
+
 ## Publicar materiales
 
 - **Artículos:** `public.articulos`, renderizados por `leer.html?slug=...`. No añadir `post/*.html` a GitHub.

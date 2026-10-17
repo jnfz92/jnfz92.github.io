@@ -1,0 +1,147 @@
+/* Menú y pie de página universales. Compartidos por todas las páginas. */
+#ee-shared-footer.ee-footer{
+ width:100%!important;max-width:none!important;margin:0!important;
+ padding:32px 24px!important;box-sizing:border-box!important;
+ background:#eaf0e4!important;border:0!important;border-top:1px solid #d9e4d9!important;
+ color:#506b5a!important;font:13px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif!important;
+ text-align:left!important;
+}
+#ee-shared-footer .ee-footer-inner{
+ max-width:1140px!important;margin:0 auto!important;display:flex!important;
+ justify-content:space-between!important;align-items:flex-start!important;gap:28px!important;
+ flex-wrap:wrap!important;
+}
+#ee-shared-footer .ee-footer-brand strong{font-size:17px;color:#193a2a;font-weight:850}
+#ee-shared-footer .ee-footer-brand p{margin:4px 0!important}
+#ee-shared-footer .ee-footer-links{
+ display:flex!important;align-items:center!important;flex-wrap:wrap!important;
+ gap:12px 20px!important;max-width:720px!important;
+}
+#ee-shared-footer a{font-size:13px!important;font-weight:700!important;color:#245b43!important;text-decoration:none!important}
+#ee-shared-footer a:hover,#ee-shared-footer a:focus-visible{text-decoration:underline!important}
+.ee-bottom-nav{display:none}
+@media(max-width:760px){
+ body{padding-bottom:calc(74px + env(safe-area-inset-bottom,0px))!important}
+ #ee-shared-footer.ee-footer{padding:27px 20px!important}
+ #ee-shared-footer .ee-footer-inner{flex-direction:column!important;gap:20px!important}
+ .ee-bottom-nav{
+  display:flex!important;position:fixed!important;left:0!important;right:0!important;bottom:0!important;
+  z-index:1000!important;justify-content:center!important;align-items:stretch!important;
+  gap:4px!important;box-sizing:border-box!important;
+  min-height:70px!important;padding:8px max(12px,env(safe-area-inset-right,0px))
+    calc(8px + env(safe-area-inset-bottom,0px))
+    max(12px,env(safe-area-inset-left,0px))!important;
+  background:rgba(255,255,255,.98)!important;border-top:1px solid #dce8df!important;
+  box-shadow:0 -6px 26px #1f29331b!important;
+ }
+ .ee-bottom-nav .ee-bottom-link{
+  flex:1 1 0!important;min-width:0!important;max-width:170px!important;
+  display:flex!important;flex-direction:column!important;align-items:center!important;
+  justify-content:center!important;gap:2px!important;
+  box-sizing:border-box!important;border:0!important;border-radius:13px!important;
+  margin:0!important;padding:5px 2px!important;min-height:52px!important;
+  background:transparent!important;color:#536d60!important;
+  font:800 12px/1.2 system-ui,-apple-system,"Segoe UI",sans-serif!important;
+  white-space:nowrap!important;text-decoration:none!important;
+ }
+ .ee-bottom-nav .ee-bottom-link.active,.ee-bottom-nav .ee-bottom-link[aria-current=page]{
+  background:#e2f1e8!important;color:#17644e!important;
+ }
+ .ee-bottom-nav .ee-bottom-icon{font:850 21px/23px system-ui,sans-serif!important;display:block!important}
+ .ee-bottom-nav .ee-bottom-link:focus-visible{outline:3px solid #e4bd65!important;outline-offset:-3px!important}
+ .ee-site .ee-top{bottom:calc(87px + env(safe-area-inset-bottom,0px))!important}
+}
+
+
+/* Cabecera única: evita las variantes HTML previas y los menús antiguos fijos. */
+#ee-shared-header.ee-header{
+ position:sticky!important;top:0!important;left:0!important;right:0!important;
+ z-index:900!important;display:block!important;width:100%!important;max-width:none!important;
+ box-sizing:border-box!important;margin:0!important;padding:0!important;
+ color:#193a2a!important;background:rgba(245,247,241,.97)!important;
+ border:0!important;border-bottom:1px solid #dce6dc!important;
+ backdrop-filter:blur(16px);text-align:left!important;
+ font:inherit!important;line-height:1.35!important;
+}
+#ee-shared-header .ee-bar{
+ box-sizing:border-box!important;max-width:1210px!important;width:100%!important;
+ padding:14px 24px!important;margin:0 auto!important;
+ display:flex!important;flex-direction:row!important;
+ justify-content:space-between!important;align-items:center!important;gap:14px!important;
+}
+#ee-shared-header a,#ee-shared-header button{text-decoration:none!important}
+#ee-shared-header .ee-logo{
+ display:inline-flex!important;align-items:center!important;gap:10px!important;
+ background:transparent!important;color:#193a2a!important;padding:0!important;
+ margin:0!important;border:0!important;box-shadow:none!important;
+ white-space:nowrap!important;font:850 19px/1.25 system-ui,-apple-system,"Segoe UI",sans-serif!important;
+ letter-spacing:-.04em!important;
+}
+#ee-shared-header .ee-logo b{
+ display:grid!important;place-items:center!important;flex:none!important;
+ width:40px!important;height:40px!important;border-radius:13px!important;
+ font:850 15px/1 system-ui,sans-serif!important;color:#e1f5b6!important;
+ background:#176447!important;letter-spacing:0!important;
+}
+#ee-shared-header .ee-primary-nav{
+ display:flex!important;position:static!important;justify-content:flex-end!important;
+ align-items:center!important;flex-direction:row!important;flex-wrap:nowrap!important;
+ gap:3px!important;padding:0!important;margin:0!important;min-width:0!important;
+ border:0!important;background:transparent!important;box-shadow:none!important;
+ width:auto!important;max-width:none!important;overflow:visible!important;
+}
+#ee-shared-header .ee-primary-link{
+ display:inline-flex!important;align-items:center!important;justify-content:center!important;
+ flex-direction:row!important;gap:7px!important;flex:none!important;min-width:0!important;
+ padding:10px 10px!important;margin:0!important;border:0!important;border-radius:11px!important;
+ color:#516e60!important;background:transparent!important;
+ font:750 13px/1.4 system-ui,-apple-system,"Segoe UI",sans-serif!important;
+ white-space:nowrap!important;text-decoration:none!important;
+}
+#ee-shared-header .ee-primary-link svg{
+ width:17px!important;height:17px!important;display:block!important;flex:none!important;
+}
+#ee-shared-header .ee-primary-link[aria-current=page]{
+ color:#fff!important;background:#176447!important;
+}
+#ee-shared-header .ee-primary-link:not([aria-current]):hover{
+ color:#176447!important;background:#e7f0e6!important;
+}
+#ee-shared-header .ee-primary-link:focus-visible,#ee-shared-header .ee-menu-toggle:focus-visible{
+ outline:3px solid #d5a542!important;outline-offset:2px!important;
+}
+#ee-shared-header .ee-menu-toggle{display:none!important}
+@media(max-width:1050px){
+ #ee-shared-header .ee-bar{padding:12px 18px!important}
+ #ee-shared-header .ee-menu-toggle{
+  display:inline-flex!important;align-items:center!important;justify-content:center!important;
+  min-height:43px!important;padding:10px 15px!important;flex:none!important;
+  background:#e2f1e8!important;color:#176447!important;
+  border:1px solid #c7dfcf!important;border-radius:12px!important;
+  cursor:pointer!important;font:850 14px system-ui,sans-serif!important;
+ }
+ #ee-shared-header .ee-primary-nav{
+  display:none!important;position:absolute!important;top:100%!important;
+  left:12px!important;right:12px!important;z-index:1001!important;
+  width:auto!important;max-width:550px!important;margin:0 0 0 auto!important;
+  padding:12px!important;border:1px solid #d5e4d8!important;
+  border-radius:0 0 16px 16px!important;box-shadow:0 16px 32px #173f302a!important;
+  background:#fff!important;flex-direction:column!important;align-items:stretch!important;
+  gap:4px!important;max-height:min(70vh,480px)!important;overflow-y:auto!important;
+ }
+ #ee-shared-header .ee-primary-nav.is-open{display:flex!important}
+ #ee-shared-header .ee-primary-link{
+  width:100%!important;justify-content:flex-start!important;
+  font-size:15px!important;min-height:45px!important;padding:10px 12px!important;
+ }
+ #ee-shared-header .ee-primary-link svg{width:19px!important;height:19px!important}
+}
+@media(max-width:760px){
+ #ee-shared-header .ee-bar{padding:10px 16px!important}
+ #ee-shared-header .ee-logo{font-size:18px!important}
+ #ee-shared-header .ee-logo b{width:36px!important;height:36px!important}
+ #ee-shared-header .ee-primary-nav{max-width:none!important}
+}
+@media(prefers-reduced-motion:reduce){
+ #ee-shared-header{scroll-behavior:auto!important}
+}
