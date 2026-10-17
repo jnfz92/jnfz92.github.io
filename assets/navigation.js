@@ -33,69 +33,36 @@
     if(value!==undefined)e.textContent=value;
     return e;
   }
-  const headerItems=[
-    {page:'index.html',title:'Inicio',icon:'home'},
-    {page:'articulos.html',title:'Artículos',icon:'book'},
-    {page:'curso.html',title:'Curso',icon:'graduate'},
-    {page:'examenes.html',title:'Exámenes',icon:'exam'},
-    {page:'perfil.html',title:'Perfil',icon:'person'},
-    {page:'comunidad.html',title:'Comunidad',icon:'people'}
-  ];
-  const paths={
-    home:'<path d="M3 10 12 3l9 7v11h-6v-7H9v7H3z"/>',
-    book:'<path d="M4 4h16v17H6a2 2 0 0 1-2-2V4zm0 14a2 2 0 0 1 2-2h14M8 8h8m-8 4h6"/>',
-    graduate:'<path d="m3 8 9-5 9 5-9 5-9-5zm4 3v7c3 3 7 3 10 0v-7m4-3v8"/>',
-    exam:'<path d="M7 3h10v3H7zM7 4H4v17h16V4h-3M8 8h8m-8 5h5"/>',
-    person:'<circle cx="12" cy="8" r="4"/><path d="M4 21v-2a5 5 0 0 1 5-5h6a5 5 0 0 1 5 5v2"/>',
-    people:'<circle cx="9" cy="8" r="3"/><path d="M3 20v-2a6 6 0 0 1 12 0v2M16 5a3 3 0 0 1 0 6m2 3a5 5 0 0 1 3 5v1"/>'
-  };
-  function renderHeader(){
-    if(document.getElementById('ee-shared-header'))return;
-    const page=location.pathname.toLowerCase().split('/').pop()||'index.html';
-    const active=page==='comunidad.html'?'comunidad.html':activeSection();
-    const header=text('header','ee-header ee-shared-header');
-    header.id='ee-shared-header';
-    const bar=text('div','ee-bar');
-    const logo=text('a','ee-logo');logo.href=to('index.html');
-    logo.setAttribute('aria-label','Easy English · Inicio');
-    const mark=text('b','','ee.');mark.setAttribute('aria-hidden','true');
-    logo.append(mark,document.createTextNode('Easy English'));
-    const button=text('button','ee-menu-toggle','☰ Menú');
-    button.type='button';button.setAttribute('aria-controls','ee-primary-links');
-    button.setAttribute('aria-expanded','false');button.setAttribute('aria-label','Abrir menú principal');
-    const nav=text('nav','ee-primary-nav');
-    nav.id='ee-primary-links';nav.setAttribute('aria-label','Navegación principal');
-    for(const item of headerItems){
-      const a=text('a','ee-primary-link');a.href=to(item.page);
-      const svg=text('svg','');
-      svg.setAttribute('viewBox','0 0 24 24');svg.setAttribute('fill','none');
-      svg.setAttribute('stroke','currentColor');svg.setAttribute('stroke-width','1.7');
-      svg.setAttribute('stroke-linecap','round');svg.setAttribute('stroke-linejoin','round');
-      svg.setAttribute('aria-hidden','true');svg.innerHTML=paths[item.icon];
-      a.append(svg,text('span','',item.title));
-      if(active===item.page)a.setAttribute('aria-current','page');
-      nav.append(a);
-    }
+  // El único header está en _includes/header.html; JS solo activa el botón móvil.
+  function attachHeaderControls(){
+    const h=document.getElementById('ee-shared-header');
+    const button=h?.querySelector('.ee-menu-toggle');
+    const nav=h?.querySelector('.ee-primary-nav');
+    if(!button||!nav)return;
     button.addEventListener('click',()=>{
-      const open=button.getAttribute('aria-expanded')!=='true';
-      button.setAttribute('aria-expanded',String(open));
-      button.setAttribute('aria-label',open?'Cerrar menú principal':'Abrir menú principal');
-      nav.classList.toggle('is-open',open);
+      const opened=button.getAttribute('aria-expanded')!=='true';
+      button.setAttribute('aria-expanded',String(opened));
+      button.setAttribute('aria-label',opened?'Cerrar menú principal':'Abrir menú principal');
+      nav.classList.toggle('is-open',opened);
     });
-    header.addEventListener('keydown',e=>{
+    h.addEventListener('keydown',e=>{
       if(e.key==='Escape'){
-        button.setAttribute('aria-expanded','false');nav.classList.remove('is-open');
+        button.setAttribute('aria-expanded','false');
+        button.setAttribute('aria-label','Abrir menú principal');
+        nav.classList.remove('is-open');
         button.focus();
       }
     });
-    bar.append(logo,nav,button);header.append(bar);
-    const old=document.querySelector('body > header.ee-header, body > header.site-header');
-    if(old)old.replaceWith(header);
-    else document.body.prepend(header);
+    nav.addEventListener('click',e=>{
+      if(e.target.closest('a')){
+        button.setAttribute('aria-expanded','false');
+        nav.classList.remove('is-open');
+      }
+    });
   }
   function attach(){
     if(document.getElementById('ee-bottom-nav'))return;
-    renderHeader();
+    attachHeaderControls();
     const active=activeSection();
     // La misma barra que el curso incluido en la APK, pero mediante enlaces reales.
     const bottom=text('nav','ee-bottom-nav');
