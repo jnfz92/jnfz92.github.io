@@ -19,7 +19,7 @@ async function pageWithComments(page,{user=null}={}){
     ];
     window.eeDb={
       auth:{
-        getUser:async()=>({data:{user:u},error:null}),
+        getUser:async()=>({data:{user:u},error:u?null:{name:'AuthSessionMissingError',message:'Auth session missing!'}}),
         onAuthStateChange:()=>({data:{subscription:{unsubscribe(){}}}})
       },
       rpc:async(name,args)=>{
