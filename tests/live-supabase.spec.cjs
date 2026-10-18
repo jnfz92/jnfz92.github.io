@@ -28,3 +28,12 @@ test('catálogo de exámenes, curso y actividades se sirven sin errores HTTP',as
     expect(r.status(),path).toBe(200);
   }
 });
+
+test('los comentarios públicos se cargan dentro del artículo real',async ({page})=>{
+  test.skip(process.env.GITHUB_EVENT_NAME==='pull_request','Disponible al publicarse en GitHub Pages');
+  await page.goto('/leer.html?slug=50-verbos-irregulares-en-ingles');
+  await expect(page.locator('#comentarios')).toBeVisible({timeout:25000});
+  await expect(page.locator('#ee-comments-count')).toContainText('comentarios',{timeout:20000});
+  await expect(page.locator('#ee-comments-composer')).toContainText('inicia sesión',{timeout:20000});
+  await expect(page.locator('#ee-comments-status')).not.toHaveAttribute('data-error','true');
+});
