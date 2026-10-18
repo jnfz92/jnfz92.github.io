@@ -39,7 +39,7 @@ LANGUAGE sql STABLE SECURITY DEFINER SET search_path = ''
 AS $fn$
   SELECT c.id, c.padre_id,
     CASE WHEN c.eliminado THEN 'Comentario eliminado'
-         ELSE pg_catalog.coalesce('@' || p.alias, 'Estudiante') END,
+         ELSE coalesce('@' || p.alias, 'Estudiante') END,
     CASE WHEN c.eliminado THEN '[Comentario eliminado]' ELSE c.contenido END,
     c.creado_en,
     (c.autor_id IS NOT NULL AND c.autor_id = auth.uid()) AS es_mio,
