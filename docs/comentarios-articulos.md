@@ -1,6 +1,6 @@
 # Comentarios de artículos y respuestas anidadas
 
-La funcionalidad se mantiene en el repositorio y en Supabase mediante la migración `supabase/14_comentarios_articulos.sql`.
+La funcionalidad se mantiene en el repositorio y en Supabase mediante las migraciones `supabase/14_comentarios_articulos.sql` y `supabase/15_restringir_rpc_comentarios_anon.sql`.
 
 ## Qué puede hacer un visitante
 - **Sin iniciar sesión:** leer los comentarios y las respuestas, incluidos hilos de más de dos niveles.
@@ -10,7 +10,7 @@ La funcionalidad se mantiene en el repositorio y en Supabase mediante la migraci
 En cada artículo de `leer.html?slug=...` se añade un bloque «Comentarios y respuestas» después del contenido. El cliente seguro está en `assets/comentarios-articulos.js`, y el diseño en `assets/comentarios-articulos.css`. Los documentos HTML históricos en `public.articulos` no se editan.
 
 ## Protección de datos y abuso
-- `public.comentarios_articulos` tiene RLS activado y **ningún permiso SQL directo** para `anon` o `authenticated`. Toda lectura y escritura pasa por las funciones RPC con permisos separados.
+- La migración 15 revoca explícitamente el permiso de ejecución de publicación y borrado al rol anónimo, añadido por los permisos predeterminados de Supabase.\n- `public.comentarios_articulos` tiene RLS activado y **ningún permiso SQL directo** para `anon` o `authenticated`. Toda lectura y escritura pasa por las funciones RPC con permisos separados.
 - `listar_comentarios_articulo(slug)`: listado público de hasta 500 comentarios por artículo. Solo expone ID de comentario, ID de respuesta, alias público, contenido, fecha y si pertenece al usuario de la sesión.
 - `publicar_comentario_articulo(slug,padre_id,contenido)`: requiere Auth, 3–2000 caracteres, padre existente del mismo artículo, 8 segundos entre publicaciones y máximo 10 publicaciones por 15 minutos.
 - `eliminar_comentario_articulo(id)`: solo el autor, borrado lógico que conserva el hilo.
