@@ -99,7 +99,7 @@ BEGIN
   END IF;
   INSERT INTO public.comentarios_articulos (articulo_slug, padre_id, autor_id, contenido)
   VALUES (p_slug, p_padre_id, u, pg_catalog.btrim(p_contenido))
-  RETURNING public.comentarios_articulos.id INTO new_id;
+  RETURNING id INTO new_id;
   RETURN new_id;
 END;
 $fn$;
