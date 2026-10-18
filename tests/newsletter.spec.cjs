@@ -3,7 +3,12 @@ const path=require('node:path');
 const html=path.join(__dirname,'../newsletter.html');
 const script=path.join(__dirname,'../assets/newsletter.js');
 async function setup(page,{enabled=true,hash='',status=200}={}){
-  await page.goto('about:blank');
+  const text=require('node:fs').readFileSync(html,'utf8');
+  const body=text.slice(text.indexOf('<body'),text.indexOf('</body>')+7).replace(/\\{%[\\s\\S]*?%\\}/g,'');
+  await page.route('https://jnfz92.github.io/newsletter.html**',route=>route.fulfill({
+    status:200,contentType:'text/html',body:'<!doctype html><html>'+body+'</html>'
+  }));
+  await page.goto('https://jnfz92.github.io/newsletter.html'+hash);
   await page.route('https://wnluofonzteaqtlfshgy.supabase.co/functions/v1/newsletter',async route=>{
     const request=route.request(),data=request.method()==='POST'?
       JSON.parse(request.postData()||'{}'):{};
@@ -12,11 +17,7 @@ async function setup(page,{enabled=true,hash='',status=200}={}){
     return route.fulfill({status,contentType:'application/json',
       body:JSON.stringify(status===200?{ok:true,message:'Comprueba tu correo'}:{error:'Servicio no disponible'})});
   });
-  const text=require('node:fs').readFileSync(html,'utf8');
-  const body=text.slice(text.indexOf('<body'),text.indexOf('</body>')+7).replace(/\{%[\s\S]*?%\}/g,'');
-  await page.setContent('<!doctype html><html>'+body+'</html>');
   await page.evaluate(()=>{window.__newsletterRequests=[]});
-  if(hash)await page.evaluate(value=>{location.hash=value},hash);
   await page.addScriptTag({path:script});
 }
 test('newsletter sin proveedor no recoge emails',async ({page})=>{
@@ -44,7 +45,7 @@ test('confirmación siempre exige pulsar el botón',async ({page})=>{
   await page.locator('#newsletterTokenButton').click();
   const calls=await page.evaluate(()=>window.__newsletterRequests);
   expect(calls).toEqual([{action:'confirm',token:'token-seguro'}]);
-  await expect(page).toHaveURL(/about:blank/);
+  await expect(page).toHaveURL('https://jnfz92.github.io/newsletter.html');
 });
 test('baja voluntaria siempre exige confirmación explícita',async ({page})=>{
   await setup(page,{hash:'#baja=12345678-1234-1234-1234-123456789abc.abcd1234'});
