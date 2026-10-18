@@ -1,0 +1,54 @@
+---
+permalink: /newsletter.html
+---
+<!doctype html><html lang="es"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Recibe en tu correo un resumen diario de los artículos nuevos de Easy English. Suscripción voluntaria con confirmación y baja fácil.">
+<title>Newsletter diario · Easy English</title>
+<link rel="icon" type="image/svg+xml" href="/favicon.svg?v=20261017-ee">
+<link rel="stylesheet" href="/assets/site.css?v=20261017">
+<link rel="stylesheet" href="/assets/navigation.css?v=20261017-menu-fix2">
+<link rel="stylesheet" href="/assets/newsletter.css?v=20261018">
+<script src="/assets/navigation.js?v=20261017-menu-fix2" defer></script>
+<script src="/assets/newsletter.js?v=20261018" defer></script>
+</head><body class="ee-site ee-newsletter">
+{% include header.html %}
+<main class="newsletter-page">
+<section class="newsletter-hero" aria-labelledby="newsletterTitle">
+<span class="newsletter-kicker">✉ EMAILS DE EASY ENGLISH</span>
+<h1 id="newsletterTitle">Tu dosis diaria de inglés, en el correo.</h1>
+<p>Recibe un único resumen de los artículos nuevos cada día. Si no hay publicaciones, no enviamos nada.</p>
+<div class="newsletter-benefits"><span>✓ Gratis</span><span>✓ Sin spam</span><span>✓ Cancelas cuando quieras</span></div>
+</section>
+<section class="newsletter-card" id="newsletter-subscription" aria-labelledby="newsletterFormTitle">
+<h2 id="newsletterFormTitle">Suscríbete al newsletter</h2>
+<p>Te enviaremos un enlace para confirmar que el correo es tuyo. No recibirás novedades hasta confirmarlo.</p>
+<p class="newsletter-pending" id="newsletterPending" role="status">Comprobando disponibilidad del servicio…</p>
+<form id="newsletterForm" hidden>
+<label for="newsletterEmail">Tu correo electrónico</label>
+<input type="email" name="email" id="newsletterEmail" placeholder="tu@email.com" autocomplete="email" maxlength="254" required>
+<label class="newsletter-consent"><input type="checkbox" id="newsletterConsent" required>
+<span>Quiero recibir un correo diario con los nuevos artículos de Easy English. Entiendo que puedo darme de baja desde cualquier email.</span></label>
+<button type="submit" id="newsletterSubmit">Recibir novedades</button>
+</form>
+<p id="newsletterStatus" role="status" aria-live="polite"></p>
+<small>Utilizaremos tu correo solo para el newsletter solicitado. No aparecerá públicamente.</small>
+</section>
+<section class="newsletter-card" id="newsletter-token-section" hidden aria-labelledby="newsletterTokenTitle">
+<h2 id="newsletterTokenTitle">Confirma tu elección</h2>
+<p id="newsletterTokenDescription"></p>
+<button type="button" id="newsletterTokenButton">Confirmar</button>
+<p id="newsletterTokenStatus" aria-live="polite" role="status"></p>
+</section>
+<section class="newsletter-card newsletter-faq">
+<h2>¿Cómo funciona?</h2>
+<ol>
+<li>Dejas tu correo y confirmas desde el enlace que recibirás.</li>
+<li>Cuando publiquemos nuevos artículos, recibirás un resumen diario con enlaces para leerlos.</li>
+<li>Puedes cancelar la suscripción desde cualquiera de esos mensajes.</li>
+</ol>
+<a href="/articulos.html">Ver la biblioteca de artículos →</a>
+</section>
+</main>
+<footer class="ee-footer"><p>Easy English · Aprende un poco cada día.</p></footer>
+</body></html>
