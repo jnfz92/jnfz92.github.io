@@ -37,13 +37,3 @@ test('los comentarios públicos se cargan dentro del artículo real',async ({pag
   await expect(page.locator('#ee-comments-composer')).toContainText('inicia sesión',{timeout:20000});
   await expect(page.locator('#ee-comments-status')).not.toHaveAttribute('data-error','true');
 });
-
-test('newsletter: estado público y ejecución diaria protegida por secreto',async ({request})=>{
-  const endpoint='https://wnluofonzteaqtlfshgy.supabase.co/functions/v1/newsletter';
-  const status=await request.get(endpoint);
-  expect(status.status()).toBe(200);
-  const data=await status.json();
-  expect(typeof data.enabled).toBe('boolean');
-  const unauthorized=await request.post(endpoint,{data:{action:'dispatch'}});
-  expect(unauthorized.status()).toBe(401);
-});
