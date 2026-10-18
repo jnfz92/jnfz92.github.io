@@ -4,7 +4,7 @@ const html=path.join(__dirname,'../newsletter.html');
 const script=path.join(__dirname,'../assets/newsletter.js');
 async function setup(page,{enabled=true,hash='',status=200}={}){
   const text=require('node:fs').readFileSync(html,'utf8');
-  const body=text.slice(text.indexOf('<body'),text.indexOf('</body>')+7).replace(/\\{%[\\s\\S]*?%\\}/g,'');
+  const body=text.slice(text.indexOf('<body'),text.indexOf('</body>')+7).replaceAll('{% include header.html %}','');
   await page.route('https://jnfz92.github.io/newsletter.html**',route=>route.fulfill({
     status:200,contentType:'text/html',body:'<!doctype html><html>'+body+'</html>'
   }));
