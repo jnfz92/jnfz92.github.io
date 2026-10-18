@@ -157,7 +157,11 @@ async function boot(){
  if(!db){renderComposer();message('Comentarios no disponibles por el momento.',true);return;}
  try{
   const {data,error}=await db.auth.getUser();
-  if(error)throw error;
+  // getUser() devuelve AuthSessionMissingError para lectores sin cuenta.
+  // Esa ausencia es normal: deben poder leer comentarios sin iniciar sesión.
+  const isGuest=error&&(error.name==='AuthSessionMissingError'||
+    /Auth session missing/i.test(error.message||''));
+  if(error&&!isGuest)throw error;
   currentUser=data?.user||null;
   await refresh();
   message('');
