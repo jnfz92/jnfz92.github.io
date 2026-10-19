@@ -130,3 +130,21 @@ test('la biblioteca busca sin tildes y permite limpiar la búsqueda',async ({pag
   await expect(search).toHaveValue('');
   await expect(page.locator('.blog .grid .card:visible')).toHaveCount(3);
 });
+
+test('Speaking Lab cambia de nivel y de pregunta sin solicitar micrófono',async ({page})=>{
+ await page.goto('/speaking-lab.html');
+ await expect(page.locator('#speakingPrompt')).toContainText('Tell me about your typical weekend.');
+ await page.locator('#speakingLevel').selectOption('A2');
+ await expect(page.locator('#speakingPrompt')).toContainText('last holiday');
+ await page.locator('#speakingMode').selectOption('pronunciation');
+ await expect(page.locator('#speakingPrompt')).toContainText('Yesterday I visited');
+ await page.locator('#nextPrompt').click();
+ await expect(page.locator('#speakingPrompt')).toContainText('Could you tell me');
+ await expect(page.locator('#stopRecording')).toBeDisabled();
+});
+test('Speaking Lab informa cuando el navegador no permite grabar',async ({page})=>{
+ await page.addInitScript(()=>{Object.defineProperty(navigator,'mediaDevices',{configurable:true,value:undefined})});
+ await page.goto('/speaking-lab.html');
+ await page.locator('#startRecording').click();
+ await expect(page.locator('#speakingStatus')).toContainText('no permite grabar audio');
+});
