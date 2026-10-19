@@ -11,12 +11,63 @@ let questions=[],examId=null,submitting=false,loadVersion=0,pendingResultId=null
 const message=s=>$('message').textContent=s;
 const fail=e=>message('Error: '+(e?.message||String(e)));
 
+
+/* Informe individual al finalizar: solo datos devueltos por la corrección autorizada. */
+function topicForQuestion(q){
+  const t=(q.enunciado||'').toLowerCase();
+  if(/look after|look up|turn down|put off|give up|phrasal|look forward/.test(t))return 'Phrasal verbs y expresiones';
+  if(/must|should|can |could |have to|ought|may |might /.test(t))return 'Verbos modales';
+  if(/apologis|preposition|depend on|interested in/.test(t))return 'Preposiciones';
+  if(/question tag|haven't|who called|who did|grammatically correct/.test(t))return 'Preguntas y question tags';
+  if(/if |would |unless/.test(t))return 'Condicionales';
+  if(/was sent|were sent|passive/.test(t))return 'Voz pasiva';
+  if(/had |has |have |since |while |by the time|going to|yesterday/.test(t))return 'Tiempos verbales';
+  return 'Gramática y vocabulario';
+}
+function renderExamReport(responses,solutions,correct){
+  let section=$('detailedReport');
+  if(!section){
+    section=document.createElement('section');section.id='detailedReport';
+    section.className='panel';section.setAttribute('aria-labelledby','reportTitle');
+    $('scoreSummary').insertAdjacentElement('afterend',section);
+  }
+  section.replaceChildren();section.hidden=false;
+  const h=document.createElement('h2');h.id='reportTitle';h.textContent='Tu informe personalizado';section.append(h);
+  const total=questions.length,wrong=questions.filter(q=>responses[q.id]!==solutions.get(String(q.id)).respuesta_correcta);
+  const intro=document.createElement('p');intro.textContent='Nota: '+(10*correct/total).toFixed(1).replace('.',',')+'/10 · '+correct+' aciertos · '+wrong.length+' fallos de '+total+'.';
+  section.append(intro);
+  if(!wrong.length){const p=document.createElement('p');p.textContent='¡Enhorabuena! No has fallado ninguna pregunta.';section.append(p);return}
+  const frequency=new Map();
+  for(const q of wrong){const topic=topicForQuestion(q);frequency.set(topic,(frequency.get(topic)||0)+1)}
+  const recommendation=document.createElement('p');recommendation.textContent='Prioridades de repaso: '+[...frequency].sort((a,b)=>b[1]-a[1]).map(([topic,n])=>topic+' ('+n+')').join(' · ')+'.';
+  section.append(recommendation);
+  const hh=document.createElement('h3');hh.textContent='Preguntas que debes repasar';section.append(hh);
+  for(const q of wrong){
+    const sol=solutions.get(String(q.id)),card=document.createElement('article');card.className='exam-report-error';
+    const heading=document.createElement('h4');heading.textContent='Pregunta '+q.orden+' · '+topicForQuestion(q);
+    const question=document.createElement('p');question.textContent=q.enunciado;
+    const chosen=document.createElement('p');chosen.className='exam-report-chosen';chosen.textContent='✗ Tu respuesta: '+(responses[q.id]===undefined?'Sin responder':q.opciones[responses[q.id]]);
+    const right=document.createElement('p');right.className='exam-report-correct';right.textContent='✓ Respuesta correcta: '+q.opciones[sol.respuesta_correcta];
+    const why=document.createElement('p');why.textContent=sol.explicacion||'Repasa esta estructura en las lecciones.';
+    card.append(heading,question,chosen,right,why);
+    if(q.fuente_url){const a=document.createElement('a');a.href=articleLink(q.fuente_url);a.textContent='Repasar lección ↗';card.append(a)}
+    section.append(card);
+  }
+  const review=document.createElement('a');review.href='#cuaderno-fallos';review.textContent='Practicar mis errores ↘';section.append(review);
+}
+(function(){
+  const css=document.createElement('style');
+  css.textContent='#detailedReport{margin:22px 0;padding:25px;border:1px solid #c6dfcd;border-radius:20px;background:#fff}#detailedReport h2{color:#18573c}#detailedReport .exam-report-error{border:1px solid #dae7de;border-radius:14px;padding:16px;margin:14px 0;background:#fafcf9}#detailedReport .exam-report-error h4{margin:0 0 8px}#detailedReport .exam-report-error p{margin:7px 0}#detailedReport .exam-report-chosen{color:#a13232}#detailedReport .exam-report-correct{color:#176447;font-weight:750}';
+  document.head.append(css);
+})();
+
 function clearExam(){
   loadVersion++;
   questions=[];examId=null;submitting=false;pendingResultId=null;
   $('exam').replaceChildren();
   $('examProgress').hidden=true;
   $('scoreSummary').hidden=true;
+  if($('detailedReport'))$('detailedReport').hidden=true;
   $('loadedExam').hidden=true;
 }
 
@@ -119,6 +170,7 @@ async function load(){
   if(!Array.isArray(data)||!data.length)throw new Error('Este examen no tiene preguntas publicadas.');
   examId=requestedId;questions=data;submitting=false;pendingResultId=null;
   $('scoreSummary').hidden=true;
+  if($('detailedReport'))$('detailedReport').hidden=true;
   $('examProgress').hidden=false;
   $('loadedExam').hidden=false;
   $('loadedExam').textContent='Estás realizando: '+selectedTitle;
@@ -246,6 +298,7 @@ $('exam').onsubmit=async e=>{
     errorsLink.href='#cuaderno-fallos';
     errorsLink.textContent='Ir a mi cuaderno de errores ↘';
     summary.append(label,score,explanation,link,document.createTextNode(' · '),errorsLink);
+    renderExamReport(responses,solutions,correct);
     await history();
     summary.scrollIntoView({behavior:'smooth',block:'center'});
   }catch(error){
