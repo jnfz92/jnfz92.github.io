@@ -162,6 +162,7 @@ footer{background:#fffdfb}
 .ee-site.ee-profile #authLayout button:disabled{opacity:.6;cursor:wait}
 .ee-site.ee-profile .auth-text-button{border:0;background:transparent;color:var(--brand);text-decoration:underline;text-align:left;font-weight:700;margin-top:5px;padding:9px 0;align-self:flex-start}
 .ee-site.ee-profile #accountStatus{display:block;max-width:1120px;margin:0 auto 22px;min-height:40px}
+.ee-site.ee-profile #accountStatus[hidden]{display:none!important}
 .ee-site.ee-profile #accountStatus[data-error=true]{color:#982d28;background:#fff0ef}
 .ee-site.ee-profile #passwordRecoveryPanel{max-width:620px;margin:0 auto 22px}
 .ee-site.ee-profile #passwordRecoveryPanel[hidden]{display:none!important}
@@ -505,6 +506,8 @@ async function changeUser(next){
  $('learningStatus').textContent='Consultando tu progreso…';$('learningActivityHistory').replaceChildren();
  $('learningReads').textContent='—';$('learningExams').textContent='—';$('learningActivities').textContent='—';$('learningErrors').textContent='—';
  $('authLayout').hidden=!!user;
+  $('accountStatus').hidden=!!user;
+  if(user)$('accountStatus').textContent='';
  $('privateDashboard').hidden=!user;
  $('continueLink').hidden=!user;
  $('authForm').hidden=!!user;
