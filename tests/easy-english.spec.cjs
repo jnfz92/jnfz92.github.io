@@ -116,3 +116,17 @@ test('slug inválido muestra un error legible',async ({page})=>{
   await page.goto('/leer.html?slug=INVALID!');
   await expect(page.locator('#loading')).toContainText('no corresponde a un artículo válido');
 });
+
+
+test('la biblioteca busca sin tildes y permite limpiar la búsqueda',async ({page})=>{
+  await stub(page);
+  await page.goto('/articulos.html');
+  await expect(page.locator('.blog .grid .card')).toHaveCount(3);
+  const search=page.locator('#articleSearch');
+  await search.fill('como escribir');
+  await expect(page.locator('.blog .grid .card:visible')).toHaveCount(1);
+  await expect(page.locator('#clearSearch')).toBeVisible();
+  await page.locator('#clearSearch').click();
+  await expect(search).toHaveValue('');
+  await expect(page.locator('.blog .grid .card:visible')).toHaveCount(3);
+});
