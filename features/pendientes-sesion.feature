@@ -1,3 +1,4 @@
+# language: es
 Característica: Exámenes personalizados y datos privados
   # No se simula una sesión real ni se crean calificaciones en producción sin credenciales específicas.
   @pendiente-sesion
