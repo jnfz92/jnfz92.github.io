@@ -306,56 +306,81 @@ function profileQuestionTopic(q){
  if(/had |has |have |since |while |by the time|going to|yesterday/.test(t))return 'Tiempos verbales';
  return 'Gramática y vocabulario';
 }
+const reviewedTopics=['Tiempos verbales','Tiempos verbales','Tiempos verbales','Tiempos verbales','Condicionales','Condicionales','Voz pasiva','Verbos modales','Verbos modales','Verbos modales','Phrasal verbs','Phrasal verbs','Phrasal verbs','Phrasal verbs','Preposiciones','Phrasal verbs','Preguntas','Question tags','Vocabulario','Vocabulario'];
+function trustedExamTopic(q){
+ // Taxonomía revisada manualmente para el examen 008. No atribuir etiquetas dudosas a otros exámenes.
+ if(Number(q.examen_id)===8&&Number(q.orden)>=1&&Number(q.orden)<=20)return reviewedTopics[Number(q.orden)-1];
+ return null;
+}
+function profileNode(tag,text,cls){const n=document.createElement(tag);if(text!==undefined)n.textContent=text;if(cls)n.className=cls;return n}
+function profileBars(panel,heading,items,color){
+ panel.append(profileNode('h3',heading));
+ if(!items.length){panel.append(profileNode('p','Todavía no hay suficientes respuestas clasificadas.'));return}
+ for(const v of items){
+  const wrap=profileNode('div',undefined,'skill-row'),head=profileNode('div',undefined,'skill-head');
+  head.append(profileNode('span',v.topic),profileNode('strong',v.percent+'% · '+v.hits+'/'+v.total+' aciertos'));
+  const track=profileNode('div',undefined,'skill-track'),bar=profileNode('div',undefined,'skill-fill');
+  bar.style.width=v.percent+'%';bar.style.background=color;track.append(bar);wrap.append(head,track);panel.append(wrap);
+ }
+}
 async function loadLearningStrengths(scores,owner){
  let panel=document.getElementById('learningStrengths');
- if(!panel){panel=document.createElement('section');panel.id='learningStrengths';panel.className='panel';panel.style.cssText='padding:24px;margin:16px 0;border-radius:16px';$('examHistory').closest('.panel').insertAdjacentElement('afterend',panel)}
- panel.replaceChildren();
- const title=document.createElement('h2');title.textContent='Mis puntos fuertes y lo que debo corregir';panel.append(title);
- const status=document.createElement('p');status.textContent='Analizando los exámenes guardados…';panel.append(status);
- if(!scores.length){status.textContent='Completa un examen para ver tus puntos fuertes y dificultades.';return}
- const chosen=scores.slice(0,100);
- const examIds=[...new Set(chosen.map(r=>r.examen_id))];
- const {data:questionsData,error:qError}=await eeDb.from('preguntas').select('id,examen_id,enunciado').in('examen_id',examIds);
- if(qError){status.textContent='No se pudieron cargar las preguntas: '+qError.message;return}
- const questionsByExam=new Map();
- for(const q of questionsData||[]){const arr=questionsByExam.get(String(q.examen_id))||[];arr.push(q);questionsByExam.set(String(q.examen_id),arr)}
- const totals=new Map();let considered=0;
- for(const r of chosen){
-  if(!user||user.id!==owner)return;
-  const {data:corrections,error:cError}=await eeDb.rpc('ver_correccion',{p_resultado_id:r.id});
-  if(cError||!Array.isArray(corrections))continue;
-  const answers=new Map(corrections.map(c=>[String(c.pregunta_id),c.respuesta_correcta]));
-  for(const q of questionsByExam.get(String(r.examen_id))||[]){
-   if(!answers.has(String(q.id)))continue;
-   const topic=profileQuestionTopic(q),v=totals.get(topic)||{hits:0,total:0};
-   v.total++;if(r.respuestas&&Number(r.respuestas[q.id])===answers.get(String(q.id))&&Object.hasOwn(r.respuestas,String(q.id)))v.hits++;
-   totals.set(topic,v);
-  }
-  considered++;
+ if(!panel){panel=document.createElement('section');panel.id='learningStrengths';panel.className='panel';$('examHistory').closest('.panel').insertAdjacentElement('afterend',panel)}
+ panel.replaceChildren(profileNode('h2','Mi evolución y mi plan de estudio'));
+ if(!scores.length){panel.append(profileNode('p','Completa un examen para ver tu evolución y tus prioridades.'));return}
+ const trend=profileNode('section',undefined,'skill-trend');
+ trend.append(profileNode('h3','Evolución de mis notas'));
+ const latest=scores.slice(0,12).reverse(),max=latest.length;
+ const chart=profileNode('div',undefined,'skill-trend-chart');
+ for(const [i,r] of latest.entries()){
+  const b=profileNode('div',undefined,'skill-trend-bar');
+  const v=Math.max(0,Math.min(100,Number(r.nota)||0));
+  b.style.height=Math.max(2,v)+'%';b.title='Examen '+(i+1)+': '+v.toFixed(1)+'%';
+  b.setAttribute('aria-label',b.title);b.setAttribute('role','img');chart.append(b);
  }
+ trend.append(chart,profileNode('p','Últimos '+max+' intentos · de izquierda a derecha, del más antiguo al más reciente. Altura de las barras: nota sobre 100 %','muted'));
+ panel.append(trend);
+ const recent=scores.slice(0,30);
+ const examIds=[...new Set(recent.map(r=>r.examen_id))];
+ const {data:questionRows,error}=await eeDb.from('preguntas').select('id,examen_id,orden').in('examen_id',examIds);
  if(!user||user.id!==owner)return;
- panel.replaceChildren(title);
- if(!totals.size){const p=document.createElement('p');p.textContent='No se pudo obtener todavía el desglose por temas. Tus notas siguen guardadas.';panel.append(p);return}
- const subtitle=document.createElement('p');subtitle.textContent='Balance acumulado de '+considered+' intentos analizados (hasta los 100 últimos). Los porcentajes se calculan sobre las respuestas de cada tema.';panel.append(subtitle);
- const all=[...totals].map(([topic,v])=>({topic,...v,percentage:Math.round(100*v.hits/v.total)}));
- const groups=[
-  {title:'Mis puntos fuertes',items:all.filter(v=>v.hits>0).sort((a,b)=>b.percentage-a.percentage||b.total-a.total).slice(0,4),color:'#278458'},
-  {title:'Lo que debo corregir',items:all.filter(v=>v.hits<v.total).sort((a,b)=>a.percentage-b.percentage||b.total-a.total).slice(0,5),color:'#c77d3d'}
- ];
- for(const group of groups){
-  const heading=document.createElement('h3');heading.textContent=group.title;panel.append(heading);
-  if(!group.items.length){const p=document.createElement('p');p.textContent='Sin datos suficientes en esta categoría.';panel.append(p);continue}
-  for(const v of group.items){
-   const wrap=document.createElement('div');wrap.style.margin='11px 0';
-   const label=document.createElement('div');label.style.cssText='display:flex;justify-content:space-between;gap:10px;font-size:14px';
-   const name=document.createElement('span');name.textContent=v.topic;
-   const count=document.createElement('strong');count.textContent=v.percentage+'% · '+v.hits+'/'+v.total+' aciertos';
-   label.append(name,count);
-   const track=document.createElement('div');track.style.cssText='height:10px;background:#e2eae4;border-radius:20px;overflow:hidden;margin-top:5px';
-   const bar=document.createElement('div');bar.style.cssText='height:100%;border-radius:20px;background:'+group.color+';width:'+v.percentage+'%';
-   track.append(bar);wrap.append(label,track);panel.append(wrap);
+ if(error){panel.append(profileNode('p','No se pudo cargar el desglose por temas: '+error.message));return}
+ const byExam=new Map();
+ for(const q of questionRows||[]){if(!trustedExamTopic(q))continue;const arr=byExam.get(String(q.examen_id))||[];arr.push(q);byExam.set(String(q.examen_id),arr)}
+ const eligible=recent.filter(r=>byExam.has(String(r.examen_id)));
+ if(!eligible.length){panel.append(profileNode('p','Aún no hay exámenes con temas revisados para comparar. La evolución de notas sí está disponible.'));return}
+ const results=await Promise.all(eligible.map(async r=>{
+  const {data,error}=await eeDb.rpc('ver_correccion',{p_resultado_id:r.id});
+  return error?null:{r,solutions:data||[]};
+ }));
+ if(!user||user.id!==owner)return;
+ const totals=new Map();let attempts=0;
+ for(const item of results){
+  if(!item)continue;attempts++;
+  const corr=new Map(item.solutions.map(c=>[String(c.pregunta_id),c.respuesta_correcta]));
+  for(const q of byExam.get(String(item.r.examen_id))||[]){
+   if(!corr.has(String(q.id)))continue;
+   const topic=trustedExamTopic(q),stat=totals.get(topic)||{hits:0,total:0};
+   stat.total++;
+   if(Object.prototype.hasOwnProperty.call(item.r.respuestas||{},String(q.id))&&Number(item.r.respuestas[q.id])===corr.get(String(q.id)))stat.hits++;
+   totals.set(topic,stat);
   }
  }
+ if(!totals.size){panel.append(profileNode('p','No se pudieron recuperar las correcciones de tus exámenes.'));return}
+ const rows=[...totals].map(([topic,v])=>({topic,...v,percent:Math.round(v.hits/v.total*100)}));
+ const solid=rows.filter(v=>v.total>=3);
+ const strengths=solid.filter(v=>v.percent>=70).sort((a,b)=>b.percent-a.percent).slice(0,4);
+ const improve=solid.filter(v=>v.percent<70).sort((a,b)=>a.percent-b.percent).slice(0,5);
+ const priority=improve[0];
+ const objective=profileNode('section',undefined,'skill-objective');
+ objective.append(profileNode('h3','Mi objetivo recomendado'));
+ objective.append(profileNode('p',priority?'Esta semana practica '+priority.topic.toLowerCase()+': '+priority.hits+' de '+priority.total+' respuestas correctas ('+priority.percent+'%).':'Sigue haciendo exámenes: necesitas al menos 3 preguntas por tema para identificar prioridades fiables.'));
+ const action=profileNode('a','Practicar ahora ↗');action.href='practicar.html';objective.append(action);panel.append(objective);
+ panel.append(profileNode('p','Análisis de '+attempts+' intentos recientes con clasificación de temas revisada. Solo se clasifican las preguntas verificadas; no se infieren categorías ambiguas. Mínimo 3 respuestas por tema para valorar fortalezas y dificultades.','muted'));
+ profileBars(panel,'Mis puntos fuertes',strengths,'#278458');
+ profileBars(panel,'Lo que debo corregir',improve,'#c77d3d');
+ const cssId='skill-profile-styles';
+ if(!document.getElementById(cssId)){const css=profileNode('style');css.id=cssId;css.textContent='.skill-trend-chart{height:135px;display:flex;align-items:end;gap:7px;border-bottom:1px solid #bfd5c6;padding:7px 0}.skill-trend-bar{flex:1;min-width:8px;border-radius:5px 5px 0 0;background:#23845e}.skill-trend,.skill-objective{background:#f0f7f1;border-radius:15px;padding:17px;margin:16px 0}.skill-objective a{color:#176449;font-weight:800;text-decoration:underline}.skill-row{margin:13px 0}.skill-head{display:flex;justify-content:space-between;gap:10px;font-size:14px}.skill-track{height:10px;background:#e2eae4;border-radius:20px;overflow:hidden;margin-top:6px}.skill-fill{height:100%;border-radius:20px}';document.head.append(css)}
 }
 async function results(){
  const box=$('examHistory');box.replaceChildren();
