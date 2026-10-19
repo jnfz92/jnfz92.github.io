@@ -10,7 +10,7 @@ const library=document.body.classList.contains('ee-library')&&!categoryPage;
 const grid=document.querySelector(library?'.blog .grid':home?'main .grid':'main .grid');
 if(!grid || !(home||library||group))return;
 const defaultNames={grammar:'Gramática',vocabulary:'Vocabulario',speaking:'Speaking y Writing',listening:'Listening',lesson:'Lecciones y exámenes'};
-const apiFetch=async path=>{const res=await fetch(API+path,{cache:'no-store',headers:{apikey:KEY,Accept:'application/json'}});if(!res.ok)throw Error('Supabase: '+res.status);return res.json()};
+const apiFetch=async path=>{const res=await fetch(API+path,{cache:'default',headers:{apikey:KEY,Accept:'application/json'}});if(!res.ok)throw Error('Supabase: '+res.status);return res.json()};
 function card(a,names){
  const item=document.createElement('article');item.className='card';const isExam=/^examen-ingles-b1-b2-/.test(a.slug);item.dataset.cat=isExam?'exam':(a.categoria_slug||'lesson');
  const meta=document.createElement('div');meta.className='meta';
@@ -23,10 +23,11 @@ function card(a,names){
  item.append(meta,h,p,link);return item;
 }
 async function load(){
+ const categoriesPromise=apiFetch('categorias_blog?select=slug,nombre&order=orden.asc');
  const articles=await apiFetch('articulos?select=slug,titulo,descripcion,categoria_slug,fecha_publicacion&order=fecha_publicacion.desc.nullslast,titulo.asc&limit=1000');
  if(!Array.isArray(articles)||!articles.length)throw Error('Sin artículos en Supabase');
  let names={...defaultNames};
- try{const cats=await apiFetch('categorias_blog?select=slug,nombre&order=orden.asc');for(const cat of cats)names[cat.slug]=cat.nombre}catch(e){console.warn('Nombres de categorías de respaldo',e)}
+ try{const cats=await categoriesPromise;for(const cat of cats)names[cat.slug]=cat.nombre}catch(e){console.warn('Nombres de categorías de respaldo',e)}
  const shown=group?articles.filter(a=>a.categoria_slug===group&&!(group==='lesson'&&/^examen-ingles-b1-b2-/.test(a.slug))):home?articles.filter(a=>!/^examen-ingles-b1-b2-/.test(a.slug)).slice(0,6):articles;
  grid.replaceChildren(...shown.map(a=>card(a,names)));
  if(!shown.length){const p=document.createElement('p');p.textContent='Todavía no hay artículos en esta categoría.';grid.append(p)}
