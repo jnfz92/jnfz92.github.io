@@ -1,3 +1,4 @@
+# language: es
 # Cada escenario describe qué comportamiento comprueba y qué resultado confirma.
 # @publico = navegador real sin credenciales; @pendiente-sesion = exige usuario de prueba aislado.
 Característica: Navegación y acceso público a Easy English
