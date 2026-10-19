@@ -148,12 +148,61 @@ footer{background:#fffdfb}
  .ee-site.ee-profile .account-panel{padding:19px 16px}
  .ee-site.ee-profile .form-row button{flex:1}
 }
+
+/* Inicio de sesion y registro con un panel a cada lado. */
+.ee-site.ee-profile #authLayout{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px;max-width:1120px;margin:0 auto 22px;align-items:stretch}
+.ee-site.ee-profile #authLayout[hidden]{display:none!important}
+.ee-site.ee-profile #authLayout .auth-card{margin:0;padding:clamp(22px,3vw,32px);min-width:0;display:flex;flex-direction:column;gap:10px}
+.ee-site.ee-profile #authLayout .auth-card h2{font-size:clamp(24px,3vw,30px);margin:0}
+.ee-site.ee-profile #authLayout .auth-card .section-kicker{margin:0}
+.ee-site.ee-profile #authLayout form{display:grid;gap:9px;margin-top:12px}
+.ee-site.ee-profile #authLayout label{margin:6px 0 0}
+.ee-site.ee-profile #authLayout input{width:100%;min-width:0;min-height:46px;padding:11px 13px;border:1px solid #d8e4db;border-radius:11px;background:#fbfdfb}
+.ee-site.ee-profile #authLayout button.primary{width:100%;min-height:46px;margin-top:13px}
+.ee-site.ee-profile #authLayout button:disabled{opacity:.6;cursor:wait}
+.ee-site.ee-profile .auth-text-button{border:0;background:transparent;color:var(--brand);text-decoration:underline;text-align:left;font-weight:700;margin-top:5px;padding:9px 0;align-self:flex-start}
+.ee-site.ee-profile #accountStatus{display:block;max-width:1120px;margin:0 auto 22px;min-height:40px}
+.ee-site.ee-profile #accountStatus[data-error=true]{color:#982d28;background:#fff0ef}
+.ee-site.ee-profile #passwordRecoveryPanel{max-width:620px;margin:0 auto 22px}
+.ee-site.ee-profile #passwordRecoveryPanel[hidden]{display:none!important}
+.ee-site.ee-profile #passwordRecoveryPanel input{width:100%;padding:12px;border:1px solid #d8e4db;border-radius:11px}
+.ee-site.ee-profile #passwordRecoveryPanel button{margin-top:13px}
+@media(max-width:740px){.ee-site.ee-profile #authLayout{grid-template-columns:1fr;gap:14px}.ee-site.ee-profile #authLayout .auth-card{padding:22px}}
 </style>
 <link rel="stylesheet" href="assets/site.css?v=20261014"><script src="assets/site.js?v=20261013" defer></script><link rel="stylesheet" href="/assets/navigation.css?v=20261017-menu-fix2"><script src="/assets/navigation.js?v=20261017-menu-fix2" defer></script></head>
 <body class="ee-site ee-profile">
 {% include header.html %}<main class="container">
 <section class="hero"><span class="eyebrow">✦ TU ESPACIO DE APRENDIZAJE</span><h1>Tu perfil, tu progreso.</h1><p class="intro">Consulta tus lecturas, exámenes y racha de aprendizaje desde un solo lugar.</p><div class="hero-actions"><a href="practicar.html">✎ Hacer un examen ↗</a><a href="practicar.html#cuaderno-fallos">📘 Mi cuaderno de errores ↗</a><a href="#articlesTitle" id="continueLink" hidden>📚 Continuar aprendiendo ↓</a></div></section>
-<div class="dashboard-grid"><section class="panel account-panel" id="accountPanel" aria-labelledby="accountTitle"><h2 id="accountTitle">Cuenta Easy English</h2><p class="muted">Inicia sesión para sincronizar tu nombre, lecturas y notas entre dispositivos.</p><form id="authForm"><label for="authEmail">Correo electrónico</label><div class="form-row"><input type="email" id="authEmail" autocomplete="email" placeholder="correo@ejemplo.com" required></div><label for="authPass">Contraseña</label><div class="form-row"><input type="password" id="authPass" autocomplete="current-password" minlength="6" required></div><div class="form-row"><button class="primary" type="submit">Iniciar sesión</button><button class="secondary" type="button" id="register">Crear cuenta</button></div></form><p id="accountStatus" role="status" class="muted">Comprobando sesión...</p></section></div><section class="panel account-danger" id="accountActions" hidden aria-labelledby="deleteAccountTitle"><span class="section-kicker">SEGURIDAD DE LA CUENTA</span><h2 id="deleteAccountTitle">Seguridad de la cuenta</h2><p class="muted">Cierra sesión en este dispositivo o elimina definitivamente tu cuenta y los datos asociados.</p><div class="account-actions"><button class="secondary" type="button" id="signout">↪ Cerrar sesión</button><button class="danger-button" type="button" id="showDeleteAccount">Eliminar mi cuenta</button></div><div id="deleteAccountPanel" hidden><p class="muted"><strong>Esta acción no se puede deshacer.</strong> Escribe ELIMINAR MI CUENTA para confirmarlo.</p><label for="deleteConfirm">Confirmación</label><input id="deleteConfirm" type="text" autocomplete="off" placeholder="ELIMINAR MI CUENTA"><div class="account-actions"><button class="danger-button" id="confirmDeleteAccount" type="button" disabled>Eliminar definitivamente</button><button class="secondary" id="cancelDeleteAccount" type="button">Cancelar</button></div><p class="muted" id="deleteAccountStatus" role="status"></p></div></section><div id="privateDashboard" hidden><section class="panel ee-reading-pick" aria-labelledby="readingPickTitle"><p class="section-kicker">📖 TU PRÓXIMA LECTURA</p><h2 id="readingPickTitle">Un artículo para ti</h2><p id="readingPickArticle" class="reading-pick-article"></p><p id="readingPickStatus" class="muted" role="status" aria-live="polite">Buscando un artículo que tengas pendiente…</p><div id="readingPickActions" class="reading-pick-actions" hidden><a id="readingPickLink" class="primary" href="#">Leer artículo →</a><button id="readingPickAnother" class="secondary" type="button">Sugerir otro</button><button id="readingPickMark" class="secondary" type="button">Ya lo he leído ✓</button></div></section><section class="panel"><p class="section-kicker">COMUNIDAD EASY ENGLISH</p><h2>Encuentra compañeros</h2><p class="muted">Busca usuarios por su alias público, síguelos y gestiona tus seguidos.</p><a class="back" href="comunidad.html">Explorar comunidad →</a></section><section class="panel ee-streak" aria-labelledby="streakTitle"><p class="section-kicker">🔥 CONSTANCIA DIARIA</p><h2 id="streakTitle">Tu racha de aprendizaje</h2><div class="stats"><div class="stat"><strong id="streakCurrent">—</strong><span>🔥 Días seguidos</span></div><div class="stat"><strong id="streakBest">—</strong><span>🏆 Mejor racha</span></div><div class="stat"><strong id="streakDays">—</strong><span>📅 Días estudiados</span></div></div><p id="streakMessage" class="muted" role="status">Consultando tu racha...</p><p class="muted">Completa una lectura, un examen o una actividad interactiva para registrar actividad. Un día solo cuenta una vez.</p></section><section class="panel" aria-labelledby="nameTitle">
+<div class="auth-layout" id="authLayout" aria-label="Acceso y registro">
+<section class="panel auth-card account-panel" id="accountPanel" aria-labelledby="accountTitle">
+<p class="section-kicker">YA TENGO CUENTA</p><h2 id="accountTitle">Iniciar sesión</h2>
+<p class="muted" id="accountHint">Inicia sesión para sincronizar tus lecturas, exámenes y progreso.</p>
+<form id="authForm">
+<label for="authEmail">Correo electrónico</label><input id="authEmail" name="email" type="email" autocomplete="username" placeholder="correo@ejemplo.com" required>
+<label for="authPass">Contraseña</label><input id="authPass" name="password" type="password" autocomplete="current-password" minlength="6" required>
+<button class="primary" id="loginSubmit" type="submit">Entrar a Easy English</button>
+</form>
+<button class="auth-text-button" id="forgotPassword" type="button">¿Has olvidado tu contraseña?</button>
+</section>
+<section class="panel auth-card" id="registrationPanel" aria-labelledby="registerTitle">
+<p class="section-kicker">SOY NUEVO AQUÍ</p><h2 id="registerTitle">Crear una cuenta</h2>
+<p class="muted">Regístrate gratis para guardar tu aprendizaje y sincronizarlo entre dispositivos.</p>
+<form id="registerForm">
+<label for="registerEmail">Correo electrónico</label><input id="registerEmail" type="email" autocomplete="email" placeholder="correo@ejemplo.com" required>
+<label for="registerPass">Contraseña (mínimo 8 caracteres)</label><input id="registerPass" type="password" autocomplete="new-password" minlength="8" required>
+<label for="registerConfirm">Confirmar contraseña</label><input id="registerConfirm" type="password" autocomplete="new-password" minlength="8" required>
+<button class="primary" id="register" type="submit">Registrarme</button>
+</form>
+<p class="muted">Si se requiere confirmar el correo, recibirás un enlace para activar tu cuenta.</p>
+</section>
+</div>
+<p id="accountStatus" role="status" aria-live="polite" class="muted">Comprobando sesión...</p>
+<section class="panel" id="passwordRecoveryPanel" hidden aria-labelledby="passwordRecoveryTitle">
+<h2 id="passwordRecoveryTitle">Cambia tu contraseña</h2><p class="muted">Elige una contraseña nueva para tu cuenta.</p>
+<form id="passwordRecoveryForm">
+<label for="passwordRecoveryValue">Nueva contraseña</label><input id="passwordRecoveryValue" type="password" autocomplete="new-password" minlength="8" required>
+<button class="primary" id="passwordRecoverySubmit" type="submit">Guardar contraseña</button>
+</form></section><section class="panel account-danger" id="accountActions" hidden aria-labelledby="deleteAccountTitle"><span class="section-kicker">SEGURIDAD DE LA CUENTA</span><h2 id="deleteAccountTitle">Seguridad de la cuenta</h2><p class="muted">Cierra sesión en este dispositivo o elimina definitivamente tu cuenta y los datos asociados.</p><div class="account-actions"><button class="secondary" type="button" id="signout">↪ Cerrar sesión</button><button class="danger-button" type="button" id="showDeleteAccount">Eliminar mi cuenta</button></div><div id="deleteAccountPanel" hidden><p class="muted"><strong>Esta acción no se puede deshacer.</strong> Escribe ELIMINAR MI CUENTA para confirmarlo.</p><label for="deleteConfirm">Confirmación</label><input id="deleteConfirm" type="text" autocomplete="off" placeholder="ELIMINAR MI CUENTA"><div class="account-actions"><button class="danger-button" id="confirmDeleteAccount" type="button" disabled>Eliminar definitivamente</button><button class="secondary" id="cancelDeleteAccount" type="button">Cancelar</button></div><p class="muted" id="deleteAccountStatus" role="status"></p></div></section><div id="privateDashboard" hidden><section class="panel ee-reading-pick" aria-labelledby="readingPickTitle"><p class="section-kicker">📖 TU PRÓXIMA LECTURA</p><h2 id="readingPickTitle">Un artículo para ti</h2><p id="readingPickArticle" class="reading-pick-article"></p><p id="readingPickStatus" class="muted" role="status" aria-live="polite">Buscando un artículo que tengas pendiente…</p><div id="readingPickActions" class="reading-pick-actions" hidden><a id="readingPickLink" class="primary" href="#">Leer artículo →</a><button id="readingPickAnother" class="secondary" type="button">Sugerir otro</button><button id="readingPickMark" class="secondary" type="button">Ya lo he leído ✓</button></div></section><section class="panel"><p class="section-kicker">COMUNIDAD EASY ENGLISH</p><h2>Encuentra compañeros</h2><p class="muted">Busca usuarios por su alias público, síguelos y gestiona tus seguidos.</p><a class="back" href="comunidad.html">Explorar comunidad →</a></section><section class="panel ee-streak" aria-labelledby="streakTitle"><p class="section-kicker">🔥 CONSTANCIA DIARIA</p><h2 id="streakTitle">Tu racha de aprendizaje</h2><div class="stats"><div class="stat"><strong id="streakCurrent">—</strong><span>🔥 Días seguidos</span></div><div class="stat"><strong id="streakBest">—</strong><span>🏆 Mejor racha</span></div><div class="stat"><strong id="streakDays">—</strong><span>📅 Días estudiados</span></div></div><p id="streakMessage" class="muted" role="status">Consultando tu racha...</p><p class="muted">Completa una lectura, un examen o una actividad interactiva para registrar actividad. Un día solo cuenta una vez.</p></section><section class="panel" aria-labelledby="nameTitle">
 <h2 id="nameTitle">Tu perfil</h2><label for="studentName">Tu nombre</label><div class="form-row"><input id="studentName" type="text" maxlength="50" autocomplete="nickname" placeholder="Escribe tu nombre"><button class="primary" id="saveName">Guardar nombre</button></div>
 <p class="muted" id="greeting" role="status">Introduce tu nombre para personalizar tu espacio.</p>
 <p class="muted">Tu nombre y tus lecturas se sincronizan automáticamente con tu cuenta de Supabase.</p>
