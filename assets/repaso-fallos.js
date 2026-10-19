@@ -5,6 +5,12 @@
   const start=$('reviewStart'),section=$('reviewSection'),form=$('reviewForm');
   const status=$('reviewStatus'),summary=$('reviewSummary'),progress=$('reviewProgress');
   const REVISAR=20;
+  const temaSolicitado=new URLSearchParams(location.search).get('tema');
+  const temasValidos=['Tiempos verbales','Condicionales','Voz pasiva','Verbos modales','Phrasal verbs','Preposiciones','Preguntas','Question tags','Vocabulario'];
+  const temasExamen8=['Tiempos verbales','Tiempos verbales','Tiempos verbales','Tiempos verbales','Condicionales','Condicionales','Voz pasiva','Verbos modales','Verbos modales','Verbos modales','Phrasal verbs','Phrasal verbs','Phrasal verbs','Phrasal verbs','Preposiciones','Phrasal verbs','Preguntas','Question tags','Vocabulario','Vocabulario'];
+  const temaActivo=temasValidos.includes(temaSolicitado)?temaSolicitado:null;
+  const temaPregunta=q=>Number(q.examen_id)===8&&Number(q.orden)>=1&&Number(q.orden)<=20?temasExamen8[Number(q.orden)-1]:null;
+
   let items=[],answers=null,attempts=null,busy=false,finished=false,owner=null,requestVersion=0;
 
   function reset(){
@@ -119,7 +125,7 @@
     if(busy)return;
     const version=++requestVersion;
     start.disabled=true;
-    status.textContent='Preparando tus preguntas falladas en exámenes y actividades…';
+    status.textContent=temaActivo?'Generando un examen de repaso de '+temaActivo+'…':'Preparando tus preguntas falladas en exámenes y actividades…';
     try{
       const {data:{user},error:authError}=await eeDb.auth.getUser();
       if(authError)throw authError;
@@ -145,9 +151,13 @@
          ['texto_corto','transformacion'].includes(q.tipo)||
          (q.tipo==='huecos'&&Array.isArray(q.configuracion?.campos)&&q.configuracion.campos.length>0)))
         .map(q=>({...q,_kind:'activity'}));
+      if(temaActivo){
+        for(let i=classic.length-1;i>=0;i--)if(temaPregunta(classic[i])!==temaActivo)classic.splice(i,1);
+        activity.length=0; // No hay categorías revisadas para estas actividades.
+      }
       const available=[...classic,...activity];
       if(!available.length){
-        reset();status.textContent='🎉 ¡No tienes preguntas falladas pendientes!';return;
+        reset();status.textContent=temaActivo?'No tienes preguntas falladas pendientes clasificadas como «'+temaActivo+'». Prueba el repaso general para practicar otros errores.':'🎉 ¡No tienes preguntas falladas pendientes!';return;
       }
       // Mezclar las fuentes con representación de ambas cuando existan errores
       // en exámenes y actividades: no ocultar un único fallo nuevo entre muchos antiguos.
@@ -165,7 +175,7 @@
       shuffle(items);
       owner=user.id;attempts=null;answers=null;finished=false;
       start.disabled=false;
-      status.textContent='Tu repaso: '+items.length+' de '+available.length+
+      status.textContent=(temaActivo?'Examen de '+temaActivo+' · ':'Tu repaso: ')+items.length+' de '+available.length+
         ' preguntas pendientes ('+classic.length+' de exámenes y '+activity.length+' de actividades).';
       renderExam();
     }catch(e){
