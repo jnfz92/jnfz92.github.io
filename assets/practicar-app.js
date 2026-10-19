@@ -37,7 +37,20 @@ function renderExamReport(responses,solutions,correct){
   download.className='exam-report-pdf-button';
   download.textContent='↓ Guardar informe en PDF';
   download.setAttribute('aria-label','Abrir impresión para guardar este informe en PDF');
-  download.addEventListener('click',()=>window.print());
+  download.addEventListener('click',()=>{
+    const report=$('detailedReport');
+    const popup=window.open('','_blank');
+    if(!popup){alert('Permite las ventanas emergentes para guardar el informe en PDF.');return}
+    const copy=report.cloneNode(true);
+    copy.querySelectorAll('button,a,.exam-report-print-hint').forEach(el=>el.remove());
+    const styles='@page{size:A4;margin:14mm}*{box-sizing:border-box}body{font:12px/1.5 Arial,sans-serif;color:#17211c;margin:0}h2{font-size:23px;color:#17583c}h3{font-size:16px;margin:16px 0 8px}h4{font-size:13px;margin:0 0 5px}p{margin:5px 0 9px}.exam-report-error{padding:10px 12px;border:1px solid #d6e4d8;border-radius:8px;margin:9px 0;break-inside:avoid;page-break-inside:avoid}.exam-report-chosen{color:#a13232}.exam-report-correct{color:#176447;font-weight:bold}.exam-report-chart{padding:12px;border:1px solid #d7e5d9;border-radius:8px;break-inside:avoid}.exam-chart-item{margin:9px 0}.exam-chart-heading{display:flex;justify-content:space-between;gap:10px}.exam-chart-track{height:8px;background:#dce8de;border-radius:8px;overflow:hidden}.exam-chart-fill{height:100%;background:#c77d3d;border-radius:8px}';
+    popup.document.open();
+    popup.document.write('<!doctype html><html lang="es"><head><meta charset="utf-8"><title>Informe Easy English - Examen '+Number(examId)+'</title><style>'+styles+'</style></head><body>'+copy.innerHTML+'</body></html>');
+    popup.document.close();
+    popup.focus();
+    popup.onload=()=>popup.print();
+    if(popup.document.readyState==='complete')popup.print();
+  });
   section.append(download);
   const hint=document.createElement('p');
   hint.className='exam-report-print-hint';
@@ -47,6 +60,19 @@ function renderExamReport(responses,solutions,correct){
   const total=questions.length,wrong=questions.filter(q=>responses[q.id]!==solutions.get(String(q.id)).respuesta_correcta);
   const intro=document.createElement('p');intro.textContent='Nota: '+(10*correct/total).toFixed(1).replace('.',',')+'/10 · '+correct+' aciertos · '+wrong.length+' fallos de '+total+'.';
   section.append(intro);
+  const byTopic=new Map();
+  for(const q of questions){
+    const topic=topicForQuestion(q),entry=byTopic.get(topic)||{good:0,total:0};
+    entry.total++;if(responses[q.id]===solutions.get(String(q.id)).respuesta_correcta)entry.good++;
+    byTopic.set(topic,entry);
+  }
+  const strengths=[...byTopic].filter(([,v])=>v.good>0).sort((a,b)=>b[1].good/b[1].total-a[1].good/a[1].total);
+  const strong=document.createElement('section');strong.className='exam-report-chart';
+  const strongTitle=document.createElement('h3');strongTitle.textContent='Mis puntos fuertes';strong.append(strongTitle);
+  const strongText=document.createElement('p');strongText.textContent=strengths.length?
+    strengths.slice(0,4).map(([topic,v])=>topic+': '+v.good+'/'+v.total+' aciertos ('+Math.round(v.good/v.total*100)+'%)').join(' · '):
+    'Todavía no hay aciertos por tema. Repasa las explicaciones y vuelve a intentarlo.';
+  strong.append(strongText);section.append(strong);
   if(!wrong.length){const p=document.createElement('p');p.textContent='¡Enhorabuena! No has fallado ninguna pregunta.';section.append(p);return}
   const frequency=new Map();
   for(const q of wrong){const topic=topicForQuestion(q);frequency.set(topic,(frequency.get(topic)||0)+1)}
