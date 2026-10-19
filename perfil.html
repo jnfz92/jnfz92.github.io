@@ -293,13 +293,77 @@ async function loadLearningOverview(){
  if(!(attempts.data||[]).length)box.textContent='Todavía no has entregado actividades interactivas.';
 }
 async function loadStreak(){if(!user)return;const {data,error}=await eeDb.rpc('racha_actual');if(error){$('streakMessage').textContent='No se pudo cargar la racha: '+error.message;return}const r=Array.isArray(data)?data[0]:data;if(!r)return;$('streakCurrent').textContent=String(r.racha||0);$('streakBest').textContent=String(r.mejor_racha||0);$('streakDays').textContent=String(r.dias_total||0);$('streakMessage').textContent=r.hoy_completado?'✅ ¡Has cumplido tu objetivo de hoy!':'Completa hoy una lección o un examen para mantener tu racha.'}
+/* Estadísticas de fortalezas y dificultades de los exámenes guardados.
+   Las soluciones solo se solicitan con ver_correccion para intentos propios. */
+function profileQuestionTopic(q){
+ const t=(q.enunciado||'').toLowerCase();
+ if(/look after|look up|turn down|put off|give up|phrasal|look forward|turn into/.test(t))return 'Phrasal verbs';
+ if(/must|should|can |could |have to|ought|may |might /.test(t))return 'Verbos modales';
+ if(/apologis|preposition|depend on|interested in/.test(t))return 'Preposiciones';
+ if(/question tag|haven't|who called|who did|grammatically correct/.test(t))return 'Preguntas y question tags';
+ if(/if |would |unless/.test(t))return 'Condicionales';
+ if(/was sent|were sent|passive/.test(t))return 'Voz pasiva';
+ if(/had |has |have |since |while |by the time|going to|yesterday/.test(t))return 'Tiempos verbales';
+ return 'Gramática y vocabulario';
+}
+async function loadLearningStrengths(scores,owner){
+ let panel=document.getElementById('learningStrengths');
+ if(!panel){panel=document.createElement('section');panel.id='learningStrengths';panel.className='panel';panel.style.cssText='padding:24px;margin:16px 0;border-radius:16px';$('examHistory').closest('.panel').insertAdjacentElement('afterend',panel)}
+ panel.replaceChildren();
+ const title=document.createElement('h2');title.textContent='Mis puntos fuertes y lo que debo corregir';panel.append(title);
+ const status=document.createElement('p');status.textContent='Analizando los exámenes guardados…';panel.append(status);
+ if(!scores.length){status.textContent='Completa un examen para ver tus puntos fuertes y dificultades.';return}
+ const chosen=scores.slice(0,100);
+ const examIds=[...new Set(chosen.map(r=>r.examen_id))];
+ const {data:questionsData,error:qError}=await eeDb.from('preguntas').select('id,examen_id,enunciado').in('examen_id',examIds);
+ if(qError){status.textContent='No se pudieron cargar las preguntas: '+qError.message;return}
+ const questionsByExam=new Map();
+ for(const q of questionsData||[]){const arr=questionsByExam.get(String(q.examen_id))||[];arr.push(q);questionsByExam.set(String(q.examen_id),arr)}
+ const totals=new Map();let considered=0;
+ for(const r of chosen){
+  if(!user||user.id!==owner)return;
+  const {data:corrections,error:cError}=await eeDb.rpc('ver_correccion',{p_resultado_id:r.id});
+  if(cError||!Array.isArray(corrections))continue;
+  const answers=new Map(corrections.map(c=>[String(c.pregunta_id),c.respuesta_correcta]));
+  for(const q of questionsByExam.get(String(r.examen_id))||[]){
+   if(!answers.has(String(q.id)))continue;
+   const topic=profileQuestionTopic(q),v=totals.get(topic)||{hits:0,total:0};
+   v.total++;if(r.respuestas&&Number(r.respuestas[q.id])===answers.get(String(q.id))&&Object.hasOwn(r.respuestas,String(q.id)))v.hits++;
+   totals.set(topic,v);
+  }
+  considered++;
+ }
+ if(!user||user.id!==owner)return;
+ panel.replaceChildren(title);
+ if(!totals.size){const p=document.createElement('p');p.textContent='No se pudo obtener todavía el desglose por temas. Tus notas siguen guardadas.';panel.append(p);return}
+ const subtitle=document.createElement('p');subtitle.textContent='Balance acumulado de '+considered+' intentos analizados (hasta los 100 últimos). Los porcentajes se calculan sobre las respuestas de cada tema.';panel.append(subtitle);
+ const all=[...totals].map(([topic,v])=>({topic,...v,percentage:Math.round(100*v.hits/v.total)}));
+ const groups=[
+  {title:'Mis puntos fuertes',items:all.filter(v=>v.hits>0).sort((a,b)=>b.percentage-a.percentage||b.total-a.total).slice(0,4),color:'#278458'},
+  {title:'Lo que debo corregir',items:all.filter(v=>v.hits<v.total).sort((a,b)=>a.percentage-b.percentage||b.total-a.total).slice(0,5),color:'#c77d3d'}
+ ];
+ for(const group of groups){
+  const heading=document.createElement('h3');heading.textContent=group.title;panel.append(heading);
+  if(!group.items.length){const p=document.createElement('p');p.textContent='Sin datos suficientes en esta categoría.';panel.append(p);continue}
+  for(const v of group.items){
+   const wrap=document.createElement('div');wrap.style.margin='11px 0';
+   const label=document.createElement('div');label.style.cssText='display:flex;justify-content:space-between;gap:10px;font-size:14px';
+   const name=document.createElement('span');name.textContent=v.topic;
+   const count=document.createElement('strong');count.textContent=v.percentage+'% · '+v.hits+'/'+v.total+' aciertos';
+   label.append(name,count);
+   const track=document.createElement('div');track.style.cssText='height:10px;background:#e2eae4;border-radius:20px;overflow:hidden;margin-top:5px';
+   const bar=document.createElement('div');bar.style.cssText='height:100%;border-radius:20px;background:'+group.color+';width:'+v.percentage+'%';
+   track.append(bar);wrap.append(label,track);panel.append(wrap);
+  }
+ }
+}
 async function results(){
  const box=$('examHistory');box.replaceChildren();
  if(!user){$('examCount').textContent='—';$('bestScore').textContent='—';$('averageScore').textContent='—';return}
  const activeUserId=user.id;
  box.textContent='Cargando resultados…';
  const [resultResponse,examResponse]=await Promise.all([
-  eeDb.from('resultados').select('id,examen_id,aciertos,total,nota,fecha').eq('usuario_id',activeUserId).order('fecha',{ascending:false}).limit(1000),
+  eeDb.from('resultados').select('id,examen_id,aciertos,total,nota,fecha,respuestas').eq('usuario_id',activeUserId).order('fecha',{ascending:false}).limit(1000),
   eeDb.from('examenes').select('id,titulo,fecha')
  ]);
  if(!user||user.id!==activeUserId)return;
@@ -320,6 +384,7 @@ async function results(){
   info.append(name,detail);el.append(info,grade);box.append(el);
  }
  if(!scores.length)box.textContent='Aún no tienes resultados guardados. Empieza tu primer examen.';
+ await loadLearningStrengths(scores,activeUserId);
  if(examResponse.error){const p=document.createElement('p');p.className='muted';p.textContent='No se pudieron cargar los títulos de los exámenes.';box.append(p)}
 }
 async function changeUser(next){
