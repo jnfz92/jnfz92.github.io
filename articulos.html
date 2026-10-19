@@ -1,7 +1,15 @@
 ---
 permalink: /articulos.html
 ---
-<!doctype html><html lang="es"><head><link rel="icon" type="image/svg+xml" href="/favicon.svg?v=20261017-ee"><meta name="theme-color" content="#005B3C"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="Todas las lecciones de Easy English: gramática, vocabulario, speaking y ejercicios. Busca por tema y filtra por categoría."><title>Artículos y lecciones · Easy English</title><link rel="stylesheet" href="assets/site.css?v=20261014"><script src="assets/site.js?v=20261013" defer></script><link rel="stylesheet" href="/assets/navigation.css?v=20261017-menu-fix2"><script src="/assets/navigation.js?v=20261017-menu-fix2" defer></script></head><body class="ee-site ee-library">{% include header.html %}<main class="container"><section class="hero"><span class="eyebrow">Tu biblioteca de inglés</span><h1>Una lección.<br>Un paso más.</h1><p>Encuentra tu próximo tema: gramática, vocabulario y expresiones para usar en el día a día. Busca una palabra o explora por categoría.</p></section><section class="blog" id="articulos">
+<!doctype html><html lang="es"><head><link rel="icon" type="image/svg+xml" href="/favicon.svg?v=20261017-ee"><meta name="theme-color" content="#005B3C"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="Todas las lecciones de Easy English: gramática, vocabulario, speaking y ejercicios. Busca por tema y filtra por categoría."><title>Artículos y lecciones · Easy English</title><link rel="stylesheet" href="assets/site.css?v=20261014"><script src="assets/site.js?v=20261013" defer></script><link rel="stylesheet" href="/assets/navigation.css?v=20261017-menu-fix2"><script src="/assets/navigation.js?v=20261017-menu-fix2" defer></script><style>
+.ee-library .blog .grid .card{content-visibility:auto;contain-intrinsic-size:auto 250px}
+.ee-library .blog .grid .card[hidden]{display:none!important}
+.ee-library .clear-library-search{border:1px solid #aacbb7;border-radius:10px;background:#f3faf5;color:#175c42;font:inherit;font-weight:700;padding:9px 13px;cursor:pointer;margin:8px 0}
+.ee-library .clear-library-search[hidden]{display:none}
+.ee-library .filters{overflow-x:auto;scrollbar-width:thin;-webkit-overflow-scrolling:touch}
+.ee-library .search-wrap input{min-width:0}
+@media(prefers-reduced-motion:reduce){.ee-library .blog .grid .card{scroll-behavior:auto}}
+</style></head><body class="ee-site ee-library">{% include header.html %}<main class="container"><section class="hero"><span class="eyebrow">Tu biblioteca de inglés</span><h1>Una lección.<br>Un paso más.</h1><p>Encuentra tu próximo tema: gramática, vocabulario y expresiones para usar en el día a día. Busca una palabra o explora por categoría.</p></section><section class="blog" id="articulos">
 <div class="blog-head"><div><span class="eyebrow">Biblioteca de aprendizaje</span><h2>Explora las lecciones</h2><p>Encuentra rápidamente lo que necesitas estudiar.</p></div><label class="search-wrap" for="articleSearch">⌕ <input id="articleSearch" type="search" placeholder="Buscar por tema o palabra..." autocomplete="off"></label></div>
 <div class="filters" aria-label="Filtrar artículos por categoría">
 <button class="filter active" data-filter="all">Todos</button><button class="filter" data-filter="lesson">Lecciones</button><button class="filter" data-filter="exam">Exámenes</button><button class="filter" data-filter="grammar">Grammar</button><button class="filter" data-filter="vocabulary">Vocabulary</button><button class="filter" data-filter="speaking">Speaking</button><button class="filter" data-filter="listening">Listening</button>
@@ -80,14 +88,47 @@ permalink: /articulos.html
 </div>
 <div class="empty" id="emptyState">No hay artículos en esta categoría.</div>
 </section></main><footer class="ee-footer"><p>Un poco de ingl?s. Un paso m?s cada d?a.</p></footer><script>
-const filters=[...document.querySelectorAll('.filter')],cards=[...document.querySelectorAll('.card')],empty=document.getElementById('emptyState'),query=document.getElementById('articleSearch'),resultCount=document.getElementById('resultCount');
+const filters=[...document.querySelectorAll('.filter')];
+const grid=document.querySelector('.blog .grid');
+const empty=document.getElementById('emptyState');
+const query=document.getElementById('articleSearch');
+const resultCount=document.getElementById('resultCount');
+const searchCache=new WeakMap();
 let category='all';
-function refreshArticles(){
-const term=query.value.trim().toLocaleLowerCase('es');let visible=0;
-document.querySelectorAll('.blog .grid .card').forEach(card=>{const show=(category==='all'||card.dataset.cat===category)&&(!term||card.textContent.toLocaleLowerCase('es').includes(term));card.hidden=!show;if(show)visible++});
-empty.style.display=visible?'none':'block';empty.textContent=term?'No encontramos artículos con esa búsqueda. Prueba otra palabra.':'No hay artículos en esta categoría.';
-resultCount.textContent=visible+' contenidos encontrados';
+let cards=[];
+const normalize=s=>String(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLocaleLowerCase('es');
+function cacheArticles(){
+ cards=[...grid.querySelectorAll('.card')];
+ for(const card of cards){
+  const title=card.querySelector('h2')?.textContent||'';
+  const text=card.textContent||'';
+  searchCache.set(card,normalize(title+' '+text));
+ }
 }
-filters.forEach(button=>button.addEventListener('click',()=>{category=button.dataset.filter;filters.forEach(x=>{x.classList.toggle('active',x===button);x.setAttribute('aria-pressed',String(x===button))});refreshArticles()}));
-query.addEventListener('input',refreshArticles);filters.forEach(x=>x.setAttribute('aria-pressed',String(x.classList.contains('active'))));refreshArticles();document.addEventListener('easyenglish:articles-loaded',refreshArticles);
+function refreshArticles(){
+ const term=normalize(query.value.trim());
+ let visible=0;
+ for(const card of cards){
+  const show=(category==='all'||card.dataset.cat===category)&&(!term||searchCache.get(card).includes(term));
+  card.hidden=!show;
+  if(show)visible++;
+ }
+ empty.style.display=visible?'none':'block';
+ empty.textContent=term?'No encontramos artículos con esa búsqueda. Prueba otra palabra.':'No hay artículos en esta categoría.';
+ resultCount.textContent=visible+' de '+cards.length+' contenidos';
+ const clear=document.getElementById('clearSearch');
+ if(clear)clear.hidden=!query.value;
+}
+filters.forEach(button=>button.addEventListener('click',()=>{
+ category=button.dataset.filter;
+ filters.forEach(x=>{x.classList.toggle('active',x===button);x.setAttribute('aria-pressed',String(x===button))});
+ refreshArticles();
+}));
+query.addEventListener('input',refreshArticles);
+const clear=document.createElement('button');clear.type='button';clear.id='clearSearch';clear.textContent='Limpiar búsqueda';clear.className='clear-library-search';clear.hidden=true;
+clear.addEventListener('click',()=>{query.value='';query.focus();refreshArticles()});
+query.closest('.search-wrap').insertAdjacentElement('afterend',clear);
+filters.forEach(x=>x.setAttribute('aria-pressed',String(x.classList.contains('active'))));
+cacheArticles();refreshArticles();
+document.addEventListener('easyenglish:articles-loaded',()=>{cacheArticles();refreshArticles()});
 </script><script src="assets/articulos-supabase.js?v=20261017-writing" defer></script></body></html>
