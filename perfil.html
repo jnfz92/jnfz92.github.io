@@ -320,7 +320,9 @@ function profileBars(panel,heading,items,color){
   const wrap=profileNode('div',undefined,'skill-row'),head=profileNode('div',undefined,'skill-head');
   head.append(profileNode('span',v.topic),profileNode('strong',v.percent+'% · '+v.hits+'/'+v.total+' aciertos'));
   const track=profileNode('div',undefined,'skill-track'),bar=profileNode('div',undefined,'skill-fill');
-  bar.style.width=v.percent+'%';bar.style.background=color;track.append(bar);wrap.append(head,track);panel.append(wrap);
+  bar.style.width=v.percent+'%';bar.style.background=color;track.append(bar);wrap.append(head,track);
+  if(heading==='Lo que debo corregir'){const a=profileNode('a','Generar examen de '+v.topic);a.href='practicar.html?repaso=fallos&tema='+encodeURIComponent(v.topic);a.style.cssText='display:inline-block;margin:8px 0 4px;color:#176449;font-size:14px;font-weight:800;text-decoration:underline';wrap.append(a)}
+  panel.append(wrap);
  }
 }
 async function loadActivityCalendar(owner){
