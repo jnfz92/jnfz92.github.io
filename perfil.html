@@ -504,14 +504,14 @@ async function changeUser(next){
  suggestedHref=null;cloudUserId=null;
  $('learningStatus').textContent='Consultando tu progreso…';$('learningActivityHistory').replaceChildren();
  $('learningReads').textContent='—';$('learningExams').textContent='—';$('learningActivities').textContent='—';$('learningErrors').textContent='—';
- $('accountPanel').hidden=!!user;
+ $('authLayout').hidden=!!user;
  $('privateDashboard').hidden=!user;
  $('continueLink').hidden=!user;
  $('authForm').hidden=!!user;
  $('signout').hidden=!user;
  $('accountActions').hidden=!user;
  dashboardStatus.hidden=true;dashboardStatus.textContent='';
- document.querySelector('.account-panel > .muted').textContent='Inicia sesión para sincronizar tu nombre, lecturas y resultados entre dispositivos.';
+ $('accountHint').textContent='Inicia sesión para sincronizar tu nombre, lecturas y resultados entre dispositivos.';
  if(!user){$('deleteAccountPanel').hidden=true;$('deleteConfirm').value='';$('confirmDeleteAccount').disabled=true;}
  if(user){
    profile={name:'',read:{}};
@@ -525,8 +525,93 @@ async function changeUser(next){
  }
 }
 
-$('authForm').onsubmit=async e=>{e.preventDefault();const {error}=await eeDb.auth.signInWithPassword({email:$('authEmail').value,password:$('authPass').value});$('authPass').value='';if(error){status('Error: '+error.message);return}const {data:{user:u}}=await eeDb.auth.getUser();await changeUser(u)};
-$('register').onclick=async()=>{const {data,error}=await eeDb.auth.signUp({email:$('authEmail').value,password:$('authPass').value});if(error)return status('Error: '+error.message);status(data.session?'Cuenta creada y sesión iniciada.':'Comprueba tu correo electrónico para confirmar la cuenta.');if(data.session)await changeUser(data.user)};
+
+/* Supabase JS gestiona la persistencia y renovación de los tokens.
+   Nunca almacenamos access_token, refresh_token o contraseñas por nuestra cuenta. */
+function authMessage(message,isError=false){
+  const box=$('accountStatus');
+  box.textContent=message;
+  box.dataset.error=String(isError);
+  box.hidden=false;
+}
+function readableAuthError(err){
+  const m=String(err?.message||'No se pudo conectar con el servicio de acceso.');
+  if(/invalid login credentials/i.test(m))return 'Correo o contraseña incorrectos, o correo sin confirmar.';
+  if(/email not confirmed/i.test(m))return 'Confirma tu correo electrónico antes de entrar.';
+  if(/rate limit|too many requests/i.test(m))return 'Demasiados intentos. Inténtalo más tarde.';
+  return m;
+}
+async function verifiedUser(){
+  const {data,error}=await eeDb.auth.getUser();
+  if(error)throw error;
+  if(!data?.user)throw new Error('No se pudo verificar el token de sesión.');
+  if(user?.id!==data.user.id)await changeUser(data.user);
+}
+$('authForm').onsubmit=async e=>{
+  e.preventDefault();
+  if(!$('authForm').reportValidity())return;
+  const button=$('loginSubmit');button.disabled=true;
+  authMessage('Comprobando credenciales…');
+  try{
+    const {error}=await eeDb.auth.signInWithPassword({
+      email:$('authEmail').value.trim().toLowerCase(),password:$('authPass').value
+    });
+    if(error)throw error;
+    await verifiedUser();
+    status('Sesión iniciada correctamente.');
+  }catch(error){authMessage('No se pudo iniciar sesión: '+readableAuthError(error),true)}
+  finally{$('authPass').value='';button.disabled=false}
+};
+$('registerForm').onsubmit=async e=>{
+  e.preventDefault();
+  if(!$('registerForm').reportValidity())return;
+  const password=$('registerPass').value;
+  if(password!==$('registerConfirm').value){
+    $('registerConfirm').setCustomValidity('Las contraseñas no coinciden.');
+    $('registerConfirm').reportValidity();return;
+  }
+  const button=$('register');button.disabled=true;
+  authMessage('Registrando cuenta…');
+  try{
+    const {data,error}=await eeDb.auth.signUp({
+      email:$('registerEmail').value.trim().toLowerCase(),
+      password,
+      options:{emailRedirectTo:location.origin+'/perfil.html'}
+    });
+    if(error)throw error;
+    if(data?.session){
+      await verifiedUser();
+      status('Cuenta creada y sesión iniciada.');
+    }else authMessage('Solicitud recibida. Si se requiere confirmación, revisa tu correo electrónico, incluido spam.');
+  }catch(error){authMessage('No se pudo completar el registro: '+readableAuthError(error),true)}
+  finally{$('registerPass').value='';$('registerConfirm').value='';button.disabled=false}
+};
+$('registerConfirm').addEventListener('input',()=> $('registerConfirm').setCustomValidity(''));
+$('registerPass').addEventListener('input',()=> $('registerConfirm').setCustomValidity(''));
+$('forgotPassword').onclick=async()=>{
+  const email=$('authEmail').value.trim().toLowerCase();
+  if(!email){$('authEmail').focus();authMessage('Indica tu correo en la casilla de acceso para recuperar la contraseña.',true);return}
+  if(!$('authEmail').checkValidity()){$('authEmail').reportValidity();return}
+  const button=$('forgotPassword');button.disabled=true;
+  try{
+    const {error}=await eeDb.auth.resetPasswordForEmail(email,{redirectTo:location.origin+'/perfil.html'});
+    if(error)throw error;
+    authMessage('Si existe una cuenta con ese correo, recibirás un enlace de recuperación.');
+  }catch(error){authMessage('No se pudo solicitar el enlace: '+readableAuthError(error),true)}
+  finally{button.disabled=false}
+};
+$('passwordRecoveryForm').onsubmit=async e=>{
+  e.preventDefault();
+  if(!$('passwordRecoveryForm').reportValidity())return;
+  const button=$('passwordRecoverySubmit');button.disabled=true;
+  try{
+    const {error}=await eeDb.auth.updateUser({password:$('passwordRecoveryValue').value});
+    if(error)throw error;
+    $('passwordRecoveryPanel').hidden=true;
+    status('Contraseña actualizada correctamente.');
+  }catch(error){authMessage('No se pudo cambiar la contraseña: '+readableAuthError(error),true)}
+  finally{$('passwordRecoveryValue').value='';button.disabled=false}
+};
 async function logOut(){const {error}=await eeDb.auth.signOut();if(error)return status('Error: '+error.message);await changeUser(null);status('Has cerrado sesión.')}$('signout').onclick=logOut;
 $('showDeleteAccount').onclick=()=>{$('deleteAccountPanel').hidden=false;$('deleteConfirm').value='';$('confirmDeleteAccount').disabled=true;$('deleteAccountPanel').scrollIntoView({behavior:'smooth',block:'nearest'})};
 $('cancelDeleteAccount').onclick=()=>{$('deleteAccountPanel').hidden=true;$('deleteConfirm').value='';$('deleteAccountStatus').textContent=''};
@@ -553,7 +638,35 @@ $('readingPickMark').onclick=async()=>{
 };
 $('resetProfile').onclick=async()=>{if(!confirm('¿Eliminar tu nombre y progreso de lectura? Las notas no se borrarán.'))return;try{if(user){const a=await eeDb.from('lecturas').delete().eq('usuario_id',user.id);if(a.error)throw a.error;const b=await eeDb.from('perfiles').upsert({usuario_id:user.id,nombre:''});if(b.error)throw b.error;await loadCloud();status('Perfil sincronizado reiniciado.')}else{profile={name:'',read:{}};localSave();render()}}catch(e){status('Error al reiniciar: '+e.message)}};
 eeDb.from('articulos').select('ruta,slug,titulo').order('titulo').then(({data,error})=>{if(error)throw error;articles=(data||[]).filter(a=>/^post\/[a-z0-9-]+\.html$/.test(a.ruta)).map(a=>({href:a.ruta,link:'leer.html?slug='+encodeURIComponent(a.slug),title:(a.titulo||a.slug).replace(/\s*[·|–-]\s*Easy English\s*$/i,'')}));articlesLoaded=true;render()}).catch(e=>{$('readingPickStatus').textContent='No se pudo cargar el catálogo de artículos.';status('No se pudo cargar la biblioteca desde Supabase: '+e.message)});
-eeDb.auth.getUser().then(({data:{user:u},error})=>{if(error?.name==='AuthSessionMissingError'){changeUser(null);return}if(error){changeUser(null);status('Error de sesión: '+error.message);return}changeUser(u)}).catch(e=>{changeUser(null);status('No se pudo comprobar la sesión: '+e.message)});
+// Renovaciones de token, cierres de sesión y cambios entre pestañas.
+let authRevision=0;
+eeDb.auth.onAuthStateChange((event)=>{
+  if(event==='PASSWORD_RECOVERY'){
+    $('passwordRecoveryPanel').hidden=false;
+    $('passwordRecoveryValue').focus();
+  }
+  if(!['SIGNED_IN','SIGNED_OUT','TOKEN_REFRESHED','USER_UPDATED'].includes(event))return;
+  const version=++authRevision;
+  // No llamar a getUser dentro del callback síncrono de Supabase Auth.
+  setTimeout(async()=>{
+    try{
+      const {data,error}=await eeDb.auth.getUser();
+      if(version!==authRevision)return;
+      if(error&&error.name!=='AuthSessionMissingError')throw error;
+      if((user?.id||null)!==(data?.user?.id||null))await changeUser(data?.user||null);
+    }catch(error){
+      if(version!==authRevision)return;
+      await changeUser(null);
+      authMessage('Tu sesión ha expirado o no se ha podido validar. Vuelve a entrar.',true);
+    }
+  },0);
+});
+eeDb.auth.getUser().then(({data,error})=>{
+  if(error&&error.name!=='AuthSessionMissingError'){
+    changeUser(null);authMessage('No se pudo comprobar la sesión: '+readableAuthError(error),true);return;
+  }
+  changeUser(data?.user||null);
+}).catch(error=>{changeUser(null);authMessage('No se pudo comprobar la sesión: '+readableAuthError(error),true)});
 })();
 </script>
 </body></html>
