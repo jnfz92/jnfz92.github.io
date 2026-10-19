@@ -32,6 +32,17 @@ function renderExamReport(responses,solutions,correct){
     $('scoreSummary').insertAdjacentElement('afterend',section);
   }
   section.replaceChildren();section.hidden=false;
+  const download=document.createElement('button');
+  download.type='button';
+  download.className='exam-report-pdf-button';
+  download.textContent='↓ Guardar informe en PDF';
+  download.setAttribute('aria-label','Abrir impresión para guardar este informe en PDF');
+  download.addEventListener('click',()=>window.print());
+  section.append(download);
+  const hint=document.createElement('p');
+  hint.className='exam-report-print-hint';
+  hint.textContent='Al abrir la ventana, elige «Guardar como PDF» como destino. Se incluirán el gráfico y las explicaciones.';
+  section.append(hint);
   const h=document.createElement('h2');h.id='reportTitle';h.textContent='Tu informe personalizado';section.append(h);
   const total=questions.length,wrong=questions.filter(q=>responses[q.id]!==solutions.get(String(q.id)).respuesta_correcta);
   const intro=document.createElement('p');intro.textContent='Nota: '+(10*correct/total).toFixed(1).replace('.',',')+'/10 · '+correct+' aciertos · '+wrong.length+' fallos de '+total+'.';
@@ -82,6 +93,7 @@ function renderExamReport(responses,solutions,correct){
   const css=document.createElement('style');
   css.textContent='#detailedReport{margin:22px 0;padding:25px;border:1px solid #c6dfcd;border-radius:20px;background:#fff}#detailedReport h2{color:#18573c}#detailedReport .exam-report-error{border:1px solid #dae7de;border-radius:14px;padding:16px;margin:14px 0;background:#fafcf9}#detailedReport .exam-report-error h4{margin:0 0 8px}#detailedReport .exam-report-error p{margin:7px 0}#detailedReport .exam-report-chosen{color:#a13232}#detailedReport .exam-report-correct{color:#176447;font-weight:750}';
   css.textContent+="#detailedReport .exam-report-chart{margin:24px 0;padding:20px;border-radius:16px;background:#f4f8f4;border:1px solid #d7e5d9}#detailedReport .exam-report-chart h3{margin:0 0 15px}#detailedReport .exam-chart-item{margin:0 0 16px}#detailedReport .exam-chart-heading{display:flex;justify-content:space-between;align-items:baseline;gap:12px;font-size:14px;margin-bottom:6px}#detailedReport .exam-chart-heading strong{white-space:nowrap;color:#805020}#detailedReport .exam-chart-track{width:100%;height:11px;border-radius:99px;background:#dce8de;overflow:hidden}#detailedReport .exam-chart-fill{height:100%;border-radius:99px;background:#c77d3d}#detailedReport .exam-chart-note{color:#52695c;font-size:12px;margin:5px 0 0}";
+  css.textContent+="@media print{@page{size:A4;margin:16mm}body{background:white!important;color:#17211c!important}body *{visibility:hidden!important}#detailedReport,#detailedReport *{visibility:visible!important}#detailedReport{position:absolute!important;inset:0 auto auto 0!important;width:100%!important;max-width:none!important;box-sizing:border-box!important;border:0!important;box-shadow:none!important;background:white!important;margin:0!important;padding:0!important}#detailedReport .exam-report-pdf-button,#detailedReport .exam-report-print-hint,#detailedReport a{display:none!important}#detailedReport .exam-report-error{break-inside:avoid;page-break-inside:avoid}#detailedReport .exam-report-chart{break-inside:avoid;page-break-inside:avoid;background:#f4f8f4!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}#detailedReport .exam-chart-track{background:#dce8de!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}#detailedReport .exam-chart-fill{background:#c77d3d!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}}#detailedReport .exam-report-pdf-button{padding:12px 17px;margin:4px 0 0;display:inline-block}#detailedReport .exam-report-print-hint{font-size:13px;color:#52695c;margin:4px 0 16px}";
   document.head.append(css);
 })();
 
