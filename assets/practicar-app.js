@@ -41,6 +41,29 @@ function renderExamReport(responses,solutions,correct){
   for(const q of wrong){const topic=topicForQuestion(q);frequency.set(topic,(frequency.get(topic)||0)+1)}
   const recommendation=document.createElement('p');recommendation.textContent='Prioridades de repaso: '+[...frequency].sort((a,b)=>b[1]-a[1]).map(([topic,n])=>topic+' ('+n+')').join(' · ')+'.';
   section.append(recommendation);
+  const chart=document.createElement('section');
+  chart.className='exam-report-chart';
+  chart.setAttribute('aria-label','Gráfico de errores por tema');
+  const chartTitle=document.createElement('h3');
+  chartTitle.textContent='¿Qué necesito repasar más?';
+  chart.append(chartTitle);
+  const ranked=[...frequency].sort((a,b)=>b[1]-a[1]);
+  const max=Math.max(...ranked.map(item=>item[1]));
+  for(const [topic,count] of ranked){
+    const item=document.createElement('div');item.className='exam-chart-item';
+    const heading=document.createElement('div');heading.className='exam-chart-heading';
+    const name=document.createElement('span');name.textContent=topic;
+    const tally=document.createElement('strong');tally.textContent=count+' '+(count===1?'fallo':'fallos');
+    heading.append(name,tally);
+    const track=document.createElement('div');track.className='exam-chart-track';
+    const fill=document.createElement('div');fill.className='exam-chart-fill';
+    fill.style.width=(count/max*100)+'%';
+    track.append(fill);
+    item.append(heading,track);chart.append(item);
+  }
+  const foot=document.createElement('p');foot.className='exam-chart-note';
+  foot.textContent='Barras ordenadas de más a menos fallos. El gráfico se calcula con las respuestas de este examen.';
+  chart.append(foot);section.append(chart);
   const hh=document.createElement('h3');hh.textContent='Preguntas que debes repasar';section.append(hh);
   for(const q of wrong){
     const sol=solutions.get(String(q.id)),card=document.createElement('article');card.className='exam-report-error';
@@ -58,6 +81,7 @@ function renderExamReport(responses,solutions,correct){
 (function(){
   const css=document.createElement('style');
   css.textContent='#detailedReport{margin:22px 0;padding:25px;border:1px solid #c6dfcd;border-radius:20px;background:#fff}#detailedReport h2{color:#18573c}#detailedReport .exam-report-error{border:1px solid #dae7de;border-radius:14px;padding:16px;margin:14px 0;background:#fafcf9}#detailedReport .exam-report-error h4{margin:0 0 8px}#detailedReport .exam-report-error p{margin:7px 0}#detailedReport .exam-report-chosen{color:#a13232}#detailedReport .exam-report-correct{color:#176447;font-weight:750}';
+  css.textContent+="#detailedReport .exam-report-chart{margin:24px 0;padding:20px;border-radius:16px;background:#f4f8f4;border:1px solid #d7e5d9}#detailedReport .exam-report-chart h3{margin:0 0 15px}#detailedReport .exam-chart-item{margin:0 0 16px}#detailedReport .exam-chart-heading{display:flex;justify-content:space-between;align-items:baseline;gap:12px;font-size:14px;margin-bottom:6px}#detailedReport .exam-chart-heading strong{white-space:nowrap;color:#805020}#detailedReport .exam-chart-track{width:100%;height:11px;border-radius:99px;background:#dce8de;overflow:hidden}#detailedReport .exam-chart-fill{height:100%;border-radius:99px;background:#c77d3d}#detailedReport .exam-chart-note{color:#52695c;font-size:12px;margin:5px 0 0}";
   document.head.append(css);
 })();
 
