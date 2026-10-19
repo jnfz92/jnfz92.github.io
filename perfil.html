@@ -360,6 +360,17 @@ async function loadLearningStrengths(scores,owner){
  }
  trend.append(chart,profileNode('p','Últimos '+max+' intentos · de izquierda a derecha, del más antiguo al más reciente. Altura de las barras: nota sobre 100 %','muted'));
  panel.append(trend);
+ const allCorrect=scores.reduce((n,r)=>n+(Number(r.aciertos)||0),0);
+ const allQuestions=scores.reduce((n,r)=>n+(Number(r.total)||0),0);
+ const accuracy=allQuestions?Math.round(allCorrect/allQuestions*100):0;
+ const gauge=profileNode('section',undefined,'skill-objective');
+ gauge.append(profileNode('h3','Precisión global de mis exámenes'));
+ const ring=profileNode('div',undefined,'global-accuracy-ring');
+ ring.style.cssText='margin:12px auto;width:135px;height:135px;border-radius:50%;display:grid;place-items:center;background:conic-gradient(#278458 '+accuracy+'%,#dce8de '+accuracy+'%);position:relative';
+ const middle=profileNode('strong',accuracy+'%');
+ middle.style.cssText='background:white;border-radius:50%;width:100px;height:100px;display:grid;place-items:center;font-size:28px;color:#176449';
+ ring.append(middle);gauge.append(ring,profileNode('p',allCorrect+' respuestas correctas de '+allQuestions+' en '+scores.length+' intentos','muted'));
+ panel.append(gauge);
  const recent=scores.slice(0,30);
  const examIds=[...new Set(recent.map(r=>r.examen_id))];
  const {data:questionRows,error}=await eeDb.from('preguntas').select('id,examen_id,orden').in('examen_id',examIds);
@@ -395,6 +406,11 @@ async function loadLearningStrengths(scores,owner){
  const objective=profileNode('section',undefined,'skill-objective');
  objective.append(profileNode('h3','Mi objetivo recomendado'));
  objective.append(profileNode('p',priority?'Esta semana practica '+priority.topic.toLowerCase()+': '+priority.hits+' de '+priority.total+' respuestas correctas ('+priority.percent+'%).':'Sigue haciendo exámenes: necesitas al menos 3 preguntas por tema para identificar prioridades fiables.'));
+ if(priority){
+  const goal=profileNode('div',undefined,'skill-track'),progress=profileNode('div',undefined,'skill-fill');
+  progress.style.width=priority.percent+'%';progress.style.background='#278458';goal.append(progress);
+  objective.append(goal,profileNode('p','Objetivo recomendado: alcanzar al menos el 70 % de aciertos en este tema.','muted'));
+ }
  const action=profileNode('a','Practicar ahora ↗');action.href='practicar.html';objective.append(action);panel.append(objective);
  panel.append(profileNode('p','Análisis de '+attempts+' intentos recientes con clasificación de temas revisada. Solo se clasifican las preguntas verificadas; no se infieren categorías ambiguas. Mínimo 3 respuestas por tema para valorar fortalezas y dificultades.','muted'));
  profileBars(panel,'Mis puntos fuertes',strengths,'#278458');
