@@ -85,7 +85,19 @@ function renderExamReport(responses,solutions,correct){
   const strongText=document.createElement('p');strongText.textContent=strengths.length?
     strengths.slice(0,4).map(([topic,v])=>topic+': '+v.good+'/'+v.total+' aciertos ('+Math.round(v.good/v.total*100)+'%)').join(' · '):
     'Todavía no hay aciertos por tema. Repasa las explicaciones y vuelve a intentarlo.';
-  strong.append(strongText);section.append(strong);
+  strong.append(strongText);
+  for(const [topic,v] of strengths.slice(0,5)){
+    const line=document.createElement('div');line.className='exam-chart-item';
+    const head=document.createElement('div');head.className='exam-chart-heading';
+    const name=document.createElement('span');name.textContent=topic;
+    const count=document.createElement('strong');count.textContent=Math.round(v.good/v.total*100)+'% · '+v.good+'/'+v.total;
+    head.append(name,count);
+    const track=document.createElement('div');track.className='exam-chart-track';
+    const fill=document.createElement('div');fill.className='exam-chart-fill';
+    fill.style.width=(v.good/v.total*100)+'%';fill.style.background='#278458';track.append(fill);
+    line.append(head,track);strong.append(line);
+  }
+  section.append(strong);
   if(!wrong.length){const p=document.createElement('p');p.textContent='¡Enhorabuena! No has fallado ninguna pregunta.';section.append(p);return}
   const frequency=new Map();
   for(const q of wrong){const topic=topicForQuestion(q);frequency.set(topic,(frequency.get(topic)||0)+1)}
