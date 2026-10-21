@@ -201,6 +201,18 @@ footer{background:#fffdfb}
 .ee-site.ee-profile #articleBrowseCount{font-weight:700;margin:12px 0 0}
 .ee-site.ee-profile #articleList{max-height:700px;overflow-y:auto;overscroll-behavior:contain;padding:4px 5px 4px 0}
 @media(max-width:560px){.ee-site.ee-profile .reading-overview{gap:8px}.ee-site.ee-profile .reading-count{padding:12px}.ee-site.ee-profile .reading-group{padding:9px}.ee-site.ee-profile .reading-group-list .item{display:flex;flex-direction:column;align-items:stretch}.ee-site.ee-profile .reading-group-list .item button{width:100%}}
+</style><style id="reading-library-pagination">
+.ee-site.ee-profile .reading-pagination{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:14px 0 0;padding:12px 2px 3px;border-top:1px solid #e1e9e1}
+.ee-site.ee-profile .reading-page-info{color:#546c5d;font-size:12px;font-weight:750}
+.ee-site.ee-profile .reading-page-buttons{display:flex;flex-wrap:wrap;align-items:center;gap:5px}
+.ee-site.ee-profile button.reading-page-button{min-height:38px;min-width:38px;margin:0;padding:7px 10px;border-radius:9px;border:1px solid #cbded0;background:#fff;color:#176449;font-size:13px;font-weight:800}
+.ee-site.ee-profile button.reading-page-button[aria-current=page]{background:#176449;color:white;border-color:#176449}
+.ee-site.ee-profile button.reading-page-button:hover:not(:disabled){border-color:#176449;background:#edf7ef}
+.ee-site.ee-profile button.reading-page-button[aria-current=page]:hover{background:#176449}
+.ee-site.ee-profile button.reading-page-button:disabled{opacity:.42;cursor:not-allowed}
+.ee-site.ee-profile button.reading-page-button:focus-visible{outline:3px solid #e9a640;outline-offset:2px}
+.ee-site.ee-profile .reading-page-dots{font-weight:800;padding:0 4px;color:#66796a}
+@media(max-width:560px){.ee-site.ee-profile .reading-pagination{flex-direction:column;align-items:stretch}.ee-site.ee-profile .reading-page-buttons{justify-content:center}.ee-site.ee-profile button.reading-page-button{padding:6px 8px}}
 </style></head>
 <body class="ee-site ee-profile">
 {% include header.html %}<main class="container">
@@ -269,6 +281,8 @@ footer{background:#fffdfb}
 'use strict';
 const $=id=>document.getElementById(id), key='easyEnglish.blogProfile.v1';
 let user=null,articles=[],articleView='all',loading=false,articlesLoaded=false,cloudUserId=null,suggestedHref=null;
+const READING_PAGE_SIZE=10;
+const readingPages={read:1,pending:1};
 function readLocal(){try{const v=JSON.parse(localStorage.getItem(key)||'{}');return v&&typeof v==='object'?v:{}}catch{return {}}}
 const old=readLocal();
 let profile={name:typeof old.name==='string'?old.name:'',read:old.read&&typeof old.read==='object'&&!Array.isArray(old.read)?{...old.read}:{}};
@@ -373,13 +387,16 @@ function render(){
   counter.textContent=entries.length+' artículo'+(entries.length===1?'':'s');
   head.append(h,counter);box.append(head);
   const list=document.createElement('div');list.className='reading-group-list';
+  const pages=Math.max(1,Math.ceil(entries.length/READING_PAGE_SIZE));
+  readingPages[type]=Math.min(Math.max(readingPages[type],1),pages);
+  const page=readingPages[type],start=(page-1)*READING_PAGE_SIZE;
   if(!entries.length){
    const p=document.createElement('p');p.className='reading-group-empty';
    p.textContent=term?'Ningún artículo coincide con la búsqueda.':
     type==='read'?'Todavía no has marcado artículos como leídos.':'No hay artículos pendientes.';
    list.append(p);
   }
-  for(const a of entries){
+  for(const a of entries.slice(start,start+READING_PAGE_SIZE)){
    const completed=Boolean(profile.read[a.href]);
    const row=document.createElement('div');row.className='item';
    const detail=document.createElement('div'),heading=document.createElement('strong');
@@ -413,7 +430,51 @@ function render(){
    };
    row.append(detail,btn);list.append(row);
   }
-  box.append(list);root.append(box);
+  box.append(list);
+  if(entries.length){
+    const pagination=document.createElement('nav');
+    pagination.className='reading-pagination';
+    pagination.setAttribute('aria-label','Páginas de '+(type==='read'?'artículos leídos':'artículos pendientes'));
+    const info=document.createElement('span');info.className='reading-page-info';
+    info.textContent='Mostrando '+(start+1)+'–'+Math.min(start+READING_PAGE_SIZE,entries.length)+
+      ' de '+entries.length+' · Página '+page+' de '+pages;
+    pagination.append(info);
+    if(pages>1){
+      const controls=document.createElement('div');controls.className='reading-page-buttons';
+      function moveTo(target){
+        readingPages[type]=target;
+        render();
+        const section=$('articleList').querySelector('.'+type+'-group');
+        if(section)section.scrollIntoView({block:'nearest',behavior:'auto'});
+      }
+      function pageButton(label,target,kind,disabled=false){
+        const button=document.createElement('button');button.type='button';
+        button.className='reading-page-button '+kind;
+        button.textContent=label;button.disabled=disabled;
+        button.setAttribute('aria-label',kind==='number'?'Página '+target+' de '+(type==='read'?'leídos':'pendientes'):label);
+        if(kind==='number'&&target===page)button.setAttribute('aria-current','page');
+        button.onclick=()=>moveTo(target);
+        controls.append(button);
+      }
+      pageButton('‹ Anterior',Math.max(1,page-1),'previous',page===1);
+      // Primera, última y hasta cinco páginas cercanas para no desbordar en móvil.
+      const numbers=new Set([1,pages]);
+      for(let p=Math.max(1,page-2);p<=Math.min(pages,page+2);p++)numbers.add(p);
+      let last=0;
+      for(const p of [...numbers].sort((a,b)=>a-b)){
+        if(p-last>1){
+          const dots=document.createElement('span');dots.className='reading-page-dots';
+          dots.textContent='…';dots.setAttribute('aria-hidden','true');controls.append(dots);
+        }
+        pageButton(String(p),p,'number');
+        last=p;
+      }
+      pageButton('Siguiente ›',Math.min(pages,page+1),'next',page===pages);
+      pagination.append(controls);
+    }
+    box.append(pagination);
+  }
+  root.append(box);
  }
  if(articleView!=='pending')group('read','✓ Artículos leídos',doneList);
  if(articleView!=='read')group('pending','📖 Artículos pendientes de leer',pendingList);
@@ -627,6 +688,7 @@ async function results(){
  if(examResponse.error){const p=document.createElement('p');p.className='muted';p.textContent='No se pudieron cargar los títulos de los exámenes.';box.append(p)}
 }
 async function changeUser(next){
+ readingPages.read=1;readingPages.pending=1;
  user=next;
  suggestedHref=null;cloudUserId=null;
  $('learningStatus').textContent='Consultando tu progreso…';$('learningActivityHistory').replaceChildren();
@@ -748,7 +810,7 @@ $('deleteConfirm').oninput=()=>{$('confirmDeleteAccount').disabled=$('deleteConf
 $('confirmDeleteAccount').onclick=async()=>{if(!user||$('deleteConfirm').value.trim()!=='ELIMINAR MI CUENTA')return;if(!confirm('Vas a borrar tu cuenta, tus lecturas y todas tus notas definitivamente. ¿Continuar?'))return;const button=$('confirmDeleteAccount');button.disabled=true;$('deleteAccountStatus').textContent='Eliminando cuenta…';try{const {data,error}=await eeDb.functions.invoke('eliminar-mi-cuenta',{body:{confirmation:'ELIMINAR MI CUENTA'}});if(error)throw error;if(!data?.success)throw Error(data?.error||'No se ha confirmado la eliminación');await eeDb.auth.signOut();$('deleteAccountPanel').hidden=true;$('deleteConfirm').value='';await changeUser(null);status('Tu cuenta se ha eliminado definitivamente.')}catch(e){$('deleteAccountStatus').textContent='No se pudo eliminar la cuenta: '+e.message;button.disabled=false}};
 $('saveName').onclick=async()=>{const name=$('studentName').value.trim().slice(0,50);try{if(user){const {error}=await eeDb.from('perfiles').upsert({usuario_id:user.id,nombre:name,actualizado_en:new Date().toISOString()});if(error)throw error}else{profile.name=name;localSave()}profile.name=name;render();status(user?'Nombre guardado en Supabase.':'Nombre guardado en este navegador.')}catch(e){status('Error al guardar: '+e.message)}};
 $('studentName').onkeydown=e=>{if(e.key==='Enter')$('saveName').click()};
-$('articleSearch').oninput=render;
+$('articleSearch').oninput=()=>{readingPages.read=1;readingPages.pending=1;render();};
 for(const [id,view] of [['showAllArticles','all'],['onlyPending','pending'],['onlyRead','read']])
  $(id).onclick=()=>{articleView=view;render()};
 $('readingPickAnother').onclick=()=>updateSuggestedReading(true);
