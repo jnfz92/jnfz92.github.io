@@ -112,7 +112,7 @@
   }catch(err){say('No se pudo guardar la corrección: '+err.message,true);send.disabled=false;}
   finally{working=false;}
  });
- reload.addEventListener('click',()=>{reset();say('Pulsa «Generar otro examen» para crear una nueva tanda.');button.focus();});
+ reload.addEventListener('click',()=>{reset();button.click();});
  if(typeof eeDb==='undefined'){say('No se pudo cargar Supabase. Comprueba tu conexión a Internet.',true);button.disabled=true;return;}
  eeDb.auth.onAuthStateChange((event)=>{
   if(['SIGNED_IN','SIGNED_OUT','TOKEN_REFRESHED','USER_UPDATED'].includes(event))setTimeout(checkAccount,0);
