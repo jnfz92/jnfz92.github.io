@@ -113,7 +113,7 @@
   finally{working=false;}
  });
  reload.addEventListener('click',()=>{reset();say('Pulsa «Generar otro examen» para crear una nueva tanda.');button.focus();});
- if(!window.eeDb){say('No se pudo cargar Supabase. Comprueba tu conexión a Internet.',true);button.disabled=true;return;}
+ if(typeof eeDb==='undefined'){say('No se pudo cargar Supabase. Comprueba tu conexión a Internet.',true);button.disabled=true;return;}
  eeDb.auth.onAuthStateChange((event)=>{
   if(['SIGNED_IN','SIGNED_OUT','TOKEN_REFRESHED','USER_UPDATED'].includes(event))setTimeout(checkAccount,0);
  });
