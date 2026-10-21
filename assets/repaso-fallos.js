@@ -7,6 +7,7 @@
   const REVISAR=20;
   const stats=$('reviewStats'),filter=$('reviewMode'),lengthSelect=$('reviewLength'),topicSelect=$('reviewTopic');
   const jump=$('reviewNextUnanswered');
+  const retry=$('reviewRetryLoad');
   const notebook=$('cuaderno-fallos');
   const privateContent=$('reviewPrivateContent');
   const shortcut=document.querySelector('.review-aside-shortcut');
@@ -109,6 +110,7 @@
   }
   async function refreshOverview(){
     const version=++statsRevision;
+    if(retry)retry.hidden=true;
     let authenticated=false;
     try{
       const {data:{user},error}=await eeDb.auth.getUser();
@@ -127,12 +129,13 @@
       if(version!==statsRevision)return;
       setOverview(available);
       if(!available.length)status.textContent='🎉 No tienes errores pendientes. ¡Sigue así!';
-      else if(!items.length)status.textContent='Tienes '+available.length+' errores pendientes. Selecciona tu repaso y empieza.';
+      else if(!items.length)status.textContent='Tienes '+available.length+' error'+(available.length===1?'':'es')+' pendiente'+(available.length===1?'':'s')+'. Selecciona tu repaso y empieza.';
     }catch(e){
       if(version!==statsRevision)return;
       showNotebook(authenticated);
       stats.textContent='No se pudieron cargar las estadísticas.';
       status.textContent='No se pudo consultar el cuaderno: '+(e.message||String(e));
+      if(retry&&authenticated)retry.hidden=false;
     }
   }
 
@@ -403,6 +406,7 @@
     }finally{if(version===requestVersion)busy=false}
   }
   start.addEventListener('click',startExam);
+  if(retry)retry.addEventListener('click',refreshOverview);
   jump.addEventListener('click',()=>{
     const missing=items.find(q=>!answered(q));
     if(!missing)return;
@@ -419,7 +423,7 @@
   form.addEventListener('submit',deliver);
   eeDb.auth.onAuthStateChange(event=>{
     if(event==='SIGNED_OUT'){statsRevision++;reset();stats.replaceChildren();overviewLoaded=false;showNotebook(false);}
-    if(event==='SIGNED_IN'||event==='SIGNED_OUT')setTimeout(refreshOverview,0);
+    if(['INITIAL_SESSION','SIGNED_IN','SIGNED_OUT','TOKEN_REFRESHED','USER_UPDATED'].includes(event))setTimeout(refreshOverview,0);
   });
   showNotebook(false);
   refreshOverview();
