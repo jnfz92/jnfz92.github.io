@@ -8,14 +8,16 @@
   const stats=$('reviewStats'),filter=$('reviewMode'),lengthSelect=$('reviewLength'),topicSelect=$('reviewTopic');
   const jump=$('reviewNextUnanswered');
   const notebook=$('cuaderno-fallos');
+  const privateContent=$('reviewPrivateContent');
   const shortcut=document.querySelector('.review-aside-shortcut');
   const loginHint=$('reviewLoginHint');
   function showNotebook(signedIn){
-    const previouslyHidden=notebook.hidden;
-    notebook.hidden=!signedIn;
+    // El ancla #cuaderno-fallos permanece visible para invitados y usuarios.
+    // Solo el contenido privado aparece tras validar la sesión en Supabase.
+    const previouslyHidden=privateContent.hidden;
+    privateContent.hidden=!signedIn;
     if(shortcut)shortcut.hidden=!signedIn;
     if(loginHint)loginHint.hidden=!!signedIn;
-    // Al volver desde un enlace a #cuaderno-fallos, mostrar el panel tras verificar la sesión.
     if(signedIn&&previouslyHidden&&location.hash==='#cuaderno-fallos'){
       requestAnimationFrame(()=>notebook.scrollIntoView({block:'start'}));
     }
@@ -107,6 +109,7 @@
   }
   async function refreshOverview(){
     const version=++statsRevision;
+    let authenticated=false;
     try{
       const {data:{user},error}=await eeDb.auth.getUser();
       if(error)throw error;
@@ -117,6 +120,7 @@
         status.textContent='Inicia sesión para consultar y practicar tus errores guardados.';
         return;
       }
+      authenticated=true;
       showNotebook(true);
       stats.textContent='Consultando tus fallos guardados…';
       const available=await getPending(user.id);
@@ -126,7 +130,7 @@
       else if(!items.length)status.textContent='Tienes '+available.length+' errores pendientes. Selecciona tu repaso y empieza.';
     }catch(e){
       if(version!==statsRevision)return;
-      showNotebook(false);
+      showNotebook(authenticated);
       stats.textContent='No se pudieron cargar las estadísticas.';
       status.textContent='No se pudo consultar el cuaderno: '+(e.message||String(e));
     }
@@ -389,8 +393,7 @@
       status.textContent='Repaso unificado corregido y guardado en Supabase.';
       submit.disabled=true;submit.textContent='Repaso terminado';
       jump.hidden=true;
-      showNotebook(false);
-  refreshOverview();
+      refreshOverview();
       summary.scrollIntoView({behavior:'smooth',block:'center'});
     }catch(e){
       if(version!==requestVersion)return;
@@ -418,6 +421,7 @@
     if(event==='SIGNED_OUT'){statsRevision++;reset();stats.replaceChildren();overviewLoaded=false;showNotebook(false);}
     if(event==='SIGNED_IN'||event==='SIGNED_OUT')setTimeout(refreshOverview,0);
   });
+  showNotebook(false);
   refreshOverview();
   if(new URLSearchParams(location.search).get('repaso')==='fallos')startExam();
 })();
