@@ -7,6 +7,19 @@
   const REVISAR=20;
   const stats=$('reviewStats'),filter=$('reviewMode'),lengthSelect=$('reviewLength'),topicSelect=$('reviewTopic');
   const jump=$('reviewNextUnanswered');
+  const notebook=$('cuaderno-fallos');
+  const shortcut=document.querySelector('.review-aside-shortcut');
+  const loginHint=$('reviewLoginHint');
+  function showNotebook(signedIn){
+    const previouslyHidden=notebook.hidden;
+    notebook.hidden=!signedIn;
+    if(shortcut)shortcut.hidden=!signedIn;
+    if(loginHint)loginHint.hidden=!!signedIn;
+    // Al volver desde un enlace a #cuaderno-fallos, mostrar el panel tras verificar la sesión.
+    if(signedIn&&previouslyHidden&&location.hash==='#cuaderno-fallos'){
+      requestAnimationFrame(()=>notebook.scrollIntoView({block:'start'}));
+    }
+  }
   let statsRevision=0;
   const temaSolicitado=new URLSearchParams(location.search).get('tema');
   const temasValidos=['Tiempos verbales','Condicionales','Voz pasiva','Verbos modales','Phrasal verbs','Preposiciones','Preguntas','Question tags','Vocabulario'];
@@ -99,10 +112,12 @@
       if(error)throw error;
       if(version!==statsRevision)return;
       if(!user){
+        showNotebook(false);
         stats.replaceChildren();overviewLoaded=false;
         status.textContent='Inicia sesión para consultar y practicar tus errores guardados.';
         return;
       }
+      showNotebook(true);
       stats.textContent='Consultando tus fallos guardados…';
       const available=await getPending(user.id);
       if(version!==statsRevision)return;
@@ -111,6 +126,7 @@
       else if(!items.length)status.textContent='Tienes '+available.length+' errores pendientes. Selecciona tu repaso y empieza.';
     }catch(e){
       if(version!==statsRevision)return;
+      showNotebook(false);
       stats.textContent='No se pudieron cargar las estadísticas.';
       status.textContent='No se pudo consultar el cuaderno: '+(e.message||String(e));
     }
@@ -373,7 +389,8 @@
       status.textContent='Repaso unificado corregido y guardado en Supabase.';
       submit.disabled=true;submit.textContent='Repaso terminado';
       jump.hidden=true;
-      refreshOverview();
+      showNotebook(false);
+  refreshOverview();
       summary.scrollIntoView({behavior:'smooth',block:'center'});
     }catch(e){
       if(version!==requestVersion)return;
@@ -398,7 +415,7 @@
   form.addEventListener('input',updateProgress);
   form.addEventListener('submit',deliver);
   eeDb.auth.onAuthStateChange(event=>{
-    if(event==='SIGNED_OUT'){statsRevision++;reset();stats.replaceChildren();overviewLoaded=false;}
+    if(event==='SIGNED_OUT'){statsRevision++;reset();stats.replaceChildren();overviewLoaded=false;showNotebook(false);}
     if(event==='SIGNED_IN'||event==='SIGNED_OUT')setTimeout(refreshOverview,0);
   });
   refreshOverview();
