@@ -24,7 +24,7 @@ jobs:
       - run: npm install --no-save @playwright/test
       - run: npx playwright install --with-deps chromium
       - name: Revisar web pública sin acceder a datos reales
-        run: npx playwright test --config=tests/playwright.config.cjs
+        run: npx playwright test tests/practicar.spec.cjs --config=tests/playwright.config.cjs
       - name: Guardar capturas y resultados
         if: always()
         uses: actions/upload-artifact@v4
