@@ -1,0 +1,36 @@
+name: Comprobar practicar.html con Playwright
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'tests/practicar.spec.cjs'
+      - 'tests/playwright.config.cjs'
+      - '.github/workflows/auditar-practicar.yml'
+      - 'practicar.html'
+      - 'assets/practicar-app.js'
+      - 'assets/repaso-fallos.js'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  playwright:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install --no-save @playwright/test
+      - run: npx playwright install --with-deps chromium
+      - name: Revisar web pública sin acceder a datos reales
+        run: npx playwright test --config=tests/playwright.config.cjs
+      - name: Guardar capturas y resultados
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: auditoria-practicar-playwright
+          path: |
+            test-results/
+            playwright-report/
+          retention-days: 14
