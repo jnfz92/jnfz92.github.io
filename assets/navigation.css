@@ -104,3 +104,8 @@
 @media(max-width:900px){
  .ee-site .ee-top{bottom:18px!important}
 }
+
+/* CTA destacado para el generador de exámenes, web y WebView. */
+#ee-shared-header .ee-nav a.ee-review-link{background:#ffc247!important;color:#241b08!important;border:1px solid #e6a11f!important;font-weight:900!important;box-shadow:0 3px 10px #a16f2730!important}
+#ee-shared-header .ee-nav a.ee-review-link:hover,#ee-shared-header .ee-nav a.ee-review-link[aria-current=page]{background:#ffdc82!important;color:#241b08!important}
+#ee-shared-header .ee-nav a.ee-review-link:focus-visible{outline:3px solid #195b42!important}
