@@ -159,22 +159,64 @@ function clearExam(){
   $('loadedExam').hidden=true;
 }
 
-async function refreshSession(){
-  const {data:{user},error}=await eeDb.auth.getUser();
-  if(error)throw error;
+// La selección y carga de exámenes requieren una sesión verificada.
+let sessionUserId=null,sessionCheckVersion=0,listVersion=0,listedFor=null;
+function applyExamAccess(user){
+  const nextId=user?.id||null,changed=sessionUserId!==nextId;
+  sessionUserId=nextId;
   $('login').hidden=!!user;
   $('connected').hidden=!user;
-  $('session').textContent=user?'Sesión iniciada: '+user.email:'';
-  await history();
+  $('session').textContent=user?'Sesión iniciada: '+(user.email||'cuenta conectada'):'';
+  $('examPicker').hidden=!user;
+  $('examHistoryPanel').hidden=!user;
+  $('examsLoginHint').hidden=!!user;
+  if(changed){
+    ++listVersion;
+    clearExam();
+    $('reviewSection').hidden=true;
+    $('reviewForm').replaceChildren();
+    $('reviewSummary').hidden=true;
+    $('examCards').replaceChildren();
+    $('examlist').replaceChildren();
+    $('load').disabled=true;
+    listedFor=null;
+    $('examCount').textContent='Consultando exámenes disponibles…';
+    $('history').replaceChildren();
+  }
+}
+async function refreshSession(){
+  const version=++sessionCheckVersion;
+  let user=null;
+  try{
+    const result=await eeDb.auth.getUser();
+    if(result.error)throw result.error;
+    user=result.data?.user||null;
+  }catch(error){
+    if(version===sessionCheckVersion)applyExamAccess(null);
+    throw error;
+  }
+  if(version!==sessionCheckVersion)return;
+  applyExamAccess(user);
+  if(!user)return;
+  if(listedFor!==user.id){
+    listedFor=user.id;
+    try{await list();}
+    catch(error){if(sessionUserId===user.id)listedFor=null;throw error;}
+  }
+  if(version===sessionCheckVersion&&sessionUserId===user.id)await history();
 }
 
 async function history(){
   const box=$('history');box.replaceChildren();
-  const {data:{user}}=await eeDb.auth.getUser();
-  if(!user){box.textContent='Inicia sesión para consultar tu historial.';return}
+  const owner=sessionUserId;
+  if(!owner)return;
+  const {data:{user},error:authError}=await eeDb.auth.getUser();
+  if(authError)throw authError;
+  if(!user||user.id!==owner)return;
   const {data,error}=await eeDb.from('resultados')
     .select('id,examen_id,aciertos,total,nota,fecha')
     .order('fecha',{ascending:false}).limit(30);
+  if(sessionUserId!==owner)return;
   if(error){box.textContent='No se pudo consultar el historial: '+error.message;return}
   if(!data?.length){box.textContent='Todavía no tienes resultados guardados.';return}
   for(const r of data){
@@ -214,8 +256,11 @@ function syncExamSelection(){
   }
 }
 async function list(){
+  const owner=sessionUserId,version=++listVersion;
+  if(!owner)return;
   const {data,error}=await eeDb.from('examenes')
     .select('id,titulo,fecha,nivel').eq('publicado',true).order('fecha',{ascending:false});
+  if(version!==listVersion||owner!==sessionUserId)return;
   if(error)throw error;
   const sel=$('examlist'),cards=$('examCards');
   sel.replaceChildren();cards.replaceChildren();
@@ -240,7 +285,12 @@ async function list(){
 }
 
 async function load(){
+  if(!sessionUserId)throw new Error('Inicia sesión antes de elegir tu examen.');
+  const {data:{user},error:authError}=await eeDb.auth.getUser();
+  if(authError)throw authError;
+  if(!user||user.id!==sessionUserId)throw new Error('Inicia sesión antes de elegir tu examen.');
   if(submitting)throw new Error('Hay una entrega en curso. Espera a que termine antes de cambiar de examen.');
+  const owner=user.id;
   const requestedId=Number($('examlist').value);
   if(!requestedId)throw new Error('Selecciona un examen válido.');
   const selectedTitle=$('examlist').selectedOptions[0]?.textContent||'Examen';
@@ -254,7 +304,10 @@ async function load(){
   const {data,error}=questionResponse;
   if(error)throw error;
   if(examResponse.error)console.warn('No se pudo consultar el texto de lectura',examResponse.error);
-  if(version!==loadVersion)return;
+  if(version!==loadVersion||owner!==sessionUserId)return;
+  const check=await eeDb.auth.getUser();
+  if(check.error||check.data?.user?.id!==owner)return;
+  if(version!==loadVersion||owner!==sessionUserId)return;
   if(!Array.isArray(data)||!data.length)throw new Error('Este examen no tiene preguntas publicadas.');
   examId=requestedId;questions=data;submitting=false;pendingResultId=null;
   $('scoreSummary').hidden=true;
@@ -396,5 +449,10 @@ $('exam').onsubmit=async e=>{
     submitting=false;
   }
 };
-list().catch(fail);
+// Los exámenes no se cargan para invitados. También revalidamos cambios de sesión.
+eeDb.auth.onAuthStateChange(event=>{
+  if(['INITIAL_SESSION','SIGNED_IN','SIGNED_OUT','TOKEN_REFRESHED','USER_UPDATED'].includes(event)){
+    setTimeout(()=>refreshSession().catch(fail),0);
+  }
+});
 refreshSession().catch(fail);
