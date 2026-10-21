@@ -5,19 +5,122 @@
   const start=$('reviewStart'),section=$('reviewSection'),form=$('reviewForm');
   const status=$('reviewStatus'),summary=$('reviewSummary'),progress=$('reviewProgress');
   const REVISAR=20;
+  const stats=$('reviewStats'),filter=$('reviewMode'),lengthSelect=$('reviewLength'),topicSelect=$('reviewTopic');
+  const jump=$('reviewNextUnanswered');
+  let statsRevision=0;
   const temaSolicitado=new URLSearchParams(location.search).get('tema');
   const temasValidos=['Tiempos verbales','Condicionales','Voz pasiva','Verbos modales','Phrasal verbs','Preposiciones','Preguntas','Question tags','Vocabulario'];
   const temasExamen8=['Tiempos verbales','Tiempos verbales','Tiempos verbales','Tiempos verbales','Condicionales','Condicionales','Voz pasiva','Verbos modales','Verbos modales','Verbos modales','Phrasal verbs','Phrasal verbs','Phrasal verbs','Phrasal verbs','Preposiciones','Phrasal verbs','Preguntas','Question tags','Vocabulario','Vocabulario'];
-  const temaActivo=temasValidos.includes(temaSolicitado)?temaSolicitado:null;
+  let temaActivo=temasValidos.includes(temaSolicitado)?temaSolicitado:null;
   const temaPregunta=q=>Number(q.examen_id)===8&&Number(q.orden)>=1&&Number(q.orden)<=20?temasExamen8[Number(q.orden)-1]:null;
 
-  let items=[],answers=null,attempts=null,busy=false,finished=false,owner=null,requestVersion=0;
+  let items=[],answers=null,attempts=null,busy=false,finished=false,owner=null,requestVersion=0,overviewLoaded=false;
+  function topicFor(q){
+    const source=String(q.fuente_url||q.actividades?.titulo||'').toLowerCase();
+    if(Number(q.examen_id)===8)return temaPregunta(q)||'Otros temas';
+    if(/adjetiv|adjectiv|negative-prefix|prefix/.test(source))return 'Adjetivos y prefijos';
+    if(/adverbi|adverb/.test(source))return 'Adverbios';
+    if(/sustantiv|noun/.test(source))return 'Sustantivos';
+    if(/reported|direct-speech/.test(source))return 'Reported speech';
+    if(/gerund|infinitive/.test(source))return 'Gerund e infinitivo';
+    if(/condition|conditional/.test(source))return 'Condicionales';
+    if(/modal|might/.test(source))return 'Verbos modales';
+    if(/phrasal|get-phrasal/.test(source))return 'Phrasal verbs';
+    if(/preposition/.test(source))return 'Preposiciones';
+    if(/tenses|tiempos|past|present|future|perfect|used-to/.test(source))return 'Tiempos verbales';
+    if(/vocab|environment|pollution|crime|word/.test(source))return 'Vocabulario';
+    return 'Otros temas';
+  }
+  function reviewDue(q){
+    return q._kind==='activity'||!q._next||new Date(q._next).getTime()<=Date.now();
+  }
+  function mostRecent(q){return new Date(q._last||0).getTime()||0}
+  function rank(a,b){
+    const score=q=>(reviewDue(q)?10000:0)+(Math.min(q._times||1,10)*700);
+    return score(b)-score(a)||mostRecent(b)-mostRecent(a);
+  }
+  async function getPending(userId){
+    const [c,a]=await Promise.all([
+      eeDb.from('preguntas_falladas')
+        .select('pregunta_id,veces_fallada,ultimo_fallo,proximo_repaso,preguntas(id,orden,enunciado,opciones,fuente_url,examen_id,examenes(titulo,lectura))')
+        .eq('usuario_id',userId).eq('dominada',false)
+        .order('ultimo_fallo',{ascending:false}).limit(500),
+      eeDb.from('actividad_fallos')
+        .select('pregunta_id,veces_fallada,ultimo_fallo,actividad_preguntas(id,orden,tipo,enunciado,configuracion,medio_tipo,medio_url,medio_alt,actividad_id,actividades(titulo,publicado))')
+        .eq('usuario_id',userId).eq('dominada',false)
+        .order('ultimo_fallo',{ascending:false}).limit(500)
+    ]);
+    if(c.error)throw c.error;if(a.error)throw a.error;
+    const classic=(c.data||[]).filter(row=>row.preguntas&&Number.isSafeInteger(row.preguntas.id)
+      &&Array.isArray(row.preguntas.opciones)&&row.preguntas.opciones.length>=2)
+      .map(row=>({...row.preguntas,_kind:'classic',_times:row.veces_fallada||1,
+        _last:row.ultimo_fallo,_next:row.proximo_repaso}));
+    const activity=(a.data||[]).filter(row=>row.actividad_preguntas
+      &&Number.isSafeInteger(row.actividad_preguntas.id)&&row.actividad_preguntas.actividades?.publicado
+      &&(['seleccion'].includes(row.actividad_preguntas.tipo)
+       ?Array.isArray(row.actividad_preguntas.configuracion?.opciones)
+        &&row.actividad_preguntas.configuracion.opciones.length>=2
+       :['texto_corto','transformacion'].includes(row.actividad_preguntas.tipo)
+        ||(row.actividad_preguntas.tipo==='huecos'&&Array.isArray(row.actividad_preguntas.configuracion?.campos)
+          &&row.actividad_preguntas.configuracion.campos.length>0)))
+      .map(row=>({...row.actividad_preguntas,_kind:'activity',_times:row.veces_fallada||1,
+        _last:row.ultimo_fallo,_next:null}));
+    const all=[...classic,...activity];
+    all.forEach(q=>q._topic=topicFor(q));
+    return all;
+  }
+  function setOverview(all){
+    overviewLoaded=true;
+    const due=all.filter(reviewDue).length;
+    const repeats=all.filter(q=>q._times>=2).length;
+    stats.replaceChildren();
+    for(const [num,label] of [[all.length,'Errores pendientes'],[due,'Para repasar hoy'],[repeats,'Fallados varias veces']]){
+      const card=document.createElement('div');card.className='review-stat';
+      const count=document.createElement('strong');count.textContent=String(num);
+      const caption=document.createElement('span');caption.textContent=label;
+      card.append(count,caption);stats.append(card);
+    }
+    const selected=topicSelect.value||temaActivo||'';
+    const counts=new Map();
+    for(const q of all)counts.set(q._topic,(counts.get(q._topic)||0)+1);
+    topicSelect.replaceChildren();
+    const first=document.createElement('option');first.value='';first.textContent='Todos los temas';topicSelect.append(first);
+    for(const name of [...counts.keys()].sort((a,b)=>a.localeCompare(b,'es'))){
+      const option=document.createElement('option');option.value=name;option.textContent=name+' ('+counts.get(name)+')';
+      topicSelect.append(option);
+    }
+    if(counts.has(selected))topicSelect.value=selected;
+    else {temaActivo=null;topicSelect.value='';}
+  }
+  async function refreshOverview(){
+    const version=++statsRevision;
+    try{
+      const {data:{user},error}=await eeDb.auth.getUser();
+      if(error)throw error;
+      if(version!==statsRevision)return;
+      if(!user){
+        stats.replaceChildren();overviewLoaded=false;
+        status.textContent='Inicia sesión para consultar y practicar tus errores guardados.';
+        return;
+      }
+      stats.textContent='Consultando tus fallos guardados…';
+      const available=await getPending(user.id);
+      if(version!==statsRevision)return;
+      setOverview(available);
+      if(!available.length)status.textContent='🎉 No tienes errores pendientes. ¡Sigue así!';
+      else if(!items.length)status.textContent='Tienes '+available.length+' errores pendientes. Selecciona tu repaso y empieza.';
+    }catch(e){
+      if(version!==statsRevision)return;
+      stats.textContent='No se pudieron cargar las estadísticas.';
+      status.textContent='No se pudo consultar el cuaderno: '+(e.message||String(e));
+    }
+  }
 
   function reset(){
     requestVersion++;
     items=[];answers=null;attempts=null;busy=false;finished=false;owner=null;
     form.replaceChildren();section.hidden=true;summary.hidden=true;
-    status.textContent='';start.disabled=false;
+    status.textContent='';start.disabled=false;progress.textContent='';jump.hidden=true;
   }
   function key(q){return 'repaso-'+q._kind+'-'+q.id}
   function mixedOrder(q){
@@ -58,6 +161,7 @@
   function updateProgress(){
     const count=items.filter(answered).length;
     progress.textContent='Respondidas '+count+' de '+items.length+' preguntas';
+    jump.hidden=!!(finished||count===items.length);
   }
   function renderExam(){
     form.replaceChildren();
@@ -77,6 +181,10 @@
       const label=document.createElement('legend');
       label.textContent=(index+1)+'. '+q.enunciado;
       group.append(label);
+      const priority=document.createElement('small');priority.className='review-priority';
+      priority.textContent='📌 '+(q._topic||'Otros temas')+' · '+q._times+' fallo'+(q._times===1?'':'s')+
+        (reviewDue(q)?' · Para repasar hoy':' · Programada para más adelante');
+      group.append(priority);
       if(!classic){
         const marker=document.createElement('small');marker.className='review-kind';
         marker.textContent='Actividad · '+(source.titulo||'Ejercicio')+' · '+(q.tipo||'');
@@ -124,65 +232,45 @@
   async function startExam(){
     if(busy)return;
     const version=++requestVersion;
-    start.disabled=true;
-    status.textContent=temaActivo?'Generando un examen de repaso de '+temaActivo+'…':'Preparando tus preguntas falladas en exámenes y actividades…';
+    busy=true;start.disabled=true;jump.hidden=true;
+    status.textContent='Buscando y ordenando tus errores por prioridad…';
     try{
       const {data:{user},error:authError}=await eeDb.auth.getUser();
       if(authError)throw authError;
       if(!user)throw Error('Inicia sesión para hacer tu examen de errores.');
-      const [c,a]=await Promise.all([
-        eeDb.from('preguntas_falladas')
-          .select('pregunta_id,preguntas(id,orden,enunciado,opciones,fuente_url,examen_id,examenes(titulo,lectura))')
-          .eq('usuario_id',user.id).eq('dominada',false)
-          .order('ultimo_fallo',{ascending:false}).limit(500),
-        eeDb.from('actividad_fallos')
-          .select('pregunta_id,actividad_preguntas(id,orden,tipo,enunciado,configuracion,medio_tipo,medio_url,medio_alt,actividad_id,actividades(titulo,publicado))')
-          .eq('usuario_id',user.id).eq('dominada',false)
-          .order('ultimo_fallo',{ascending:false}).limit(500)
-      ]);
-      if(c.error)throw c.error;if(a.error)throw a.error;
+      const available=await getPending(user.id);
       if(version!==requestVersion)return;
-      const classic=(c.data||[]).map(row=>row.preguntas).filter(q=>
-        q&&Number.isSafeInteger(q.id)&&Array.isArray(q.opciones)&&q.opciones.length>=2)
-        .map(q=>({...q,_kind:'classic'}));
-      const activity=(a.data||[]).map(row=>row.actividad_preguntas).filter(q=>
-        q&&Number.isSafeInteger(q.id)&&q.actividades?.publicado&&
-        (['seleccion'].includes(q.tipo)?Array.isArray(q.configuracion?.opciones)&&q.configuracion.opciones.length>=2:
-         ['texto_corto','transformacion'].includes(q.tipo)||
-         (q.tipo==='huecos'&&Array.isArray(q.configuracion?.campos)&&q.configuracion.campos.length>0)))
-        .map(q=>({...q,_kind:'activity'}));
-      if(temaActivo){
-        for(let i=classic.length-1;i>=0;i--)if(temaPregunta(classic[i])!==temaActivo)classic.splice(i,1);
-        activity.length=0; // No hay categorías revisadas para estas actividades.
+      setOverview(available);
+      const requested=topicSelect.value||temaActivo||'';
+      const mode=filter.value;
+      let chosen=available.filter(q=>(!requested||q._topic===requested)&&
+        (mode==='hoy'?reviewDue(q):mode==='reincidentes'?q._times>=2:true));
+      if(!chosen.length){
+        reset();
+        status.textContent=available.length?'No hay errores para este filtro. Prueba «Repaso recomendado» o «Todos los errores».':
+          '🎉 No tienes preguntas falladas pendientes. ¡Sigue practicando!';
+        return;
       }
-      const available=[...classic,...activity];
-      if(!available.length){
-        reset();status.textContent=temaActivo?'No tienes preguntas falladas pendientes clasificadas como «'+temaActivo+'». Prueba el repaso general para practicar otros errores.':'🎉 ¡No tienes preguntas falladas pendientes!';return;
-      }
-      // Mezclar las fuentes con representación de ambas cuando existan errores
-      // en exámenes y actividades: no ocultar un único fallo nuevo entre muchos antiguos.
-      function shuffle(source){
-        for(let i=source.length-1;i>0;i--){
-          const j=Math.floor(Math.random()*(i+1));
-          [source[i],source[j]]=[source[j],source[i]];
-        }
-      }
-      shuffle(classic);shuffle(activity);
-      const activityQuota=Math.min(activity.length,classic.length?Math.floor(REVISAR/2):REVISAR);
-      const classicQuota=Math.min(classic.length,REVISAR-activityQuota);
-      const activityCount=Math.min(activity.length,REVISAR-classicQuota);
-      items=[...classic.slice(0,classicQuota),...activity.slice(0,activityCount)];
-      shuffle(items);
+      // Se atienden primero los errores ya vencidos y los que más se repiten.
+      chosen.sort(mode==='recientes'?(a,b)=>mostRecent(b)-mostRecent(a):rank);
+      const target=Math.min(REVISAR,Number(lengthSelect.value)||10);
+      const classics=chosen.filter(q=>q._kind==='classic'),activities=chosen.filter(q=>q._kind==='activity');
+      const baseClassics=Math.min(classics.length,Math.ceil(target/2));
+      const baseActivities=Math.min(activities.length,Math.floor(target/2));
+      items=[...classics.slice(0,baseClassics),...activities.slice(0,baseActivities)];
+      const reserved=new Set(items.map(q=>q._kind+':'+q.id));
+      const remainder=chosen.filter(q=>!reserved.has(q._kind+':'+q.id)).sort(
+        mode==='recientes'?(a,b)=>mostRecent(b)-mostRecent(a):rank);
+      for(const q of remainder){if(items.length>=target)break;items.push(q);}
+      items.sort(mode==='recientes'?(a,b)=>mostRecent(b)-mostRecent(a):rank);
       owner=user.id;attempts=null;answers=null;finished=false;
-      start.disabled=false;
-      status.textContent=(temaActivo?'Examen de '+temaActivo+' · ':'Tu repaso: ')+items.length+' de '+available.length+
-        ' preguntas pendientes ('+classic.length+' de exámenes y '+activity.length+' de actividades).';
+      status.textContent='Repaso listo: '+items.length+' de '+chosen.length+' preguntas del filtro seleccionado. '+
+        'Priorizamos las que más fallas y las que toca repasar.';
       renderExam();
     }catch(e){
       if(version!==requestVersion)return;
       status.textContent='No se pudo preparar el repaso: '+(e.message||String(e));
-      start.disabled=false;
-    }
+    }finally{if(version===requestVersion){busy=false;start.disabled=false;}}
   }
   function collect(){
     const classic={},activity={};
@@ -263,6 +351,14 @@
         box.textContent=(passed?'✓ Correcta':'✗ Pendiente de repasar')+
           '\nRespuesta correcta: '+solution+'\n'+(correction.explicacion||'');
         box.hidden=false;
+        const fieldset=$('repaso-'+q._kind+'-'+q.id);
+        fieldset?.classList.add(passed?'review-correct':'review-incorrect');
+        if((q._kind==='classic'||q.tipo==='seleccion')&&fieldset){
+          const correctOption=q._kind==='classic'?Number(correction.respuesta_correcta):Number(correction.solucion);
+          for(const input of fieldset.querySelectorAll('input[type="radio"]')){
+            if(Number(input.value)===correctOption)input.closest('label')?.classList.add('review-right-choice');
+          }
+        }
       }
       finished=true;summary.replaceChildren();
       const score=document.createElement('strong');
@@ -276,6 +372,8 @@
       summary.append(score,detail,next);summary.hidden=false;
       status.textContent='Repaso unificado corregido y guardado en Supabase.';
       submit.disabled=true;submit.textContent='Repaso terminado';
+      jump.hidden=true;
+      refreshOverview();
       summary.scrollIntoView({behavior:'smooth',block:'center'});
     }catch(e){
       if(version!==requestVersion)return;
@@ -285,9 +383,24 @@
     }finally{if(version===requestVersion)busy=false}
   }
   start.addEventListener('click',startExam);
+  jump.addEventListener('click',()=>{
+    const missing=items.find(q=>!answered(q));
+    if(!missing)return;
+    const box=$('repaso-'+missing._kind+'-'+missing.id);
+    box?.scrollIntoView({behavior:'smooth',block:'center'});
+    box?.querySelector('input:not(:disabled)')?.focus({preventScroll:true});
+  });
+  topicSelect.addEventListener('change',()=>{temaActivo=topicSelect.value||null;});
+  filter.addEventListener('change',()=>{
+    if(items.length&&!finished)status.textContent='Filtro actualizado. Pulsa «Generar repaso» para aplicar los cambios.';
+  });
   form.addEventListener('change',updateProgress);
   form.addEventListener('input',updateProgress);
   form.addEventListener('submit',deliver);
-  eeDb.auth.onAuthStateChange(event=>{if(event==='SIGNED_OUT')reset()});
+  eeDb.auth.onAuthStateChange(event=>{
+    if(event==='SIGNED_OUT'){statsRevision++;reset();stats.replaceChildren();overviewLoaded=false;}
+    if(event==='SIGNED_IN'||event==='SIGNED_OUT')setTimeout(refreshOverview,0);
+  });
+  refreshOverview();
   if(new URLSearchParams(location.search).get('repaso')==='fallos')startExam();
 })();
