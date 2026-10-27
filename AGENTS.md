@@ -31,3 +31,31 @@
 - Conservar `index.html`, `articulos.html`, `leer.html`, `practicar.html`, `perfil.html`, `category/*.html`, `assets/*` y los PDF.
 - Los exámenes y resultados se guardan en tablas específicas; las preguntas falladas deben estar protegidas por políticas RLS por alumno.
 - Hacer cambios pequeños en `main`, revisar sintaxis, enlaces y consultas y comprobar los datos tras cada modificación.
+
+## Regla obligatoria de diseño para TODAS las páginas (nuevas y modificadas)
+
+**Una página nueva de Easy English NO puede tener identidad visual independiente.** Antes de crear o editar HTML, CSS o JavaScript de interfaz, comparar con `index.html`, `articulos.html`, `writings.html` y con los estilos compartidos existentes. Reutilizar componentes y tokens de diseño; cualquier excepción visual debe estar justificada y limitada al componente.
+
+### Estructura base obligatoria en páginas generales de GitHub Pages
+- Añadir front matter de Jekyll y permalink cuando corresponda.
+- Usar `<html lang="es">`, meta viewport, descripción, título `Página · Easy English`, favicon `/favicon.svg`, meta theme-color `#005B3C`.
+- Cargar **`/assets/site.css` y `/assets/navigation.css`** y el script **`/assets/navigation.js`**, con versiones consistentes para evitar caché obsoleta.
+- Establecer `<body class="ee-site ...">`; sin `ee-site` los estilos comunes de las páginas NO se aplican.
+- Incluir **`{% include header.html %}`** una sola vez y el contenido en `<main class="container">`. Usar el pie compartido proporcionado por navegación o el patrón `ee-footer` existente; nunca duplicar cabeceras.
+- Si la página aparece en la navegación, mantener sincronizados `_includes/header.html` y el fallback de `assets/navigation.js`, con estado activo y menú móvil.
+
+### Lenguaje visual existente: reutilizar, no reinventar
+- Reutilizar variables/tokens de `assets/site.css` (`--ee-green`, `--ee-lime`, `--ee-bg`, `--ee-ink`, `--ee-muted`, `--ee-line`) en lugar de introducir otra paleta.
+- Emplear los patrones de `hero`, `eyebrow`, `ee-section-heading`, `grid`, `card`, `tag`, `read`, `ee-paths`, `ee-path`, `quick-links`, botones, formularios y espaciados que ya existen.
+- Mantener las mismas tipografías, radios de borde, ancho de contenido, jerarquía de títulos, fondos, enlaces, estados hover/focus y contraste que la web principal.
+- Evitar maquetar páginas enteras con estilos inline. Los estilos específicos deben residir en `assets/<pagina>.css`, aislados bajo clase de página (p. ej. `.ee-writings`), sin pisar la identidad compartida.
+- Mantener tarjetas responsivas, formularios de ancho completo, accesibilidad (labels reales, focus-visible, teclado, contraste), y menús funcionales en móvil. No producir scroll horizontal a 320 px.
+
+### Comprobaciones antes de entregar/publicar
+1. Verificar presencia de `ee-site`, `site.css`, `navigation.css`, `navigation.js`, `header.html` y `main.container`.
+2. Comparar visualmente con Inicio y Artículos en desktop y móvil; revisar cabecera, menú, tarjetas, formularios, pie, colores y tipografía.
+3. Revisar enlaces internos y rutas Supabase; no comprometer autenticación ni RLS.
+4. Probar controles con teclado, tamaños 320/375/768/1280 px y comprobar ausencia de overflow horizontal.
+5. Si no ha sido posible realizar una comprobación visual real, indicarlo explícitamente: **no declarar que está visualmente validado**.
+
+Esta regla aplica a páginas de GitHub Pages y, de forma equivalente, a documentos HTML completos guardados en `public.articulos` que se muestran mediante `leer.html`. Los artículos deben respetar la misma identidad sin introducir un segundo header ni romper el lector.
