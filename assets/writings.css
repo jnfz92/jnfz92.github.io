@@ -1,0 +1,43 @@
+/* Writing B2 — integra la identidad visual de Easy English */
+.ee-writings .writing-hero{padding:54px 0 34px;max-width:900px}
+.ee-writings .writing-hero h1{font-size:clamp(42px,6vw,69px);line-height:1.09;letter-spacing:-.055em;margin:17px 0 20px}
+.ee-writings .writing-hero h1 em{font-style:normal;color:#628e35}
+.ee-writings .writing-hero p{font-size:18px;line-height:1.65;max-width:700px;color:var(--ee-muted)}
+.ee-writings .writing-facts{display:flex;flex-wrap:wrap;gap:10px;margin-top:20px}
+.ee-writings .writing-facts span{background:#eaf5ed;border:1px solid #dbe9dd;border-radius:999px;padding:8px 13px;font-size:12px;font-weight:750;color:#176447}
+.ee-writings .writing-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+.ee-writings .writing-card{min-height:225px}
+.ee-writings .writing-card h3{font-size:23px;letter-spacing:-.035em;line-height:1.25;margin:8px 0}
+.ee-writings .writing-card p{color:var(--ee-muted);font-size:14px;line-height:1.6}
+.ee-writings .writing-card .read{margin-top:auto;display:block;font-weight:800}
+.ee-writings .writing-number{font-weight:850;color:#9aaf9a;margin-left:auto}
+.ee-writings .writing-section-note{font-size:13px;font-weight:700;color:var(--ee-muted)}
+.ee-writings .writing-notice{color:var(--ee-muted);font-size:14px;line-height:1.6;margin:20px 0 10px}
+.ee-writings .writing-notice a{font-weight:750}
+.ee-writings .writing-editor{margin:48px 0 64px;scroll-margin-top:110px}
+.ee-writings .writing-editor-layout{display:grid;grid-template-columns:minmax(0,1.8fr) minmax(250px,.85fr);gap:20px;align-items:start}
+.ee-writings .writing-workspace,.ee-writings .writing-side-panel{background:#fff;border:1px solid var(--ee-line);border-radius:22px;padding:28px;box-shadow:0 8px 24px #163e2b08}
+.ee-writings .writing-workspace-intro h3,.ee-writings .writing-side-panel h3{font-size:25px;letter-spacing:-.04em;margin:12px 0 8px}
+.ee-writings .writing-workspace-intro p,.ee-writings .writing-side-panel p{font-size:14px;color:var(--ee-muted);line-height:1.65}
+.ee-writings .writing-fields{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:23px}
+.ee-writings .writing-field{min-width:0}
+.ee-writings .writing-field-full{grid-column:1/-1}
+.ee-writings .writing-field label,.ee-writings .writing-side-panel label{display:block;font-size:13px;font-weight:800;margin-bottom:8px;color:var(--ee-ink)}
+.ee-writings .writing-field input,.ee-writings .writing-field select,.ee-writings .writing-field textarea,.ee-writings .writing-side-panel select{display:block;width:100%;min-width:0;box-sizing:border-box;border:1px solid #b8cbbd;border-radius:12px;padding:13px 14px;background:#fff;color:#193a2a;font:inherit}
+.ee-writings .writing-field textarea{line-height:1.7;resize:vertical;min-height:300px}
+.ee-writings .writing-field input:focus-visible,.ee-writings .writing-field textarea:focus-visible,.ee-writings select:focus-visible{outline:3px solid #bce5ab;outline-offset:1px;border-color:#176447}
+.ee-writings .writing-counter{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:10px;margin:14px 0 18px;font-size:13px;font-weight:750}
+.ee-writings .writing-counter-hint{font-size:12px;font-weight:500;color:var(--ee-muted)}
+.ee-writings .writing-actions{display:flex;gap:10px;flex-wrap:wrap}
+.ee-writings .writing-actions button{font:inherit;font-size:13px}
+.ee-writings .writing-actions button.writing-secondary{background:#eef5ed!important;color:#176447!important;border:1px solid #cde0d0!important}
+.ee-writings .writing-actions button.writing-danger{background:#fff8f5!important;color:#9a483c!important;border:1px solid #edcfc8!important}
+.ee-writings .writing-actions button:disabled{opacity:.55;cursor:not-allowed}
+.ee-writings .writing-status{color:var(--ee-muted);font-size:13px;padding:11px 14px;border-radius:10px;background:#f3f7f1;margin:18px 0 0}
+.ee-writings .writing-sidebar{display:grid;gap:18px}
+.ee-writings .writing-side-panel select{margin:8px 0 17px}
+.ee-writings .writing-private{border-top:1px solid var(--ee-line);padding-top:16px}
+.ee-writings .writing-tips{background:#edf4e7}
+.ee-writings .writing-tips p{margin-bottom:0}
+@media(max-width:950px){.ee-writings .writing-editor-layout{grid-template-columns:1fr}.ee-writings .writing-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:650px){.ee-writings .writing-hero{padding:34px 0 22px}.ee-writings .writing-hero h1{font-size:43px}.ee-writings .writing-hero p{font-size:16px}.ee-writings .writing-grid{grid-template-columns:1fr}.ee-writings .writing-card{min-height:0}.ee-writings .writing-fields{grid-template-columns:1fr}.ee-writings .writing-workspace,.ee-writings .writing-side-panel{padding:20px}.ee-writings .writing-editor{margin:28px 0 35px}.ee-writings .writing-actions button{flex:1 1 135px}.ee-writings .writing-counter-hint{display:none}}
