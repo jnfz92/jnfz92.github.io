@@ -1,4 +1,63 @@
 ---
 permalink: /writings.html
 ---
-<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Writings B2 · Easy English</title><link rel="stylesheet" href="/assets/site.css"></head><body>{% include header.html %}<main class="container"><h1>Writings B2 First</h1><p>Aprende a escribir cada tipo de texto del examen Cambridge B2 First. Cada guía contiene estructura, expresiones, ejemplo y ejercicio.</p><ul><li><a href="/leer.html?slug=writing-b2-essay-guia">Essay</a></li><li><a href="/leer.html?slug=writing-b2-article-guia">Article</a></li><li><a href="/leer.html?slug=writing-b2-review-guia">Review</a></li><li><a href="/leer.html?slug=como-escribir-email-b2-first-fce">Email informal</a></li><li><a href="/leer.html?slug=writing-b2-formal-letter-guia">Formal email o letter</a></li><li><a href="/leer.html?slug=writing-b2-report-guia">Report (B2 First)</a></li><li><a href="/leer.html?slug=writing-b2-story-guia">Story (B2 First for Schools)</a></li></ul><p>Examen: 80 minutos; dos escritos de 140–190 palabras. Consulta <a href="https://www.cambridgeenglish.org/exams-and-tests/qualifications/first/format/">Cambridge English</a>.</p><section id="editor" style="max-width:850px;margin:32px auto;padding:24px;border:1px solid #ceded2;border-radius:18px;background:#f5faf6"><h2>✍️ Editor de Writing B2</h2><p>Practica tus textos (140–190 palabras) y guárdalos en tu cuenta de Easy English.</p><label for="wtipo">Tipo de writing</label><select id="wtipo"><option value="essay">Essay</option><option value="article">Article</option><option value="review">Review</option><option value="email_informal">Email informal</option><option value="email_formal">Email formal / carta</option><option value="report">Report</option><option value="story">Story</option></select><p><label for="wtitulo">Título del borrador</label><input id="wtitulo" value="Mi writing B2" maxlength="120" style="display:block;width:100%;padding:12px;box-sizing:border-box"></p><label for="wtexto">Tu respuesta en inglés</label><textarea id="wtexto" rows="13" placeholder="Write your answer here…" style="display:block;width:100%;padding:14px;box-sizing:border-box;font:inherit;line-height:1.6"></textarea><p id="wcount" role="status">0 palabras · objetivo: 140–190</p><div style="display:flex;flex-wrap:wrap;gap:12px"><button type="button" id="wguardar">Guardar borrador</button><button type="button" id="wnuevo">Nuevo borrador</button><button type="button" id="wborrar">Eliminar borrador</button></div><p id="westado" role="status" aria-live="polite">Comprobando tu sesión…</p><h3>Mis borradores</h3><label for="wlista">Selecciona un texto guardado</label><select id="wlista" style="display:block;width:100%;padding:12px"><option value="">Nuevo writing</option></select><p><small>Solo tú puedes consultar o modificar tus borradores. Inicia sesión desde <a href="/perfil.html">Mi perfil</a> para guardarlos.</small></p></section></main><script src="/assets/navigation.js" defer></script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script><script src="/supabase-config.js"></script><script src="/assets/writing-editor.js" defer></script></body></html>
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#005B3C">
+<meta name="description" content="Practica Writing B2 First de Cambridge: essay, article, review, email, report, story, ejemplos y editor con borradores privados.">
+<title>Writings B2 First · Easy English</title>
+<link rel="icon" type="image/svg+xml" href="/favicon.svg?v=20261017-ee">
+<link rel="stylesheet" href="/assets/site.css?v=20261014">
+<link rel="stylesheet" href="/assets/navigation.css?v=20261021-repaso">
+<link rel="stylesheet" href="/assets/writings.css?v=20261027">
+<script src="/assets/navigation.js?v=20261027-writing" defer></script>
+</head>
+<body class="ee-site ee-library ee-writings">
+{% include header.html %}
+<main class="container">
+  <section class="hero writing-hero" aria-labelledby="writing-title">
+    <span class="eyebrow">✦ Tu espacio para escribir en inglés</span>
+    <h1 id="writing-title">Writings B2.<br><em>Escribe con confianza.</em></h1>
+    <p>Domina cada tipo de texto del Cambridge B2 First con guías claras, modelos completos y un espacio para practicar a tu ritmo.</p>
+    <div class="quick-links"><a href="#editor">✍️ Empezar a escribir</a><a href="#guias">📚 Explorar las guías</a></div>
+    <div class="writing-facts"><span>80 minutos</span><span>2 textos</span><span>140–190 palabras cada uno</span></div>
+  </section>
+  <section id="guias" aria-labelledby="guides-heading">
+    <div class="ee-section-heading"><div><span class="eyebrow">Aprende paso a paso</span><h2 id="guides-heading">Todos los tipos de writing.</h2></div><span class="writing-section-note">7 guías prácticas</span></div>
+    <div class="grid writing-grid"><article class="card writing-card"><div class="meta"><span class="tag">B2 FIRST</span><span class="writing-number">01</span></div><h3>Essay</h3><p>Obligatorio en la primera parte. Aprende a defender ideas y organizar argumentos.</p><a class="read" href="/leer.html?slug=writing-b2-essay-guia">Leer guía →</a></article>
+<article class="card writing-card"><div class="meta"><span class="tag">B2 FIRST</span><span class="writing-number">02</span></div><h3>Article</h3><p>Escribe un artículo atractivo con un título, opiniones y ejemplos.</p><a class="read" href="/leer.html?slug=writing-b2-article-guia">Leer guía →</a></article>
+<article class="card writing-card"><div class="meta"><span class="tag">B2 FIRST</span><span class="writing-number">03</span></div><h3>Review</h3><p>Describe y recomienda una película, libro o experiencia.</p><a class="read" href="/leer.html?slug=writing-b2-review-guia">Leer guía →</a></article>
+<article class="card writing-card"><div class="meta"><span class="tag">B2 FIRST</span><span class="writing-number">04</span></div><h3>Email informal</h3><p>Aprende a responder con un tono natural y cercano.</p><a class="read" href="/leer.html?slug=como-escribir-email-b2-first-fce">Leer guía →</a></article>
+<article class="card writing-card"><div class="meta"><span class="tag">B2 FIRST</span><span class="writing-number">05</span></div><h3>Email o carta formal</h3><p>Solicita información, presenta quejas y escribe con cortesía.</p><a class="read" href="/leer.html?slug=writing-b2-formal-letter-guia">Leer guía →</a></article>
+<article class="card writing-card"><div class="meta"><span class="tag">B2 FIRST</span><span class="writing-number">06</span></div><h3>Report</h3><p>Organiza resultados y recomendaciones con subtítulos claros.</p><a class="read" href="/leer.html?slug=writing-b2-report-guia">Leer guía →</a></article>
+<article class="card writing-card"><div class="meta"><span class="tag">B2 FIRST</span><span class="writing-number">07</span></div><h3>Story · For Schools</h3><p>Construye una narración con introducción, giro y desenlace.</p><a class="read" href="/leer.html?slug=writing-b2-story-guia">Leer guía →</a></article></div>
+    <p class="writing-notice">En B2 First, el essay es obligatorio. El report corresponde a B2 First estándar; la story, a B2 First for Schools. <a href="https://www.cambridgeenglish.org/exams-and-tests/qualifications/first/format/" target="_blank" rel="noopener noreferrer">Consulta el formato oficial de Cambridge ↗</a></p>
+  </section>
+  <section id="editor" class="writing-editor" aria-labelledby="editor-heading">
+    <div class="ee-section-heading"><div><span class="eyebrow">Ponlo en práctica</span><h2 id="editor-heading">Tu espacio de escritura.</h2></div></div>
+    <div class="writing-editor-layout">
+      <div class="writing-workspace">
+        <div class="writing-workspace-intro"><div><span class="tag">WRITING LAB · B2</span><h3>Editor de writing</h3><p>Escribe tu respuesta y guárdala en tus borradores privados.</p></div></div>
+        <div class="writing-fields">
+          <div class="writing-field"><label for="wtipo">Tipo de writing</label><select id="wtipo"><option value="essay">Essay</option><option value="article">Article</option><option value="review">Review</option><option value="email_informal">Email informal</option><option value="email_formal">Email formal / carta</option><option value="report">Report</option><option value="story">Story</option></select></div>
+          <div class="writing-field"><label for="wtitulo">Título del borrador</label><input id="wtitulo" value="Mi writing B2" maxlength="120"></div>
+          <div class="writing-field writing-field-full"><label for="wtexto">Tu respuesta en inglés</label><textarea id="wtexto" rows="13" placeholder="Write your answer here…" spellcheck="true"></textarea></div>
+        </div>
+        <div class="writing-counter"><span id="wcount" role="status" aria-live="polite">0 palabras · objetivo: 140–190</span><span class="writing-counter-hint">Objetivo Cambridge B2</span></div>
+        <div class="writing-actions"><button type="button" id="wguardar">Guardar borrador</button><button type="button" id="wnuevo" class="writing-secondary">Nuevo borrador</button><button type="button" id="wborrar" class="writing-danger">Eliminar</button></div>
+        <p id="westado" class="writing-status" role="status" aria-live="polite">Comprobando tu sesión…</p>
+      </div>
+      <aside class="writing-sidebar">
+        <div class="writing-side-panel"><span class="eyebrow">Tu biblioteca personal</span><h3>Mis borradores</h3><p>Recupera un texto para continuar practicando donde lo dejaste.</p><label for="wlista">Texto guardado</label><select id="wlista"><option value="">Nuevo writing</option></select><p class="writing-private">🔒 Tus textos solo son visibles para tu cuenta. <a href="/perfil.html">Ir a mi perfil →</a></p></div>
+        <div class="writing-side-panel writing-tips"><span class="eyebrow">Consejo de examen</span><h3>Antes de entregar</h3><p>Comprueba que respondes a todos los puntos, usas el registro adecuado y has revisado la gramática, la organización y la ortografía.</p></div>
+      </aside>
+    </div>
+  </section>
+</main>
+<footer class="ee-footer"><p>Un poco de inglés. Un paso más cada día.</p></footer>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="/supabase-config.js"></script>
+<script src="/assets/writing-editor.js?v=20261027" defer></script>
+</body></html>
