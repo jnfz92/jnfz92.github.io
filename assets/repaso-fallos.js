@@ -27,7 +27,9 @@
   const temaSolicitado=new URLSearchParams(location.search).get('tema');
   const temasValidos=['Tiempos verbales','Condicionales','Voz pasiva','Verbos modales','Phrasal verbs','Preposiciones','Preguntas','Question tags','Vocabulario'];
   const temasExamen8=['Tiempos verbales','Tiempos verbales','Tiempos verbales','Tiempos verbales','Condicionales','Condicionales','Voz pasiva','Verbos modales','Verbos modales','Verbos modales','Phrasal verbs','Phrasal verbs','Phrasal verbs','Phrasal verbs','Preposiciones','Phrasal verbs','Preguntas','Question tags','Vocabulario','Vocabulario'];
-  let temaActivo=temasValidos.includes(temaSolicitado)?temaSolicitado:null;
+  const preferenceKey='review_default_topics';let selectedTopics=new Set(),selectionOwner=null;
+  function initTopics(user){if(selectionOwner===user.id)return;selectionOwner=user.id;const saved=Array.isArray(user.user_metadata?.[preferenceKey])?user.user_metadata[preferenceKey]:[];selectedTopics=new Set(temaSolicitado&&temasValidos.includes(temaSolicitado)?[temaSolicitado]:saved.filter(s=>typeof s==='string'));}
+  function selectedFilter(){return new Set([...topicSelect.querySelectorAll('input:checked')].map(el=>el.value));}
   const temaPregunta=q=>Number(q.examen_id)===8&&Number(q.orden)>=1&&Number(q.orden)<=20?temasExamen8[Number(q.orden)-1]:null;
 
   let items=[],answers=null,attempts=null,busy=false,finished=false,owner=null,requestVersion=0,overviewLoaded=false;
@@ -96,17 +98,7 @@
       const caption=document.createElement('span');caption.textContent=label;
       card.append(count,caption);stats.append(card);
     }
-    const selected=topicSelect.value||temaActivo||'';
-    const counts=new Map();
-    for(const q of all)counts.set(q._topic,(counts.get(q._topic)||0)+1);
-    topicSelect.replaceChildren();
-    const first=document.createElement('option');first.value='';first.textContent='Todos los temas';topicSelect.append(first);
-    for(const name of [...counts.keys()].sort((a,b)=>a.localeCompare(b,'es'))){
-      const option=document.createElement('option');option.value=name;option.textContent=name+' ('+counts.get(name)+')';
-      topicSelect.append(option);
-    }
-    if(counts.has(selected))topicSelect.value=selected;
-    else {temaActivo=null;topicSelect.value='';}
+    const counts=new Map();for(const q of all)counts.set(q._topic,(counts.get(q._topic)||0)+1);topicSelect.replaceChildren();for(const name of [...counts.keys()].sort((a,b)=>a.localeCompare(b,'es'))){const label=document.createElement('label'),check=document.createElement('input');check.type='checkbox';check.value=name;check.checked=selectedTopics.has(name);label.append(check,document.createTextNode(' '+name+' ('+counts.get(name)+')'));topicSelect.append(label);}
   }
   async function refreshOverview(){
     const version=++statsRevision;
@@ -123,8 +115,10 @@
         return;
       }
       authenticated=true;
+      initTopics(user);
       showNotebook(true);
       stats.textContent='Consultando tus fallos guardados…';
+      initTopics(user);
       const available=await getPending(user.id);
       if(version!==statsRevision)return;
       setOverview(available);
@@ -261,12 +255,13 @@
       const {data:{user},error:authError}=await eeDb.auth.getUser();
       if(authError)throw authError;
       if(!user)throw Error('Inicia sesión para hacer tu examen de errores.');
+      initTopics(user);
       const available=await getPending(user.id);
       if(version!==requestVersion)return;
       setOverview(available);
-      const requested=topicSelect.value||temaActivo||'';
+      const requested=selectedFilter();
       const mode=filter.value;
-      let chosen=available.filter(q=>(!requested||q._topic===requested)&&
+      let chosen=available.filter(q=>(!requested.size||requested.has(q._topic))&&
         (mode==='hoy'?reviewDue(q):mode==='reincidentes'?q._times>=2:true));
       if(!chosen.length){
         reset();
@@ -414,7 +409,7 @@
     box?.scrollIntoView({behavior:'smooth',block:'center'});
     box?.querySelector('input:not(:disabled)')?.focus({preventScroll:true});
   });
-  topicSelect.addEventListener('change',()=>{temaActivo=topicSelect.value||null;});
+  topicSelect.addEventListener('change',()=>{selectedTopics=selectedFilter();if(items.length&&!finished)status.textContent='Temas actualizados. Pulsa «Generar mi repaso» para aplicar los cambios.';});
   filter.addEventListener('change',()=>{
     if(items.length&&!finished)status.textContent='Filtro actualizado. Pulsa «Generar repaso» para aplicar los cambios.';
   });
@@ -422,7 +417,7 @@
   form.addEventListener('input',updateProgress);
   form.addEventListener('submit',deliver);
   eeDb.auth.onAuthStateChange(event=>{
-    if(event==='SIGNED_OUT'){statsRevision++;reset();stats.replaceChildren();overviewLoaded=false;showNotebook(false);}
+    if(event==='SIGNED_OUT'){statsRevision++;selectionOwner=null;selectedTopics.clear();reset();stats.replaceChildren();overviewLoaded=false;showNotebook(false);}
     if(['INITIAL_SESSION','SIGNED_IN','SIGNED_OUT','TOKEN_REFRESHED','USER_UPDATED'].includes(event))setTimeout(refreshOverview,0);
   });
   showNotebook(false);
