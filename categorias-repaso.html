@@ -1,0 +1,101 @@
+---
+permalink: /categorias-repaso.html
+---
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="Selecciona y guarda los temas favoritos de tu cuaderno de fallos.">
+<meta name="theme-color" content="#005B3C">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<title>Categorías de repaso · Easy English</title>
+<link rel="stylesheet" href="/assets/site.css?v=20261014">
+<link rel="stylesheet" href="/assets/navigation.css?v=20261021-repaso">
+<script src="/assets/navigation.js?v=20261021-repaso" defer></script>
+<style>
+.ee-review-preferences .preferences-intro{max-width:760px;margin:22px auto}
+.ee-review-preferences .preferences-card{padding:clamp(18px,4vw,32px);border:1px solid var(--ee-line,#dce8df);border-radius:20px;background:#fff;box-shadow:0 12px 35px #153e2710}
+.ee-review-preferences .preferences-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,235px),1fr));gap:12px;margin:22px 0}
+.ee-review-preferences .category-item{display:flex;align-items:center;gap:12px;min-height:56px;padding:12px 14px;border:1px solid #dce8df;border-radius:14px;background:#fafcf9;cursor:pointer;font-weight:650;line-height:1.4}
+.ee-review-preferences .category-item:has(input:checked){border-color:#005b3c;background:#eaf5ed}
+.ee-review-preferences .category-item:focus-within{outline:3px solid #176449;outline-offset:2px}
+.ee-review-preferences .category-item input{width:20px;height:20px;flex-shrink:0;accent-color:#005b3c}
+.ee-review-preferences .preferences-actions{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-top:20px}
+.ee-review-preferences button{font:inherit;cursor:pointer;border-radius:11px;padding:11px 17px}
+.ee-review-preferences button:disabled{opacity:.6;cursor:wait}
+.ee-review-preferences #preferenceNotice{min-height:1.6em}
+.ee-review-preferences .preferences-toolbar{display:flex;gap:9px;flex-wrap:wrap;align-items:center;justify-content:space-between}
+.ee-review-preferences .preferences-toolbar button{background:#fff;border:1px solid #c9d9d0;color:#005b3c}
+.ee-review-preferences .preferences-toolbar button:focus-visible,.ee-review-preferences .preferences-actions a:focus-visible{outline:3px solid #176449;outline-offset:3px}
+@media(max-width:380px){.ee-review-preferences .preferences-grid{grid-template-columns:minmax(0,1fr)}}
+</style>
+</head>
+<body class="ee-site ee-review-preferences">
+{% include header.html %}
+<main class="container">
+<section class="preferences-intro"><p class="eyebrow">✦ TU CUADERNO DE FALLOS</p><h1>Mis categorías de repaso</h1><p>Consulta todas las categorías, marca las que quieras practicar habitualmente y guarda la selección en tu cuenta. Podrás cambiar los temas al preparar cada examen.</p><p><a href="/perfil.html">← Volver a mi perfil</a></p></section>
+<section class="preferences-card" aria-labelledby="categoriesTitle">
+<h2 id="categoriesTitle">Elige tus temas favoritos</h2>
+<p id="preferencesIntro">Cargando tus preferencias…</p>
+<div id="preferencesPrivate" hidden>
+<div class="preferences-toolbar"><strong id="selectionCount">0 categorías seleccionadas</strong><div><button type="button" id="chooseAll">Seleccionar todas</button> <button type="button" id="chooseNone">Desmarcar todas</button></div></div>
+<div id="categoriesGrid" class="preferences-grid" role="group" aria-label="Categorías de repaso"></div>
+<div class="preferences-actions"><button id="saveCategories" class="primary" type="button">Guardar mis categorías</button><a href="/practicar.html#cuaderno-fallos">Ir al cuaderno de fallos →</a></div>
+<p id="preferenceNotice" role="status" aria-live="polite"></p>
+</div>
+<p id="loginPrompt" hidden><a href="/perfil.html">Inicia sesión desde tu perfil para guardar tus categorías →</a></p>
+</section>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="/supabase-config.js"></script>
+<script>
+(()=>{
+'use strict';
+const topics=["Tiempos verbales","Condicionales","Voz pasiva","Verbos modales","Phrasal verbs","Preposiciones","Preguntas","Question tags","Vocabulario","Adjetivos y prefijos","Adverbios","Sustantivos","Reported speech","Gerund e infinitivo","Otros temas"];
+const key='review_default_topics';
+const $=id=>document.getElementById(id);
+let currentUser=null,dirty=false;
+function count(){const n=$('categoriesGrid').querySelectorAll('input:checked').length;$('selectionCount').textContent=n+' de '+topics.length+' categorías seleccionadas';}
+function build(saved){
+ $('categoriesGrid').replaceChildren();
+ for(const topic of topics){
+  const label=document.createElement('label');label.className='category-item';
+  const box=document.createElement('input');box.type='checkbox';box.value=topic;box.checked=saved.includes(topic);
+  label.append(box,document.createTextNode(topic));$('categoriesGrid').append(label);
+ }
+ count();
+}
+$('categoriesGrid').addEventListener('change',()=>{dirty=true;count();$('preferenceNotice').textContent='Cambios sin guardar.';});
+$('chooseAll').onclick=()=>{$('categoriesGrid').querySelectorAll('input').forEach(el=>el.checked=true);dirty=true;count();$('preferenceNotice').textContent='Cambios sin guardar.';};
+$('chooseNone').onclick=()=>{$('categoriesGrid').querySelectorAll('input').forEach(el=>el.checked=false);dirty=true;count();$('preferenceNotice').textContent='Cambios sin guardar.';};
+$('saveCategories').onclick=async()=>{
+ if(!currentUser)return;
+ const owner=currentUser.id,button=$('saveCategories');
+ button.disabled=true;$('preferenceNotice').textContent='Guardando categorías…';
+ const selected=[...$('categoriesGrid').querySelectorAll('input:checked')].map(el=>el.value);
+ try{
+  const {data,error}=await eeDb.auth.updateUser({data:{[key]:selected}});
+  if(error)throw error;
+  if(currentUser?.id!==owner)return;
+  currentUser=data.user;dirty=false;
+  $('preferenceNotice').textContent=selected.length?'Categorías guardadas correctamente. Tus próximos exámenes usarán estos temas.':'Preferencias guardadas. Al no marcar ninguna, se incluirán todos los temas.';
+ }catch(e){$('preferenceNotice').textContent='No se pudieron guardar tus categorías: '+e.message}
+ finally{button.disabled=false}
+};
+async function load(){
+ try{
+  const {data,error}=await eeDb.auth.getUser();
+  if(error)throw error;
+  currentUser=data.user;
+  $('preferencesPrivate').hidden=!currentUser;$('loginPrompt').hidden=!!currentUser;
+  $('preferencesIntro').textContent=currentUser?'Selecciona todas las categorías que quieras. Si dejas todas desmarcadas, se repasarán todos los temas.':'Necesitas iniciar sesión para configurar tus temas de repaso.';
+  if(currentUser&&!dirty)build(Array.isArray(currentUser.user_metadata?.[key])?currentUser.user_metadata[key]:[]);
+ }catch(e){$('preferencesIntro').textContent='No se pudo comprobar tu sesión: '+e.message;$('preferencesPrivate').hidden=true;$('loginPrompt').hidden=false}
+}
+eeDb.auth.onAuthStateChange(event=>{if(event==='SIGNED_OUT'){currentUser=null;dirty=false;load()}});
+load();
+})();
+</script>
+</body>
+</html>
