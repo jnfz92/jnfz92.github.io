@@ -7,7 +7,9 @@ ROOT = Path(__file__).resolve().parents[1]
 
 class ProfileAuthStatusTest(unittest.TestCase):
     def test_dashboard_status_is_retained_when_profile_is_rebuilt(self):
-        source = (ROOT / "perfil.html").read_text(encoding="utf-8")
+        html = (ROOT / "perfil.html").read_text(encoding="utf-8")
+        self.assertIn('src="/assets/perfil.js', html)
+        source = (ROOT / "assets" / "perfil.js").read_text(encoding="utf-8")
         block = re.search(r"\$\('privateDashboard'\)\.replaceChildren\((.*?)\);", source, re.S)
         self.assertIsNotNone(block, "El perfil debe conservar su construcción del panel privado")
         self.assertRegex(block.group(1), r"\bdashboardStatus\b",
