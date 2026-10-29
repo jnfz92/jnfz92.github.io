@@ -19,6 +19,10 @@
  color:#193a2a;text-decoration:none;white-space:nowrap;
  letter-spacing:-.04em;box-shadow:none;
 }
+#ee-shared-header .ee-logo img{
+ display:block;width:39px;height:39px;border-radius:10px;
+ object-fit:contain;flex:none;
+}
 #ee-shared-header .ee-logo b{
  display:grid;place-items:center;width:39px;height:39px;
  border-radius:13px;background:#176447;color:#e1f5b6;
