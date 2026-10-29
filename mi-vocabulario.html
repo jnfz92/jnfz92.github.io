@@ -1,0 +1,46 @@
+---
+permalink: /mi-vocabulario.html
+---
+<!doctype html>
+<html lang="es"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="Repasa vocabulario de inglés con tarjetas de traducción y repetición espaciada.">
+<meta name="theme-color" content="#005B3C"><title>Mi vocabulario · Easy English</title>
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="stylesheet" href="/assets/site.css"><link rel="stylesheet" href="/assets/navigation.css">
+<link rel="stylesheet" href="/assets/mi-vocabulario.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js" defer></script>
+<script src="/supabase-config.js" defer></script>
+<script src="/assets/navigation.js" defer></script>
+<script src="/assets/mi-vocabulario.js" defer></script>
+</head><body class="ee-site ee-vocabulario">{% include header.html %}
+<main class="container">
+<section class="hero ee-vocab-hero"><div class="hero-copy"><span class="eyebrow">✦ Easy English · Repaso inteligente</span>
+<h1>Mi vocabulario.<br><em>Recuerda más cada día.</em></h1>
+<p>Aprende palabras y expresiones con tarjetas de traducción. Easy English organiza los repasos según tus respuestas.</p>
+<p id="vocab-status" role="status" aria-live="polite">Comprobando tu sesión…</p>
+<a id="vocab-login" href="/perfil.html" hidden>Accede a tu perfil para guardar tu progreso →</a></div></section>
+<section id="vocab-app" hidden>
+<div class="ee-section-heading"><div><span class="eyebrow">Tu sesión</span><h2>Repaso de hoy</h2></div></div>
+<div class="ee-vocab-stats" aria-live="polite"><div><strong id="vocab-due">0</strong><span>Pendientes</span></div><div><strong id="vocab-new">0</strong><span>Nuevas disponibles hoy</span></div><div><strong id="vocab-learned">0</strong><span>En aprendizaje</span></div></div>
+<details class="ee-vocab-settings"><summary>⚙ Configurar mi repaso</summary>
+<form id="vocab-settings-form">
+<label for="vocab-count">Palabras nuevas al día (5–50)</label><input id="vocab-count" type="number" min="5" max="50" step="1" value="10" required>
+<fieldset><legend>Niveles incluidos</legend><div class="ee-vocab-levels">
+<label><input type="checkbox" name="vocab-level" value="A1" checked> A1</label>
+<label><input type="checkbox" name="vocab-level" value="A2" checked> A2</label>
+<label><input type="checkbox" name="vocab-level" value="B1" checked> B1</label>
+<label><input type="checkbox" name="vocab-level" value="B2" checked> B2</label>
+<label><input type="checkbox" name="vocab-level" value="C1" checked> C1</label></div></fieldset>
+<label for="vocab-priority">Nivel prioritario</label><select id="vocab-priority"><option>A1</option><option>A2</option><option>B1</option><option selected>B2</option><option>C1</option></select>
+<label for="vocab-direction">Sentido de traducción</label><select id="vocab-direction"><option value="en-es">Inglés → Español</option><option value="es-en">Español → Inglés</option><option value="mixed">Alternar ambos</option></select>
+<button type="submit">Guardar preferencias</button></form></details>
+<div class="ee-vocab-actions"><button id="vocab-start" type="button">Comenzar repaso</button><button id="vocab-reload" type="button" class="ee-vocab-secondary">Actualizar sesión</button></div>
+<section id="vocab-card" class="ee-vocab-card" aria-live="polite" hidden>
+<div class="ee-vocab-card-meta"><span id="vocab-position"></span><span id="vocab-level"></span></div>
+<p class="ee-vocab-question">¿Cómo se traduce?</p><h2 id="vocab-front"></h2>
+<div id="vocab-answer" hidden><h3 id="vocab-back"></h3><p id="vocab-example"></p></div>
+<button id="vocab-reveal" type="button">Mostrar traducción</button>
+<div id="vocab-ratings" class="ee-vocab-ratings" hidden><button type="button" data-grade="0">No la sé</button><button type="button" data-grade="1">Me cuesta</button><button type="button" data-grade="2">La sé</button></div>
+</section><p id="vocab-complete" class="ee-vocab-complete" hidden>¡Has terminado las tarjetas disponibles! Vuelve cuando toque el próximo repaso.</p>
+</section></main></body></html>
