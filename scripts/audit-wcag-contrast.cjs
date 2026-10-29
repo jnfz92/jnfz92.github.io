@@ -14,6 +14,9 @@ const pages = fs.readdirSync(ROOT).filter(x=>x.endsWith('.html'));
 const categories = fs.readdirSync(path.join(ROOT,'category')).filter(x=>x.endsWith('.html')).map(x=>'category/'+x);
 const statics = [...pages,...categories];
 const sleep=ms=>new Promise(ok=>setTimeout(ok,ms));
+// PRs audit the deployed site; pages introduced in the PR do not exist there yet.
+const isPullRequest=process.env.GITHUB_EVENT_NAME==='pull_request';
+const unpublished=[];
 
 async function getSlugs(){
   const response=await fetch(API+'articulos?select=slug&order=slug.asc&limit=1000',{headers:{apikey:APIKEY}});
@@ -40,6 +43,7 @@ async function main(){
    try{
     await page.setViewportSize(task.viewport==='mobile'?{width:390,height:844}:{width:1440,height:900});
     const response=await page.goto(task.url,{waitUntil:'domcontentloaded',timeout:25000});
+    if(response&&response.status()===404&&isPullRequest&&task.page.endsWith('.html')&&!task.page.startsWith('article:')){unpublished.push(task.page);continue;}
     if(response&&response.status()>=400)throw Error('HTTP '+response.status());
     if(task.page.startsWith('article:')){
       await page.waitForFunction(()=>!document.querySelector('#loading'),{timeout:19000});
@@ -67,7 +71,7 @@ async function main(){
   await context.close();
  }
  try{await Promise.all(Array.from({length:4},(_,i)=>run(i)));}finally{await b.close();}
- const summary={
+ const summary={unpublished_pr_pages:[...new Set(unpublished)],
   scanned:results.length, expected:tasks.length, articles:slugs.length,
   static_pages:statics.length,
   failures:results.reduce((n,r)=>n+r.issues.length,0),
