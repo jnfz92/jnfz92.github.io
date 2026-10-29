@@ -11,8 +11,8 @@
     // Compatibilidad con vistas previas que sirvan el HTML sin procesar Liquid.
     for(const node of [...document.body.childNodes]){
       if(node.nodeType!==Node.TEXT_NODE)continue;
-      node.textContent=node.textContent.replace(/\\{%\\s*include\\s+header\\.html\\s*%\\}/g,'').trim();
-      if(!node.textContent||/^---(?:\\s+---)*$/.test(node.textContent))node.remove();
+      node.textContent=node.textContent.replace(/\{%\s*include\s+header\.html\s*%\}/g,'').trim();
+      if(!node.textContent||/^---(?:\s+---)*$/.test(node.textContent))node.remove();
     }
     // Nunca construir una segunda lista de enlaces distinta de la de Jekyll.
     try{
