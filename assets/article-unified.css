@@ -1,0 +1,125 @@
+/* Easy English · plantilla editorial compartida para los 154 artículos.
+   Se aplica después del CSS histórico para unificar las partes comunes
+   sin quitar formatos propios de ejercicios, ejemplos y actividades. */
+body.ee-unified-article{
+  --bg:#f5f7f1;--surface:#fff;--ink:#142e25;--muted:#607067;--line:#dce4d9;
+  --primary:#176447;--green:#176447;--brand:#176447;--soft:#eaf4ed;
+  --cream:#f6faf6;--accent:#e6ad42;--ee-green:#176447;--ee-bg:#f5f7f1;
+  background:#f5f7f1;color:#142e25;
+  font-family:Inter,"Segoe UI",system-ui,-apple-system,sans-serif;
+  font-size:16px;line-height:1.75;overflow-wrap:anywhere;
+}
+body.ee-unified-article > main{
+  box-sizing:border-box;width:min(960px,calc(100% - 32px));max-width:none;
+  margin:30px auto 78px;padding:0;min-width:0;
+}
+body.ee-unified-article main > :is(.hero,.intro){
+  box-sizing:border-box;margin:0 0 26px;padding:clamp(26px,4vw,44px);
+  border:0;border-radius:24px;background:linear-gradient(125deg,#173f30,#216f4c);
+  color:#fff;box-shadow:0 16px 38px #173f301d;
+}
+body.ee-unified-article main > :is(.hero,.intro) :is(h1,h2),
+body.ee-unified-article main > :is(.hero,.intro) :is(.lead,p){
+  color:#fff;
+}
+body.ee-unified-article main > :is(.hero,.intro) :is(.lead,p){color:#e1f0e7}
+body.ee-unified-article main > :is(.hero,.intro) .tag{
+  display:inline-block;background:#d8f36a;color:#173f30;
+  padding:6px 12px;border-radius:99px;font-size:13px;font-weight:800;
+}
+body.ee-unified-article main > article{
+  box-sizing:border-box;max-width:100%;background:#fff;border:1px solid #e0eae1;
+  border-radius:22px;padding:clamp(20px,4vw,46px);
+  box-shadow:0 12px 34px #153e2910;
+}
+body.ee-unified-article main > article > header{
+  position:static;inset:auto;z-index:auto;
+  margin:0 0 28px;padding:clamp(20px,3vw,34px);
+  background:linear-gradient(125deg,#173f30,#216f4c);
+  color:#fff;border:0;border-radius:17px;
+}
+body.ee-unified-article main > article > header :is(h1,p){color:#fff}
+body.ee-unified-article main h1{
+  font-size:clamp(30px,5vw,48px);line-height:1.13;
+  letter-spacing:-.035em;margin:12px 0 18px;
+}
+body.ee-unified-article main h2{
+  color:#176447;font-size:clamp(24px,3.5vw,31px);
+  line-height:1.28;letter-spacing:-.025em;margin:36px 0 14px;
+}
+body.ee-unified-article main h3{
+  color:#185a43;font-size:clamp(19px,2.5vw,23px);
+  line-height:1.4;margin:27px 0 11px;
+}
+body.ee-unified-article main :is(p,li){
+  font-size:16px;line-height:1.76;
+}
+body.ee-unified-article main :is(.lead,.intro-text){
+  font-size:clamp(17px,2vw,19px);line-height:1.6;
+}
+body.ee-unified-article main :is(.toc,.note,.example,.warning,.sample,.exercise){
+  box-sizing:border-box;max-width:100%;border:1px solid #dce8df;
+  border-radius:15px;padding:18px 21px;margin:18px 0;
+  background:#f5faf6;color:#20372b;
+}
+body.ee-unified-article main .toc{background:#f2f8f3}
+body.ee-unified-article main .example{background:#eef4ee}
+body.ee-unified-article main .note{background:#fff8e9;border-left:4px solid #e6ad42}
+body.ee-unified-article main .warning{background:#fff4f2;border-left:4px solid #b96d51}
+body.ee-unified-article main :is(.next,.ee-next){
+  border-radius:17px;background:#176447;color:#fff;padding:22px;
+}
+body.ee-unified-article main :is(.next,.ee-next) a{color:#fff}
+body.ee-unified-article main :is(.tag,.level){
+  border-radius:999px;
+}
+body.ee-unified-article main :is(table){
+  display:block;max-width:100%;width:100%;overflow-x:auto;
+  border-collapse:collapse;margin:22px 0 30px;
+  background:#fff;font-size:15px;
+}
+body.ee-unified-article main :is(th,td){
+  padding:11px 14px;border:1px solid #dce8df;
+  vertical-align:top;text-align:left;
+}
+body.ee-unified-article main th{
+  background:#eaf5ee;color:#14543c;font-weight:800;
+}
+body.ee-unified-article main tr:nth-child(even){background:#f7faf8}
+body.ee-unified-article main :is(.table-scroll,.scroll){
+  max-width:100%;overflow-x:auto;
+}
+body.ee-unified-article main details{
+  box-sizing:border-box;max-width:100%;border:1px solid #dce8df;
+  background:#fff;border-radius:13px;padding:16px 18px;margin:18px 0;
+}
+body.ee-unified-article main summary{
+  cursor:pointer;font-weight:750;color:#176447;
+}
+body.ee-unified-article main :is(img,video,iframe,svg){
+  max-width:100%;height:auto;
+}
+body.ee-unified-article main :is(pre,code){
+  overflow-wrap:normal;
+}
+body.ee-unified-article main pre{
+  overflow-x:auto;max-width:100%;padding:15px;border-radius:11px;background:#f0f5f1;
+}
+body.ee-unified-article main :is(.ee-breadcrumb,.breadcrumb){
+  margin:0 0 24px;color:#50685a;font-size:14px;
+}
+body.ee-unified-article main :is(.ee-breadcrumb,.breadcrumb) a{color:#176447}
+body.ee-unified-article main :is(a,button,input,select,textarea,summary):focus-visible{
+  outline:3px solid #e6ad42;outline-offset:3px;
+}
+@media(max-width:640px){
+  body.ee-unified-article > main{width:calc(100% - 20px);margin:17px auto 55px}
+  body.ee-unified-article main > :is(.hero,.intro){border-radius:18px;padding:23px 19px}
+  body.ee-unified-article main > article{border-radius:18px;padding:19px 16px}
+  body.ee-unified-article main > article > header{padding:21px 17px;border-radius:13px}
+  body.ee-unified-article main :is(.toc,.note,.example,.warning,.sample,.exercise){padding:14px 15px}
+  body.ee-unified-article main :is(th,td){padding:9px 10px;font-size:13px}
+}
+@media(prefers-reduced-motion:reduce){
+  body.ee-unified-article main *{scroll-behavior:auto}
+}
