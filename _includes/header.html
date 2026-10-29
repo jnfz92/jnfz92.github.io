@@ -1,18 +1,20 @@
 {% comment %}ÚNICA FUENTE DEL HEADER para todas las páginas de Easy English.{% endcomment %}
 {% assign ee_file = page.path | split: '/' | last %}
-{% assign ee_section = 'inicio' %}
+{% assign ee_section = 'none' %}
+{% if ee_file == 'index.html' or ee_file == 'index.md' %}{% assign ee_section = 'inicio' %}{% endif %}
 {% if ee_file == 'articulos.html' or ee_file == 'leer.html' or ee_file == 'grammar.html' or ee_file == 'lessons.html' or ee_file == 'speaking.html' or ee_file == 'tv-movies.html' or ee_file == 'vocabulary.html' %}{% assign ee_section = 'articulos' %}{% endif %}
 {% if ee_file == 'curso.html' or ee_file == 'actividades.html' or ee_file == 'vocabulario.html' %}{% assign ee_section = 'curso' %}{% endif %}
-{% if ee_file == 'examenes.html' or ee_file == 'practicar.html' or ee_file == 'repasar-leidos.html' %}{% assign ee_section = 'examenes' %}{% endif %}
+{% if ee_file == 'examenes.html' or ee_file == 'practicar.html' or ee_file == 'categorias-repaso.html' %}{% assign ee_section = 'examenes' %}{% endif %}
+{% if ee_file == 'repasar-leidos.html' %}{% assign ee_section = 'repaso' %}{% endif %}
 {% if ee_file == 'writings.html' %}{% assign ee_section = 'writings' %}{% endif %}
 {% if ee_file == 'speaking-lab.html' %}{% assign ee_section = 'speaking' %}{% endif %}
-{% if ee_file == 'perfil.html' or ee_file == 'mensajes.html' %}{% assign ee_section = 'perfil' %}{% endif %}
+{% if ee_file == 'perfil.html' or ee_file == 'mensajes.html' or ee_file == 'mi-vocabulario.html' %}{% assign ee_section = 'perfil' %}{% endif %}
 {% if ee_file == 'comunidad.html' %}{% assign ee_section = 'comunidad' %}{% endif %}
 {% if ee_file == 'sugerencias.html' %}{% assign ee_section = 'sugerencias' %}{% endif %}
 <header class="ee-header" id="ee-shared-header">
   <div class="ee-bar">
     <a class="ee-logo" href="/index.html" aria-label="Easy English · Inicio"><img src="/favicon.svg?v=20261017-ee" alt="" width="39" height="39" aria-hidden="true">Easy English</a>
-    <button class="ee-nav-toggle" type="button" onclick="event.stopImmediatePropagation();var h=this.closest('header');var o=h.classList.toggle('ee-menu-open');this.setAttribute('aria-expanded',String(o));this.setAttribute('aria-label',o?'Cerrar menú de navegación':'Abrir menú de navegación');" aria-label="Abrir menú de navegación" aria-expanded="false" aria-controls="ee-primary-navigation">
+    <button class="ee-nav-toggle" type="button" aria-label="Abrir menú de navegación" aria-expanded="false" aria-controls="ee-primary-navigation">
       <span></span><span></span><span></span>
     </button>
     <nav class="ee-nav" id="ee-primary-navigation" aria-label="Navegación principal">
@@ -21,7 +23,7 @@
       <a href="/curso.html"{% if ee_section == 'curso' %} aria-current="page"{% endif %}><svg class="ee-nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 8 9-5 9 5-9 5-9-5zm4 3v7c3 3 7 3 10 0v-7m4-3v8"/></svg><span>Curso</span></a>
       <a href="/writings.html"{% if ee_section == 'writings' %} aria-current="page"{% endif %}>✍️ Writings B2</a>
       <a href="/examenes.html"{% if ee_section == 'examenes' %} aria-current="page"{% endif %}><svg class="ee-nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 3h10v3H7zM7 4H4v17h16V4h-3M8 11h8m-8 5h5"/></svg><span>Exámenes</span></a>
-      <a class="ee-review-link" href="/repasar-leidos.html" aria-label="Generar examen de mis lecturas">✨ <span>Mi repaso</span></a>
+      <a class="ee-review-link" href="/repasar-leidos.html"{% if ee_section == 'repaso' %} aria-current="page"{% endif %} aria-label="Generar examen de mis lecturas">✨ <span>Mi repaso</span></a>
       <a href="/speaking-lab.html"{% if ee_section == 'speaking' %} aria-current="page"{% endif %}><svg class="ee-nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="2" width="6" height="13" rx="3"/><path d="M5 10a7 7 0 0 0 14 0M12 17v5m-4 0h8"/></svg><span>Speaking</span></a>
       <a href="/perfil.html"{% if ee_section == 'perfil' %} aria-current="page"{% endif %}><svg class="ee-nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21v-2a5 5 0 0 1 5-5h6a5 5 0 0 1 5 5v2"/></svg><span>Perfil</span></a>
       <a href="/comunidad.html"{% if ee_section == 'comunidad' %} aria-current="page"{% endif %}><svg class="ee-nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3"/><path d="M3 20v-2a6 6 0 0 1 12 0v2M16 5a3 3 0 0 1 0 6m2 3a5 5 0 0 1 3 5v1"/></svg><span>Comunidad</span></a>
