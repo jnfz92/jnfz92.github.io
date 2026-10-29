@@ -6,7 +6,7 @@ permalink: /leer.html
 <meta name="description" content="Lecciones y artículos de Easy English.">
 <title>Cargando lección · Easy English</title>
 <link rel="stylesheet" href="assets/site.css?v=20261014">
-<style>body{font-family:system-ui,sans-serif;background:#f7f7f4;color:#17211c;margin:0}.loader{max-width:720px;margin:12vh auto;padding:24px}.loader a{color:#176447}</style><link rel="stylesheet" href="/assets/navigation.css?v=20261017-menu-fix2"><script src="/assets/navigation.js?v=20261017-menu-fix2" defer></script></head>
+<style>body{font-family:system-ui,sans-serif;background:#f7f7f4;color:#17211c;margin:0}.loader{max-width:720px;margin:12vh auto;padding:24px}.loader a{color:#176447}</style><link rel="stylesheet" href="/assets/navigation.css?v=20261029-menu-unified-1"><script src="/assets/navigation.js?v=20261029-menu-unified-1" defer></script></head>
 <body>{% include header.html %}<main class="loader"><h1>Easy English</h1><p id="loading" role="status">Cargando el artículo desde Supabase…</p><p><a href="articulos.html">Volver al blog</a></p></main>
 <script>
 (async function(){
@@ -131,26 +131,34 @@ permalink: /leer.html
   const existing=doc.querySelector('link[rel="canonical"]');if(existing)existing.remove();
   const canonical=doc.createElement('link');canonical.rel='canonical';canonical.href=new URL('leer.html?slug='+encodeURIComponent(resolveSlug(slug)),location.href).href;doc.head.append(canonical);
   if(article.descripcion){let meta=doc.querySelector('meta[name="description"]');if(!meta){meta=doc.createElement('meta');meta.name='description';doc.head.append(meta)}meta.content=article.descripcion}
-  // El header del lector también se obtiene del único include Jekyll del cargador.
-  // Reemplaza el header editorial que venga en el HTML de Supabase.
+  // Las cabeceras y pies editoriales antiguos no son parte de la lección.
+  // Solo se reemplaza navegación global; los índices internos siguen intactos.
+  doc.querySelectorAll('body > header, body > footer').forEach(node=>node.remove());
+  doc.querySelectorAll('script[src*="navigation.js"]').forEach(node=>node.remove());
   const sharedHeader=document.getElementById('ee-shared-header');
-  const originalArticleHeader=doc.querySelector('body > header.ee-header, body > header.site-header');
   if(sharedHeader){
     const headerCopy=sharedHeader.cloneNode(true);
-    if(originalArticleHeader) originalArticleHeader.replaceWith(headerCopy);
-    else doc.body.prepend(headerCopy);
+    headerCopy.classList.remove('ee-menu-open');
+    const toggle=headerCopy.querySelector('.ee-nav-toggle');
+    if(toggle){
+      toggle.removeAttribute('data-menu-ready');
+      toggle.removeAttribute('onclick');
+      toggle.setAttribute('aria-expanded','false');
+      toggle.setAttribute('aria-label','Abrir menú de navegación');
+    }
+    doc.body.prepend(headerCopy);
   }
   // El articulo llega como documento HTML completo desde Supabase.
   // Cargar tambien la barra de navegacion en el documento sustituido.
   const navStyle=doc.createElement('link');navStyle.rel='stylesheet';
-  navStyle.href=new URL('/assets/navigation.css?v=20261017-menu-fix2',location.href).href;
+  navStyle.href=new URL('/assets/navigation.css?v=20261029-menu-unified-1',location.href).href;
   doc.head.append(navStyle);
   const editorialStyle=doc.createElement('link');
   editorialStyle.rel='stylesheet';
   editorialStyle.href=new URL('/assets/article-unified.css?v=20261029-unified-1',location.href).href;
   doc.head.append(editorialStyle);
   const navScript=doc.createElement('script');
-  navScript.src=new URL('/assets/navigation.js?v=20261017-menu-fix2',location.href).href;
+  navScript.src=new URL('/assets/navigation.js?v=20261029-menu-unified-1',location.href).href;
   navScript.defer=true;doc.body.append(navScript);
   document.open();
   document.write('<!doctype html>\n'+doc.documentElement.outerHTML);
