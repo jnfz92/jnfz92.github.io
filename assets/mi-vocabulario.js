@@ -1,6 +1,6 @@
 /* Tarjetas de traducción con repaso espaciado; el servidor (RLS) protege datos de usuario. */
 (()=>{'use strict';
-const $=id=>document.getElementById(id),db=window.eeDb;
+const $=id=>document.getElementById(id),db=typeof eeDb!=='undefined'?eeDb:null;
 const levels=['A1','A2','B1','B2','C1'],today=()=>{const d=new Date();return [d.getFullYear(),String(d.getMonth()+1).padStart(2,'0'),String(d.getDate()).padStart(2,'0')].join('-')};
 let user=null,settings=null,queue=[],position=0,progress=[];
 const status=msg=>{$('vocab-status').textContent=msg};
