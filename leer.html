@@ -135,7 +135,7 @@ permalink: /leer.html
       .map(n=>Math.round(n*255).toString(16).padStart(2,'0')).join('')+
       (value.length===8?value.slice(6):'');
   }
-  const blueArticleCSS=css=>css.replace(/#[0-9a-f]{3,8}\\b/gi,blueArticleColor);
+  const blueArticleCSS=css=>css.replace(/#[0-9a-f]{3,8}\b/gi,blueArticleColor);
   doc.querySelectorAll('style').forEach(style=>{style.textContent=blueArticleCSS(style.textContent)});
   doc.querySelectorAll('[style]').forEach(node=>{
     node.setAttribute('style',blueArticleCSS(node.getAttribute('style')));
