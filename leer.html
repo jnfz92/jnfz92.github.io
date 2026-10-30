@@ -150,6 +150,28 @@ permalink: /leer.html
   const commentList=el(doc,'div','ee-comments-list');
   commentList.id='ee-comments-list';
   comments.append(commentCount,commentStatus,commentList);
+  // Una ruta de continuación coherente con el orden del catálogo.
+  const learningPath=["leccion-1-saludos","leccion-2-to-be","leccion-3-preguntas","dictionary-word-reference-study","skimming-scanning-reading","protector-of-the-sea-vocabulary-tenses","indice-de-dificultad","estructura-oracion-ingles","imperativo-ingles","preguntas-which-whose-how","respuestas-cortas-ingles","have-vs-have-got-ingles","countable-uncountable-nouns","ortografia-formas-verbales-ingles","50-verbos-irregulares-en-ingles","guia-tiempos-verbales-ingles-presente-pasado-futuro-trucos-examen","todos-los-tiempos-de-presente-en-ingles","stative-verbs","todos-los-tiempos-de-pasado-en-ingles","pasados-vs-present-perfect-simple-continuous","present-perfect-never-yet","todos-los-tiempos-de-futuro-en-ingles","used-to-would-be-used-to-get-used-to","modal-can-could","modal-may","modal-must-have-to","modal-should-ought-to","modal-verb-might","modal-will-would-shall","semimodales-dare-need-ought-to","preguntas-sujeto-objeto","question-tags-ingles","gerund-infinitive","verbos-con-preposiciones-ingles","conditionals-ingles-guia-completa-ejercicios","second-conditional-guia-ejemplos-ejercicios","third-conditional-guia-ejemplos-ejercicios","voz-pasiva-ingles","direct-reported-speech","relative-clauses-guia-completa-b1-b2","linking-words-of-contrast","in-which-y-conectores-adicion-causa-consecuencia","formacion-adjetivos-ingles","ingles-americano-vs-britanico-diferencias-verbos","fichas-tecnicas-gramatica-ingles","ingles-dia-a-dia-40-expresiones-utiles","make-vs-do-ingles","get-phrasal-verbs","phrasal-verbs-introduccion-gramatica","phrasal-verbs-particula-out","phrasal-verbs-verbo-take","phrasal-verb-take-off","trying-and-succeeding-phrasal-verbs","vocabulario-viajes-ingles-b1-b2","vocabulario-trafico-autopista-ingles","vocabulario-15-octubre-trabajo-personas","vocabulario-15-octubre-dinero-estudios","vocabulario-15-octubre-vida-cotidiana","vocabulario-ingles-clase-15-octubre-2026","useful-vocabulary-review","pollution-environment-vocabulary","police-and-crime-vocabulary","currently-meaning-use","inspire-people-collocation","revenue-office-supporters","think-before-you-speak","to-be-honest-discourse-marker","expresiones-opiniones-no-quedarte-en-blanco","opinion-speculation-expressions","polite-disagreement","b2-first-speaking-outstanding-people-selfie","political-english-vocabulary-debate-phrases","truco-boligrafo-examen-oral-ingles","como-escribir-email-b2-first-fce","como-usar-tiempos-verbales-carta-email-writing-b1-b2","writing-b2-essay-guia","writing-b2-article-guia","writing-b2-review-guia","writing-b2-report-guia","writing-b2-formal-letter-guia","writing-b2-story-guia","entretenimiento","the-rings-of-power-season-1-english-subtitles"];
+  const currentPathIndex=learningPath.indexOf(resolveSlug(slug));
+  if(currentPathIndex>=0){
+    const nextSlug=learningPath[currentPathIndex+1];
+    const next=doc.createElement('section');
+    next.className='ee-next-lesson';
+    next.id='siguiente-paso';
+    next.append(el(doc,'h2','','¿Qué estudiar después?'),el(doc,'p','','Continúa con la siguiente lección de la ruta o practica lo aprendido.'));
+    const actions=el(doc,'div','ee-next-lesson-actions');
+    if(nextSlug){
+      const link=el(doc,'a','ee-next-primary','Siguiente lección →');
+      link.href=new URL('leer.html?slug='+encodeURIComponent(nextSlug),location.href).href;
+      actions.append(link);
+    }
+    const exam=el(doc,'a','','Practicar con exámenes');
+    exam.href='/examenes.html';actions.append(exam);
+    const library=el(doc,'a','','Volver a los artículos');
+    library.href='/articulos.html';actions.append(library);
+    next.append(actions);
+    doc.querySelector('main').append(next);
+  }
   doc.querySelector('main').append(comments);
   const commentsStyle=doc.createElement('link');
   commentsStyle.rel='stylesheet';
