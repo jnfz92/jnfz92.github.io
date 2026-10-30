@@ -3,8 +3,8 @@
  position:sticky;top:0;z-index:900;
  display:block;width:100%;max-width:none;
  margin:0;padding:0;box-sizing:border-box;
- background:rgba(245,247,241,.97);border-bottom:1px solid #dce7da;
- color:#193a2a;backdrop-filter:blur(16px);
+ background:rgba(245,247,241,.97);border-bottom:1px solid #d9e4ff;
+ color:#1f2a44;backdrop-filter:blur(16px);
  font:16px/1.4 system-ui,-apple-system,"Segoe UI",sans-serif;text-align:left;
 }
 #ee-shared-header .ee-bar{
@@ -16,7 +16,7 @@
  display:inline-flex;align-items:center;gap:9px;
  padding:0;margin:0;border:0;background:transparent;
  font:850 17px/1.2 system-ui,-apple-system,"Segoe UI",sans-serif;
- color:#193a2a;text-decoration:none;white-space:nowrap;
+ color:#1f2a44;text-decoration:none;white-space:nowrap;
  letter-spacing:-.04em;box-shadow:none;
 }
 #ee-shared-header .ee-logo img{
@@ -25,7 +25,7 @@
 }
 #ee-shared-header .ee-logo b{
  display:grid;place-items:center;width:33px;height:33px;
- border-radius:13px;background:#176447;color:#e1f5b6;
+ border-radius:13px;background:#1e5eff;color:#bacef1;
  font:850 14px system-ui,sans-serif;letter-spacing:0;flex:none;
 }
 #ee-shared-header .ee-nav-toggle{display:none}
@@ -40,12 +40,12 @@
  display:inline-flex;align-items:center;justify-content:center;
  flex-direction:row;gap:7px;min-width:0;
  margin:0;padding:8px 9px;border:0;border-radius:12px;
- background:transparent;color:#52695c;text-decoration:none;
+ background:transparent;color:#536585;text-decoration:none;
  font:700 12.5px/1.25 system-ui,-apple-system,"Segoe UI",sans-serif;
  white-space:nowrap;box-sizing:border-box;touch-action:manipulation;
 }
-#ee-shared-header .ee-nav a[aria-current=page]{background:#176447;color:#fff}
-#ee-shared-header .ee-nav a:not([aria-current]):hover{background:#e8f1e7;color:#176447}
+#ee-shared-header .ee-nav a[aria-current=page]{background:#1e5eff;color:#fff}
+#ee-shared-header .ee-nav a:not([aria-current]):hover{background:#e8ebf0;color:#1e5eff}
 #ee-shared-header .ee-nav svg.ee-nav-icon{
  display:inline-block;width:17px;height:17px;min-width:17px;
  flex:none;vertical-align:middle;fill:none;stroke:currentColor;
@@ -65,8 +65,8 @@
   display:inline-flex;position:relative;z-index:2;
   width:44px;height:42px;padding:10px;margin:0;
   flex-direction:column;align-items:center;justify-content:center;gap:5px;
-  border:1px solid #dce7da;border-radius:11px;background:#fff;
-  color:#193a2a;box-shadow:none;cursor:pointer;
+  border:1px solid #d9e4ff;border-radius:11px;background:#fff;
+  color:#1f2a44;box-shadow:none;cursor:pointer;
  }
  #ee-shared-header .ee-nav-toggle span{
   display:block;width:20px;height:2px;border-radius:2px;
@@ -80,8 +80,8 @@
   right:12px;left:auto;bottom:auto;
   width:min(300px,calc(100vw - 24px));max-width:none;
   padding:8px;margin:0;flex-direction:column;align-items:stretch;
-  gap:3px;background:#fff;border:1px solid #dce7da;
-  border-radius:14px;box-shadow:0 12px 30px #193a2a20;
+  gap:3px;background:#fff;border:1px solid #d9e4ff;
+  border-radius:14px;box-shadow:0 12px 30px #1b243820;
   z-index:1;backdrop-filter:none;
  }
  #ee-shared-header.ee-menu-open .ee-nav{display:flex}
@@ -97,8 +97,8 @@
 #ee-shared-footer.ee-footer{
  width:100%;max-width:none;margin:0;
  padding:20px 24px;box-sizing:border-box;
- background:#eaf0e4;border-top:1px solid #d9e4d9;
- color:#506b5a;font:13px/1.5 system-ui,sans-serif;text-align:left;
+ background:#e5e9ef;border-top:1px solid #d7dde6;
+ color:#495872;font:13px/1.5 system-ui,sans-serif;text-align:left;
 }
 #ee-shared-footer .ee-footer-description{max-width:1140px;margin:0 auto}
 @media(max-width:900px){
@@ -108,26 +108,26 @@
 /* CTA destacado para el generador de exámenes, web y WebView. */
 #ee-shared-header .ee-nav a.ee-review-link{background:#ffc247;color:#241b08;border:1px solid #e6a11f;font-weight:900;box-shadow:0 3px 10px #a16f2730}
 #ee-shared-header .ee-nav a.ee-review-link:hover,#ee-shared-header .ee-nav a.ee-review-link[aria-current=page]{background:#ffdc82;color:#241b08}
-#ee-shared-header .ee-nav a.ee-review-link:focus-visible{outline:3px solid #195b42}
+#ee-shared-header .ee-nav a.ee-review-link:focus-visible{outline:3px solid #1d2e57}
 
 /* Submenú discreto para accesos secundarios sin abarrotar la barra. */
 #ee-shared-header .ee-more{position:relative;flex:none}
 #ee-shared-header .ee-more>summary{
  display:inline-flex;align-items:center;justify-content:center;gap:5px;
  padding:8px 9px;border-radius:10px;list-style:none;cursor:pointer;
- color:#52695c;font:700 12.5px/1.25 system-ui,-apple-system,"Segoe UI",sans-serif;
+ color:#536585;font:700 12.5px/1.25 system-ui,-apple-system,"Segoe UI",sans-serif;
  white-space:nowrap;user-select:none;
 }
 #ee-shared-header .ee-more>summary::-webkit-details-marker{display:none}
 #ee-shared-header .ee-more>summary:hover,
-#ee-shared-header .ee-more[open]>summary{background:#e8f1e7;color:#176447}
-#ee-shared-header .ee-more>summary.ee-more-current{background:#176447;color:#fff}
+#ee-shared-header .ee-more[open]>summary{background:#e8ebf0;color:#1e5eff}
+#ee-shared-header .ee-more>summary.ee-more-current{background:#1e5eff;color:#fff}
 #ee-shared-header .ee-chevron{font-size:15px;line-height:1;transition:transform .15s ease}
 #ee-shared-header .ee-more[open] .ee-chevron{transform:rotate(180deg)}
 #ee-shared-header .ee-more-panel{
  position:absolute;right:0;top:calc(100% + 8px);display:flex;flex-direction:column;
- width:204px;padding:7px;gap:2px;border:1px solid #dce7da;border-radius:12px;
- background:#fff;box-shadow:0 12px 30px #193a2a20;
+ width:204px;padding:7px;gap:2px;border:1px solid #d9e4ff;border-radius:12px;
+ background:#fff;box-shadow:0 12px 30px #1b243820;
 }
 #ee-shared-header .ee-more-panel a{justify-content:flex-start;min-height:39px;padding:9px 10px;font-size:13px;border-radius:8px}
 #ee-shared-header .ee-more>summary:focus-visible{outline:3px solid #e3b45c;outline-offset:2px}
@@ -142,7 +142,7 @@
   padding:9px 11px;font-size:13px;border-radius:9px
  }
  #ee-shared-header .ee-more-panel{
-  position:static;width:auto;box-shadow:none;border:0;border-left:2px solid #dce7da;
+  position:static;width:auto;box-shadow:none;border:0;border-left:2px solid #d9e4ff;
   border-radius:0;margin:2px 0 2px 10px;padding:2px 0 2px 8px;background:transparent
  }
  #ee-shared-header .ee-more-panel a{min-height:40px}
