@@ -39,7 +39,7 @@
         'mi-vocabulario.html':'perfil.html'
       };
       const section=paths[current]||current;
-      for(const link of header.querySelectorAll('.ee-nav > a')){
+      for(const link of header.querySelectorAll('.ee-nav a')){
         link.removeAttribute('aria-current');
         if(new URL(link.href,homeURL).pathname.endsWith('/'+section)){
           link.setAttribute('aria-current','page');
@@ -61,6 +61,7 @@
     toggle.setAttribute('aria-controls',nav.id);
     const setOpen=open=>{
       header.classList.toggle('ee-menu-open',open);
+      if(!open)header.querySelectorAll('.ee-more[open]').forEach(item=>item.open=false);
       toggle.setAttribute('aria-expanded',String(open));
       toggle.setAttribute('aria-label',open?'Cerrar menú de navegación':'Abrir menú de navegación');
     };
@@ -72,6 +73,10 @@
     });
     nav.addEventListener('click',event=>{
       if(event.target.closest('a'))setOpen(false);
+    });
+    const more=header.querySelector('.ee-more');
+    document.addEventListener('click',event=>{
+      if(more?.open&&!more.contains(event.target))more.open=false;
     });
     document.addEventListener('click',event=>{
       if(!header.contains(event.target))setOpen(false);
