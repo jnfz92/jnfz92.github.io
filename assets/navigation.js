@@ -99,9 +99,13 @@
     const main=document.querySelector('body.ee-unified-article > main');
     if(!main||main.dataset.eeReadingReady==='true')return;
     main.dataset.eeReadingReady='true';
-    const sections=[...main.querySelectorAll('h2')].filter(h=>
-      !h.closest('#comentarios,nav,.ee-reading-toc,footer')&&h.textContent.trim().length>2
-    );
+    const chapters=[...main.querySelectorAll('.ee-unified-chapter > h2')];
+    // Las guías fusionadas pueden tener más de cien h2: el índice debe mostrar capítulos, no cada subtítulo.
+    const sections=chapters.length>=8
+      ?chapters
+      :[...main.querySelectorAll('h2')].filter(h=>
+        !h.closest('#comentarios,nav,.ee-reading-toc,footer')&&h.textContent.trim().length>2
+      );
     if(sections.length<5)return;
     const existing=new Set([...document.querySelectorAll('[id]')].map(n=>n.id));
     const slugify=s=>s.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,60);
