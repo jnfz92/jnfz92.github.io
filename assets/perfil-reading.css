@@ -61,12 +61,12 @@
  padding:clamp(27px,4vw,43px) clamp(24px,5vw,52px)!important;
  background:linear-gradient(115deg,#16213a,#223664 75%,#374b7b)!important;
  border-radius:22px!important;
- box-shadow:0 14px 35px rgba(24,70,48,.13)!important;
+ box-shadow:0 14px 35px rgba(30,94,255,.13)!important;
  overflow:hidden;
 }
 .ee-site.ee-profile .hero::after{
  content:"";position:absolute;right:-85px;top:-130px;width:370px;height:370px;
- border:1px solid rgba(235,255,237,.2);border-radius:50%;pointer-events:none;
+ border:1px solid rgba(238,244,255,.2);border-radius:50%;pointer-events:none;
 }
 .ee-site.ee-profile .hero h1{
  font-size:clamp(31px,4.8vw,49px)!important;
@@ -87,7 +87,7 @@
  background:var(--profile-surface);
  border:1px solid var(--profile-border)!important;
  border-radius:18px!important;
- box-shadow:0 5px 22px rgba(28,75,47,.045)!important;
+ box-shadow:0 5px 22px rgba(30,94,255,.045)!important;
  padding:clamp(19px,2.8vw,27px);
 }
 .ee-site.ee-profile #privateDashboard .profile-highlights{
