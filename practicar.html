@@ -115,7 +115,23 @@ permalink: /practicar.html
 .exam-login-hint{border:1px solid #d8e6da;background:#f9fcf9;padding:24px!important;border-radius:18px;scroll-margin-top:100px}
 .exam-login-hint h2{font-size:clamp(22px,3vw,27px);margin:0 0 10px;color:#174d38}
 .exam-login-hint p{color:#52685a;line-height:1.65}
-</style></head><body class="ee-site ee-exam">{% include header.html %}<main><section class="exam-hero"><span class="exam-eyebrow">✦ EASY ENGLISH · PRACTICE ZONE</span><h1>Practica. Mejora.<br><em>Supérate.</em></h1><p>Responde a tu ritmo, recibe explicaciones y guarda cada resultado en tu perfil.</p><div class="exam-hero-pills"><span>✓ Exámenes de varios niveles</span><span>✓ Corrección explicada</span><span>✓ Progreso guardado</span></div></section><div class="exam-main-grid"><div class="exam-workspace"><section class="panel exam-account"><h2>👤 Tu sesión de aprendizaje</h2><form id="login"><label>Correo electrónico <input id="email" type="email" required autocomplete="email"></label><label>Contraseña <input id="password" type="password" minlength="6" required autocomplete="current-password"></label><button>Iniciar sesión</button><button type="button" id="signup">Registrarme</button></form><div id="connected" hidden><p id="session"></p><button type="button" id="logout">Cerrar sesión</button><a href="perfil.html" style="margin-left:10px">Ver mi perfil →</a></div></section><p id="message" role="status"></p><section id="cuaderno-fallos" class="panel review-notebook" aria-labelledby="reviewNotebookTitle">
+</style>
+<style>
+/* Consistencia de los exámenes: controles, estados y enfoque accesible. */
+.ee-site.ee-exam :is(.catalog-card,.panel,fieldset){border-color:#dce6df;border-radius:16px}
+.ee-site.ee-exam :is(button,.cta,.catalog-go,.review-start-primary,[type="submit"]){min-height:44px}
+.ee-site.ee-exam :is(button,a,input,select,textarea):focus-visible{
+ outline:3px solid #e3b45c!important;outline-offset:3px
+}
+.ee-site.ee-exam :is(.feedback,.exam-report-error){line-height:1.65}
+.ee-site.ee-exam :is(#message,#catalogStatus,#reviewStatus){min-height:1.5em}
+@media(max-width:640px){
+ .ee-site.ee-exam :is(.panel,.catalog-card,fieldset){max-width:100%;min-width:0}
+ .ee-site.ee-exam :is(input,select,textarea){max-width:100%;box-sizing:border-box}
+ .ee-site.ee-exam .catalog-card{padding:18px}
+}
+</style>
+</head><body class="ee-site ee-exam">{% include header.html %}<main><section class="exam-hero"><span class="exam-eyebrow">✦ EASY ENGLISH · PRACTICE ZONE</span><h1>Practica. Mejora.<br><em>Supérate.</em></h1><p>Responde a tu ritmo, recibe explicaciones y guarda cada resultado en tu perfil.</p><div class="exam-hero-pills"><span>✓ Exámenes de varios niveles</span><span>✓ Corrección explicada</span><span>✓ Progreso guardado</span></div></section><div class="exam-main-grid"><div class="exam-workspace"><section class="panel exam-account"><h2>👤 Tu sesión de aprendizaje</h2><form id="login"><label>Correo electrónico <input id="email" type="email" required autocomplete="email"></label><label>Contraseña <input id="password" type="password" minlength="6" required autocomplete="current-password"></label><button>Iniciar sesión</button><button type="button" id="signup">Registrarme</button></form><div id="connected" hidden><p id="session"></p><button type="button" id="logout">Cerrar sesión</button><a href="perfil.html" style="margin-left:10px">Ver mi perfil →</a></div></section><p id="message" role="status"></p><section id="cuaderno-fallos" class="panel review-notebook" aria-labelledby="reviewNotebookTitle">
 <div class="exam-section-tag">TU PLAN DE MEJORA</div>
 <h2 id="reviewNotebookTitle">📘 Mi cuaderno de fallos</h2>
 <div id="reviewLoginHint" class="review-login-hint">
