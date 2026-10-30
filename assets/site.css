@@ -83,7 +83,7 @@ body.ee-site{background:#f7faff;color:#1f2a44}
  --ee-card-radius:18px;
  --ee-control-radius:11px;
  --ee-card-border:#dbe0e8;
- --ee-card-shadow:0 7px 23px rgba(21,62,41,.07);
+ --ee-card-shadow:0 7px 23px rgba(30,94,255,.07);
 }
 .ee-site :is(.grid .card,.ee-path,.catalog-card){
  border-radius:var(--ee-card-radius);
