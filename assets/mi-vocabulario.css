@@ -1,1 +1,45 @@
 .ee-vocab-hero{margin-bottom:32px}.ee-vocab-hero .hero-copy{max-width:780px}.ee-vocab-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:20px 0}.ee-vocab-stats>div{background:#fff;border:1px solid var(--ee-line,#d9e4ff);border-radius:14px;padding:18px;display:grid;gap:4px}.ee-vocab-stats strong{font-size:32px;color:var(--ee-green,#1e5eff)}.ee-vocab-stats span{color:var(--ee-muted,#4c586d)}.ee-vocab-settings,.ee-vocab-card{background:#fff;border:1px solid var(--ee-line,#d9e4ff);border-radius:18px;padding:22px;margin:22px 0}.ee-vocab-settings summary{font-weight:800;cursor:pointer}.ee-vocab-settings form{display:grid;gap:12px;margin-top:18px;max-width:580px}.ee-vocab-settings label,.ee-vocab-settings legend{font-weight:700}.ee-vocab-settings input[type=number],.ee-vocab-settings select{width:100%;padding:12px;border:1px solid #a9b2c3;border-radius:10px;font:inherit}.ee-vocab-settings fieldset{border:1px solid #d9e4ff;border-radius:12px}.ee-vocab-levels{display:flex;flex-wrap:wrap;gap:14px;margin-top:10px}.ee-vocab-actions,.ee-vocab-ratings{display:flex;flex-wrap:wrap;gap:12px;margin:18px 0}.ee-vocabulario button{padding:12px 18px;border:1px solid #1e5eff;border-radius:11px;background:#1e5eff;color:white;font:inherit;font-weight:800;cursor:pointer}.ee-vocabulario button:disabled{opacity:.55;cursor:wait}.ee-vocabulario .ee-vocab-secondary{color:#1e5eff;background:white}.ee-vocab-card{text-align:center;max-width:720px;margin:26px auto}.ee-vocab-card-meta{display:flex;justify-content:space-between;color:#667085;font-size:14px}.ee-vocab-question{color:#667085}.ee-vocab-card h2{font-size:clamp(32px,6vw,52px);margin:35px 0}.ee-vocab-card h3{color:#1e5eff;font-size:28px}.ee-vocab-ratings{justify-content:center}.ee-vocab-ratings button:first-child{background:#842b32;border-color:#842b32}.ee-vocab-ratings button:nth-child(2){background:#865b17;border-color:#865b17}.ee-vocab-complete{font-weight:800;padding:22px;text-align:center}.ee-vocabulario :focus-visible{outline:3px solid #e4a52f;outline-offset:3px}[hidden]{display:none!important}@media(max-width:600px){.ee-vocab-stats{grid-template-columns:1fr}.ee-vocab-settings,.ee-vocab-card{padding:16px}.ee-vocab-ratings button{flex:1}}
+/* Quiz de tres respuestas: misma identidad azul y blanca de Easy English. */
+.ee-vocabulario .ee-vocab-options{border:0!important;box-shadow:none!important;padding:0;margin:18px 0 0;min-width:0}
+.ee-vocabulario .ee-vocab-options-label{width:100%;margin:0 0 11px;color:#536585;font-weight:750;font-size:14px}
+.ee-vocabulario .ee-vocab-option-list{display:grid;grid-template-columns:1fr;gap:11px}
+.ee-vocabulario button.ee-vocab-option{
+ display:flex;justify-content:flex-start;align-items:center;text-align:left;
+ width:100%;min-height:58px;padding:14px 18px;border:1.5px solid #cfddf7;
+ border-radius:13px;background:#f7faff;color:#1f2a44;box-shadow:none;
+ font-size:16px;font-weight:750;line-height:1.4;white-space:normal;
+ transition:background .16s,border-color .16s,box-shadow .16s;
+}
+.ee-vocabulario button.ee-vocab-option:not(:disabled):hover{
+ border-color:#1e5eff;background:#eef4ff;box-shadow:0 3px 12px #1e5eff16
+}
+.ee-vocabulario button.ee-vocab-option:disabled{opacity:1;cursor:default}
+.ee-vocabulario button.ee-vocab-option.is-correct,
+.ee-vocabulario button.ee-vocab-option.is-correct:disabled{
+ background:#e9f1ff;color:#163e8c;border-color:#1e5eff;
+ box-shadow:inset 4px 0 0 #1e5eff
+}
+.ee-vocabulario button.ee-vocab-option.is-incorrect,
+.ee-vocabulario button.ee-vocab-option.is-incorrect:disabled{
+ background:#fff0ef;color:#9b3030;border-color:#d67c7c;
+ box-shadow:inset 4px 0 0 #bf4444
+}
+.ee-vocabulario .ee-vocab-feedback{
+ margin:18px 0 0;padding:18px 20px;border-radius:13px;
+ background:#eef4ff;border:1px solid #cfddf7;text-align:left
+}
+.ee-vocabulario #vocab-result{margin:0 0 6px;font-weight:850;color:#163e8c}
+.ee-vocabulario .ee-vocab-feedback h3{margin:5px 0;color:#1e5eff;font-size:22px}
+.ee-vocabulario .ee-vocab-feedback p:last-child{margin-bottom:0;color:#536585}
+.ee-vocabulario button.ee-vocab-next{
+ display:block;margin:18px auto 0;min-width:220px;min-height:48px;
+ background:#1e5eff;color:#fff;border:1px solid #1e5eff
+}
+.ee-vocabulario button.ee-vocab-next:hover{background:#163e8c;border-color:#163e8c}
+.ee-vocabulario button.ee-vocab-next:disabled{opacity:.6}
+.ee-vocabulario .ee-vocab-card h2{margin:23px 0 25px;overflow-wrap:anywhere}
+@media(max-width:600px){
+ .ee-vocabulario button.ee-vocab-option{min-height:58px;padding:13px 14px;font-size:15px}
+ .ee-vocabulario button.ee-vocab-next{width:100%}
+}
+@media(prefers-reduced-motion:reduce){.ee-vocabulario button.ee-vocab-option{transition:none}}
