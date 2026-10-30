@@ -49,6 +49,38 @@
     if(/vocab|environment|pollution|crime|word/.test(source))return 'Vocabulario';
     return 'Otros temas';
   }
+  // Subtemas B2 derivados del enunciado, la fuente y el tipo de actividad.
+  // Se conservan las etiquetas generales para no invalidar preferencias antiguas.
+  function b2TopicsFor(q){
+    const source=String(q.fuente_url||q.actividades?.titulo||'').toLowerCase();
+    const question=String(q.enunciado||'').toLowerCase();
+    const tags=[];
+    const add=(condition,topic)=>{if(condition)tags.push(topic)};
+    add(/present-perfect-vs-past-simple|pasados-vs-present-perfect/.test(source),'Present Perfect vs Past Simple');
+    add(/past-perfect|perfect-continuous/.test(source)||(/tenses|tiempos|past|present/.test(source)&&/past perfect|had been|had \w+(?:ed|en)\b/.test(question)),'Past Perfect y tiempos perfectos');
+    add(/future|futuro/.test(source),'Formas de futuro');
+    add(/second-conditional|third-conditional/.test(source)||(/condition/.test(source)&&/second conditional|third conditional/.test(question)),'Second y Third Conditional');
+    add(/condition/.test(source)&&/mixed conditional/.test(question),'Mixed Conditionals');
+    add(/voz-pasiva|passive/.test(source)&&/get passive|get-passive|reporting|it is said|is believed|have something done|by the agent/.test(question),'Voz pasiva avanzada');
+    add(/modal|might|must-have-to/.test(source)&&/must have|might have|could have|can't have|may have|should have|ought to have|would have/.test(question),'Modales en pasado');
+    add(/modal|might|must-have-to/.test(source)&&/must be|can't be|might be|could be|may be|deduc|probably|certain/.test(question),'Modales de deducción');
+    add(/relative-clauses|in-which|relativ/.test(source),'Relative Clauses');
+    add(/reported|direct-speech/.test(source)&&/question|asked|wondered|whether|if\b/.test(question),'Reported Questions');
+    add(/linking-words|conectores|despite|in-spite-of|contrast/.test(source),'Linking Words y contraste');
+    add(/used-to-would-be-used-to-get-used-to/.test(source),'Used to / Be used to');
+    add(/gerund-infinitive/.test(source),'Gerundio vs infinitivo B2');
+    add(/verbos-preposicion|verbos-con-preposiciones|preposition/.test(source),'Preposiciones dependientes');
+    add(/word-formation|formacion-(?:adjetivos|sustantivos|adverbios)|negative-prefix|prefix/.test(source),'Word Formation');
+    add(q.tipo==='transformacion'||/transformation|keyword|key-word/.test(source),'Key Word Transformations');
+    add(/phrasal/.test(source),'Phrasal Verbs B2');
+    add(/make-vs-do|collocation/.test(source),'Collocations (Make / Do)');
+    add(/vocabulario-viajes/.test(source),'Vocabulario de viajes B2');
+    add(/vocabulario-15-octubre-(?:dinero-estudios|trabajo-personas)/.test(source),'Vocabulario de trabajo y dinero');
+    add(/writing-b2-essay/.test(source),'Writing B2: Essay');
+    add(/writing-b2-formal-letter|writing-b2-formal-email/.test(source),'Writing B2: Formal Email');
+    add(/writing-b2-(?:report|review|story)/.test(source),'Writing B2: Report / Review / Story');
+    return tags;
+  }
   function reviewDue(q){
     return q._kind==='activity'||!q._next||new Date(q._next).getTime()<=Date.now();
   }
@@ -84,7 +116,7 @@
       .map(row=>({...row.actividad_preguntas,_kind:'activity',_times:row.veces_fallada||1,
         _last:row.ultimo_fallo,_next:null}));
     const all=[...classic,...activity];
-    all.forEach(q=>q._topic=topicFor(q));
+    all.forEach(q=>{q._topic=topicFor(q);q._b2Topics=b2TopicsFor(q);q._topics=[q._topic,...q._b2Topics.filter(t=>t!==q._topic)];});
     return all;
   }
   function setOverview(all){
@@ -98,7 +130,7 @@
       const caption=document.createElement('span');caption.textContent=label;
       card.append(count,caption);stats.append(card);
     }
-    const counts=new Map();for(const q of all)counts.set(q._topic,(counts.get(q._topic)||0)+1);topicSelect.replaceChildren();for(const name of [...counts.keys()].sort((a,b)=>a.localeCompare(b,'es'))){const label=document.createElement('label'),check=document.createElement('input');check.type='checkbox';check.value=name;check.checked=selectedTopics.has(name);label.append(check,document.createTextNode(' '+name+' ('+counts.get(name)+')'));topicSelect.append(label);}
+    const counts=new Map();for(const q of all)for(const name of q._topics)counts.set(name,(counts.get(name)||0)+1);topicSelect.replaceChildren();for(const name of [...counts.keys()].sort((a,b)=>a.localeCompare(b,'es'))){const label=document.createElement('label'),check=document.createElement('input');check.type='checkbox';check.value=name;check.checked=selectedTopics.has(name);label.append(check,document.createTextNode(' '+name+' ('+counts.get(name)+')'));topicSelect.append(label);}
   }
   async function refreshOverview(){
     const version=++statsRevision;
@@ -199,7 +231,7 @@
       label.textContent=(index+1)+'. '+q.enunciado;
       group.append(label);
       const priority=document.createElement('small');priority.className='review-priority';
-      priority.textContent='📌 '+(q._topic||'Otros temas')+' · '+q._times+' fallo'+(q._times===1?'':'s')+
+      priority.textContent='📌 '+(q._topic||'Otros temas')+(q._b2Topics?.length?' · B2: '+q._b2Topics.join(', '):'')+' · '+q._times+' fallo'+(q._times===1?'':'s')+
         (reviewDue(q)?' · Para repasar hoy':' · Programada para más adelante');
       group.append(priority);
       if(!classic){
@@ -261,7 +293,7 @@
       setOverview(available);
       const requested=selectedFilter();
       const mode=filter.value;
-      let chosen=available.filter(q=>(!requested.size||requested.has(q._topic))&&
+      let chosen=available.filter(q=>(!requested.size||q._topics.some(name=>requested.has(name)))&&
         (mode==='hoy'?reviewDue(q):mode==='reincidentes'?q._times>=2:true));
       if(!chosen.length){
         reset();
