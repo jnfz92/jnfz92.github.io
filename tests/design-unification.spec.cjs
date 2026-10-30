@@ -19,7 +19,7 @@ test('Artículos con CSS propio adoptan la plantilla editorial unificada', async
   await expect(page.locator('#ee-shared-header')).toHaveCount(1);
   await expect(page.locator('#ee-shared-header a[href="/mi-vocabulario.html"]')).toHaveCount(0);
   const background = await page.locator('body').evaluate(el => getComputedStyle(el).backgroundColor);
-  expect(background).toBe('rgb(245, 247, 241)');
+  expect(background).toBe('rgb(247, 250, 255)');
 });
 
 test('Artículos sin CSS propio tienen jerarquía, tablas legibles y ancho responsivo', async ({ page }) => {
