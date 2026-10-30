@@ -23,6 +23,10 @@ permalink: /leer.html
   if(s.startsWith('phrasal-verbs-verbo-'))return 'phrasal-verbs-verbo-take';
   if(['despite-vs-in-spite-of','nonetheless-contrast'].includes(s))return 'linking-words-of-contrast';
   if(['negative-prefixes','formacion-sustantivos-ingles','formacion-adverbios-ingles'].includes(s))return 'formacion-adjetivos-ingles';
+  if(s==='english-tenses-overview')return 'guia-tiempos-verbales-ingles-presente-pasado-futuro-trucos-examen';
+  if(s==='future-going-to-present-continuous')return 'todos-los-tiempos-de-futuro-en-ingles';
+  if(s==='present-perfect-vs-past-simple')return 'pasados-vs-present-perfect-simple-continuous';
+  if(s==='trucos-tiempos-verbales-writing-b2')return 'como-usar-tiempos-verbales-carta-email-writing-b1-b2';
   return s;
  };
  const resolveSlug=s=>mergedSlug(aliases[s]||s);
