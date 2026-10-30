@@ -2,11 +2,11 @@
 permalink: /leer.html
 ---
 <!doctype html>
-<html lang="es"><head><link rel="icon" type="image/svg+xml" href="/favicon.svg?v=20261017-ee"><meta name="theme-color" content="#005B3C"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<html lang="es"><head><link rel="icon" type="image/svg+xml" href="/favicon.svg?v=20261017-ee"><meta name="theme-color" content="#1e5eff"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="description" content="Lecciones y artículos de Easy English.">
 <title>Cargando lección · Easy English</title>
-<link rel="stylesheet" href="assets/site.css?v=20261030-blue-1">
-<style>body{font-family:system-ui,sans-serif;background:#f7f7f4;color:#161a22;margin:0}.loader{max-width:720px;margin:12vh auto;padding:24px}.loader a{color:#1e5eff}</style><link rel="stylesheet" href="/assets/navigation.css?v=20261030-blue-1"><script src="/assets/navigation.js?v=20261030-reader-3" defer></script></head>
+<link rel="stylesheet" href="assets/site.css?v=20261030-unified-blue-2">
+<style>body{font-family:system-ui,sans-serif;background:#f7faff;color:#161a22;margin:0}.loader{max-width:720px;margin:12vh auto;padding:24px}.loader a{color:#1e5eff}</style><link rel="stylesheet" href="/assets/navigation.css?v=20261030-unified-blue-2"><script src="/assets/navigation.js?v=20261030-reader-3" defer></script></head>
 <body>{% include header.html %}<main class="loader"><h1>Easy English</h1><p id="loading" role="status">Cargando el artículo desde Supabase…</p><p><a href="articulos.html">Volver al blog</a></p></main>
 <script>
 (async function(){
@@ -211,11 +211,11 @@ permalink: /leer.html
   // El articulo llega como documento HTML completo desde Supabase.
   // Cargar tambien la barra de navegacion en el documento sustituido.
   const navStyle=doc.createElement('link');navStyle.rel='stylesheet';
-  navStyle.href=new URL('/assets/navigation.css?v=20261030-blue-1',location.href).href;
+  navStyle.href=new URL('/assets/navigation.css?v=20261030-unified-blue-2',location.href).href;
   doc.head.append(navStyle);
   const editorialStyle=doc.createElement('link');
   editorialStyle.rel='stylesheet';
-  editorialStyle.href=new URL('/assets/article-unified.css?v=20261030-blue-1',location.href).href;
+  editorialStyle.href=new URL('/assets/article-unified.css?v=20261030-unified-blue-2',location.href).href;
   doc.head.append(editorialStyle);
   const navScript=doc.createElement('script');
   navScript.src=new URL('/assets/navigation.js?v=20261030-reader-3',location.href).href;
