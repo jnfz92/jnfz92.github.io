@@ -8,11 +8,19 @@ permalink: /articulos.html
 .ee-library .clear-library-search[hidden]{display:none}
 .ee-library .filters{overflow-x:auto;scrollbar-width:thin;-webkit-overflow-scrolling:touch}
 .ee-library .search-wrap input{min-width:0}
+.ee-library .ee-library-controls{display:flex;flex-wrap:wrap;gap:14px;margin:14px 0;align-items:center}
+.ee-library .ee-library-controls label{display:flex;align-items:center;gap:8px;color:#174c39;font-weight:650;font-size:.94rem}
+.ee-library .ee-library-controls select{font:inherit;color:#174c39;background:#fff;border:1px solid #a4c5b0;border-radius:9px;padding:9px 12px;max-width:100%}
+.ee-library .ee-library-controls select:focus-visible{outline:3px solid #eab44e;outline-offset:2px}
 @media(prefers-reduced-motion:reduce){.ee-library .blog .grid .card{scroll-behavior:auto}}
 </style></head><body class="ee-site ee-library">{% include header.html %}<main class="container"><section class="hero"><span class="eyebrow">Tu biblioteca de inglés</span><h1>Una lección.<br>Un paso más.</h1><p>Encuentra tu próximo tema: gramática, vocabulario y expresiones para usar en el día a día. Busca una palabra o explora por categoría.</p></section><section class="blog" id="articulos">
 <div class="blog-head"><div><span class="eyebrow">Biblioteca de aprendizaje</span><h2>Explora las lecciones</h2><p>Encuentra rápidamente lo que necesitas estudiar.</p></div><label class="search-wrap" for="articleSearch">⌕ <input id="articleSearch" type="search" placeholder="Buscar por tema o palabra..." autocomplete="off"></label></div>
 <div class="filters" aria-label="Filtrar artículos por categoría">
-<button class="filter active" data-filter="all">Todos</button><button class="filter" data-filter="lesson">Lecciones</button><button class="filter" data-filter="exam">Exámenes</button><button class="filter" data-filter="grammar">Grammar</button><button class="filter" data-filter="vocabulary">Vocabulary</button><button class="filter" data-filter="speaking">Speaking</button><button class="filter" data-filter="listening">Listening</button>
+<button class="filter active" data-filter="all">Todos</button><button class="filter" data-filter="lesson">Lecciones</button><button class="filter" data-filter="exam">Exámenes</button><button class="filter" data-filter="grammar">Grammar</button><button class="filter" data-filter="vocabulary">Vocabulary</button><button class="filter" data-filter="speaking">Speaking</button><button class="filter" data-filter="writing">Writing</button><button class="filter" data-filter="listening">Listening</button>
+</div>
+<div class="ee-library-controls" aria-label="Orden y nivel de los artículos">
+<label for="articleLevel">Nivel <select id="articleLevel"><option value="all">Todos los niveles</option><option value="A1">A1</option><option value="A2">A2</option><option value="B1">B1</option><option value="B2">B2</option><option value="C1">C1</option></select></label>
+<label for="articleSort">Ordenar por <select id="articleSort"><option value="curriculum">Ruta de aprendizaje</option><option value="level">Nivel: básico a avanzado</option><option value="recent">Más recientes</option></select></label>
 </div>
 <p class="result-count" id="resultCount" aria-live="polite"></p>
 <div class="grid">
@@ -95,6 +103,10 @@ const query=document.getElementById('articleSearch');
 const resultCount=document.getElementById('resultCount');
 const searchCache=new WeakMap();
 let category='all';
+const levelSelect=document.getElementById('articleLevel');
+const sortSelect=document.getElementById('articleSort');
+const levelNumber={A1:1,A2:2,B1:3,B2:4,C1:5};
+function levelIncludes(range,target){const parts=String(range||'').split('-').map(s=>s.trim());const n=levelNumber[target];return !!n&&!!levelNumber[parts[0]]&&n>=levelNumber[parts[0]]&&n<=levelNumber[parts[parts.length-1]];}
 let cards=[];
 const normalize=s=>String(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLocaleLowerCase('es');
 function cacheArticles(){
@@ -109,7 +121,7 @@ function refreshArticles(){
  const term=normalize(query.value.trim());
  let visible=0;
  for(const card of cards){
-  const show=(category==='all'||card.dataset.cat===category)&&(!term||searchCache.get(card).includes(term));
+  const show=(category==='all'||card.dataset.cat===category)&&(levelSelect.value==='all'||levelIncludes(card.dataset.level,levelSelect.value))&&(!term||searchCache.get(card).includes(term));
   card.hidden=!show;
   if(show)visible++;
  }
@@ -125,10 +137,12 @@ filters.forEach(button=>button.addEventListener('click',()=>{
  refreshArticles();
 }));
 query.addEventListener('input',refreshArticles);
+levelSelect.addEventListener('change',refreshArticles);
+sortSelect.addEventListener('change',()=>{if(typeof window.easyEnglishSortArticles==='function')window.easyEnglishSortArticles(sortSelect.value)});
 const clear=document.createElement('button');clear.type='button';clear.id='clearSearch';clear.textContent='Limpiar búsqueda';clear.className='clear-library-search';clear.hidden=true;
 clear.addEventListener('click',()=>{query.value='';query.focus();refreshArticles()});
 query.closest('.search-wrap').insertAdjacentElement('afterend',clear);
 filters.forEach(x=>x.setAttribute('aria-pressed',String(x.classList.contains('active'))));
 cacheArticles();refreshArticles();
 document.addEventListener('easyenglish:articles-loaded',()=>{cacheArticles();refreshArticles()});
-</script><script src="assets/articulos-supabase.js?v=20261019-library-opt" defer></script></body></html>
+</script><script src="assets/articulos-supabase.js?v=20261030-learning-order-1" defer></script></body></html>
