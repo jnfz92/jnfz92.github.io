@@ -1,0 +1,23 @@
+name: Quality checks
+on:
+  push:
+    branches: [main]
+    paths:
+      - '**/*.html'
+      - 'assets/articulos-supabase.js'
+      - 'assets/navigation.js'
+      - '_includes/header.html'
+      - 'sitemap.xml'
+      - 'robots.txt'
+      - 'scripts/check_catalog.py'
+      - '.github/workflows/site-quality.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  validate-site:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check catalog and navigation
+        run: python3 scripts/check_catalog.py
