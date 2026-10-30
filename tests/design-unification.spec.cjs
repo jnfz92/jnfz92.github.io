@@ -23,6 +23,12 @@ test('Artículos con CSS propio adoptan la plantilla editorial unificada', async
 });
 
 test('Artículos sin CSS propio tienen jerarquía, tablas legibles y ancho responsivo', async ({ page }) => {
+  const html='<html lang="es"><head><title>Present and Past Tenses</title></head><body><main><h1>Present and Past Tenses</h1><table><tr><th>Tiempo</th><td>Present</td></tr></table></main></body></html>';
+  await page.route('**/rest/v1/articulos?**', async route=>{
+    const select=new URL(route.request().url()).searchParams.get('select')||'';
+    const row={html,titulo:'Present and Past Tenses',descripcion:'Prueba de tabla'};
+    await route.fulfill({status:200,json:[Object.fromEntries(Object.entries(row).filter(([key])=>select.split(',').includes(key)))],headers:{'access-control-allow-origin':'*'}});
+  });
   await page.goto('/leer.html?slug=revision-present-past-tenses-20-respuestas-explicadas');
   await expect(page.locator('body.ee-unified-article')).toBeVisible({ timeout: 25000 });
   await expect(page.locator('main h1').first()).toContainText('Present and Past Tenses');

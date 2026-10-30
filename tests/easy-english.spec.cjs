@@ -102,7 +102,9 @@ test('abrir artículo conserva la navegación',async ({page})=>{
   await expect(page.getByRole('heading',{name:'Cómo escribir un email en B2 First'})).toBeVisible();
   await expect(page.locator('#ee-shared-header')).toHaveCount(1);
   if(mobile(page)){
-    await page.locator('.ee-nav-toggle').click();
+    const toggle=page.locator('.ee-nav-toggle');
+    await expect(toggle).toHaveAttribute('data-menu-ready','true');
+    await toggle.click();
     await expect(page.locator('#ee-primary-navigation')).toBeVisible();
   }
 });
