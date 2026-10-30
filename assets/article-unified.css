@@ -165,3 +165,18 @@ body.ee-unified-article .ee-next-lesson-actions a{
 }
 body.ee-unified-article .ee-next-lesson-actions a.ee-next-primary{background:#176447;color:#fff;border-color:#176447}
 @media(max-width:640px){body.ee-unified-article .ee-next-lesson{padding:18px 16px}}
+
+/* Correcciones para lectura y controles táctiles en móvil. */
+@media(max-width:700px){
+ body.ee-unified-article main :is(table,.table-scroll,.scroll){
+  max-width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch;
+ }
+ body.ee-unified-article main table{display:block;width:100%;white-space:normal}
+ body.ee-unified-article main :is(pre,code){max-width:100%;overflow-x:auto}
+ body.ee-unified-article main :is(input,textarea,select){max-width:100%;box-sizing:border-box}
+ body.ee-unified-article main :is(button,input[type="submit"],.ee-next-lesson-actions a){
+  min-height:44px;
+ }
+ body.ee-unified-article main :is(h2,h3)[id]{scroll-margin-top:70px}
+ body.ee-unified-article .ee-reading-top{bottom:max(14px,env(safe-area-inset-bottom));min-height:44px;display:inline-flex;align-items:center}
+}
