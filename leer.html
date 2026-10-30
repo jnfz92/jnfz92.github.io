@@ -108,6 +108,44 @@ permalink: /leer.html
   if(!list.length||!list[0].html)throw new Error('Artículo no encontrado');
   const article=list[0];
   const doc=new DOMParser().parseFromString(article.html,'text/html');
+  // Unificar los colores de las hojas históricas del artículo sin modificar su contenido
+  // educativo en Supabase. Solo se transforman reglas CSS y atributos style.
+  function blueArticleColor(hex){
+    const direct={'#005b3c':'#1e5eff','#176447':'#1e5eff','#176449':'#1e5eff',
+      '#235347':'#163e8c','#1c604b':'#1e5eff','#f7f5ef':'#f7faff',
+      '#f5f7f1':'#f7faff','#e5f0ea':'#eef4ff','#dce5de':'#d9e4ff',
+      '#203129':'#1f2a44','#60716a':'#667085','#549f82':'#5595e9'};
+    const raw=hex.toLowerCase();
+    if(direct[raw])return direct[raw];
+    let value=raw.slice(1);
+    if(value.length===3||value.length===4)value=value.split('').map(ch=>ch+ch).join('');
+    if(value.length!==6&&value.length!==8)return hex;
+    const channels=[0,2,4].map(i=>parseInt(value.slice(i,i+2),16)/255);
+    const max=Math.max(...channels),min=Math.min(...channels),delta=max-min,light=(max+min)/2;
+    if(!delta)return hex;
+    const sat=delta/(1-Math.abs(2*light-1));
+    let hue=max===channels[0]?((channels[1]-channels[2])/delta)%6:
+      max===channels[1]?(channels[2]-channels[0])/delta+2:
+      (channels[0]-channels[1])/delta+4;
+    hue=(hue*60+360)%360;
+    if(hue<62||hue>194||sat<.055)return hex;
+    const a=Math.min(.86,Math.max(.18,sat*.9))*Math.min(light,1-light);
+    const channel=n=>{const k=(n+219/30)%12;return light-a*Math.max(-1,Math.min(k-3,9-k,1))};
+    return '#'+[channel(0),channel(8),channel(4)]
+      .map(n=>Math.round(n*255).toString(16).padStart(2,'0')).join('')+
+      (value.length===8?value.slice(6):'');
+  }
+  const blueArticleCSS=css=>css.replace(/#[0-9a-f]{3,8}\\b/gi,blueArticleColor);
+  doc.querySelectorAll('style').forEach(style=>{style.textContent=blueArticleCSS(style.textContent)});
+  doc.querySelectorAll('[style]').forEach(node=>{
+    node.setAttribute('style',blueArticleCSS(node.getAttribute('style')));
+  });
+  for(const sheet of doc.querySelectorAll('link[rel="stylesheet"]')){
+    const url=new URL(sheet.getAttribute('href'),location.href);
+    if(url.pathname.endsWith('/assets/site.css'))
+      sheet.href='/assets/site.css?v=20261030-unified-blue-2';
+  }
+
   if(!doc.querySelector('main'))throw new Error('El contenido del artículo no incluye la sección principal');
   // Una misma plantilla editorial para todos los artículos, con o sin CSS de origen.
   doc.body.classList.add('ee-site','ee-unified-article');
