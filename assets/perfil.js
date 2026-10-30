@@ -325,7 +325,7 @@ function profileBars(panel,heading,items,color){
   head.append(profileNode('span',v.topic),profileNode('strong',v.percent+'% · '+v.hits+'/'+v.total+' aciertos'));
   const track=profileNode('div',undefined,'skill-track'),bar=profileNode('div',undefined,'skill-fill');
   bar.style.width=v.percent+'%';bar.style.background=color;track.append(bar);wrap.append(head,track);
-  if(heading==='Lo que debo corregir'){const a=profileNode('a','Generar examen de '+v.topic);a.href='practicar.html?repaso=fallos&tema='+encodeURIComponent(v.topic);a.style.cssText='display:inline-block;margin:8px 0 4px;color:#176449;font-size:14px;font-weight:800;text-decoration:underline';wrap.append(a)}
+  if(heading==='Lo que debo corregir'){const a=profileNode('a','Generar examen de '+v.topic);a.href='practicar.html?repaso=fallos&tema='+encodeURIComponent(v.topic);a.style.cssText='display:inline-block;margin:8px 0 4px;color:#1e5eff;font-size:14px;font-weight:800;text-decoration:underline';wrap.append(a)}
   panel.append(wrap);
  }
 }
@@ -347,7 +347,7 @@ async function loadActivityCalendar(owner){
   cell.setAttribute('aria-label',cell.title);calendar.append(cell);
  }
  panel.append(profileNode('p',days.size+' días con actividad registrada de los últimos 28.','muted'),calendar);
- if(!document.getElementById('calendar-style')){const css=profileNode('style');css.id='calendar-style';css.textContent='.calendar-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:8px;max-width:400px;margin:15px 0}.calendar-day{height:25px;border:1px solid #d9e6dc;border-radius:6px;background:#e6ede7}.calendar-active{background:#278458;border-color:#278458}';document.head.append(css)}
+ if(!document.getElementById('calendar-style')){const css=profileNode('style');css.id='calendar-style';css.textContent='.calendar-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:8px;max-width:400px;margin:15px 0}.calendar-day{height:25px;border:1px solid #d9e4ff;border-radius:6px;background:#e8f0ff}.calendar-active{background:#2a6fe0;border-color:#2a6fe0}';document.head.append(css)}
 }
 async function loadLearningStrengths(scores,owner){
  let panel=document.getElementById('learningStrengths');
@@ -372,9 +372,9 @@ async function loadLearningStrengths(scores,owner){
  const gauge=profileNode('section',undefined,'skill-objective');
  gauge.append(profileNode('h3','Precisión global de mis exámenes'));
  const ring=profileNode('div',undefined,'global-accuracy-ring');
- ring.style.cssText='margin:12px auto;width:135px;height:135px;border-radius:50%;display:grid;place-items:center;background:conic-gradient(#278458 '+accuracy+'%,#dce8de '+accuracy+'%);position:relative';
+ ring.style.cssText='margin:12px auto;width:135px;height:135px;border-radius:50%;display:grid;place-items:center;background:conic-gradient(#2a6fe0 '+accuracy+'%,#d9e4ff '+accuracy+'%);position:relative';
  const middle=profileNode('strong',accuracy+'%');
- middle.style.cssText='background:white;border-radius:50%;width:100px;height:100px;display:grid;place-items:center;font-size:28px;color:#176449';
+ middle.style.cssText='background:white;border-radius:50%;width:100px;height:100px;display:grid;place-items:center;font-size:28px;color:#1e5eff';
  ring.append(middle);gauge.append(ring,profileNode('p',allCorrect+' respuestas correctas de '+allQuestions+' en '+scores.length+' intentos','muted'));
  panel.append(gauge);
  const recent=scores.slice(0,30);
@@ -414,15 +414,15 @@ async function loadLearningStrengths(scores,owner){
  objective.append(profileNode('p',priority?'Esta semana practica '+priority.topic.toLowerCase()+': '+priority.hits+' de '+priority.total+' respuestas correctas ('+priority.percent+'%).':'Sigue haciendo exámenes: necesitas al menos 3 preguntas por tema para identificar prioridades fiables.'));
  if(priority){
   const goal=profileNode('div',undefined,'skill-track'),progress=profileNode('div',undefined,'skill-fill');
-  progress.style.width=priority.percent+'%';progress.style.background='#278458';goal.append(progress);
+  progress.style.width=priority.percent+'%';progress.style.background='#2a6fe0';goal.append(progress);
   objective.append(goal,profileNode('p','Objetivo recomendado: alcanzar al menos el 70 % de aciertos en este tema.','muted'));
  }
  const action=profileNode('a','Practicar ahora ↗');action.href='practicar.html';objective.append(action);panel.append(objective);
  panel.append(profileNode('p','Análisis de '+attempts+' intentos recientes con clasificación de temas revisada. Solo se clasifican las preguntas verificadas; no se infieren categorías ambiguas. Mínimo 3 respuestas por tema para valorar fortalezas y dificultades.','muted'));
- profileBars(panel,'Mis puntos fuertes',strengths,'#278458');
+ profileBars(panel,'Mis puntos fuertes',strengths,'#2a6fe0');
  profileBars(panel,'Lo que debo corregir',improve,'#c77d3d');
  const cssId='skill-profile-styles';
- if(!document.getElementById(cssId)){const css=profileNode('style');css.id=cssId;css.textContent='.skill-trend-chart{height:135px;display:flex;align-items:end;gap:7px;border-bottom:1px solid #bfd5c6;padding:7px 0}.skill-trend-bar{flex:1;min-width:8px;border-radius:5px 5px 0 0;background:#23845e}.skill-trend,.skill-objective{background:#f0f7f1;border-radius:15px;padding:17px;margin:16px 0}.skill-objective a{color:#176449;font-weight:800;text-decoration:underline}.skill-row{margin:13px 0}.skill-head{display:flex;justify-content:space-between;gap:10px;font-size:14px}.skill-track{height:10px;background:#e2eae4;border-radius:20px;overflow:hidden;margin-top:6px}.skill-fill{height:100%;border-radius:20px}';document.head.append(css)}
+ if(!document.getElementById(cssId)){const css=profileNode('style');css.id=cssId;css.textContent='.skill-trend-chart{height:135px;display:flex;align-items:end;gap:7px;border-bottom:1px solid #ccdcfa;padding:7px 0}.skill-trend-bar{flex:1;min-width:8px;border-radius:5px 5px 0 0;background:#2a6fe0}.skill-trend,.skill-objective{background:#eef4ff;border-radius:15px;padding:17px;margin:16px 0}.skill-objective a{color:#1e5eff;font-weight:800;text-decoration:underline}.skill-row{margin:13px 0}.skill-head{display:flex;justify-content:space-between;gap:10px;font-size:14px}.skill-track{height:10px;background:#e8f0ff;border-radius:20px;overflow:hidden;margin-top:6px}.skill-fill{height:100%;border-radius:20px}';document.head.append(css)}
 }
 async function results(){
  const box=$('examHistory');box.replaceChildren();
