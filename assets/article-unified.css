@@ -149,3 +149,19 @@ body.ee-unified-article main h2[id]{scroll-margin-top:85px}
  body.ee-unified-article .ee-reading-top{right:10px;bottom:11px}
 }
 @media(prefers-reduced-motion:reduce){body.ee-unified-article .ee-reading-top{transition:none}}
+
+/* Continuación pedagógica al terminar una lección. */
+body.ee-unified-article .ee-next-lesson{
+ margin:28px 0 22px;padding:22px 25px;background:#f1f8f3;
+ border:1px solid #d3e6d8;border-radius:17px;
+}
+body.ee-unified-article .ee-next-lesson h2{margin:0 0 8px;font-size:23px;color:#155b3c}
+body.ee-unified-article .ee-next-lesson p{margin:0 0 15px;color:#426150}
+body.ee-unified-article .ee-next-lesson-actions{display:flex;flex-wrap:wrap;gap:9px}
+body.ee-unified-article .ee-next-lesson-actions a{
+ display:inline-flex;align-items:center;min-height:40px;padding:9px 13px;
+ border:1px solid #bfd8c6;border-radius:10px;background:#fff;
+ color:#17583e;font-size:14px;font-weight:750;text-decoration:none;
+}
+body.ee-unified-article .ee-next-lesson-actions a.ee-next-primary{background:#176447;color:#fff;border-color:#176447}
+@media(max-width:640px){body.ee-unified-article .ee-next-lesson{padding:18px 16px}}
