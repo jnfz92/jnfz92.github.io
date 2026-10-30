@@ -38,7 +38,7 @@ check('aria-controls="ee-primary-navigation"' in header, "Falta la relación acc
 navigation_versions = set()
 for path in ["index.html","articulos.html","curso.html","examenes.html","practicar.html","writings.html","speaking-lab.html","leer.html"]:
     html = read(path)
-    versions = re.findall(r'(?:/)?assets/navigation\\.js\\?v=([a-zA-Z0-9._-]+)', html)
+    versions = re.findall(r'(?:/)?assets/navigation\.js\?v=([a-zA-Z0-9._-]+)', html)
     check(bool(versions), f"Falta la navegación compartida: {path}")
     navigation_versions.update(versions)
     check("<main" in html, f"Falta el contenido principal: {path}")
