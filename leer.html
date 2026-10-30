@@ -66,6 +66,30 @@ permalink: /leer.html
  }
  if(!slug||!/^[a-z0-9-]+$/.test(slug)){status.textContent='El enlace no corresponde a un artículo válido.';return}
  try{
+  // Este artículo privado requiere una sesión válida de Supabase.
+  // La protección real se aplica mediante RLS en la base de datos.
+  if(resolveSlug(slug)==='speaking-mi-rutina-jueves-fin-de-semana-b1-b2'){
+   await new Promise((resolve,reject)=>{
+    if(window.supabase?.createClient){resolve();return}
+    const script=document.createElement('script');
+    script.src='https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js';
+    script.onload=resolve;
+    script.onerror=()=>reject(new Error('No se pudo cargar la autenticación'));
+    document.head.append(script);
+   });
+   const client=window.supabase.createClient('https://wnluofonzteaqtlfshgy.supabase.co',key);
+   const {data:{session},error:authError}=await client.auth.getSession();
+   if(authError)throw authError;
+   if(!session?.access_token){
+    status.textContent='Este artículo es privado. Inicia sesión en Easy English para leerlo.';
+    const login=document.createElement('a');
+    login.href='/perfil.html';
+    login.textContent='Iniciar sesión en mi perfil';
+    status.after(login);
+    return;
+   }
+   headers.Authorization='Bearer '+session.access_token;
+  }
   const list=await loadJSON('articulos?select=html,titulo,descripcion&slug=eq.'+encodeURIComponent(resolveSlug(slug))+'&limit=1');
   if(!list.length||!list[0].html)throw new Error('Artículo no encontrado');
   const article=list[0];
