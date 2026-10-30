@@ -2,24 +2,32 @@
 const {test,expect}=require('@playwright/test');
 
 // El HTML de _includes/header.html es la única fuente de enlaces.
-const menuPaths=[
+const mainPaths=[
   '/index.html',
   '/articulos.html',
   '/curso.html',
-  '/writings.html',
   '/examenes.html',
   '/repasar-leidos.html',
+  '/perfil.html'
+];
+const morePaths=[
+  '/writings.html',
   '/speaking-lab.html',
-  '/perfil.html',
   '/comunidad.html',
   '/sugerencias.html'
 ];
 async function checkMenu(page){
   await expect(page.locator('body > #ee-shared-header')).toHaveCount(1);
   const items=page.locator('#ee-primary-navigation > a');
-  await expect(items).toHaveCount(menuPaths.length);
-  expect(await items.evaluateAll(nodes=>nodes.map(node=>new URL(node.href).pathname))).toEqual(menuPaths);
-  await expect(page.locator('#ee-primary-navigation > a[href="/mi-vocabulario.html"]')).toHaveCount(0);
+  await expect(items).toHaveCount(mainPaths.length);
+  expect(await items.evaluateAll(nodes=>nodes.map(node=>new URL(node.href).pathname))).toEqual(mainPaths);
+  const more=page.locator('#ee-primary-navigation > details.ee-more');
+  await expect(more).toHaveCount(1);
+  await expect(more.locator('summary')).toHaveText(/Más/);
+  const secondary=more.locator('.ee-more-panel > a');
+  await expect(secondary).toHaveCount(morePaths.length);
+  expect(await secondary.evaluateAll(nodes=>nodes.map(node=>new URL(node.href).pathname))).toEqual(morePaths);
+  await expect(page.locator('#ee-primary-navigation a[href="/mi-vocabulario.html"]')).toHaveCount(0);
   await expect(page.locator('.ee-nav-toggle')).toHaveCount(1);
 }
 test('Las secciones públicas comparten exactamente el mismo menú',async({page})=>{
