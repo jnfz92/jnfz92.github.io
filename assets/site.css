@@ -77,3 +77,41 @@ body.ee-site{background:#f5f7f2;color:#193a2a}
 /* Text on legacy dark-green article callouts must remain legible. */
 .ee-site .lesson-next h3,.ee-site .related h2{color:#fff}
 .ee-site a.jump{color:#fff}
+
+/* Reglas visuales finales compartidas: ritmo, tarjetas e interacciones. */
+.ee-site{
+ --ee-card-radius:18px;
+ --ee-control-radius:11px;
+ --ee-card-border:#dce7de;
+ --ee-card-shadow:0 7px 23px rgba(21,62,41,.07);
+}
+.ee-site :is(.grid .card,.ee-path,.catalog-card){
+ border-radius:var(--ee-card-radius);
+ border-color:var(--ee-card-border);
+}
+.ee-site :is(.grid .card,.ee-path,.catalog-card):hover{
+ border-color:#9cc8a9;
+}
+.ee-site :is(.grid .card,.ee-path,.catalog-card) :is(h2,h3){
+ line-height:1.28;letter-spacing:-.025em;
+}
+.ee-site :is(.grid .card,.ee-path,.catalog-card) p{
+ color:#52685b;line-height:1.6;
+}
+.ee-site :is(input:not([type="radio"]):not([type="checkbox"]),select,textarea){
+ border-radius:var(--ee-control-radius);
+}
+.ee-site :is(button,a,input,textarea,select,summary):focus-visible{
+ outline:3px solid #c18c24;outline-offset:3px;
+}
+@media(max-width:640px){
+ .ee-site main,.ee-site main.wrap,.ee-site main.container{
+  padding-left:16px;padding-right:16px;
+ }
+ .ee-site .hero{padding-top:32px;padding-bottom:24px}
+}
+@media(prefers-reduced-motion:reduce){
+ .ee-site *, .ee-site *::before, .ee-site *::after{
+  scroll-behavior:auto!important;transition-duration:0s!important;animation-duration:0s!important
+ }
+}
