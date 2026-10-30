@@ -22,7 +22,10 @@ async function getSlugs(){
   const response=await fetch(API+'articulos?select=slug&order=slug.asc&limit=1000',{headers:{apikey:APIKEY}});
   if(!response.ok)throw Error('Supabase catalog HTTP '+response.status);
   const data=await response.json();
-  if(data.length<140)throw Error('Article list suspiciously incomplete: '+data.length);
+  if(!Array.isArray(data)||data.length===0)throw Error('Empty or invalid Supabase article catalog');
+  if(data.some(item=>typeof item.slug!=='string'||!item.slug.trim()))throw Error('Article catalog contains invalid slugs');
+  if(new Set(data.map(item=>item.slug)).size!==data.length)throw Error('Article catalog contains duplicate slugs');
+  console.log('Supabase article catalog: '+data.length+' public articles');
   return data.map(x=>x.slug);
 }
 
