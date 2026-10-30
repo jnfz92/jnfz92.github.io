@@ -70,7 +70,8 @@ async function init(){
    status('authStatus',registered?'Sesión iniciada. Puedes crear una sala.':'Necesitas iniciar sesión con una cuenta registrada para crear una sala.');
    $('loginNotice').hidden=registered;
    $('battleCreateForm').hidden=!registered;
-   if(!user){status('joinMessage','Para participar en esta primera versión, inicia sesión en Easy English.');}
+   $('battleGuestLogin').hidden=!!user;
+   if(!user){status('joinMessage','Puedes entrar con una cuenta o continuar como invitado temporal.');}
  }catch(e){showError('authStatus',e);$('loginNotice').hidden=false}
 }
 $('battleCreateForm').addEventListener('submit',async e=>{
@@ -87,6 +88,15 @@ $('battleCreateForm').addEventListener('submit',async e=>{
   status('createMessage','¡Sala creada! Comparte el enlace y admite a los invitados.');
   await enterRoom(record.room_id);
  }catch(error){showError('createMessage',error)}finally{busy=false;$('battleCreate').disabled=false}
+});
+$('battleGuestLogin').addEventListener('click',async()=>{
+  try{
+    const {data,error}=await db.auth.signInAnonymously();
+    if(error)throw error;
+    currentUser=data.user;
+    $('battleGuestLogin').hidden=true;
+    status('joinMessage','Sesión temporal creada. Escribe tu alias y solicita acceso.');
+  }catch(error){status('joinMessage','El acceso temporal aún no está disponible en Supabase. Puedes entrar iniciando sesión desde Perfil. '+(error?.message||''));}
 });
 $('battleJoinForm').addEventListener('submit',async e=>{
  e.preventDefault();if(busy)return;busy=true;
