@@ -93,6 +93,64 @@
     window.addEventListener('pageshow',()=>setOpen(false));
   }
 
+
+  function setupReadingTools(){
+    if(!document.body.classList.contains('ee-unified-article'))return;
+    const main=document.querySelector('body.ee-unified-article > main');
+    if(!main||main.dataset.eeReadingReady==='true')return;
+    main.dataset.eeReadingReady='true';
+    const sections=[...main.querySelectorAll('h2')].filter(h=>
+      !h.closest('#comentarios,nav,.ee-reading-toc,footer')&&h.textContent.trim().length>2
+    );
+    if(sections.length<5)return;
+    const existing=new Set([...document.querySelectorAll('[id]')].map(n=>n.id));
+    const slugify=s=>s.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,60);
+    const toc=document.createElement('details');
+    toc.className='ee-reading-toc';
+    toc.id='ee-reading-index';
+    const summary=document.createElement('summary');
+    summary.textContent='Índice de contenidos · '+sections.length+' apartados';
+    const list=document.createElement('ol');
+    sections.forEach((h,i)=>{
+      if(!h.id){
+        const base='apartado-'+(slugify(h.textContent)||String(i+1));
+        let id=base,n=2;
+        while(existing.has(id)){id=base+'-'+n;n++}
+        h.id=id;existing.add(id);
+      }
+      const li=document.createElement('li');
+      const a=document.createElement('a');
+      a.href='#'+encodeURIComponent(h.id);a.textContent=h.textContent.trim();
+      li.append(a);list.append(li);
+    });
+    toc.append(summary,list);
+    const first=main.querySelector('h2');
+    const container=first?.closest('section,article')||first;
+    // Place the index before the first substantial section, without splitting a heading from its section.
+    if(container&&container!==main&&container.parentElement)container.before(toc);
+    else main.prepend(toc);
+    const bar=document.createElement('div');
+    bar.className='ee-reading-progress';bar.setAttribute('aria-hidden','true');
+    bar.innerHTML='<div class="ee-reading-progress-fill"></div>';
+    document.body.append(bar);
+    const back=document.createElement('a');
+    back.className='ee-reading-top';back.href='#ee-reading-index';back.textContent='↑ Volver al índice';
+    main.append(back);
+    const fill=bar.firstElementChild;
+    let scheduled=false;
+    const update=()=>{
+      const range=Math.max(1,document.documentElement.scrollHeight-window.innerHeight);
+      const ratio=Math.max(0,Math.min(1,window.scrollY/range));
+      fill.style.transform='scaleX('+ratio+')';
+      back.classList.toggle('ee-reading-top-visible',window.scrollY>500);
+      scheduled=false;
+    };
+    const schedule=()=>{if(!scheduled){scheduled=true;requestAnimationFrame(update)}};
+    window.addEventListener('scroll',schedule,{passive:true});
+    window.addEventListener('resize',schedule,{passive:true});
+    update();
+  }
+
   function ensureFooter(){
     if(document.getElementById('ee-shared-footer'))return;
     const footer=document.createElement('footer');
@@ -111,6 +169,7 @@
     await ensureHeader();
     setupMenu();
     ensureFooter();
+    setupReadingTools();
   }
   if(document.readyState==='loading'){
     document.addEventListener('DOMContentLoaded',attach,{once:true});
