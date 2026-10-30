@@ -6,22 +6,22 @@
 .ee-vocabulario button.ee-vocab-option{
  display:flex;justify-content:flex-start;align-items:center;text-align:left;
  width:100%;min-height:58px;padding:14px 18px;border:1.5px solid #cfddf7;
- border-radius:13px;background:#f7faff;color:#1f2a44;box-shadow:none;
+ border-radius:13px;background:#f7faff!important;color:#1f2a44!important;box-shadow:none;
  font-size:16px;font-weight:750;line-height:1.4;white-space:normal;
  transition:background .16s,border-color .16s,box-shadow .16s;
 }
 .ee-vocabulario button.ee-vocab-option:not(:disabled):hover{
- border-color:#1e5eff;background:#eef4ff;box-shadow:0 3px 12px #1e5eff16
+ border-color:#1e5eff;background:#eef4ff!important;box-shadow:0 3px 12px #1e5eff16
 }
 .ee-vocabulario button.ee-vocab-option:disabled{opacity:1;cursor:default}
 .ee-vocabulario button.ee-vocab-option.is-correct,
 .ee-vocabulario button.ee-vocab-option.is-correct:disabled{
- background:#e9f1ff;color:#163e8c;border-color:#1e5eff;
+ background:#e9f1ff!important;color:#163e8c!important;border-color:#1e5eff;
  box-shadow:inset 4px 0 0 #1e5eff
 }
 .ee-vocabulario button.ee-vocab-option.is-incorrect,
 .ee-vocabulario button.ee-vocab-option.is-incorrect:disabled{
- background:#fff0ef;color:#9b3030;border-color:#d67c7c;
+ background:#fff0ef!important;color:#9b3030!important;border-color:#d67c7c;
  box-shadow:inset 4px 0 0 #bf4444
 }
 .ee-vocabulario .ee-vocab-feedback{
