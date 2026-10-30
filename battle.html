@@ -1,0 +1,85 @@
+---
+permalink: /battle.html
+---
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="Vocabulary Battle: compite con amigos en retos de vocabulario de Easy English.">
+<meta name="theme-color" content="#1e5eff"><link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<title>Vocabulary Battle · Easy English</title>
+<link rel="stylesheet" href="/assets/site.css?v=20261030-unified-blue-2">
+<link rel="stylesheet" href="/assets/navigation.css?v=20261030-menu-blue-3">
+<link rel="stylesheet" href="/assets/battle.css?v=1">
+<script src="/assets/navigation.js?v=20261030-menu-blue-4" defer></script>
+</head>
+<body class="ee-site ee-battle">
+{% include header.html %}
+<main class="container">
+<section class="hero">
+<span class="eyebrow">✦ EASY ENGLISH · COMPETICIONES</span>
+<h1>Vocabulary <em>Battle.</em></h1>
+<p class="intro">Diez preguntas. Un mismo tiempo. Compite con tus amigos y descubre quién domina más vocabulario.</p>
+</section>
+<div class="battle-layout">
+<section class="panel battle-panel" aria-labelledby="createHeading">
+<span class="tag">PARA USUARIOS REGISTRADOS</span>
+<h2 id="createHeading">Crear una sala</h2>
+<p>Organiza la partida, invita a tus amigos y decide quién puede participar.</p>
+<p id="authStatus" role="status" aria-live="polite">Comprobando tu sesión…</p>
+<div id="loginNotice" hidden><p>Para crear una sala debes iniciar sesión en Easy English.</p><a class="battle-button" href="/perfil.html">Iniciar sesión o registrarme →</a></div>
+<form id="battleCreateForm" hidden>
+<label for="battleLevel">Nivel</label>
+<select id="battleLevel" required><option>A1</option><option>A2</option><option selected>B1</option><option>B2</option></select>
+<label for="battleTopic">Tema</label>
+<select id="battleTopic"><option value="mixed">Vocabulario variado</option><option value="daily">Vida cotidiana</option><option value="travel">Viajes</option><option value="work">Trabajo</option></select>
+<label for="battleDuration">Duración</label>
+<select id="battleDuration"><option value="120">2 minutos</option><option selected value="180">3 minutos</option><option value="300">5 minutos</option></select>
+<label for="battleCapacity">Máximo de participantes</label>
+<select id="battleCapacity"><option value="2">2</option><option value="4">4</option><option selected value="8">8</option><option value="12">12</option></select>
+<p class="battle-note">🔒 El anfitrión aprobará personalmente todas las solicitudes de entrada.</p>
+<button id="battleCreate" type="submit">Crear sala privada →</button>
+<p class="battle-help" id="createMessage" role="status" aria-live="polite"></p>
+</form>
+</section>
+<section class="panel battle-panel" aria-labelledby="joinHeading">
+<span class="tag">PARA INVITADOS</span>
+<h2 id="joinHeading">Entrar a una sala</h2>
+<p>Abre el enlace que te hayan enviado o escribe el código de invitación.</p>
+<form id="battleJoinForm">
+<label for="battleCode">Código de sala</label>
+<input id="battleCode" type="text" inputmode="text" maxlength="30" autocomplete="off" placeholder="Ej. VB-742" required>
+<label for="battleAlias">Tu nombre en la partida</label>
+<input id="battleAlias" type="text" maxlength="30" autocomplete="nickname" placeholder="Tu alias" required>
+<button type="button" id="battleGuestLogin" class="secondary" hidden>Continuar como invitado sin cuenta</button><button type="submit">Solicitar acceso →</button>
+<p class="battle-help" id="joinMessage" role="status" aria-live="polite"></p>
+</form>
+</section>
+</div>
+<section class="panel battle-panel" id="battleLobby" hidden aria-labelledby="lobbyHeading">
+<span class="tag">SALA PRIVADA</span>
+<h2 id="lobbyHeading">Sala de espera</h2>
+<p id="lobbyInfo"></p>
+<div class="battle-code"><strong id="lobbyCode"></strong><button class="secondary" id="copyBattleLink" type="button">Copiar invitación</button></div>
+<p id="lobbyStatus" role="status" aria-live="polite"></p>
+<div id="lobbyPlayers" class="battle-players"></div>
+<p class="battle-note" id="lobbyHelp">El anfitrión acepta las solicitudes. La partida comenzará cuando esté lista.</p>
+<button id="battleRefresh" class="secondary" type="button">Actualizar participantes</button>
+<button id="battleStart" type="button" hidden disabled>Iniciar partida</button>
+</section>
+<section id="battleGame" class="panel battle-panel" hidden><span class="tag">COMPETICIÓN EN DIRECTO</span><h2>10 preguntas de vocabulario</h2><p id="gameTimer" role="timer"></p><p id="gameStatus" role="status" aria-live="polite"></p><div id="gameQuestions"></div><button id="gameSubmit" type="button">Entregar respuestas</button></section>
+<section id="battleResults" class="panel battle-panel" hidden><span class="tag">RESULTADO FINAL</span><h2>Clasificación</h2><div id="battleRanking"></div><div id="battleCorrections"></div><button id="battleNewRoom" type="button" class="secondary">Crear otra sala</button></section>
+<section class="panel battle-rules" aria-labelledby="battleRulesHeading">
+<span class="eyebrow">CÓMO FUNCIONA</span><h2 id="battleRulesHeading">Una competición justa para todos.</h2>
+<div class="battle-steps">
+<div><strong>01 · El anfitrión invita</strong><p>Solo una persona registrada crea la sala y acepta a los jugadores.</p></div>
+<div><strong>02 · Todos responden</strong><p>Las mismas 10 preguntas aparecen a la vez. Puedes contestar a tu ritmo.</p></div>
+<div><strong>03 · Ranking final</strong><p>El resultado se publica cuando todos terminan o vence el tiempo. Gana quien más acierta; en empate, quien tarda menos.</p></div>
+</div>
+</section>
+</main>
+<footer class="ee-footer"><p>Un poco de inglés. Un paso más cada día.</p></footer>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="/supabase-config.js"></script>
+<script src="/assets/battle.js?v=1" defer></script>
+</body></html>
