@@ -3,7 +3,7 @@ const $=id=>document.getElementById(id), db=window.eeDb;
 const type=$('wtipo'),title=$('wtitulo'),body=$('wtexto'),list=$('wlista'),count=$('wcount'),status=$('westado');
 let user=null,currentId=null,dirty=false;
 const words=()=>body.value.trim()?body.value.trim().split(/\s+/u).length:0;
-function updateCount(){const n=words();count.textContent=n+' palabras · '+(n<140?'faltan '+(140-n)+' para el mínimo':n>190?'sobran '+(n-190)+' sobre el máximo':'dentro del rango de 140–190');count.style.color=n>=140&&n<=190?'#096d42':'#9b5c10'}
+function updateCount(){const n=words();count.textContent=n+' palabras · '+(n<140?'faltan '+(140-n)+' para el mínimo':n>190?'sobran '+(n-190)+' sobre el máximo':'dentro del rango de 140–190');count.style.color=n>=140&&n<=190?'#1e5eff':'#9b5c10'}
 function message(s){status.textContent=s}
 function reset(){currentId=null;title.value='Mi writing B2';body.value='';type.value='essay';list.value='';dirty=false;updateCount();message(user?'Nuevo borrador sin guardar.':'Inicia sesión en Mi perfil para guardar.')}
 async function load(){if(!user)return;const {data,error}=await db.from('writing_borradores').select('id,titulo,tipo,contenido,actualizado_en').eq('usuario_id',user.id).order('actualizado_en',{ascending:false}).limit(100);if(error){message('No se pudieron cargar los borradores: '+error.message);return}list.replaceChildren(new Option('Nuevo writing',''));for(const row of data){const opt=new Option(row.titulo+' · '+new Date(row.actualizado_en).toLocaleDateString('es-ES'),row.id);list.add(opt)}if(currentId)list.value=currentId;window.eeWritingRows=data}
