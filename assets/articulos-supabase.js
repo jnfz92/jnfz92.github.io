@@ -62,8 +62,8 @@ function sortArticles(items,mode){
 }
 
 async function load(){
- const categoriesPromise=apiFetch('categorias_blog?select=slug,nombre&order=orden.asc');
- const articles=await apiFetch('articulos?select=slug,titulo,descripcion,categoria_slug,nivel,fecha_publicacion&order=fecha_publicacion.desc.nullslast,titulo.asc&limit=1000');
+ const categoriesPromise=home?Promise.resolve([]):apiFetch('categorias_blog?select=slug,nombre&order=orden.asc');
+ const articles=await apiFetch('articulos?select=slug,titulo,descripcion,categoria_slug,nivel,fecha_publicacion&order=fecha_publicacion.desc.nullslast,titulo.asc&limit='+(home?25:1000));
  if(!Array.isArray(articles)||!articles.length)throw Error('Sin artículos en Supabase');
  let names={...defaultNames};
  try{const cats=await categoriesPromise;for(const cat of cats)names[cat.slug]=cat.nombre}catch(e){console.warn('Nombres de categorías de respaldo',e)}
