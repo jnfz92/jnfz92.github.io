@@ -5,6 +5,41 @@ const $=id=>document.getElementById(id), key='easyEnglish.blogProfile.v1';
 let user=null,articles=[],articleView='all',loading=false,articlesLoaded=false,cloudUserId=null,suggestedHref=null;
 const READING_PAGE_SIZE=10;
 const readingPages={read:1,pending:1};
+// Equivalencias de artículos consolidados: conservar el historial sin dar por leída
+// una guía completa cuando solo se leyó uno de sus capítulos anteriores.
+function canonicalArticleSlug(slug){
+ if(slug.startsWith('verbos-preposicion-'))return 'verbos-con-preposiciones-ingles';
+ if(slug.startsWith('phrasal-verbs-particula-'))return 'phrasal-verbs-particula-out';
+ if(slug.startsWith('phrasal-verbs-verbo-'))return 'phrasal-verbs-verbo-take';
+ const merged={
+  'despite-vs-in-spite-of':'linking-words-of-contrast',
+  'nonetheless-contrast':'linking-words-of-contrast',
+  'negative-prefixes':'formacion-adjetivos-ingles',
+  'formacion-sustantivos-ingles':'formacion-adjetivos-ingles',
+  'formacion-adverbios-ingles':'formacion-adjetivos-ingles',
+  'english-tenses-overview':'guia-tiempos-verbales-ingles-presente-pasado-futuro-trucos-examen',
+  'future-going-to-present-continuous':'todos-los-tiempos-de-futuro-en-ingles',
+  'present-perfect-vs-past-simple':'pasados-vs-present-perfect-simple-continuous',
+  'trucos-tiempos-verbales-writing-b2':'como-usar-tiempos-verbales-carta-email-writing-b1-b2'
+ };
+ return merged[slug]||slug;
+}
+function historicReadMap(){
+ const mapped=new Map();
+ for(const [route,date] of Object.entries(profile.read)){
+  const slug=String(route).match(/(?:^|\\/)post\\/([a-z0-9-]+)\\.html$/)?.[1];
+  if(!slug)continue;
+  const canonical=canonicalArticleSlug(slug);
+  if(canonical===slug)continue;
+  const key='post/'+canonical+'.html';
+  if(!mapped.has(key))mapped.set(key,[]);
+  mapped.get(key).push({slug,date});
+ }
+ return mapped;
+}
+function normalizeSearch(text){
+ return String(text||'').normalize('NFD').replace(/[\\u0300-\\u036f]/g,'').toLocaleLowerCase('es');
+}
 function readLocal(){try{const v=JSON.parse(localStorage.getItem(key)||'{}');return v&&typeof v==='object'?v:{}}catch{return {}}}
 const old=readLocal();
 let profile={name:typeof old.name==='string'?old.name:'',read:old.read&&typeof old.read==='object'&&!Array.isArray(old.read)?{...old.read}:{}};
@@ -86,6 +121,11 @@ function render(){
   'Consultando tus lecturas guardadas…';
  $('readArticlesCount').textContent=ready?String(done):'—';
  $('pendingArticlesCount').textContent=ready?String(pending):'—';
+ const historic=historicReadMap();
+ const partlyRead=articles.filter(a=>!profile.read[a.href]&&historic.has(a.href)).length;
+ const pendingLabel=$('pendingReadHelp');
+ if(pendingLabel)pendingLabel.textContent=ready&&partlyRead?
+   partlyRead+' '+(partlyRead===1?'guía pendiente incluye':'guías pendientes incluyen')+' lecturas de capítulos anteriores a la unificación. No se marcarán como completadas hasta que leas la guía actual.':'';
  for(const [id,view] of [['showAllArticles','all'],['onlyPending','pending'],['onlyRead','read']])
   $(id).setAttribute('aria-pressed',String(articleView===view));
  const root=$('articleList');root.replaceChildren();
@@ -95,8 +135,9 @@ function render(){
   wait.textContent='Comprobando qué artículos has leído.';
   root.append(wait);updateSuggestedReading();return;
  }
- const term=$('articleSearch').value.trim().toLocaleLowerCase('es');
- const filtered=articles.filter(a=>!term||a.title.toLocaleLowerCase('es').includes(term));
+ const term=normalizeSearch($('articleSearch').value.trim());
+ const filtered=articles.filter(a=>!term||normalizeSearch(a.title).includes(term));
+ const prior=historicReadMap();
  const doneList=filtered.filter(a=>profile.read[a.href]).sort((a,b)=>
   new Date(profile.read[b.href]).getTime()-new Date(profile.read[a.href]).getTime());
  const pendingList=filtered.filter(a=>!profile.read[a.href]);
@@ -126,7 +167,10 @@ function render(){
    const link=document.createElement('a'),small=document.createElement('small');
    link.href=a.link||a.href;link.textContent=a.title;heading.append(link);
    const date=completed&&profile.read[a.href]?new Date(profile.read[a.href]).toLocaleDateString('es-ES'):'';
-   small.textContent=completed?'✓ Leído'+(date?' · '+date:''):'◯ Pendiente de leer';
+   const previousChapters=prior.get(a.href)||[];
+   small.textContent=completed?'✓ Leído'+(date?' · '+date:''):
+     previousChapters.length?'◐ Pendiente · '+previousChapters.length+' '+(previousChapters.length===1?'apartado leído antes de la unificación':'apartados leídos antes de la unificación'):
+     '◯ Pendiente de leer';
    detail.append(heading,small);
    const btn=document.createElement('button');btn.type='button';
    btn.textContent=completed?'↩ Marcar como pendiente':'✓ Marcar como leído';
