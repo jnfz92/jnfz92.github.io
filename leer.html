@@ -2,7 +2,7 @@
 permalink: /leer.html
 ---
 <!doctype html>
-<html lang="es"><head><link rel="icon" type="image/svg+xml" href="/favicon.svg?v=20261017-ee"><meta name="theme-color" content="#1e5eff"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<html lang="es"><head><link rel="icon" type="image/svg+xml" href="/favicon.svg?v=20261030-blue-logo-2"><meta name="theme-color" content="#1e5eff"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="description" content="Lecciones y artículos de Easy English.">
 <title>Cargando lección · Easy English</title>
 <link rel="stylesheet" href="assets/site.css?v=20261030-unified-blue-2">
@@ -213,7 +213,7 @@ permalink: /leer.html
   doc.querySelector('main').append(comments);
   const commentsStyle=doc.createElement('link');
   commentsStyle.rel='stylesheet';
-  commentsStyle.href='/assets/comentarios-articulos.css?v=20261018';
+  commentsStyle.href='/assets/comentarios-articulos.css?v=20261030-unified-blue-2';
   doc.head.append(commentsStyle);
   function addScript(src){
    const script=doc.createElement('script');
@@ -224,7 +224,7 @@ permalink: /leer.html
   if(!doc.querySelector('script[src*="supabase-config.js"]'))addScript('/supabase-config.js');
   addScript('/assets/comentarios-articulos.js?v=20261018');
   // Mantener el favicon en el documento sustituido con HTML de Supabase.
-  const favicon=doc.createElement('link');favicon.rel='icon';favicon.type='image/svg+xml';favicon.href='/favicon.svg?v=20261017-ee';doc.head.append(favicon);
+  const favicon=doc.createElement('link');favicon.rel='icon';favicon.type='image/svg+xml';favicon.href='/favicon.svg?v=20261030-blue-logo-2';doc.head.append(favicon);
   // La URL canónica y la descripción corresponden al artículo, no al cargador.
   const existing=doc.querySelector('link[rel="canonical"]');if(existing)existing.remove();
   const canonical=doc.createElement('link');canonical.rel='canonical';canonical.href=new URL('leer.html?slug='+encodeURIComponent(resolveSlug(slug)),location.href).href;doc.head.append(canonical);
