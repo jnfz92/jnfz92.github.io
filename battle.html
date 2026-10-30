@@ -65,8 +65,10 @@ permalink: /battle.html
 <div id="lobbyPlayers" class="battle-players"></div>
 <p class="battle-note" id="lobbyHelp">El anfitrión acepta las solicitudes. La partida comenzará cuando esté lista.</p>
 <button id="battleRefresh" class="secondary" type="button">Actualizar participantes</button>
-<button id="battleStart" type="button" hidden disabled>Iniciar partida · próximamente</button>
+<button id="battleStart" type="button" hidden disabled>Iniciar partida</button>
 </section>
+<section id="battleGame" class="panel battle-panel" hidden><span class="tag">COMPETICIÓN EN DIRECTO</span><h2>10 preguntas de vocabulario</h2><p id="gameTimer" role="timer"></p><p id="gameStatus" role="status" aria-live="polite"></p><div id="gameQuestions"></div><button id="gameSubmit" type="button">Entregar respuestas</button></section>
+<section id="battleResults" class="panel battle-panel" hidden><span class="tag">RESULTADO FINAL</span><h2>Clasificación</h2><div id="battleRanking"></div><div id="battleCorrections"></div><button id="battleNewRoom" type="button" class="secondary">Crear otra sala</button></section>
 <section class="panel battle-rules" aria-labelledby="battleRulesHeading">
 <span class="eyebrow">CÓMO FUNCIONA</span><h2 id="battleRulesHeading">Una competición justa para todos.</h2>
 <div class="battle-steps">
