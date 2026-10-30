@@ -3,7 +3,7 @@
  position:sticky;top:0;z-index:900;
  display:block;width:100%;max-width:none;
  margin:0;padding:0;box-sizing:border-box;
- background:rgba(245,247,241,.97);border-bottom:1px solid #d9e4ff;
+ background:rgba(247,250,255,.97);border-bottom:1px solid #d9e4ff;
  color:#1f2a44;backdrop-filter:blur(16px);
  font:16px/1.4 system-ui,-apple-system,"Segoe UI",sans-serif;text-align:left;
 }
