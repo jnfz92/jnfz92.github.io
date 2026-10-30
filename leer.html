@@ -15,7 +15,17 @@ permalink: /leer.html
  const slug=new URLSearchParams(location.search).get('slug');
  const status=document.getElementById('loading');
  const aliases={'phrasal-verbs-with-get':'get-phrasal-verbs','agreeing-disagreeing':'polite-disagreement','expressing-opinions':'opinion-speculation-expressions','environment-vocabulary':'pollution-environment-vocabulary','adverbs-of-frequency':'todos-los-tiempos-de-presente-en-ingles','might':'modal-verb-might'};
- const resolveSlug=s=>aliases[s]||s;
+ // Enlaces históricos tras la consolidación editorial del 30 de octubre de 2026.
+ // Los artículos originales han sido integrados completos en guías principales.
+ const mergedSlug=s=>{
+  if(s.startsWith('verbos-preposicion-'))return 'verbos-con-preposiciones-ingles';
+  if(s.startsWith('phrasal-verbs-particula-'))return 'phrasal-verbs-particula-out';
+  if(s.startsWith('phrasal-verbs-verbo-'))return 'phrasal-verbs-verbo-take';
+  if(['despite-vs-in-spite-of','nonetheless-contrast'].includes(s))return 'linking-words-of-contrast';
+  if(['negative-prefixes','formacion-sustantivos-ingles','formacion-adverbios-ingles'].includes(s))return 'formacion-adjetivos-ingles';
+  return s;
+ };
+ const resolveSlug=s=>mergedSlug(aliases[s]||s);
  const headers={apikey:key,Accept:'application/json'};
  const baseURL=new URL('post/',location.href);
  function originalSlug(href){
@@ -23,7 +33,7 @@ permalink: /leer.html
    const u=new URL(href,baseURL);
    if(u.origin!==location.origin)return null;
    const match=u.pathname.match(/\/post\/(?:post\/)?([a-z0-9-]+)\.html$/i);
-   return match?{slug:resolveSlug(match[1]),hash:u.hash}:null;
+   return match?{slug:resolveSlug(match[1]),hash:u.hash||(resolveSlug(match[1])!==match[1]?'#unificado-'+match[1]:'')}:null;
   }catch{return null}
  }
  async function loadJSON(query){
