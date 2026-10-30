@@ -106,8 +106,8 @@
 }
 
 /* CTA destacado para el generador de exámenes, web y WebView. */
-#ee-shared-header .ee-nav a.ee-review-link{background:#ffc247;color:#241b08;border:1px solid #e6a11f;font-weight:900;box-shadow:0 3px 10px #a16f2730}
-#ee-shared-header .ee-nav a.ee-review-link:hover,#ee-shared-header .ee-nav a.ee-review-link[aria-current=page]{background:#ffdc82;color:#241b08}
+#ee-shared-header .ee-nav a.ee-review-link{background:#cde0ff;color:#241b08;border:1px solid #1e5eff;font-weight:900;box-shadow:0 3px 10px #1e5eff30}
+#ee-shared-header .ee-nav a.ee-review-link:hover,#ee-shared-header .ee-nav a.ee-review-link[aria-current=page]{background:#eef4ff;color:#241b08}
 #ee-shared-header .ee-nav a.ee-review-link:focus-visible{outline:3px solid #1d2e57}
 
 /* Submenú discreto para accesos secundarios sin abarrotar la barra. */
