@@ -2,7 +2,29 @@
 permalink: /articulos.html
 ---
 <!doctype html><html lang="es"><head><link rel="icon" type="image/svg+xml" href="/favicon.svg?v=20261017-ee"><meta name="theme-color" content="#005B3C"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="Todas las lecciones de Easy English: gramática, vocabulario, speaking y ejercicios. Busca por tema y filtra por categoría."><title>Artículos y lecciones · Easy English</title><link rel="stylesheet" href="assets/site.css?v=20261014"><script src="assets/site.js?v=20261013" defer></script><link rel="stylesheet" href="/assets/navigation.css?v=20261030-compact-1"><script src="/assets/navigation.js?v=20261030-reader-2" defer></script><style>
-.ee-library .blog .grid .card{content-visibility:auto;contain-intrinsic-size:auto 250px}
+.ee-library .blog .grid .card{
+ content-visibility:auto;contain-intrinsic-size:auto 230px;min-width:0;
+ padding:20px;display:flex;flex-direction:column;gap:8px;min-height:220px;
+}
+.ee-library .blog .grid .card h2{
+ font-size:clamp(17px,1.8vw,20px);line-height:1.3;letter-spacing:-.015em;
+ display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;
+ margin:0;
+}
+.ee-library .blog .grid .card p{
+ display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;
+ overflow:hidden;color:#596f60;margin:0;line-height:1.5;font-size:14px;
+}
+.ee-library .blog .grid .card .meta{display:flex;flex-wrap:wrap;gap:6px;margin:0}
+.ee-library .blog .grid .card .tag{font-size:11px;padding:5px 8px;line-height:1.25}
+.ee-library .blog .grid .card .read{margin-top:auto;align-self:flex-start;padding-top:5px}
+@media(max-width:650px){
+ .ee-library .blog .grid{grid-template-columns:1fr}
+ .ee-library .blog .grid .card{min-height:0;padding:17px;gap:7px}
+ .ee-library .blog .grid .card h2{font-size:18px}
+ .ee-library .ee-library-controls{gap:10px}
+ .ee-library .ee-library-controls label{width:100%;justify-content:space-between}
+}
 .ee-library .blog .grid .card[hidden]{display:none!important}
 .ee-library .clear-library-search{border:1px solid #aacbb7;border-radius:10px;background:#f3faf5;color:#175c42;font:inherit;font-weight:700;padding:9px 13px;cursor:pointer;margin:8px 0}
 .ee-library .clear-library-search[hidden]{display:none}
