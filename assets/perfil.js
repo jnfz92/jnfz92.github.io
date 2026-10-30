@@ -27,7 +27,7 @@ function canonicalArticleSlug(slug){
 function historicReadMap(){
  const mapped=new Map();
  for(const [route,date] of Object.entries(profile.read)){
-  const slug=String(route).match(/(?:^|\\/)post\\/([a-z0-9-]+)\\.html$/)?.[1];
+  const slug=String(route).match(/(?:^|\/)post\/([a-z0-9-]+)\.html$/)?.[1];
   if(!slug)continue;
   const canonical=canonicalArticleSlug(slug);
   if(canonical===slug)continue;
@@ -38,7 +38,7 @@ function historicReadMap(){
  return mapped;
 }
 function normalizeSearch(text){
- return String(text||'').normalize('NFD').replace(/[\\u0300-\\u036f]/g,'').toLocaleLowerCase('es');
+ return String(text||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLocaleLowerCase('es');
 }
 function readLocal(){try{const v=JSON.parse(localStorage.getItem(key)||'{}');return v&&typeof v==='object'?v:{}}catch{return {}}}
 const old=readLocal();
