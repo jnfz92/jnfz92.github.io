@@ -45,6 +45,8 @@
           link.setAttribute('aria-current','page');
         }
       }
+      const currentMore=header.querySelector('.ee-more>summary');
+      if(currentMore)currentMore.classList.toggle('ee-more-current',!!header.querySelector('.ee-more-panel a[aria-current="page"]'));
       document.body.prepend(header);
     }catch(error){
       console.warn('No se pudo recuperar la navegación compartida',error);
@@ -82,7 +84,9 @@
       if(!header.contains(event.target))setOpen(false);
     });
     document.addEventListener('keydown',event=>{
-      if(event.key==='Escape'&&header.classList.contains('ee-menu-open')){
+      if(event.key!=='Escape')return;
+      if(more?.open){more.open=false;more.querySelector('summary')?.focus()}
+      if(header.classList.contains('ee-menu-open')){
         setOpen(false);
         toggle.focus();
       }
