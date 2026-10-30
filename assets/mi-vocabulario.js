@@ -38,6 +38,7 @@ function showCard(){
  $('vocab-complete').hidden=!!item;
  if(!item)return;
  answered=false;selectedGrade=null;
+ $('vocab-start').disabled=true;
  const reverse=direction(item,position)==='es-en';
  const options=getChoices(item,reverse);
  if(!options){$('vocab-card').hidden=true;status('Necesitamos al menos tres palabras con respuestas diferentes para practicar.');return}
