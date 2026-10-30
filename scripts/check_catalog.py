@@ -35,12 +35,16 @@ check('id="articleSort"' in library, "Falta el selector de orden.")
 check('class="ee-more"' in header, "Falta el submenú compacto.")
 check('aria-controls="ee-primary-navigation"' in header, "Falta la relación accesible del menú.")
 
+navigation_versions = set()
 for path in ["index.html","articulos.html","curso.html","examenes.html","practicar.html","writings.html","speaking-lab.html","leer.html"]:
     html = read(path)
-    check('navigation.js?v=20261030-reader-2' in html, f"Navegación desactualizada: {path}")
+    versions = re.findall(r'(?:/)?assets/navigation\\.js\\?v=([a-zA-Z0-9._-]+)', html)
+    check(bool(versions), f"Falta la navegación compartida: {path}")
+    navigation_versions.update(versions)
     check("<main" in html, f"Falta el contenido principal: {path}")
     check("<title" in html, f"Falta título HTML: {path}")
 
+check(len(navigation_versions) == 1, f"Versiones de navegación inconsistentes: {sorted(navigation_versions)}")
 check('<urlset' in read("sitemap.xml"), "Falta el sitemap.")
 check('Sitemap:' in read("robots.txt"), "El robots.txt no declara el sitemap.")
 
