@@ -56,6 +56,17 @@ permalink: /battle.html
 </form>
 </section>
 </div>
+<section class="panel battle-panel" id="battleLobby" hidden aria-labelledby="lobbyHeading">
+<span class="tag">SALA PRIVADA</span>
+<h2 id="lobbyHeading">Sala de espera</h2>
+<p id="lobbyInfo"></p>
+<div class="battle-code"><strong id="lobbyCode"></strong><button class="secondary" id="copyBattleLink" type="button">Copiar invitación</button></div>
+<p id="lobbyStatus" role="status" aria-live="polite"></p>
+<div id="lobbyPlayers" class="battle-players"></div>
+<p class="battle-note" id="lobbyHelp">El anfitrión acepta las solicitudes. La partida comenzará cuando esté lista.</p>
+<button id="battleRefresh" class="secondary" type="button">Actualizar participantes</button>
+<button id="battleStart" type="button" hidden disabled>Iniciar partida · próximamente</button>
+</section>
 <section class="panel battle-rules" aria-labelledby="battleRulesHeading">
 <span class="eyebrow">CÓMO FUNCIONA</span><h2 id="battleRulesHeading">Una competición justa para todos.</h2>
 <div class="battle-steps">
