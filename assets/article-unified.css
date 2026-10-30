@@ -2,10 +2,10 @@
    Se aplica después del CSS histórico para unificar las partes comunes
    sin quitar formatos propios de ejercicios, ejemplos y actividades. */
 body.ee-unified-article{
-  --bg:#f5f7f1;--surface:#fff;--ink:#142e25;--muted:#607067;--line:#dce4d9;
-  --primary:#176447;--green:#176447;--brand:#176447;--soft:#eaf4ed;
-  --cream:#f6faf6;--accent:#e6ad42;--ee-green:#176447;--ee-bg:#f5f7f1;
-  background:#f5f7f1;color:#142e25;
+  --bg:#f7faff;--surface:#fff;--ink:#1f2a44;--muted:#667085;--line:#d9e4ff;
+  --primary:#1e5eff;--green:#1e5eff;--brand:#1e5eff;--soft:#ebeef3;
+  --cream:#f6f8fa;--accent:#e6ad42;--ee-green:#1e5eff;--ee-bg:#f7faff;
+  background:#f7faff;color:#1f2a44;
   font-family:Inter,"Segoe UI",system-ui,-apple-system,sans-serif;
   font-size:16px;line-height:1.75;overflow-wrap:anywhere;
 }
@@ -15,27 +15,27 @@ body.ee-unified-article > main{
 }
 body.ee-unified-article main > :is(.hero,.intro){
   box-sizing:border-box;margin:0 0 26px;padding:clamp(26px,4vw,44px);
-  border:0;border-radius:24px;background:linear-gradient(125deg,#173f30,#216f4c);
-  color:#fff;box-shadow:0 16px 38px #173f301d;
+  border:0;border-radius:24px;background:linear-gradient(125deg,#163e8c,#263a6a);
+  color:#fff;box-shadow:0 16px 38px #19243d1d;
 }
 body.ee-unified-article main > :is(.hero,.intro) :is(h1,h2),
 body.ee-unified-article main > :is(.hero,.intro) :is(.lead,p){
   color:#fff;
 }
-body.ee-unified-article main > :is(.hero,.intro) :is(.lead,p){color:#e1f0e7}
+body.ee-unified-article main > :is(.hero,.intro) :is(.lead,p){color:#e2e7ef}
 body.ee-unified-article main > :is(.hero,.intro) .tag{
-  display:inline-block;background:#d8f36a;color:#173f30;
+  display:inline-block;background:#bfdbfe;color:#163e8c;
   padding:6px 12px;border-radius:99px;font-size:13px;font-weight:800;
 }
 body.ee-unified-article main > article{
-  box-sizing:border-box;max-width:100%;background:#fff;border:1px solid #e0eae1;
+  box-sizing:border-box;max-width:100%;background:#fff;border:1px solid #dfe3eb;
   border-radius:22px;padding:clamp(20px,4vw,46px);
-  box-shadow:0 12px 34px #153e2910;
+  box-shadow:0 12px 34px #17223c10;
 }
 body.ee-unified-article main > article > header{
   position:static;inset:auto;z-index:auto;
   margin:0 0 28px;padding:clamp(20px,3vw,34px);
-  background:linear-gradient(125deg,#173f30,#216f4c);
+  background:linear-gradient(125deg,#163e8c,#263a6a);
   color:#fff;border:0;border-radius:17px;
 }
 body.ee-unified-article main > article > header :is(h1,p){color:#fff}
@@ -44,11 +44,11 @@ body.ee-unified-article main h1{
   letter-spacing:-.035em;margin:12px 0 18px;
 }
 body.ee-unified-article main h2{
-  color:#176447;font-size:clamp(24px,3.5vw,31px);
+  color:#1e5eff;font-size:clamp(24px,3.5vw,31px);
   line-height:1.28;letter-spacing:-.025em;margin:36px 0 14px;
 }
 body.ee-unified-article main h3{
-  color:#185a43;font-size:clamp(19px,2.5vw,23px);
+  color:#1c2d56;font-size:clamp(19px,2.5vw,23px);
   line-height:1.4;margin:27px 0 11px;
 }
 body.ee-unified-article main :is(p,li){
@@ -58,16 +58,16 @@ body.ee-unified-article main :is(.lead,.intro-text){
   font-size:clamp(17px,2vw,19px);line-height:1.6;
 }
 body.ee-unified-article main :is(.toc,.note,.example,.warning,.sample,.exercise){
-  box-sizing:border-box;max-width:100%;border:1px solid #dce8df;
+  box-sizing:border-box;max-width:100%;border:1px solid #dce0e8;
   border-radius:15px;padding:18px 21px;margin:18px 0;
-  background:#f5faf6;color:#20372b;
+  background:#f5f7fa;color:#212736;
 }
-body.ee-unified-article main .toc{background:#f2f8f3}
-body.ee-unified-article main .example{background:#eef4ee}
+body.ee-unified-article main .toc{background:#f2f4f8}
+body.ee-unified-article main .example{background:#eef0f4}
 body.ee-unified-article main .note{background:#fff8e9;border-left:4px solid #e6ad42}
 body.ee-unified-article main .warning{background:#fff4f2;border-left:4px solid #b96d51}
 body.ee-unified-article main :is(.next,.ee-next){
-  border-radius:17px;background:#176447;color:#fff;padding:22px;
+  border-radius:17px;background:#1e5eff;color:#fff;padding:22px;
 }
 body.ee-unified-article main :is(.next,.ee-next) a{color:#fff}
 body.ee-unified-article main :is(.tag,.level){
@@ -79,22 +79,22 @@ body.ee-unified-article main :is(table){
   background:#fff;font-size:15px;
 }
 body.ee-unified-article main :is(th,td){
-  padding:11px 14px;border:1px solid #dce8df;
+  padding:11px 14px;border:1px solid #dce0e8;
   vertical-align:top;text-align:left;
 }
 body.ee-unified-article main th{
-  background:#eaf5ee;color:#14543c;font-weight:800;
+  background:#ebeef4;color:#20478e;font-weight:800;
 }
-body.ee-unified-article main tr:nth-child(even){background:#f7faf8}
+body.ee-unified-article main tr:nth-child(even){background:#f7f8fa}
 body.ee-unified-article main :is(.table-scroll,.scroll){
   max-width:100%;overflow-x:auto;
 }
 body.ee-unified-article main details{
-  box-sizing:border-box;max-width:100%;border:1px solid #dce8df;
+  box-sizing:border-box;max-width:100%;border:1px solid #dce0e8;
   background:#fff;border-radius:13px;padding:16px 18px;margin:18px 0;
 }
 body.ee-unified-article main summary{
-  cursor:pointer;font-weight:750;color:#176447;
+  cursor:pointer;font-weight:750;color:#1e5eff;
 }
 body.ee-unified-article main :is(img,video,iframe,svg){
   max-width:100%;height:auto;
@@ -103,12 +103,12 @@ body.ee-unified-article main :is(pre,code){
   overflow-wrap:normal;
 }
 body.ee-unified-article main pre{
-  overflow-x:auto;max-width:100%;padding:15px;border-radius:11px;background:#f0f5f1;
+  overflow-x:auto;max-width:100%;padding:15px;border-radius:11px;background:#f0f2f5;
 }
 body.ee-unified-article main :is(.ee-breadcrumb,.breadcrumb){
-  margin:0 0 24px;color:#50685a;font-size:14px;
+  margin:0 0 24px;color:#485770;font-size:14px;
 }
-body.ee-unified-article main :is(.ee-breadcrumb,.breadcrumb) a{color:#176447}
+body.ee-unified-article main :is(.ee-breadcrumb,.breadcrumb) a{color:#1e5eff}
 body.ee-unified-article main :is(a,button,input,select,textarea,summary):focus-visible{
   outline:3px solid #e6ad42;outline-offset:3px;
 }
@@ -126,19 +126,19 @@ body.ee-unified-article main :is(a,button,input,select,textarea,summary):focus-v
 
 /* Navegación de lectura para guías extensas. */
 body.ee-unified-article .ee-reading-toc{
-  margin:22px 0 28px;padding:18px 22px;border:1px solid #d5e5d8;
-  border-radius:16px;background:#f3faf5;color:#183a29;
+  margin:22px 0 28px;padding:18px 22px;border:1px solid #d6dbe4;
+  border-radius:16px;background:#f3f6fa;color:#1a2338;
 }
-body.ee-unified-article .ee-reading-toc summary{cursor:pointer;font-size:16px;font-weight:800;color:#14583b}
+body.ee-unified-article .ee-reading-toc summary{cursor:pointer;font-size:16px;font-weight:800;color:#182a54}
 body.ee-unified-article .ee-reading-toc ol{columns:2;column-gap:25px;padding-left:22px;margin:14px 0 0}
 body.ee-unified-article .ee-reading-toc li{break-inside:avoid;margin:0 0 7px;font-size:14px;line-height:1.5}
-body.ee-unified-article .ee-reading-toc a{color:#176447;text-decoration:underline;text-underline-offset:3px}
+body.ee-unified-article .ee-reading-toc a{color:#1e5eff;text-decoration:underline;text-underline-offset:3px}
 body.ee-unified-article .ee-reading-progress{position:fixed;z-index:899;top:0;left:0;right:0;height:3px;pointer-events:none;background:transparent}
-body.ee-unified-article .ee-reading-progress-fill{height:100%;width:100%;background:#176447;transform:scaleX(0);transform-origin:left}
+body.ee-unified-article .ee-reading-progress-fill{height:100%;width:100%;background:#1e5eff;transform:scaleX(0);transform-origin:left}
 body.ee-unified-article .ee-reading-top{
  position:fixed;right:16px;bottom:18px;z-index:850;opacity:0;visibility:hidden;
- padding:9px 12px;border:1px solid #c7ddce;border-radius:11px;background:#fff;
- box-shadow:0 6px 22px #123a2a25;color:#14583b;font-size:13px;font-weight:750;text-decoration:none;
+ padding:9px 12px;border:1px solid #c8cfdc;border-radius:11px;background:#fff;
+ box-shadow:0 6px 22px #141f3825;color:#182a54;font-size:13px;font-weight:750;text-decoration:none;
  transition:opacity .15s ease,visibility .15s ease;
 }
 body.ee-unified-article .ee-reading-top-visible{opacity:1;visibility:visible}
@@ -152,18 +152,18 @@ body.ee-unified-article main h2[id]{scroll-margin-top:85px}
 
 /* Continuación pedagógica al terminar una lección. */
 body.ee-unified-article .ee-next-lesson{
- margin:28px 0 22px;padding:22px 25px;background:#f1f8f3;
- border:1px solid #d3e6d8;border-radius:17px;
+ margin:28px 0 22px;padding:22px 25px;background:#f1f4f8;
+ border:1px solid #d4dae5;border-radius:17px;
 }
-body.ee-unified-article .ee-next-lesson h2{margin:0 0 8px;font-size:23px;color:#155b3c}
-body.ee-unified-article .ee-next-lesson p{margin:0 0 15px;color:#426150}
+body.ee-unified-article .ee-next-lesson h2{margin:0 0 8px;font-size:23px;color:#192c57}
+body.ee-unified-article .ee-next-lesson p{margin:0 0 15px;color:#404a63}
 body.ee-unified-article .ee-next-lesson-actions{display:flex;flex-wrap:wrap;gap:9px}
 body.ee-unified-article .ee-next-lesson-actions a{
  display:inline-flex;align-items:center;min-height:40px;padding:9px 13px;
- border:1px solid #bfd8c6;border-radius:10px;background:#fff;
- color:#17583e;font-size:14px;font-weight:750;text-decoration:none;
+ border:1px solid #c0c8d7;border-radius:10px;background:#fff;
+ color:#1b2c54;font-size:14px;font-weight:750;text-decoration:none;
 }
-body.ee-unified-article .ee-next-lesson-actions a.ee-next-primary{background:#176447;color:#fff;border-color:#176447}
+body.ee-unified-article .ee-next-lesson-actions a.ee-next-primary{background:#1e5eff;color:#fff;border-color:#1e5eff}
 @media(max-width:640px){body.ee-unified-article .ee-next-lesson{padding:18px 16px}}
 
 /* Correcciones para lectura y controles táctiles en móvil. */
