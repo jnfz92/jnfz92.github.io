@@ -219,3 +219,49 @@ body.ee-site{background:#f7f9fc;color:#172744;-webkit-font-smoothing:antialiased
 @media(prefers-reduced-motion:reduce){
 .ee-site .card,.ee-site .ee-path,.ee-landing .ee-tool,.ee-landing .ee-action-row a{transition:none!important;transform:none!important}
 }
+
+/* Secondary experiences: Speaking, review, community, feedback and writing.
+   These screens retain their own functionality while sharing the same visual tone. */
+.ee-site .review-container,.ee-site .social-wrap,.ee-site .speaking-main,.ee-site .suggestions-page{width:min(1080px,calc(100% - 32px));max-width:1080px;margin:0 auto;padding:25px 0 74px}
+.ee-site .review-hero,.ee-site .social-hero,.ee-site .speaking-hero,.ee-site .suggestions-intro{
+ position:relative;padding:clamp(27px,4vw,49px)!important;
+ border-radius:26px!important;border:1px solid #2d5baa!important;
+ background:linear-gradient(121deg,#102d68 0%,#1b4ca6 68%,#2a66ce)!important;
+ color:white!important;box-shadow:0 19px 48px rgba(23,56,111,.15)!important;
+ margin:12px 0 24px!important;overflow:hidden
+}
+.ee-site .review-hero:after,.ee-site .social-hero:after,.ee-site .speaking-hero:after,.ee-site .suggestions-intro:after{
+ content:"";position:absolute;right:-98px;bottom:-155px;width:280px;height:280px;
+ border:45px solid #ffffff0e;border-radius:50%;pointer-events:none
+}
+.ee-site :is(.review-hero,.social-hero,.speaking-hero,.suggestions-intro) h1{
+ color:#fff!important;font-size:clamp(31px,4.8vw,53px)!important;line-height:1.1;letter-spacing:-.055em;margin:10px 0 13px
+}
+.ee-site :is(.review-hero,.social-hero,.speaking-hero,.suggestions-intro) p{color:#dfeaff!important;max-width:740px}
+.ee-site :is(.review-hero,.social-hero,.speaking-hero,.suggestions-intro) .eyebrow{color:#c5dfff!important}
+.ee-site .review-panel,.ee-site .social-panel,.ee-site .speaking-card,.ee-site .suggestion-form,.ee-site .suggestion-list,
+.ee-site .writing-workspace,.ee-site .writing-side-panel{
+ background:#fff!important;border:1px solid #dee7f4!important;border-radius:20px!important;
+ box-shadow:0 8px 28px rgba(22,54,104,.055)!important;
+}
+.ee-site :is(.review-panel,.social-panel,.speaking-card,.suggestion-form,.suggestion-list) h2{color:#1d3b73!important;font-weight:850;letter-spacing:-.035em}
+.ee-site :is(.review-control,.social-controls,.speaking-controls,.writing-actions) button:not(:disabled){border-radius:11px}
+.ee-site .speaking-timer{font-variant-numeric:tabular-nums;letter-spacing:.04em;color:#1b4aa3!important}
+.ee-site .suggestions-intro .lead{color:#e3efff!important}
+.ee-site .writing-card{display:flex;flex-direction:column}
+.ee-site .writing-card .read{margin-top:auto}
+.ee-site .writing-editor{background:#fff;border-radius:22px}
+.ee-site .writing-facts span{border-color:#ffffff55;background:#ffffff12;color:#f0f6ff}
+.ee-site .review-panel .gold-button,.ee-site .review-control .gold-button{background:#1e5eff!important;color:#fff!important;border-color:#1e5eff!important}
+.ee-site .review-panel .secondary-button,.ee-site .review-control .secondary-button{background:#fff!important;color:#1e5eff!important;border:1px solid #abc3ec!important}
+.ee-site .ee-library .clear-library-search{border-color:#bad0ef;color:#214f9e}
+.ee-site .vocab-controls input,.ee-site .vocab-controls select{box-shadow:0 4px 14px #1d427b09}
+.ee-site .vocab-hero,.ee-site .activity-hero{position:relative;overflow:hidden}
+.ee-site .activity-question,.ee-site .activity-card{border-color:#dfE7f4!important;border-radius:15px!important}
+.ee-site .activity-options label:has(input:checked){background:#eaf2ff!important;border-color:#4381e9!important}
+.ee-site .ee-exam .exam-tip,.ee-site .exam-tip{background:#e8f1ff;border-color:#cfe0ff;border-radius:17px}
+@media(max-width:700px){
+ .ee-site .review-container,.ee-site .social-wrap,.ee-site .speaking-main,.ee-site .suggestions-page{width:calc(100% - 26px);padding-top:13px}
+ .ee-site :is(.review-hero,.social-hero,.speaking-hero,.suggestions-intro){border-radius:19px!important}
+ .ee-site :is(.review-panel,.social-panel,.speaking-card,.suggestion-form,.suggestion-list){padding:19px!important}
+}
