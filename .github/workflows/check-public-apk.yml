@@ -1,0 +1,45 @@
+name: Verify public Easy English download
+
+on:
+  push:
+    paths:
+      - ".github/workflows/check-public-apk.yml"
+      - "index.html"
+      - "_includes/header.html"
+      - "assets/navigation.js"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  public-download:
+    runs-on: ubuntu-latest
+    timeout-minutes: 7
+    steps:
+      - name: Check public APK and landing page without authentication
+        shell: bash
+        run: |
+          set -euo pipefail
+          APK="https://wnluofonzteaqtlfshgy.supabase.co/storage/v1/object/public/easy-english-downloads/EnglishAPK.apk"
+          echo "Comprobando descarga pública SIN token de GitHub o Supabase"
+          curl -fSL --retry 3 --connect-timeout 15 --max-time 75 -o /tmp/EnglishAPK.apk \
+            -w "APK HTTP %{http_code} - bytes %{size_download} - final %{url_effective}\n" "$APK"
+          test "$(stat -c '%s' /tmp/EnglishAPK.apk)" -gt 200000
+          file /tmp/EnglishAPK.apk
+          python3 - <<'PY'
+          from pathlib import Path
+          f=Path('/tmp/EnglishAPK.apk')
+          assert f.read_bytes()[:2] == b'PK', 'No es un APK (ZIP) real'
+          print('PASS: APK descargada sin credenciales: ',f.stat().st_size,'bytes')
+          PY
+          echo "Comprobando página pública"
+          curl -fsSL --retry 2 -o /tmp/home.html \
+            -w "Website HTTP %{http_code} - final %{url_effective}\n" \
+            "https://jnfz92.github.io/"
+          grep -q "Easy English" /tmp/home.html
+          if grep -Fq "$APK" /tmp/home.html; then
+            echo "PASS: botón público desplegado en portada"
+          else
+            echo "::warning::El archivo público funciona pero GitHub Pages aún no muestra el enlace actualizado"
+          fi
