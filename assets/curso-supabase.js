@@ -29,12 +29,19 @@ async function load(){
  for(const activity of activities){if(activity.unidad_id!==null)activityCounts.set(String(activity.unidad_id),(activityCounts.get(String(activity.unidad_id))||0)+1)}
  const fragment=document.createDocumentFragment();
  let total=0;
+ let previousSection='';
  for(const u of units){
+  if(u.nivel!==previousSection){
+   const heading=document.createElement('h2');heading.className='course-group-heading';
+   heading.textContent=u.nivel==='Grammar'?'GRAMMAR SECTION — Unidades 1–24':u.nivel==='Vocabulary'?'VOCABULARY SECTION — Unidades 25–44':u.nivel;
+   heading.style.cssText='margin:36px 0 14px;color:#163e8c;font-size:clamp(24px,4vw,32px)';
+   fragment.append(heading);previousSection=u.nivel;
+  }
   const members=(byUnit.get(u.id)||[]).sort((a,b)=>a.orden-b.orden).map(m=>articleMap.get(m.articulo_slug)).filter(Boolean);
   total+=members.length;
   const section=document.createElement('section');section.className='course-unit';
   const header=document.createElement('div');header.className='course-header';
-  text(header,'span','course-level',u.nivel==='Sin especificar'?'Nivel por confirmar':u.nivel);
+  text(header,'span','course-level',u.nivel==='Grammar'?'Gramática':u.nivel==='Vocabulary'?'Vocabulario':u.nivel);
   text(header,'h2','',u.titulo);
   text(header,'p','',u.descripcion||'Sigue estas lecciones en orden.');
   section.append(header);
@@ -56,7 +63,7 @@ async function load(){
   fragment.append(section);
  }
  container.replaceChildren(fragment);
- status.textContent=units.length+' unidades y '+total+' lecciones en esta ruta orientativa. Otras lecciones están en la biblioteca.';
+ status.textContent=units.length+' unidades del libro (24 de gramática y 20 de vocabulario) · '+total+' lecciones vinculadas. Las unidades sin lecciones están pendientes de contenido.';
 }
 load().catch(err=>{console.warn('Curso: fallo de carga',err);status.textContent='No se pudo cargar la ruta ahora. Puedes consultar el índice anterior o la biblioteca de artículos.';container.hidden=true;document.getElementById('courseFallback').hidden=false;});
 })();
