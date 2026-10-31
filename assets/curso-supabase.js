@@ -18,7 +18,7 @@
     grammar: $('courseGrammarStat'), vocabulary: $('courseVocabularyStat')
   };
   const state = { units: [], filter: 'all', query: '', completed: new Set(), storageOK: true };
-  const path = slug => 'leer.html?slug=' + encodeURIComponent(slug);
+  const path = slug => '/leer.html?slug=' + encodeURIComponent(slug);
   const normalize = value => String(value || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
   const elt = (tag, className, value) => {
     const node = document.createElement(tag);
