@@ -202,7 +202,18 @@
       ui.resume.href = '#unidad-' + String(next.unit.orden).padStart(2, '0');
       ui.resume.onclick = () => {
         const d = document.getElementById('unidad-' + String(next.unit.orden).padStart(2, '0'));
-        if (d) d.open = true;
+        if (d) {
+          if (d.hidden) {
+            state.filter = 'all';
+            state.query = '';
+            ui.search.value = '';
+            for (const b of document.querySelectorAll('[data-course-filter]')) {
+              b.setAttribute('aria-pressed', String(b.dataset.courseFilter === 'all'));
+            }
+            applyFilters();
+          }
+          d.open = true;
+        }
       };
     } else {
       ui.resume.textContent = 'Ver todas las unidades ✓';
