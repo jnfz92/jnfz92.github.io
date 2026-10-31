@@ -11,6 +11,7 @@
 {% if ee_file == 'perfil.html' or ee_file == 'mensajes.html' or ee_file == 'mi-vocabulario.html' %}{% assign ee_section = 'perfil' %}{% endif %}
 {% if ee_file == 'comunidad.html' %}{% assign ee_section = 'comunidad' %}{% endif %}
 {% if ee_file == 'sugerencias.html' %}{% assign ee_section = 'sugerencias' %}{% endif %}
+<link rel="stylesheet" href="/assets/academy-premium.css?v=20261031-launch-1">
 <header class="ee-header" id="ee-shared-header">
   <div class="ee-bar">
     <a class="ee-logo" href="/index.html" aria-label="Easy English · Inicio"><img src="/favicon.svg?v=20261030-blue-logo-2" alt="" width="39" height="39" aria-hidden="true">Easy English</a>
@@ -32,6 +33,7 @@
       <a href="/sugerencias.html"{% if ee_section == 'sugerencias' %} aria-current="page"{% endif %}><svg class="ee-nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6m-5 4h4m-2-21a7 7 0 0 0-4 12.75c.62.43 1 1.05 1 1.75h6c0-.7.38-1.32 1-1.75A7 7 0 0 0 12 1z"/></svg><span>Sugerencias</span></a>
         </div>
       </details>
+      <a class="ee-premium-join" href="/perfil.html">Empieza gratis <span aria-hidden="true">↗</span></a>
     </nav>
   </div>
 </header>
