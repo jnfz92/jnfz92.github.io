@@ -62,8 +62,21 @@ async function load(){
   if(num){const p=text(section,'p','course-activities','');const a=document.createElement('a');a.href='actividades.html?unidad='+encodeURIComponent(u.id);a.textContent='✎ Practicar '+num+' '+(num===1?'actividad':'actividades')+' de esta unidad →';p.append(a)}
   fragment.append(section);
  }
+ const linkedSlugs=new Set(links.filter(m=>units.some(u=>u.id===m.unidad_id)).map(m=>m.articulo_slug));
+ const extras=articles.filter(a=>!linkedSlugs.has(a.slug));
+ if(extras.length){
+  const section=document.createElement('section');section.className='course-unit';
+  const heading=document.createElement('h2');heading.textContent='Material complementario y recursos del curso';section.append(heading);
+  text(section,'p','course-desc','Guías de Writing, Speaking, Reading, Listening, fundamentos, exámenes y artículos adicionales. Estos recursos no modifican el orden de las 44 unidades.');
+  const list=document.createElement('ol');list.className='course-lessons';
+  for(const a of extras.sort((a,b)=>(a.titulo||'').localeCompare(b.titulo||'','es'))){
+   const li=document.createElement('li');const link=document.createElement('a');link.href='leer.html?slug='+encodeURIComponent(a.slug);
+   link.textContent=a.titulo||a.slug;li.append(link);list.append(li);
+  }
+  section.append(list);fragment.append(section);
+ }
  container.replaceChildren(fragment);
- status.textContent=units.length+' unidades del libro (24 de gramática y 20 de vocabulario) · '+total+' lecciones vinculadas. Las unidades sin lecciones están pendientes de contenido.';
+ status.textContent=units.length+' unidades del libro (24 de gramática y 20 de vocabulario) · '+total+' lecciones vinculadas y '+extras.length+' recursos complementarios.';
 }
 load().catch(err=>{console.warn('Curso: fallo de carga',err);status.textContent='No se pudo cargar la ruta ahora. Puedes consultar el índice anterior o la biblioteca de artículos.';container.hidden=true;document.getElementById('courseFallback').hidden=false;});
 })();
