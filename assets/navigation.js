@@ -167,6 +167,14 @@
     document.head.append(link);
   }
 
+  function ensureBrandCSS(){
+    if(document.querySelector('link[href*="brand-system.css"]'))return;
+    const link=document.createElement('link');
+    link.rel='stylesheet';
+    link.href=new URL('assets/brand-system.css?v=20261031-unified-1',root).href;
+    document.head.append(link);
+  }
+
   function ensureFooter(){
     // La landing comercial ya tiene su propio pie de página con el mismo diseño.
     if(document.querySelector('.ee-marketing-footer'))return;
@@ -204,6 +212,7 @@
   async function attach(){
     await ensureHeader();
     ensurePremiumCSS();
+    ensureBrandCSS();
     setupMenu();
     ensureFooter();
     setupReadingTools();

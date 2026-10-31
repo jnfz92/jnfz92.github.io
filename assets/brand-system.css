@@ -1,0 +1,219 @@
+/* Easy English · Sistema visual compartido v1 (web + APK local)
+   FUENTE ÚNICA: jnfz92.github.io/assets/brand-system.css
+   La compilación Android sincroniza este mismo CSS.
+   Ninguna página debe definir una segunda paleta de marca. */
+:root {
+  color-scheme: light;
+  --ee-primary: #1E5EFF;
+  --ee-primary-hover: #174CC5;
+  --ee-navy: #173D87;
+  --ee-navy-dark: #102B63;
+  --ee-hero-mid: #1C52BB;
+  --ee-hero-end: #2769D9;
+  --ee-background: #F7F9FC;
+  --ee-surface: #FFFFFF;
+  --ee-surface-soft: #EDF3FF;
+  --ee-text: #172744;
+  --ee-text-muted: #5E6E86;
+  --ee-border: #DFE6F0;
+  --ee-focus: #8FB4FF;
+  --ee-completed: #2255AC;
+  --ee-completed-bg: #EAF2FF;
+  --ee-error: #A84E45;
+  --ee-error-bg: #FFF0EE;
+  --ee-shadow: 0 12px 32px rgba(23,61,135,.09);
+  --ee-shadow-hover: 0 17px 40px rgba(23,61,135,.14);
+  --ee-radius: 20px;
+  --ee-hero-gradient: linear-gradient(125deg, #173D87 0%, #1C52BB 67%, #2769D9 100%);
+  --ee-font: Inter, "Segoe UI", ui-sans-serif, system-ui, -apple-system, sans-serif;
+}
+/* Mismas variables semánticas en todas las páginas existentes. */
+body.ee-site,
+body.ee-app-offline,
+body.ee-app-launcher {
+  --ee-ink: var(--ee-text);
+  --ee-green: var(--ee-primary);
+  --ee-lime: var(--ee-surface-soft);
+  --ee-bg: var(--ee-background);
+  --ee-muted: var(--ee-text-muted);
+  --ee-line: var(--ee-border);
+  --ee-premium: var(--ee-primary);
+  --ee-premium-dark: var(--ee-navy);
+  --bg: var(--ee-background);
+  --card: var(--ee-surface);
+  --surface: var(--ee-surface);
+  --ink: var(--ee-text);
+  --muted: var(--ee-text-muted);
+  --line: var(--ee-border);
+  --soft: var(--ee-surface-soft);
+  --green: var(--ee-primary);
+  --primary: var(--ee-primary);
+  --brand: var(--ee-primary);
+  --ok: var(--ee-completed);
+  --gold: var(--ee-focus);
+  background: var(--ee-background);
+  color: var(--ee-text);
+  font-family: var(--ee-font);
+  -webkit-font-smoothing: antialiased;
+}
+body.ee-site :is(h1,h2,h3),
+body.ee-app-offline :is(h1,h2,h3),
+body.ee-app-launcher :is(h1,h2,h3) {
+  font-family:var(--ee-font);
+  letter-spacing:-.04em;
+}
+body.ee-site :is(a,button,input,textarea,select):focus-visible,
+body.ee-app-offline :is(a,button,input,textarea,select):focus-visible,
+body.ee-app-launcher :is(a,button,input,textarea,select):focus-visible {
+  outline:3px solid var(--ee-focus) !important;
+  outline-offset:3px;
+}
+/* Identidad global de la web y elementos que se reutilizan en la APK. */
+body.ee-site #ee-shared-header.ee-header,
+body.ee-app-offline .topbar {
+  background:rgba(255,255,255,.97) !important;
+  border-bottom:1px solid var(--ee-border) !important;
+  box-shadow:0 7px 26px rgba(23,61,135,.06);
+}
+body.ee-site #ee-shared-header :is(.ee-nav>a.ee-premium-join),
+body.ee-site .ee-apk-showcase-download,
+body.ee-app-offline .primary,
+body.ee-app-launcher .primary {
+  background:var(--ee-primary) !important;
+  color:#fff !important;
+  border-color:var(--ee-primary) !important;
+}
+body.ee-site #ee-shared-header :is(.ee-nav>a.ee-premium-join):hover,
+body.ee-site .ee-apk-showcase-download:hover,
+body.ee-app-offline .primary:hover,
+body.ee-app-launcher .primary:hover {
+  background:var(--ee-primary-hover) !important;
+}
+body.ee-site .ee-landing .ee-landing-hero,
+body.ee-site .course-intro-copy,
+body.ee-site.ee-library .hero,
+body.ee-site.ee-exam :is(.exam-hero,.catalog-hero),
+body.ee-site.ee-profile .hero,
+body.ee-site :is(.activity-hero,.vocab-hero,.ee-vocab-hero,.review-hero,.social-hero,.speaking-hero,.suggestions-intro),
+body.ee-app-offline #home .hero {
+  background:var(--ee-hero-gradient) !important;
+  border-color:var(--ee-navy) !important;
+  color:#fff !important;
+}
+body.ee-site .ee-landing .ee-landing-hero h1,
+body.ee-site .course-intro-copy h1,
+body.ee-app-offline #home .hero h1 { color:#fff !important; }
+body.ee-site :is(.course-stat,.course-progress-panel,.course-steps,.course-unit,.course-extras,.ee-feature-card,.ee-tool,.ee-apk-showcase),
+body.ee-app-offline :is(.hero,.card,.home-progress,.quest-banner,#learningPath,.course-card,.lesson-btn,.library-article,.suggestion-item,.quiz-card,.welcome-hero),
+body.ee-app-launcher main {
+  background:var(--ee-surface);
+  border:1px solid var(--ee-border);
+  border-radius:var(--ee-radius);
+  box-shadow:var(--ee-shadow);
+}
+body.ee-site .course-card-status.is-complete,
+body.ee-app-offline :is(.library-article.completed,.answer.correct,.quest-node.done) {
+  background:var(--ee-completed-bg) !important;
+  color:var(--ee-completed) !important;
+  border-color:var(--ee-focus) !important;
+}
+body.ee-site :is(.course-complete[aria-pressed=true],.course-group[data-track=vocabulary] .course-group-mark),
+body.ee-app-offline :is(.quest-stats span,.tab.active,.bottom-nav button.active) {
+  background:var(--ee-surface-soft) !important;
+  color:var(--ee-completed) !important;
+  border-color:var(--ee-border) !important;
+}
+body.ee-site :is(.course-progress-ring,.course-ring-value),
+body.ee-app-offline :is(.progress-meter>span,.home-progress .progress-meter>span) {
+  accent-color:var(--ee-primary);
+}
+body.ee-site :is(.ee-feature-card,.ee-tool,.catalog-card,.course-unit),
+body.ee-app-offline :is(.course-card,.lesson-btn,.library-article) {
+  transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease;
+}
+@media (hover:hover) and (pointer:fine) {
+  body.ee-site :is(.ee-feature-card,.ee-tool,.catalog-card,.course-unit):hover,
+  body.ee-app-offline :is(.course-card,.lesson-btn,.library-article):hover {
+    border-color:#AFC9F4 !important;
+    box-shadow:var(--ee-shadow-hover) !important;
+    transform:translateY(-2px);
+  }
+}
+/* Versión sin conexión: reproduce la identidad de la portada de la web. */
+body.ee-app-offline .app { max-width:1180px; }
+body.ee-app-offline .topbar {
+  border-radius:0;
+  padding:14px 18px;
+  color:var(--ee-text);
+}
+body.ee-app-offline .brand { color:var(--ee-navy) !important; font-weight:900; }
+body.ee-app-offline .pill {
+  background:var(--ee-surface-soft) !important;
+  color:var(--ee-completed) !important;
+  border:1px solid var(--ee-border) !important;
+}
+body.ee-app-offline #home .hero {
+  border-radius:26px !important;
+  padding:clamp(27px,5vw,54px) !important;
+  box-shadow:0 22px 49px rgba(23,61,135,.19) !important;
+}
+body.ee-app-offline #home .hero :is(p,.muted) { color:#DFEAFF !important; }
+body.ee-app-offline #home .hero :is(.meta,.home-eyebrow) { color:#C5DBFF !important; }
+body.ee-app-offline #home .hero h1 span { color:#BFD7FF !important; }
+body.ee-app-offline #home .home-main-btn {
+  background:#fff !important;color:var(--ee-navy) !important;
+  border:1px solid #fff !important;border-radius:12px;
+}
+body.ee-app-offline #home .home-outline-btn {
+  color:#fff !important;background:rgba(255,255,255,.10) !important;
+  border:1px solid rgba(255,255,255,.65) !important;border-radius:12px;
+}
+body.ee-app-offline :is(.quest-banner,#learningPath,.home-progress,.course-card,.lesson-btn,.library-article) { border-radius:18px; }
+body.ee-app-offline .course-card.featured {
+  background:var(--ee-hero-gradient) !important;
+  color:#fff !important;border-color:var(--ee-navy) !important;
+}
+body.ee-app-offline .course-card.featured :is(strong,.meta,span) { color:#DFEAFF !important; }
+body.ee-app-offline :is(.meta,.home-progress strong,.quest-banner .meta,.stat strong) { color:var(--ee-completed) !important; }
+body.ee-app-offline .quest-stats span {
+  background:var(--ee-surface-soft) !important;
+  color:var(--ee-completed) !important;
+}
+body.ee-app-offline .quest-node { border-color:#C5D8F7 !important;box-shadow:0 5px 0 #D9E5F8 !important; }
+body.ee-app-offline .quest-node.available { background:var(--ee-surface-soft) !important; }
+body.ee-app-offline .quest-node.done { background:var(--ee-primary) !important;color:#fff !important; }
+body.ee-app-offline .quest-step:before { background:#C8D9F4 !important; }
+body.ee-app-offline .progress-meter { background:#E2EAF6 !important; }
+body.ee-app-offline .progress-meter>span { background:var(--ee-primary) !important; }
+body.ee-app-offline .bottom-nav {
+  background:rgba(255,255,255,.97) !important;
+  border-top:1px solid var(--ee-border) !important;
+  box-shadow:0 -6px 27px rgba(23,61,135,.08);
+}
+body.ee-app-offline .bottom-nav button { color:var(--ee-text-muted) !important; }
+body.ee-app-offline .bottom-nav button.active {
+  background:var(--ee-surface-soft) !important;
+  color:var(--ee-primary) !important;
+}
+body.ee-app-offline :is(.answer.correct,.library-article.completed) {
+  background:var(--ee-completed-bg) !important;
+  border-color:var(--ee-focus) !important;
+}
+body.ee-app-offline .answer.wrong { background:var(--ee-error-bg) !important;border-color:var(--ee-error) !important; }
+body.ee-app-offline :is(.example,.box,.explain,th,.note) { background:#F2F6FD; }
+/* Launcher del instalador: mismo fondo, botones y tarjetas que el resto. */
+body.ee-app-launcher main {
+  border-radius:24px !important;
+  background:var(--ee-surface) !important;
+  box-shadow:var(--ee-shadow);
+}
+body.ee-app-launcher .secondary { background:var(--ee-surface-soft) !important;color:var(--ee-completed) !important; }
+body.ee-app-launcher p { color:var(--ee-text-muted); }
+@media(max-width:650px) {
+  body.ee-app-offline .app { padding-left:14px;padding-right:14px; }
+  body.ee-app-offline #home .hero { padding:26px 22px !important;border-radius:20px !important; }
+  body.ee-app-offline .hero,body.ee-app-offline .card { padding:20px; }
+}
+@media(prefers-reduced-motion:reduce) {
+  body.ee-site *,body.ee-app-offline *,body.ee-app-launcher * { animation-duration:0s !important;transition-duration:0s !important; }
+}

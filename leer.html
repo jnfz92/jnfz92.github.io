@@ -259,6 +259,10 @@ permalink: /leer.html
   academyStyle.rel='stylesheet';
   academyStyle.href=new URL('/assets/academy-premium.css?v=20261031-launch-1',location.href).href;
   doc.head.append(academyStyle);
+  const brandStyle=doc.createElement('link');
+  brandStyle.rel='stylesheet';
+  brandStyle.href=new URL('/assets/brand-system.css?v=20261031-unified-1',location.href).href;
+  doc.head.append(brandStyle);
   const navScript=doc.createElement('script');
   navScript.src=new URL('/assets/navigation.js?v=20261030-menu-blue-4',location.href).href;
   navScript.defer=true;doc.body.append(navScript);
