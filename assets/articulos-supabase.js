@@ -20,7 +20,7 @@ function card(a,names){
  const h=document.createElement('h2');h.textContent=(a.titulo||a.slug).replace(/\s*[·|–-]\s*Easy English\s*$/i,'');
  const p=document.createElement('p');p.textContent=a.descripcion||'Lección de inglés con ejemplos y ejercicios.';
  const link=document.createElement('a');link.className=categoryPage?'button':'read';
- link.href=(categoryPage?'../':'')+'leer.html?slug='+encodeURIComponent(a.slug);link.textContent=isExam?'Hacer examen clásico (sin guardar nota) →':'Leer artículo →';
+ link.href='/leer.html?slug='+encodeURIComponent(a.slug);link.textContent=isExam?'Hacer examen clásico (sin guardar nota) →':'Leer artículo →';
  item.append(meta,h,p,link);return item;
 }
 
