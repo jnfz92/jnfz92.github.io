@@ -265,3 +265,11 @@ body.ee-site{background:#f7f9fc;color:#172744;-webkit-font-smoothing:antialiased
  .ee-site :is(.review-hero,.social-hero,.speaking-hero,.suggestions-intro){border-radius:19px!important}
  .ee-site :is(.review-panel,.social-panel,.speaking-card,.suggestion-form,.suggestion-list){padding:19px!important}
 }
+
+/* Conversion paths that point to real, currently available experiences. */
+.ee-site .ee-library-hero-links{display:flex;align-items:center;flex-wrap:wrap;gap:10px;margin-top:22px}
+.ee-site .ee-library-hero-links a{display:inline-flex;align-items:center;justify-content:center;text-decoration:none;font-weight:850;font-size:13px;padding:11px 16px;min-height:44px;border-radius:11px;background:#fff;color:#164597;border:1px solid #fff;transition:transform .17s}
+.ee-site .ee-library-hero-links a+a{background:#ffffff16;border-color:#ffffff6d;color:#fff}
+.ee-site .ee-library-hero-links a:hover{transform:translateY(-2px)}
+.ee-site .ee-library-hero-links a:focus-visible{outline:3px solid #a9e2ff!important}
+@media(max-width:540px){.ee-site .ee-library-hero-links a{flex:1 1 160px}}
