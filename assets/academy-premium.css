@@ -273,3 +273,20 @@ body.ee-site{background:#f7f9fc;color:#172744;-webkit-font-smoothing:antialiased
 .ee-site .ee-library-hero-links a:hover{transform:translateY(-2px)}
 .ee-site .ee-library-hero-links a:focus-visible{outline:3px solid #a9e2ff!important}
 @media(max-width:540px){.ee-site .ee-library-hero-links a{flex:1 1 160px}}
+
+/* Footer shared by all internal pages. */
+#ee-shared-footer.ee-footer{width:100%;max-width:none;background:#0d1f42!important;color:#c9d7ef!important;padding:48px 24px 18px!important;border:0!important;border-top:1px solid #29426b!important;margin:0!important;text-align:left}
+#ee-shared-footer .ee-premium-footer-inner{width:min(1160px,100%);margin:0 auto;display:grid;grid-template-columns:2fr 1fr 1fr;gap:50px;padding-bottom:34px}
+#ee-shared-footer .ee-premium-footer-about strong{display:block;font-size:20px;color:#fff;letter-spacing:-.04em}
+#ee-shared-footer .ee-premium-footer-about p{font-size:13px;line-height:1.8;color:#b9c9e4;max-width:350px;margin:12px 0 0}
+#ee-shared-footer .ee-premium-footer-inner h2{font-size:12px;line-height:1.5;letter-spacing:.13em;text-transform:uppercase;color:#c7dcff;margin:2px 0 16px;font-weight:900}
+#ee-shared-footer .ee-premium-footer-inner a{display:block;text-decoration:none;color:#c2d3ed;font-size:13px;font-weight:650;margin:10px 0}
+#ee-shared-footer .ee-premium-footer-inner a:hover{color:#fff;text-decoration:underline}
+#ee-shared-footer .ee-premium-footer-bottom{border-top:1px solid #2a4269;padding:16px 0 0;margin:0 auto;width:min(1160px,100%);color:#95aaca;font-size:11px}
+@media(max-width:650px){
+ body.ee-site{padding-bottom:0!important}
+ #ee-shared-footer.ee-footer{padding:35px 21px 18px!important}
+ #ee-shared-footer .ee-premium-footer-inner{grid-template-columns:1fr 1fr;gap:24px}
+ #ee-shared-footer .ee-premium-footer-about{grid-column:1/-1}
+ #ee-shared-footer .ee-premium-footer-bottom{font-size:10px}
+}
