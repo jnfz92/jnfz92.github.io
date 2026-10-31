@@ -255,6 +255,10 @@ permalink: /leer.html
   editorialStyle.rel='stylesheet';
   editorialStyle.href=new URL('/assets/article-unified.css?v=20261030-unified-blue-2',location.href).href;
   doc.head.append(editorialStyle);
+  const academyStyle=doc.createElement('link');
+  academyStyle.rel='stylesheet';
+  academyStyle.href=new URL('/assets/academy-premium.css?v=20261031-launch-1',location.href).href;
+  doc.head.append(academyStyle);
   const navScript=doc.createElement('script');
   navScript.src=new URL('/assets/navigation.js?v=20261030-menu-blue-4',location.href).href;
   navScript.defer=true;doc.body.append(navScript);
