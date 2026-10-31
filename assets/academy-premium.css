@@ -290,3 +290,22 @@ body.ee-site{background:#f7f9fc;color:#172744;-webkit-font-smoothing:antialiased
  #ee-shared-footer .ee-premium-footer-about{grid-column:1/-1}
  #ee-shared-footer .ee-premium-footer-bottom{font-size:10px}
 }
+
+/* Restored Android APK download paths. The button downloads the published GitHub release asset. */
+#ee-shared-header .ee-more-panel>a.ee-app-download-link{color:#164899;font-weight:850;background:#edf4ff}
+#ee-shared-header .ee-more-panel>a.ee-app-download-link:hover{background:#dceaff;color:#123e89}
+.ee-landing .ee-action-row .ee-action-apk{color:#fff!important;background:#0b285e;border:1px solid #a2c6ff;box-shadow:0 6px 20px #071d4220}
+.ee-landing .ee-action-row .ee-action-apk:hover{background:#173c85}
+.ee-landing .ee-apk-showcase{position:relative;display:grid;grid-template-columns:84px minmax(0,1fr) auto;align-items:center;gap:25px;margin:0 0 66px;padding:30px 32px;background:#fff;border:1px solid #dbe6f7;border-radius:23px;box-shadow:0 11px 34px #1539790b}
+.ee-landing .ee-apk-showcase-icon{height:82px;width:82px;border-radius:22px;background:linear-gradient(145deg,#3175e7,#1e5eff 52%,#163e8c);display:grid;place-items:center;box-shadow:0 14px 28px #1e5eff29;flex-shrink:0}
+.ee-landing .ee-apk-showcase-icon span{font-size:31px;color:#fff;font-weight:950;letter-spacing:-.08em}
+.ee-landing .ee-apk-showcase-copy h2{font-size:clamp(23px,2.7vw,32px);line-height:1.19;margin:5px 0 9px}
+.ee-landing .ee-apk-showcase-copy>p{color:#536887;font-size:13px;line-height:1.6;margin:0;max-width:600px}
+.ee-landing .ee-apk-showcase-copy .ee-apk-install-note{font-size:11px;color:#71819a;margin-top:8px}
+.ee-landing .ee-apk-showcase-actions{display:flex;flex-direction:column;align-items:stretch;gap:11px;min-width:185px}
+.ee-landing .ee-apk-showcase-download{display:flex;align-items:center;justify-content:center;min-height:46px;padding:11px 17px;background:#1e5eff;color:#fff!important;text-decoration:none;border-radius:11px;font-size:13px;font-weight:850;box-shadow:0 9px 18px #1e5eff22}
+.ee-landing .ee-apk-showcase-download:hover{background:#174bbf}
+.ee-landing .ee-apk-showcase-all{font-size:12px;font-weight:800;color:#2257a9!important;text-align:center;text-decoration:none}
+.ee-landing .ee-apk-showcase-all:hover{text-decoration:underline}
+@media(max-width:960px){.ee-landing .ee-apk-showcase{grid-template-columns:72px minmax(0,1fr);gap:18px}.ee-landing .ee-apk-showcase-icon{width:72px;height:72px;border-radius:18px}.ee-landing .ee-apk-showcase-actions{grid-column:2;display:flex;flex-direction:row;align-items:center}.ee-landing .ee-apk-showcase-download{min-width:170px}}
+@media(max-width:600px){.ee-landing .ee-apk-showcase{grid-template-columns:1fr;gap:16px;padding:24px;margin-bottom:45px}.ee-landing .ee-apk-showcase-icon{width:68px;height:68px}.ee-landing .ee-apk-showcase-actions{grid-column:1;flex-direction:column;align-items:stretch}.ee-landing .ee-apk-showcase-download{width:100%}.ee-landing .ee-apk-showcase-all{text-align:left}.ee-landing .ee-action-row .ee-action-apk{flex-basis:180px}}
