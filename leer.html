@@ -154,7 +154,7 @@ permalink: /leer.html
   const articleMain=doc.querySelector('main');
   if(articleMain?.getAttribute('style')?.includes('max-width:840px'))articleMain.removeAttribute('style');
   // El HTML del artículo se presenta como documento completo; no hay iframe ni dos cabeceras.
-  const base=doc.createElement('base');base.href=baseURL.href;doc.head.prepend(base);
+  const base=doc.createElement('base');base.href=new URL('/',location.href).href;doc.head.prepend(base);
   if(slug==='indice-de-dificultad')await completeIndex(doc);
   for(const link of doc.querySelectorAll('a[href]')){
    const value=link.getAttribute('href');
@@ -262,9 +262,32 @@ permalink: /leer.html
   const navScript=doc.createElement('script');
   navScript.src=new URL('/assets/navigation.js?v=20261030-menu-blue-4',location.href).href;
   navScript.defer=true;doc.body.append(navScript);
-  document.open();
-  document.write('<!doctype html>\n'+doc.documentElement.outerHTML);
-  document.close();
+  // Renderizar sobre el DOM existente: document.write() después de un fetch
+  // puede sustituir todo el documento y romper enlaces o scripts en WebView.
+  // Conservar estilos y volver a activar solo los scripts que necesita la lección.
+  const scripts=[...doc.querySelectorAll('script')];
+  scripts.forEach(s=>s.remove());
+  const newHead=[...doc.head.childNodes].map(n=>document.importNode(n,true));
+  const newBody=[...doc.body.childNodes].map(n=>document.importNode(n,true));
+  document.head.replaceChildren(...newHead);
+  document.body.replaceChildren(...newBody);
+  document.documentElement.lang=doc.documentElement.lang||'es';
+  document.title=article.titulo||document.title;
+  for(const original of scripts){
+    const active=document.createElement('script');
+    for(const attr of original.attributes){
+      if(attr.name!=='src'&&attr.name!=='defer'&&attr.name!=='async')active.setAttribute(attr.name,attr.value);
+    }
+    if(original.hasAttribute('src')){
+      const raw=original.getAttribute('src');
+      active.async=false;
+      active.src=new URL(raw,location.href).href;
+    }else{
+      active.textContent=original.textContent;
+    }
+    document.body.append(active);
+  }
+  window.dispatchEvent(new Event('easyenglish:article-rendered'));
  }catch(err){
   console.error('Error al mostrar el artículo',err);
   status.textContent='No se pudo cargar este artículo desde Supabase. Inténtalo de nuevo más tarde.';
