@@ -191,7 +191,7 @@
       return col;
     };
     const study=group('Aprende',[['Curso B2','curso.html'],['Biblioteca','articulos.html'],['Vocabulario','vocabulario.html']]);
-    const actions=group('Tu espacio',[['Exámenes','examenes.html'],['Crear cuenta','perfil.html'],['Sugerencias','sugerencias.html']]);
+    const actions=group('Tu espacio',[['Exámenes','examenes.html'],['Crear cuenta','perfil.html'],['Descargar APK Android','https://github.com/juanfranciscofernandezherreros/english-apk/releases/download/apk-latest/EnglishAPK.apk'],['Sugerencias','sugerencias.html']]);
     wrap.append(about,study,actions);
     const bottom=document.createElement('div');bottom.className='ee-premium-footer-bottom';
     bottom.textContent='Easy English · Plataforma independiente de aprendizaje de inglés.';
