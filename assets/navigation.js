@@ -191,7 +191,7 @@
       return col;
     };
     const study=group('Aprende',[['Curso B2','curso.html'],['Biblioteca','articulos.html'],['Vocabulario','vocabulario.html']]);
-    const actions=group('Tu espacio',[['Exámenes','examenes.html'],['Crear cuenta','perfil.html'],['Descargar APK Android','https://wnluofonzteaqtlfshgy.supabase.co/storage/v1/object/public/easy-english-downloads/EnglishAPK.apk'],['Sugerencias','sugerencias.html']]);
+    const actions=group('Tu espacio',[['Exámenes','examenes.html'],['Crear cuenta','perfil.html'],['Descargar APK Android','https://wnluofonzteaqtlfshgy.supabase.co/storage/v1/object/public/easy-english-downloads/EnglishAPK-v1.2.2.apk'],['Sugerencias','sugerencias.html']]);
     wrap.append(about,study,actions);
     const bottom=document.createElement('div');bottom.className='ee-premium-footer-bottom';
     bottom.textContent='Easy English · Plataforma independiente de aprendizaje de inglés.';

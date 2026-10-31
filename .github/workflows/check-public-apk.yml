@@ -21,7 +21,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          APK="https://wnluofonzteaqtlfshgy.supabase.co/storage/v1/object/public/easy-english-downloads/EnglishAPK.apk"
+          APK="https://wnluofonzteaqtlfshgy.supabase.co/storage/v1/object/public/easy-english-downloads/EnglishAPK-v1.2.2.apk"
           echo "Comprobando descarga pública SIN token de GitHub o Supabase"
           curl -fSL --retry 3 --connect-timeout 15 --max-time 75 -o /tmp/EnglishAPK.apk \
             -w "APK HTTP %{http_code} - bytes %{size_download} - final %{url_effective}\n" "$APK"
