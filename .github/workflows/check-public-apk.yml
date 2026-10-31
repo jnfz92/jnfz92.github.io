@@ -43,3 +43,33 @@ jobs:
           else
             echo "::warning::El archivo público funciona pero GitHub Pages aún no muestra el enlace actualizado"
           fi
+
+      - name: Verify version 1.2.2 contains the real blue UI
+        shell: bash
+        run: |
+          set -euo pipefail
+          URL="https://wnluofonzteaqtlfshgy.supabase.co/storage/v1/object/public/easy-english-downloads/EnglishAPK-v1.2.2.apk"
+          for i in $(seq 1 30); do
+            if curl --fail --silent --show-error -L --max-time 25 -o /tmp/easy-english-1.2.2.apk "$URL"; then break; fi
+            if [ "$i" = 30 ]; then echo "::error::Falta la APK pública 1.2.2"; exit 1; fi
+            sleep 10
+          done
+          echo "APK 1.2.2 pública:"
+          sha256sum /tmp/easy-english-1.2.2.apk
+          python3 - <<'PY'
+          import zipfile, re
+          path='/tmp/easy-english-1.2.2.apk'
+          with zipfile.ZipFile(path) as z:
+              names=z.namelist()
+              index=next((n for n in names if n.endswith('assets/www/index.html') or n == 'assets/www/index.html'), None)
+              start=next((n for n in names if n.endswith('assets/www/start.html') or n == 'assets/www/start.html'), None)
+              assert index and start, 'El APK no incluye las páginas que se esperaban'
+              offline=z.read(index).decode('utf-8').lower()
+              launcher=z.read(start).decode('utf-8').lower()
+              assert '#1e5eff' in offline and '#173d87' in offline and '#f7f9fc' in offline
+              assert '--ok:#2058b9' in offline
+              assert '#1e5eff' in launcher
+              for green in ['#0b8667','#e7f5ef','#e7f6f0','#bcf3d5','#f2f9f4','#e8f6ed','#4b9c70','#e6f7ef','#63bfa1','#dfece7']:
+                  assert green not in offline, f'Verde heredado {green} sigue empaquetado en el APK'
+              print('PASS: APK 1.2.2 real contiene el diseño azul y cero colores verdes heredados.')
+          PY
