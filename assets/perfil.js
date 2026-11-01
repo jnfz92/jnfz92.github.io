@@ -795,6 +795,53 @@ $('passwordRecoveryForm').onsubmit=async e=>{
   }catch(error){authMessage('No se pudo cambiar la contraseña: '+readableAuthError(error),true)}
   finally{$('passwordRecoveryValue').value='';button.disabled=false}
 };
+$('exportAccountData').onclick=async()=>{
+ if(!user)return;
+ const owner=user.id,button=$('exportAccountData'),label=$('exportAccountStatus');
+ button.disabled=true;
+ label.textContent='Preparando tu historial de aprendizaje…';
+ try {
+  const {data:auth,error:authError}=await eeDb.auth.getUser();
+  if(authError)throw authError;
+  if(!auth?.user||auth.user.id!==owner)throw new Error('Inicia sesión de nuevo para exportar los datos.');
+  // Cada consulta está restringida al usuario y se aplica la seguridad RLS de Supabase.
+  const tables=[
+   ['perfiles','usuario_id'],['lecturas','usuario_id'],['resultados','usuario_id'],
+   ['preguntas_falladas','usuario_id'],['actividad_diaria','usuario_id'],
+   ['actividad_intentos','usuario_id'],['actividad_fallos','usuario_id'],
+   ['examenes_lecturas','usuario_id'],['writing_borradores','usuario_id'],
+   ['progreso_curso','usuario_id'],['objetivos_semanales','usuario_id'],
+   ['recursos_guardados','usuario_id'],['vocabulario_preferencias','user_id'],
+   ['vocabulario_progreso','user_id'],['perfiles_publicos','usuario_id']
+  ];
+  const datos={};
+  for(const [name,ownerColumn] of tables){
+   const values=[];
+   for(let start=0;;start+=1000){
+    const {data,error}=await eeDb.from(name).select('*').eq(ownerColumn,owner).range(start,start+999);
+    if(error)throw new Error('No se pudo exportar '+name+': '+error.message);
+    values.push(...(data||[]));
+    if((data||[]).length<1000)break;
+   }
+   datos[name]=values;
+   if(!user||user.id!==owner)throw new Error('La sesión cambió durante la exportación.');
+  }
+  const today=new Date().toISOString().slice(0,10);
+  const payload={servicio:'Easy English',tipo:'Exportación personal de aprendizaje',
+   exportado_en:new Date().toISOString(),usuario_id:owner,datos};
+  const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json;charset=utf-8'});
+  const url=URL.createObjectURL(blob);
+  const link=document.createElement('a');
+  link.href=url;link.download='easyenglish-aprendizaje-'+today+'.json';
+  document.body.append(link);
+  link.click();
+  link.remove();
+  setTimeout(()=>URL.revokeObjectURL(url),3000);
+  label.textContent='Archivo preparado. Comprueba la carpeta de descargas de tu navegador. Guárdalo en un lugar privado.';
+ }catch(error){
+  label.textContent='No se pudo exportar el historial: '+error.message;
+ }finally{button.disabled=false}
+};
 async function logOut(){const {error}=await eeDb.auth.signOut();if(error)return status('Error: '+error.message);await changeUser(null);status('Has cerrado sesión.')}$('signout').onclick=logOut;
 $('showDeleteAccount').onclick=()=>{$('deleteAccountPanel').hidden=false;$('deleteConfirm').value='';$('confirmDeleteAccount').disabled=true;$('deleteAccountPanel').scrollIntoView({behavior:'smooth',block:'nearest'})};
 $('cancelDeleteAccount').onclick=()=>{$('deleteAccountPanel').hidden=true;$('deleteConfirm').value='';$('deleteAccountStatus').textContent=''};
