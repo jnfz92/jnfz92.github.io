@@ -431,7 +431,12 @@
       ...localDone.filter(key=>!state.completed.has(key)).map(unidad_slug=>({unidad_slug,estado:'completada',completada_en:new Date().toISOString()})),
       ...localStarted.filter(key=>!state.completed.has(key)&&!state.started.has(key)).map(unidad_slug=>({unidad_slug,estado:'en_curso',completada_en:null}))
     ];
-    if (!local.length) return;
+    if(!local.length) {
+      localStorage.removeItem(STORAGE);
+      localStorage.removeItem(STARTED_STORAGE);
+      updateStorageNote('Las unidades de este navegador ya estaban sincronizadas con tu cuenta.');
+      return;
+    }
     const userId = state.user.id;
     ui.importLocal.disabled = true;
     try {
