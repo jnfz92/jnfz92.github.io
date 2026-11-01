@@ -31,23 +31,21 @@ function activate(){
   };
   function close(){
     header.classList.remove('ee-menu-open');
+    nav.classList.remove('ee-resource-mode');
     if(more)more.open=false;
     toggle.setAttribute('aria-expanded','false');
     toggle.setAttribute('aria-label','Abrir menú de navegación');
     sync();
   }
-  // Abrir Recursos no debe dejar su primera opción oculta bajo la barra sticky.
-  // El scroll ocurre dentro del panel móvil, manteniendo el primer enlace pulsable.
-  if(more)more.addEventListener('toggle',()=>{
-    if(!more.open||!isMobile()||!header.classList.contains('ee-menu-open'))return;
-    requestAnimationFrame(()=>{
-      if(!more.open||!header.classList.contains('ee-menu-open'))return;
-      const menuTop=nav.getBoundingClientRect().top;
-      const detailsTop=more.getBoundingClientRect().top;
-      const offset=detailsTop-menuTop-12;
-      if(Math.abs(offset)>2)nav.scrollTop+=offset;
-    });
-  });
+  // Vista de recursos independiente en móvil: evita que la lista anterior
+  // empuje el primer enlace detrás de la cabecera sticky.
+  const syncResources=()=>{
+    const mode=!!(more?.open&&isMobile()&&header.classList.contains('ee-menu-open'));
+    nav.classList.toggle('ee-resource-mode',mode);
+    if(mode)nav.scrollTop=0;
+  };
+  more?.addEventListener('toggle',syncResources);
+  window.addEventListener('resize',syncResources);
   backdrop.addEventListener('click',close);
   nav.addEventListener('click',event=>{
     if(event.target.closest('a[href]'))close()
