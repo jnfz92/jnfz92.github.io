@@ -17,6 +17,18 @@ function render(){
  if(A.plan.fecha_examen){
  const days=Math.max(0,Math.ceil((new Date(A.plan.fecha_examen+'T12:00:00')-new Date())/86400000));
  box.append(A.elt('p','Examen previsto: '+A.plan.fecha_examen+' · faltan unos '+days+' días.'))
+ const remainingUnits=Math.max(0,A.units.length-A.progress.filter(x=>x.estado==='completada').length);
+ const plannedDays=[];
+ const cursor=new Date();
+ while(cursor<=new Date(A.plan.fecha_examen+'T12:00:00')&&plannedDays.length<365){
+  if(A.plan.dias_semana.includes(cursor.getDay()))plannedDays.push(cursor.toDateString());
+  cursor.setDate(cursor.getDate()+1)
+ }
+ if(A.units.length&&plannedDays.length){
+  const pace=(remainingUnits/Math.max(1,plannedDays.length)).toFixed(2);
+  box.append(A.elt('p','Quedan '+remainingUnits+' unidades y aproximadamente '+plannedDays.length+' sesiones previstas: necesitarías estudiar '+pace+' unidades por sesión para completar el temario antes de la fecha.'))
+ }
+
  }
  if(!A.plan.dias_semana.includes(new Date().getDay()))box.append(A.elt('p','Hoy es día de descanso según tu plan.','aula-notice'))
 }
@@ -42,6 +54,11 @@ $('calendarDownload').onclick=()=>{
  if(!days.length){A.note('planStatus','Selecciona algún día de estudio.');return}
  const [hour,minute]=($('planTime').value||'18:00').split(':').map(Number),start=new Date();
  start.setHours(hour,minute,0,0);
+ for(let i=0;i<8;i++){
+  if(days.includes(start.getDay())&&start.getTime()>Date.now())break;
+  start.setDate(start.getDate()+1)
+ }
+
  const names=days.map(x=>['SU','MO','TU','WE','TH','FR','SA'][x]).join(',');
  const now=new Date().toISOString().replace(/[-:]/g,'').replace(/\.\d{3}/,'');
  const lines=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Easy English//Plan B2//ES','BEGIN:VEVENT',
