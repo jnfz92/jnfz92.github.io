@@ -6,7 +6,7 @@ const fakeSupabase = String.raw`
   const question = {id:301, orden:1, enunciado:'Choose the correct answer: I ___ English.',
     opciones:['study','studies','studying'], fuente_url:null, examen_id:17,
     examenes:{titulo:'Examen de prueba',lectura:null}};
-  const state = {user:null, listeners:[], calls:[]};
+  const state = {user:null, listeners:[], calls:[], attempts:[], dropDeliveryOnce:false};
   window.__e2e = {
     state,
     signIn(){state.user={id:'playwright-test-user',email:'playwright@example.test'};state.listeners.forEach(f=>f('SIGNED_IN',{session:{user:state.user}}));},
@@ -50,7 +50,11 @@ const fakeSupabase = String.raw`
     from:query,
     rpc:async(name,args)=>{
       state.calls.push('rpc:'+name);
-      if(name==='entregar_examen')return {data:{resultado_id:'10000000-0000-4000-8000-000000000001'},error:null};
+      if(name==='entregar_examen_idempotente'){
+        state.attempts.push(args);
+        if(state.dropDeliveryOnce){state.dropDeliveryOnce=false;return {data:null,error:{message:'Conexión perdida tras la entrega'}}}
+        return {data:{resultado_id:'10000000-0000-4000-8000-000000000001'},error:null};
+      }
       if(name==='ver_correccion'){if(state.failCorrection)return {data:null,error:{message:'Sin conexión al obtener corrección'}};return {data:[{pregunta_id:301,respuesta_correcta:0,explicacion:'La forma correcta es study.'}],error:null};}
       if(name==='entregar_repaso_fallos')return {data:{
         aciertos:1,total:1,correcciones:{'301':{respuesta_correcta:0,explicacion:'Study es correcto.',correcta:true}}
@@ -188,6 +192,28 @@ test('La corrección ya entregada se recupera sin entregar un segundo examen',as
  await expect(page.locator('#scoreSummary')).toBeVisible();
  const calls=await page.evaluate(()=>window.__e2e.state.calls);
  expect(calls).toContain('rpc:ver_correccion');
- expect(calls).not.toContain('rpc:entregar_examen');
+ expect(calls).not.toContain('rpc:entregar_examen_idempotente');
+ expect(await page.evaluate(()=>localStorage.getItem('ee-exam-answers-v1:playwright-test-user:17'))).toBeNull();
+});
+
+
+test('Un reintento después de perder la respuesta del servidor reutiliza el UUID del examen',async({page})=>{
+ await page.goto(WEBSITE+'?examen=17&e2e=retry',{waitUntil:'domcontentloaded'});
+ await page.locator('#email').fill('playwright@example.test');
+ await page.locator('#password').fill('test-password');
+ await page.locator('#login button').first().click();
+ await expect(page.locator('#exam fieldset')).toHaveCount(1);
+ await page.locator('#exam input[name="question-301"][value="0"]').check();
+ await page.evaluate(()=>{window.__e2e.state.dropDeliveryOnce=true});
+ await page.locator('#exam button[type=submit]').click();
+ await expect(page.locator('#message')).toContainText('Conexión perdida');
+ const before=await page.evaluate(()=>JSON.parse(localStorage.getItem('ee-exam-answers-v1:playwright-test-user:17')));
+ expect(before.attemptId).toMatch(/^[0-9a-f-]{36}$/i);
+ await page.locator('#exam button[type=submit]').click();
+ await expect(page.locator('#scoreSummary')).toBeVisible();
+ const attempts=await page.evaluate(()=>window.__e2e.state.attempts);
+ expect(attempts).toHaveLength(2);
+ expect(attempts[0].p_intento_id).toBe(before.attemptId);
+ expect(attempts[1].p_intento_id).toBe(before.attemptId);
  expect(await page.evaluate(()=>localStorage.getItem('ee-exam-answers-v1:playwright-test-user:17'))).toBeNull();
 });
