@@ -98,6 +98,15 @@
   }
 
 
+  function ensureMainAnchor(){
+    const main=document.querySelector('body > main, body > .container main, main');
+    if(!main)return;
+    if(!main.id)main.id='contenido-principal';
+    if(main.id==='contenido-principal')main.setAttribute('tabindex','-1');
+    const skip=document.querySelector('.ee-skip-link');
+    if(skip)skip.href='#'+encodeURIComponent(main.id);
+  }
+
   function setupReadingTools(){
     if(!document.body.classList.contains('ee-unified-article'))return;
     const main=document.querySelector('body.ee-unified-article > main');
@@ -214,11 +223,13 @@
     ensurePremiumCSS();
     ensureBrandCSS();
     setupMenu();
+    ensureMainAnchor();
     ensureFooter();
     setupReadingTools();
   }
   // Las lecciones se insertan sin reconstruir el documento ni el menú compartido.
   window.addEventListener('easyenglish:article-rendered',()=>{
+    ensureMainAnchor();
     setupReadingTools();
     ensureFooter();
   });
