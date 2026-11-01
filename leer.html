@@ -229,77 +229,97 @@ permalink: /leer.html
   const existing=doc.querySelector('link[rel="canonical"]');if(existing)existing.remove();
   const canonical=doc.createElement('link');canonical.rel='canonical';canonical.href=new URL('leer.html?slug='+encodeURIComponent(resolveSlug(slug)),location.href).href;doc.head.append(canonical);
   if(article.descripcion){let meta=doc.querySelector('meta[name="description"]');if(!meta){meta=doc.createElement('meta');meta.name='description';doc.head.append(meta)}meta.content=article.descripcion}
-  // Las cabeceras y pies editoriales antiguos no son parte de la lección.
-  // Solo se reemplaza navegación global; los índices internos siguen intactos.
-  doc.querySelectorAll('body > header, body > footer').forEach(node=>node.remove());
-  doc.querySelectorAll('script[src*="navigation.js"],script[src*="navigation-optimized.js"]').forEach(node=>node.remove());
-  doc.querySelectorAll('link[href*="navigation.css"],link[href*="navigation-optimized.css"]').forEach(node=>node.remove());
-  const sharedHeader=document.getElementById('ee-shared-header');
-  if(sharedHeader){
-    const headerCopy=sharedHeader.cloneNode(true);
-    headerCopy.classList.remove('ee-menu-open');
-    headerCopy.removeAttribute('data-ee-optimized');
-    headerCopy.querySelectorAll('.ee-more[open]').forEach(el=>el.open=false);
-    const backdrop=headerCopy.querySelector('.ee-nav-backdrop');
-    if(backdrop)backdrop.hidden=true;
-    const toggle=headerCopy.querySelector('.ee-nav-toggle');
-    if(toggle){
-      toggle.removeAttribute('data-menu-ready');
-      toggle.removeAttribute('onclick');
-      toggle.setAttribute('aria-expanded','false');
-      toggle.setAttribute('aria-label','Abrir menú de navegación');
-    }
-    doc.body.prepend(headerCopy);
-  }
-  // El articulo llega como documento HTML completo desde Supabase.
-  // Cargar tambien la barra de navegacion en el documento sustituido.
-  const navStyle=doc.createElement('link');navStyle.rel='stylesheet';
-  navStyle.href=new URL('/assets/navigation.css?v=20261030-menu-blue-3',location.href).href;
-  doc.head.append(navStyle);
-  const editorialStyle=doc.createElement('link');
-  editorialStyle.rel='stylesheet';
-  editorialStyle.href=new URL('/assets/article-unified.css?v=20261030-unified-blue-2',location.href).href;
-  doc.head.append(editorialStyle);
-  const academyStyle=doc.createElement('link');
-  academyStyle.rel='stylesheet';
-  academyStyle.href=new URL('/assets/academy-premium.css?v=20261031-launch-1',location.href).href;
-  doc.head.append(academyStyle);
-  const brandStyle=doc.createElement('link');
-  brandStyle.rel='stylesheet';
-  brandStyle.href=new URL('/assets/brand-system.css?v=20261031-unified-1',location.href).href;
-  doc.head.append(brandStyle);
-  // Este mismo diseño y comportamiento se usa en todas las páginas.
-  const optimizedStyle=doc.createElement('link');
-  optimizedStyle.rel='stylesheet';
-  optimizedStyle.href=new URL('/assets/navigation-optimized.css?v=20261101-menu-2',location.href).href;
-  doc.head.append(optimizedStyle);
-  const navScript=doc.createElement('script');
-  navScript.src=new URL('/assets/navigation.js?v=20261030-menu-blue-4',location.href).href;
-  navScript.defer=true;doc.body.append(navScript);
-  const optimizedScript=doc.createElement('script');
-  optimizedScript.src=new URL('/assets/navigation-optimized.js?v=20261101-menu-2',location.href).href;
-  optimizedScript.defer=true;doc.body.append(optimizedScript);
-  // Renderizar sobre el DOM existente: document.write() después de un fetch
-  // puede sustituir todo el documento y romper enlaces o scripts en WebView.
-  // Conservar estilos y volver a activar solo los scripts que necesita la lección.
-  const scripts=[...doc.querySelectorAll('script')];
-  scripts.forEach(s=>s.remove());
-  const newHead=[...doc.head.childNodes].map(n=>document.importNode(n,true));
-  const newBody=[...doc.body.childNodes].map(n=>document.importNode(n,true));
-  document.head.replaceChildren(...newHead);
-  document.body.replaceChildren(...newBody);
+  // Mantener la cabecera, el menú, los eventos y la sesión: cambiar solo el contenido editorial.
+  // La anterior sustitución de document.head/body reiniciaba la navegación en cada lectura.
+  const articleMain=doc.querySelector('main');
+  const loader=document.querySelector('main');
+  if(!articleMain||!loader)throw Error('No se encontró el contenido principal de la lección');
+  const oldTitle=document.title;
+  document.title=article.titulo||oldTitle;
   document.documentElement.lang=doc.documentElement.lang||'es';
-  document.title=article.titulo||document.title;
-  for(const original of scripts){
-    const active=document.createElement('script');
-    for(const attr of original.attributes){
-      if(attr.name!=='src'&&attr.name!=='defer'&&attr.name!=='async')active.setAttribute(attr.name,attr.value);
+  document.body.classList.add('ee-site','ee-unified-article');
+  for(const className of doc.body.classList)document.body.classList.add(className);
+
+  const targetHead=document.head;
+  // Los estilos editoriales específicos se instalan sin eliminar los estilos compartidos.
+  const already=new Set([...targetHead.querySelectorAll('link[rel="stylesheet"]')].map(l=>new URL(l.href,location.href).pathname));
+  for(const node of [...doc.head.querySelectorAll('link[rel="stylesheet"],style')]){
+    if(node.tagName==='LINK'){
+      const resolved=new URL(node.href,location.href);
+      if(already.has(resolved.pathname))continue;
+      already.add(resolved.pathname);
     }
-    if(original.hasAttribute('src')){
-      const raw=original.getAttribute('src');
+    targetHead.append(document.importNode(node,true));
+  }
+  function stylesheet(path){
+    if([...targetHead.querySelectorAll('link[rel="stylesheet"]')].some(l=>new URL(l.href,location.href).pathname===path.split('?')[0]))return;
+    const link=document.createElement('link');link.rel='stylesheet';link.href=path;targetHead.append(link);
+  }
+  stylesheet('/assets/article-unified.css?v=20261030-unified-blue-2');
+  stylesheet('/assets/comentarios-articulos.css?v=20261030-unified-blue-2');
+  stylesheet('/assets/navigation-optimized.css?v=20261101-menu-2');
+
+  const canonicalUrl=new URL('leer.html?slug='+encodeURIComponent(resolveSlug(slug)),location.href).href;
+  let canonical=document.head.querySelector('link[rel="canonical"]');
+  if(!canonical){canonical=document.createElement('link');canonical.rel='canonical';document.head.append(canonical)}
+  canonical.href=canonicalUrl;
+  if(article.descripcion){
+    let meta=document.head.querySelector('meta[name="description"]');
+    if(!meta){meta=document.createElement('meta');meta.name='description';document.head.append(meta)}
+    meta.content=article.descripcion;
+  }
+  for(const [property,value] of [['og:type','article'],['og:title',article.titulo||document.title],
+    ['og:description',article.descripcion||'Lección de inglés en Easy English'],['og:url',canonicalUrl]]){
+    let tag=document.head.querySelector('meta[property="'+property+'"]');
+    if(!tag){tag=document.createElement('meta');tag.setAttribute('property',property);document.head.append(tag)}
+    tag.content=value;
+  }
+  const schema=document.createElement('script');schema.type='application/ld+json';
+  schema.textContent=JSON.stringify({'@context':'https://schema.org','@type':'LearningResource',
+    name:article.titulo||document.title,description:article.descripcion||'Lección de inglés',
+    inLanguage:'es',url:canonicalUrl,educationalUse:'self-study',isAccessibleForFree:true,
+    provider:{'@type':'Organization',name:'Easy English',url:'https://jnfz92.github.io/'}}).replace(/</g,'\\u003c');
+  document.head.append(schema);
+
+  // El usuario conserva el mismo menú. Solo cambia el estado activo a Artículos.
+  const nav=document.getElementById('ee-primary-navigation');
+  if(nav){
+    nav.querySelectorAll('[aria-current="page"]').forEach(link=>link.removeAttribute('aria-current'));
+    const active=nav.querySelector('.ee-more-panel a[href="/articulos.html"]');
+    if(active)active.setAttribute('aria-current','page');
+    nav.querySelector('.ee-more > summary')?.classList.add('ee-more-current');
+  }
+  loader.replaceWith(document.importNode(articleMain,true));
+  // Imágenes fuera de la zona inicial: carga diferida para ahorrar transferencia.
+  document.querySelectorAll('main img').forEach((img,index)=>{
+    img.decoding='async';
+    if(index>0&&!img.hasAttribute('loading'))img.loading='lazy';
+  });
+  // Mantener scripts del artículo y los comentarios, sin volver a descargar navegación ni duplicar Supabase.
+  const scripts=[...doc.querySelectorAll('script')].filter(s=>{
+    const src=s.getAttribute('src')||'';
+    return !/navigation(?:-optimized)?\\.js|site\\.js|supabase-js|supabase-config\\.js/i.test(src)&&s.type!=='application/ld+json';
+  });
+  const activeExternal=new Set([...document.querySelectorAll('script[src]')].map(s=>new URL(s.src,location.href).pathname));
+  const includesConfig=!!window.eeDb;
+  const needed=includesConfig?[]:[
+    'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js',
+    '/supabase-config.js'
+  ];
+  const pending=[...needed,...scripts];
+  for(const source of pending){
+    const original=typeof source==='string'?null:source;
+    const raw=original?.getAttribute('src')||(typeof source==='string'?source:'');
+    if(raw&&activeExternal.has(new URL(raw,location.href).pathname))continue;
+    const active=document.createElement('script');
+    if(original)for(const attr of original.attributes){
+      if(!['src','defer','async'].includes(attr.name))active.setAttribute(attr.name,attr.value);
+    }
+    if(raw){
       active.async=false;
       active.src=new URL(raw,location.href).href;
-    }else{
+      activeExternal.add(new URL(active.src,location.href).pathname);
+    }else if(original){
       active.textContent=original.textContent;
     }
     document.body.append(active);
