@@ -815,7 +815,9 @@ $('exportAccountData').onclick=async()=>{
    ['examenes_lecturas','usuario_id'],['writing_borradores','usuario_id'],
    ['progreso_curso','usuario_id'],['objetivos_semanales','usuario_id'],
    ['recursos_guardados','usuario_id'],['vocabulario_preferencias','user_id'],
-   ['vocabulario_progreso','user_id'],['perfiles_publicos','usuario_id']
+   ['vocabulario_progreso','user_id'],['perfiles_publicos','usuario_id'],
+   ['diagnosticos_b2','usuario_id'],['planes_estudio_b2','usuario_id'],
+   ['sesiones_estudio_b2','usuario_id'],['simulacros_b2','usuario_id']
   ];
   const datos={};
   for(const [name,ownerColumn] of tables){
