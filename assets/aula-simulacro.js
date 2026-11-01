@@ -14,45 +14,174 @@ const bank=[
 ['reading','“Most commuters preferred the express bus, whereas residents near the stops reported more noise.” Who was less satisfied?',['Commuters','Drivers','Nearby residents','All passengers'],2,'Los residentes informaron de ruido.'],
 ['reading','“Applications received after midnight will not be considered.” Applicants should...',['Send their form before the deadline','Apply only at midnight','Call next morning','Submit without documents'],0,'No se aceptan solicitudes posteriores a la medianoche.']
 ].map(([topic,q,a,c,why])=>({topic,q,a,c,why}));
-let deadline=0,clock=null,busy=false,active=false;
-function tick(){
- const left=Math.max(0,Math.ceil((deadline-Date.now())/1000));
- $('mockTimer').textContent=String(Math.floor(left/60)).padStart(2,'0')+':'+String(left%60).padStart(2,'0');
- if(!left){clearInterval(clock);void finish(true)}
+
+const LENGTH_MS=15*60*1000;
+const DRAFT_PREFIX='ee-b2-mock-draft-v2:';
+let clock=null,busy=false,draft=null,storageAvailable=true;
+const form=$('mockForm'),start=$('mockStart'),retry=$('mockSaveRetry');
+const discard=$('mockDiscard'),note=$('mockDraftStatus');
+function draftKey(){return A.user?.id?DRAFT_PREFIX+A.user.id:null}
+function newUUID(){
+ if(window.crypto?.randomUUID)return window.crypto.randomUUID();
+ const b=new Uint8Array(16);window.crypto.getRandomValues(b);
+ b[6]=(b[6]&15)|64;b[8]=(b[8]&63)|128;
+ const s=[...b].map(n=>n.toString(16).padStart(2,'0')).join('');
+ return s.slice(0,8)+'-'+s.slice(8,12)+'-'+s.slice(12,16)+'-'+s.slice(16,20)+'-'+s.slice(20);
 }
-$('mockStart').onclick=()=>{
- if(!A.check())return;
- if(clock)clearInterval(clock);
- A.makeQuestions($('mockQuestions'),bank,'mock');
- $('mockForm').hidden=false;$('mockStart').disabled=true;
- $('mockResult').replaceChildren();deadline=Date.now()+15*60000;active=true;
- tick();clock=setInterval(tick,1000);
-};
-$('mockForm').onsubmit=e=>{e.preventDefault();void finish(false)};
-async function finish(expired){
- if(!active||busy||!A.user)return;busy=true;clearInterval(clock);
- const answers={},details={},used=Math.max(0,Math.min(900,900-Math.ceil((deadline-Date.now())/1000)));
- let correct=0,responded=0;
- bank.forEach((q,i)=>{
-  const radio=document.querySelector('input[name="mock'+i+'"]:checked'),choice=radio?Number(radio.value):null;
-  answers[i]=choice;if(choice!==null)responded++;
-  const count=details[q.topic]||{aciertos:0,total:0};count.total++;
-  if(choice===q.c){correct++;count.aciertos++}details[q.topic]=count
- });
+function info(message){note.textContent=message}
+function validAnswers(answers){
+ const safe={};
+ if(!answers||typeof answers!=='object'||Array.isArray(answers))return safe;
+ for(let i=0;i<bank.length;i++){
+  const value=answers[i];
+  if(Number.isInteger(value)&&value>=0&&value<bank[i].a.length)safe[i]=value
+ }
+ return safe
+}
+function readDraft(){
+ const key=draftKey();if(!key)return null;
  try{
-  const {error}=await db.from('simulacros_b2').insert({
-   usuario_id:A.user.id,modalidad:'use_of_english',aciertos:correct,total:bank.length,
-   respuestas:answers,duracion_segundos:used
-  });if(error)throw error;
-  active=false;$('mockForm').hidden=true;
-  const box=$('mockResult');box.replaceChildren();
-  box.append(A.elt('p',correct+' de '+bank.length+' correctas · '+responded+' contestadas · '+Math.ceil(used/60)+' min.','aula-score'));
-  if(expired)box.append(A.elt('p','Se ha agotado el tiempo del minisimulacro.'));
+  const raw=localStorage.getItem(key);
+  if(!raw)return null;
+  const item=JSON.parse(raw);
+  if(item?.v!==2||item.owner!==A.user.id||
+    !/^[a-f0-9-]{36}$/i.test(item.attemptId)||
+    !Number.isFinite(item.deadline)||item.deadline<=0||
+    !['active','pending'].includes(item.phase))return null;
+  item.answers=validAnswers(item.answers);
+  return item
+ }catch(_){storageAvailable=false;return null}
+}
+function saveDraft(){
+ const key=draftKey();if(!key||!draft)return;
+ try{localStorage.setItem(key,JSON.stringify(draft));storageAvailable=true}
+ catch(_){storageAvailable=false;info('Tu navegador no permite guardar el borrador. No cierres la pestaña.')}
+}
+function clearDraft(){
+ const key=draftKey();
+ if(key)try{localStorage.removeItem(key)}catch(_){}
+ draft=null
+}
+function collected(){
+ const answers={};
+ for(let i=0;i<bank.length;i++){
+  const marked=form.querySelector('input[name="mock'+i+'"]:checked');
+  if(marked)answers[i]=Number(marked.value)
+ }
+ return validAnswers(answers)
+}
+function restoreInputs(){
+ form.querySelectorAll('input[type=radio]').forEach(input=>{input.disabled=draft.phase==='pending'});
+ for(const [index,value] of Object.entries(draft.answers)){
+  const input=form.querySelector('input[name="mock'+index+'"][value="'+value+'"]');
+  if(input)input.checked=true
+ }
+}
+function renderDraft(restored=false){
+ A.makeQuestions($('mockQuestions'),bank,'mock');
+ restoreInputs();
+ form.hidden=false;start.disabled=true;discard.hidden=draft.phase!=='active';
+ retry.hidden=draft.phase!=='pending';
+ form.querySelector('[type=submit]').disabled=draft.phase!=='active';
+ $('mockResult').replaceChildren();
+ if(draft.phase==='pending'){
+  $('mockTimer').textContent='00:00';
+  info('Las respuestas están protegidas. Pulsa «Reintentar guardado» para confirmar el resultado sin crear un segundo intento.');
+  return
+ }
+ info(restored
+  ?'Intento recuperado de este navegador. El tiempo continúa desde que empezaste.'
+  :storageAvailable?'Respuestas guardadas automáticamente en este navegador.':'Mantén abierta esta pestaña para conservar las respuestas.');
+ tick();if(draft?.phase==='active'&&!clock)clock=setInterval(tick,1000)
+}
+function tick(){
+ if(!draft||draft.phase!=='active')return;
+ const left=Math.max(0,Math.ceil((draft.deadline-Date.now())/1000));
+ $('mockTimer').textContent=String(Math.floor(left/60)).padStart(2,'0')+':'+String(left%60).padStart(2,'0');
+ if(!left){clearInterval(clock);clock=null;void finish(true)}
+}
+start.onclick=()=>{
+ if(!A.check()||draft||busy)return;
+ const now=Date.now();
+ draft={v:2,owner:A.user.id,attemptId:newUUID(),deadline:now+LENGTH_MS,
+   answers:{},phase:'active',finishedAt:null,expired:false};
+ saveDraft();renderDraft()
+};
+form.addEventListener('change',()=>{
+ if(!draft||draft.phase!=='active')return;
+ draft.answers=collected();saveDraft();
+ if(storageAvailable)info('Borrador actualizado automáticamente. Puedes salir y volver a este navegador.')
+});
+form.onsubmit=event=>{event.preventDefault();void finish(false)};
+retry.onclick=()=>{if(draft?.phase==='pending')void finish(Boolean(draft.expired))};
+discard.onclick=()=>{
+ if(!draft||busy||draft.phase!=='active')return;
+ if(!confirm('¿Descartar este intento y todas las respuestas guardadas?'))return;
+ if(clock)clearInterval(clock);clock=null;
+ clearDraft();form.hidden=true;start.disabled=false;
+ discard.hidden=true;retry.hidden=true;$('mockResult').replaceChildren();
+ info('Borrador descartado. Puedes comenzar un nuevo minisimulacro.')
+};
+function snapshot(item){
+ const answers=validAnswers(item.answers),details={};
+ let correct=0,responded=0;
+ bank.forEach((question,i)=>{
+  const choice=answers[i];
+  if(Number.isInteger(choice))responded++;
+  const group=details[question.topic]||{aciertos:0,total:0};
+  group.total++;
+  if(choice===question.c){correct++;group.aciertos++}
+  details[question.topic]=group
+ });
+ const started=item.deadline-LENGTH_MS;
+ const ended=Number(item.finishedAt)||Date.now();
+ const elapsed=Math.max(0,Math.min(900,Math.ceil((ended-started)/1000)));
+ return {answers,correct,responded,details,elapsed}
+}
+async function finish(expired){
+ if(busy||!A.user||!draft||draft.owner!==A.user.id)return;
+ if(draft.phase==='active'){
+  draft.answers=collected();
+  draft.expired=expired||Date.now()>=draft.deadline;
+  draft.finishedAt=Date.now();
+  draft.phase='pending';
+  saveDraft()
+ }
+ const pending=draft;
+ busy=true;clearInterval(clock);clock=null;
+ form.querySelectorAll('input').forEach(input=>{input.disabled=true});
+ form.querySelector('[type=submit]').disabled=true;
+ discard.hidden=true;retry.hidden=true;
+ info('Guardando el resultado…');
+ const score=snapshot(pending);
+ try{
+  // La clave única (usuario_id,intento_id) impide duplicados también si se
+  // pierde la respuesta HTTP después de que Supabase haya guardado el registro.
+  const result=await db.from('simulacros_b2').upsert({
+   usuario_id:pending.owner,intento_id:pending.attemptId,
+   modalidad:'use_of_english',aciertos:score.correct,total:bank.length,
+   respuestas:score.answers,duracion_segundos:score.elapsed
+  },{onConflict:'usuario_id,intento_id',ignoreDuplicates:true});
+  if(result.error)throw result.error;
+  clearDraft();form.hidden=true;start.disabled=false;
+  retry.hidden=true;discard.hidden=true;
+  $('mockResult').replaceChildren();
+  const box=$('mockResult');
+  box.append(A.elt('p',score.correct+' de '+bank.length+' correctas · '+score.responded+
+    ' contestadas · '+Math.ceil(score.elapsed/60)+' min.','aula-score'));
+  if(pending.expired)box.append(A.elt('p','Se ha agotado el tiempo del minisimulacro.'));
   box.append(A.elt('p','Resultado privado guardado. Esta actividad no sustituye un examen B2 oficial.','aula-tiny'));
-  A.feedback(bank,answers,box);
-  await loadHistory()
- }catch(e){A.note('aulaStatus','No se pudo guardar el simulacro: '+e.message)}
- finally{busy=false;$('mockStart').disabled=false;$('mockStart').textContent='Repetir minisimulacro'}
+  A.feedback(bank,score.answers,box);
+  info('Resultado confirmado. El borrador local se ha eliminado.');
+  try{await loadHistory()}catch(e){A.note('mockHistory','Resultado guardado, pero no se pudo actualizar el historial: '+e.message)}
+ }catch(e){
+  // No eliminar el intento: el servidor podría haberlo recibido. Reenviar el
+  // mismo intento es seguro gracias a la restricción UNIQUE de Supabase.
+  info('No se pudo confirmar el guardado: '+(e.message||String(e))+
+    '. Conservamos las respuestas. Pulsa «Reintentar guardado» cuando tengas conexión.');
+  retry.hidden=false;
+  saveDraft()
+ }finally{busy=false}
 }
 async function loadHistory(){
  const result=await db.from('simulacros_b2').select('modalidad,aciertos,total,creado_en,duracion_segundos').eq('usuario_id',A.user.id).order('creado_en',{ascending:false}).limit(10);
@@ -65,7 +194,12 @@ async function loadHistory(){
   root.append(A.elt('div',label+' · '+item.aciertos+'/'+item.total+' correctas · '+date,'aula-review'))
  })
 }
-window.addEventListener('ee-aula-ready',()=>loadHistory().catch(e=>A.note('mockHistory','No se pudo cargar el historial: '+e.message)));
-window.addEventListener('ee-aula-mock-updated',()=>loadHistory().catch(()=>{}));
-window.addEventListener('pagehide',()=>{if(clock)clearInterval(clock)});
+window.addEventListener('ee-aula-ready',()=>{
+ draft=readDraft();
+ if(draft)renderDraft(true);
+ else info('Las respuestas se guardarán automáticamente al empezar el minisimulacro.');
+ loadHistory().catch(e=>A.note('mockHistory','No se pudo cargar el historial: '+e.message))
+});
+window.addEventListener('pagehide',()=>{if(clock)clearInterval(clock);clock=null;if(draft)saveDraft()});
+document.addEventListener('visibilitychange',()=>{if(document.hidden&&draft)saveDraft()});
 })();
