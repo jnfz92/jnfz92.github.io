@@ -19,7 +19,7 @@ test('En todas las páginas se puede saltar al contenido con teclado',async({pag
     const skip=page.locator('.ee-skip-link');
     await expect(skip).toHaveCount(1);
     const main=page.locator('main').first();
-    await expect(main).toHaveAttribute('id',/\\S+/);
+    await expect(main).toHaveAttribute('id',/\S+/);
     const mainId=await main.getAttribute('id');
     await expect(skip).toHaveAttribute('href','#'+encodeURIComponent(mainId));
   }
