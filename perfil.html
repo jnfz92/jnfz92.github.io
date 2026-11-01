@@ -8,7 +8,7 @@ permalink: /perfil.html
 <meta name="description" content="Tu perfil y progreso de lectura en Easy English.">
 <title>Mi perfil · Easy English</title>
 <link rel="stylesheet" href="/assets/perfil.css?v=20261030-unified-blue-2">
-<link rel="stylesheet" href="assets/site.css?v=20261030-unified-blue-2"><script src="assets/site.js?v=20261013" defer></script><link rel="stylesheet" href="/assets/navigation.css?v=20261030-menu-blue-3"><script src="/assets/navigation.js?v=20261030-menu-blue-4" defer></script><link rel="stylesheet" href="/assets/perfil-reading.css?v=20261030-unified-blue-2"><link rel="stylesheet" href="/assets/perfil-dashboard.css?v=20261101-weekly-goal-1"></head>
+<link rel="stylesheet" href="assets/site.css?v=20261030-unified-blue-2"><script src="assets/site.js?v=20261013" defer></script><link rel="stylesheet" href="/assets/navigation.css?v=20261030-menu-blue-3"><script src="/assets/navigation.js?v=20261030-menu-blue-4" defer></script><link rel="stylesheet" href="/assets/perfil-reading.css?v=20261030-unified-blue-2"><link rel="stylesheet" href="/assets/perfil-dashboard.css?v=20261101-favorites-1"></head>
 <body class="ee-site ee-profile">
 {% include header.html %}<main class="container">
 <section class="hero"><span class="eyebrow">✦ TU ESPACIO DE APRENDIZAJE</span><h1>Tu aprendizaje, en un solo lugar.</h1><p class="intro">Sigue tus lecturas, revisa lo que te queda por aprender y consulta tus resultados con claridad.</p><div class="hero-actions"><a href="/mi-vocabulario.html">🧠 Mi vocabulario ↗</a><a href="practicar.html">✎ Hacer un examen ↗</a><a href="practicar.html#cuaderno-fallos">📘 Mi cuaderno de errores ↗</a><a href="#articlesTitle" id="continueLink" hidden>📚 Continuar aprendiendo ↓</a></div></section>
@@ -104,7 +104,12 @@ permalink: /perfil.html
 <div class="stats"><div class="stat"><strong id="readStat">0</strong><span>Artículos leídos</span></div><div class="stat"><strong id="totalStat">0</strong><span>Artículos disponibles</span></div><div class="stat"><strong id="percentageStat">0%</strong><span>Progreso de lectura</span></div></div>
 <div class="meter" role="progressbar" aria-label="Progreso de lectura" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="readMeter"><span id="readBar"></span></div><p class="muted" id="readProgressText">Cargando artículos…</p>
 </section>
-<section class="panel reading-library" aria-labelledby="articlesTitle">
+<section class="panel ee-favorites-panel" id="favoritesPanel" aria-labelledby="favoritesTitle">
+<p class="section-kicker">MI BIBLIOTECA PERSONAL</p><h2 id="favoritesTitle">Mis favoritos <span id="favoritesCount" class="ee-favorites-count">0</span></h2>
+<p class="muted">Las unidades y los artículos que guardes son privados y estarán disponibles al iniciar sesión desde cualquier dispositivo.</p>
+<p class="muted" id="favoritesStatus" role="status" aria-live="polite">Consultando tus recursos guardados…</p>
+<div class="list" id="favoritesList"></div>
+</section><section class="panel reading-library" aria-labelledby="articlesTitle">
 <p class="section-kicker">TU BIBLIOTECA PERSONAL</p><h2 id="articlesTitle">Leídos y pendientes</h2>
 <p class="muted">Consulta qué has completado, encuentra tu próxima lectura y actualiza su estado cuando quieras.</p>
 <div class="reading-overview" aria-label="Progreso de mis artículos">
@@ -126,5 +131,5 @@ permalink: /perfil.html
 </main><footer class="ee-footer"><p>Un poco de ingl?s. Un paso m?s cada d?a.</p></footer>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script src="supabase-config.js"></script>
-<script src="/assets/perfil.js?v=20261101-weekly-goal-1"></script>
+<script src="/assets/perfil.js?v=20261101-favorites-1"></script>
 </body></html>
