@@ -217,6 +217,11 @@
     ensureFooter();
     setupReadingTools();
   }
+  // Las lecciones se insertan sin reconstruir el documento ni el menú compartido.
+  window.addEventListener('easyenglish:article-rendered',()=>{
+    setupReadingTools();
+    ensureFooter();
+  });
   if(document.readyState==='loading'){
     document.addEventListener('DOMContentLoaded',attach,{once:true});
   }else{
