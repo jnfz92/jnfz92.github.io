@@ -93,6 +93,9 @@ body.ee-site{background:#f6f8fd;color:var(--cc-ink)}
 .course-card-no{font-weight:900;color:#9aa8be;font-size:12px;letter-spacing:.12em}
 .course-card-status{display:inline-flex;gap:5px;align-items:center;border-radius:999px;background:#eff3fb;color:#526684;padding:5px 10px;font-weight:800;font-size:10px;white-space:nowrap}
 .course-card-status.is-complete{background:#eaf2ff;color:#2255ac}
+.course-card-status.is-started{background:#fff4df;color:#8d5b09}
+.ee-site .course-start[aria-pressed=true]{background:#fff6e9;border-color:#edca89;color:#80530b}
+@media(min-width:901px){.course-stats{grid-template-columns:repeat(5,minmax(0,1fr))}}
 .course-card-title{display:flex;align-items:start;justify-content:space-between;gap:10px;margin-top:15px}
 .ee-site .course-card-title h4{margin:0;font-size:19px;line-height:1.3;letter-spacing:-.025em;color:var(--cc-ink)}
 .course-chevron{font-size:18px;color:#8a9ab5;transition:transform .2s}
@@ -197,7 +200,8 @@ details[open] .course-chevron{transform:rotate(180deg)}
  <div class="course-stat"><span>Unidades del programa</span><strong id="courseUnitsStat">44</strong><em>Ruta completa B2</em></div>
  <div class="course-stat"><span>Gramática</span><strong id="courseGrammarStat">24</strong><em>Unidades 01–24</em></div>
  <div class="course-stat"><span>Vocabulario</span><strong id="courseVocabularyStat">20</strong><em>Unidades 25–44</em></div>
- <div class="course-stat"><span>Unidades que has marcado</span><strong id="courseCompletedStat">0</strong><em>Registro manual</em></div>
+ <div class="course-stat"><span>Unidades estudiadas</span><strong id="courseCompletedStat">0</strong><em>Completadas</em></div>
+<div class="course-stat"><span>En curso</span><strong id="courseStartedStat">0</strong><em>Estudio iniciado</em></div>
 </section>
 <section class="course-steps" aria-labelledby="courseStepsTitle">
  <div class="course-steps-head" id="courseStepsTitle">Tu método de estudio, en tres pasos</div>
@@ -222,7 +226,8 @@ details[open] .course-chevron{transform:rotate(180deg)}
    <button type="button" class="course-filter" data-course-filter="grammar" aria-pressed="false">Gramática</button>
    <button type="button" class="course-filter" data-course-filter="vocabulary" aria-pressed="false">Vocabulario</button>
    <button type="button" class="course-filter" data-course-filter="todo" aria-pressed="false">Por estudiar</button>
-   <button type="button" class="course-filter" data-course-filter="done" aria-pressed="false">Completadas</button>
+   <button type="button" class="course-filter" data-course-filter="started" aria-pressed="false">En curso</button>
+    <button type="button" class="course-filter" data-course-filter="done" aria-pressed="false">Completadas</button>
   </div>
  </div>
  <p id="courseStatus" class="course-results" role="status" aria-live="polite">Cargando las unidades desde Supabase…</p>
@@ -235,5 +240,5 @@ details[open] .course-chevron{transform:rotate(180deg)}
 </main>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script src="/supabase-config.js"></script>
-<script src="/assets/curso-supabase.js?v=20261101-cloud-progress-1" defer></script>
+<script src="/assets/curso-supabase.js?v=20261101-three-states-1" defer></script>
 </body></html>
