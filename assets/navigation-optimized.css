@@ -82,7 +82,7 @@
   }
   #ee-shared-header.ee-menu-open .ee-nav-toggle::after{content:"Cerrar"}
   #ee-shared-header .ee-nav-backdrop:not([hidden]){
-    display:block;position:fixed;inset:0;z-index:5;
+    display:block;position:fixed;inset:0;z-index:1;
     background:rgba(14,31,61,.38);cursor:pointer
   }
   #ee-shared-header .ee-nav{
