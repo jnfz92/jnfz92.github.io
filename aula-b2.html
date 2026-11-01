@@ -1,0 +1,88 @@
+---
+permalink: /aula-b2.html
+---
+<!doctype html>
+<html lang="es"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Mi aula B2 · Easy English</title>
+<meta name="description" content="Diagnóstico, plan semanal, sesión de hoy, repaso inteligente y simulacros en tu aula personalizada Easy English.">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/assets/site.css?v=20261030-unified-blue-2">
+<link rel="stylesheet" href="/assets/navigation.css?v=20261030-menu-blue-3">
+<link rel="stylesheet" href="/assets/aula-b2.css?v=20261101-aula-1">
+<script src="/assets/navigation.js?v=20261030-menu-blue-4" defer></script>
+</head><body class="ee-site ee-aula">
+{% include header.html %}
+<main class="aula-wrap">
+<section class="aula-hero"><p class="aula-kicker">✦ EASY ENGLISH · TU ESPACIO PERSONAL</p>
+<h1>Mi aula B2</h1><p>Un camino concreto para saber qué practicar hoy, sin perder de vista tu progreso.</p>
+<div class="aula-hero-links"><a href="#today">Mi sesión de hoy</a><a href="#diagnostic">Mi diagnóstico</a><a href="#plan">Mi plan</a><a href="#mock">Mis simulacros</a></div></section>
+<p id="aulaStatus" class="aula-system" role="status" aria-live="polite">Comprobando tu sesión…</p>
+<section id="today" class="aula-card" aria-labelledby="todayTitle">
+<div class="aula-heading"><div><span class="aula-kicker">01 · TU RUTINA</span><h2 id="todayTitle">Mi sesión de hoy</h2></div><span id="todayDate" class="aula-pill"></span></div>
+<p class="aula-sub">Las tareas se adaptan a tu plan, a tus unidades pendientes y a los errores guardados. Puedes marcarlas al terminar.</p>
+<div class="aula-meter" role="progressbar" aria-label="Progreso de la sesión" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="todayMeter"><span id="todayBar"></span></div>
+<p id="todayProgress" class="aula-tiny">Cargando tareas…</p><div id="todayTasks" class="aula-tasks"></div>
+<p id="todayMessage" class="aula-tiny" role="status"></p>
+</section>
+<section id="diagnostic" class="aula-card" aria-labelledby="diagnosticTitle">
+<span class="aula-kicker">02 · PUNTO DE PARTIDA</span><h2 id="diagnosticTitle">Examen diagnóstico orientativo</h2>
+<p class="aula-sub">12 preguntas originales de Grammar, Vocabulary y Reading. Esta prueba ayuda a orientar el estudio, pero <strong>no certifica un nivel B2</strong> ni evalúa Speaking, Listening o Writing.</p>
+<div id="diagnosticIntro"><button id="startDiagnostic" type="button" class="aula-button">Realizar diagnóstico →</button></div>
+<form id="diagnosticForm" hidden><div id="diagnosticQuestions" class="aula-questions"></div><button type="submit" class="aula-button">Corregir y guardar resultado</button></form>
+<div id="diagnosticResult" class="aula-results" aria-live="polite"></div>
+</section>
+<section id="plan" class="aula-card" aria-labelledby="planTitle">
+<span class="aula-kicker">03 · ESTUDIO A TU MEDIDA</span><h2 id="planTitle">Mi plan personalizado</h2>
+<p class="aula-sub">Escoge la fecha de tu examen si la sabes y los días y minutos que puedes dedicarle. Las recomendaciones se basan en el diagnóstico y en tus progresos.</p>
+<form id="planForm">
+<div class="aula-fields">
+<label>Fecha prevista de examen (opcional)<input id="planDate" type="date"></label>
+<label>Minutos por sesión<select id="planMinutes"><option value="15">15 minutos</option><option value="30" selected>30 minutos</option><option value="45">45 minutos</option><option value="60">60 minutos</option><option value="90">90 minutos</option></select></label>
+<label>Prioridad<select id="planPriority"><option value="auto">Automática (según diagnóstico)</option><option value="grammar">Grammar</option><option value="vocabulary">Vocabulary</option><option value="reading">Reading</option><option value="writing">Writing</option><option value="listening">Listening</option><option value="speaking">Speaking</option></select></label>
+<label>Hora habitual de estudio<input id="planTime" type="time" value="18:00"></label>
+</div>
+<fieldset class="aula-days"><legend>¿Qué días estudias?</legend>
+<label><input name="planDay" type="checkbox" value="1" checked>Lun</label><label><input name="planDay" type="checkbox" value="2" checked>Mar</label>
+<label><input name="planDay" type="checkbox" value="3" checked>Mié</label><label><input name="planDay" type="checkbox" value="4" checked>Jue</label>
+<label><input name="planDay" type="checkbox" value="5" checked>Vie</label><label><input name="planDay" type="checkbox" value="6">Sáb</label>
+<label><input name="planDay" type="checkbox" value="0">Dom</label></fieldset>
+<label class="aula-check"><input id="planReminder" type="checkbox">Quiero recordatorios de estudio</label>
+<div class="aula-actions"><button type="submit" class="aula-button">Guardar mi plan</button><button type="button" id="calendarDownload" class="aula-button secondary">Añadir horarios al calendario (.ics)</button><button type="button" id="testNotification" class="aula-button secondary">Probar aviso en este navegador</button></div></form>
+<p class="aula-tiny">Los avisos del navegador solo se muestran con esta página abierta. Para recibir recordatorios sin tenerla abierta, importa el calendario a una app que tenga sus propias notificaciones. Los permisos de notificación son opcionales.</p>
+<p id="planStatus" class="aula-tiny" role="status" aria-live="polite"></p>
+<div id="planSummary" class="aula-results"></div>
+</section>
+<section id="review" class="aula-card" aria-labelledby="reviewTitle">
+<span class="aula-kicker">04 · REPASO DIRIGIDO</span><h2 id="reviewTitle">Profesor de errores</h2>
+<p class="aula-sub">Tu cuaderno de errores existente sirve para priorizar repasos vencidos y sugerir prácticas concretas. Las respuestas correctas siguen gestionándose en los ejercicios originales.</p>
+<div id="reviewSummary" class="aula-results">Consultando tus fallos…</div>
+<div id="reviewTasks" class="aula-tasks"></div>
+<a class="aula-textlink" href="/practicar.html#cuaderno-fallos">Abrir mi cuaderno de errores →</a>
+</section>
+<section id="practice" class="aula-card" aria-labelledby="practiceTitle">
+<span class="aula-kicker">05 · PRACTICA TODAS LAS DESTREZAS</span><h2 id="practiceTitle">Writing y Speaking/Listening</h2>
+<div class="aula-grid">
+<div class="aula-mini"><h3>✍️ Corrector orientativo de Writing</h3><p>Trabaja en tu editor privado y revisa extensión, estructura, conectores y repetición de palabras; sin notas automáticas de Cambridge.</p><a href="/writings.html#editor">Abrir el editor y el corrector →</a></div>
+<div class="aula-mini"><h3>🎤 Práctica de Speaking</h3><p>Graba y escucha tus respuestas localmente, con permiso de micrófono. No se envía el audio a Supabase.</p><a href="/speaking-lab.html">Abrir Speaking Lab →</a></div>
+<div class="aula-mini"><h3>🎧 Listening con audio sintetizado</h3><p>Minilecciones con preguntas y voz generada por tu navegador. No equivale a audios oficiales ni evalúa pronunciación.</p><button type="button" id="listenStart" class="aula-button secondary">Practicar Listening</button><div id="listenExercise" hidden><p id="listenStatus" class="aula-tiny"></p><button type="button" id="playListening" class="aula-button secondary">▶ Escuchar otra vez</button><p id="listenQuestion"></p><div id="listenOptions"></div><button type="button" id="listenCheck" class="aula-button">Corregir respuesta</button><p id="listenFeedback" role="status"></p></div></div>
+</div></section>
+<section id="mock" class="aula-card" aria-labelledby="mockTitle">
+<span class="aula-kicker">06 · PRACTICAR CON TIEMPO</span><h2 id="mockTitle">Simulacros y gestión del tiempo</h2>
+<p class="aula-sub">Entrena con minisimulacros originales cronometrados y consulta el tiempo de cada prueba del B2 First. Los minisimulacros de esta web <strong>no son exámenes oficiales completos</strong>.</p>
+<div class="aula-grid">
+<div class="aula-mini"><h3>Reading &amp; Use of English</h3><p>Minisimulacro de 12 preguntas · 15 minutos.</p><button id="mockStart" type="button" class="aula-button">Empezar minisimulacro</button></div>
+<div class="aula-mini"><h3>Simulación por partes</h3><p>Reading/Use of English 75 min, Writing 80 min, Listening aprox. 40 min y Speaking aprox. 14 min por pareja.</p><div class="aula-actions"><a href="/practicar.html" class="aula-linkbutton">Banco de exámenes</a><a href="/writings.html" class="aula-linkbutton">Writing</a><a href="/speaking-lab.html" class="aula-linkbutton">Speaking</a></div></div>
+</div>
+<form id="mockForm" hidden><p><strong>Tiempo restante: <span id="mockTimer">15:00</span></strong></p><div id="mockQuestions" class="aula-questions"></div><button class="aula-button" type="submit">Finalizar y corregir</button></form>
+<div id="mockResult" class="aula-results" role="status" aria-live="polite"></div>
+<p><a class="aula-textlink" href="https://www.cambridgeenglish.org/exams-and-tests/qualifications/first/format/" target="_blank" rel="noopener noreferrer">Ver formato oficial B2 First en Cambridge English ↗</a></p>
+</section>
+<section class="aula-card"><span class="aula-kicker">07 · CUENTA Y CONTROL</span><h2>Datos y administración</h2>
+<p class="aula-sub">Tus pruebas, planes y sesiones se guardan en tu cuenta y solo tú puedes consultarlos. La gestión editorial está separada del perfil del alumno.</p>
+<div class="aula-actions"><a href="/perfil.html" class="aula-linkbutton">Mi perfil y mis datos →</a><a href="/administracion.html" id="adminLink" class="aula-linkbutton" hidden>Administrar contenidos →</a></div>
+</section></main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="/supabase-config.js"></script>
+<script src="/assets/aula-b2.js?v=20261101-aula-1" defer></script>
+</body></html>
