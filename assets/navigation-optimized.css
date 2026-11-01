@@ -124,3 +124,13 @@
 @media(prefers-reduced-motion:reduce){
   #ee-shared-header .ee-more-panel .ee-menu-group>a{transition:none}
 }
+
+/* Acceso directo por teclado, sin cambios visuales para quienes usan ratón. */
+.ee-skip-link{
+ position:fixed;top:8px;left:12px;z-index:2000;
+ transform:translateY(-150%);padding:12px 16px;border-radius:10px;
+ color:#fff;background:#163e8c;border:2px solid #fff;
+ font:800 14px/1.3 system-ui,sans-serif;text-decoration:none;
+}
+.ee-skip-link:focus-visible{transform:translateY(0);outline:3px solid #facc15;outline-offset:2px}
+#contenido-principal{scroll-margin-top:95px}
