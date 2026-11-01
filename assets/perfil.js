@@ -516,6 +516,7 @@ function renderAchievements(){
   body.append(name,hint,count);card.append(symbol,body);container.append(card);
  }
  $('achievementStatus').textContent=unlocked+' de '+definitions.length+' logros conseguidos. La finalización de unidades se marca manualmente.';
+ $('personalCertificate').hidden=achievementProgress.course===null||achievementProgress.course<44;
 }
 function weeklyMonday() {
  const monday=new Date();
