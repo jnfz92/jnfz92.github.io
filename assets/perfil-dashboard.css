@@ -30,3 +30,12 @@
 .ee-goal-summary span{font-size:12px;color:#60718b}
 .ee-home-goal{margin:15px 0 0;font-size:13px;font-weight:800}
 .ee-home-goal a{color:#2055a6}
+
+/* Favoritos de artículos y unidades */
+.ee-favorites-count{display:inline-block;vertical-align:middle;margin-left:5px;font-size:13px;background:#e8f0ff;color:#2559ae;padding:4px 9px;border-radius:100px}
+.ee-reading-item-actions{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+.ee-reading-item-actions button[aria-pressed=true]{color:#1b50ab;border-color:#abc9ed;background:#edf4ff}
+.ee-saved-item a{display:block;color:#2154a5;font-weight:800;text-decoration:none}
+.ee-saved-item small{display:block;margin-top:5px;color:#6b7a91}
+.ee-saved-item button{cursor:pointer}
+@media(max-width:540px){.ee-reading-item-actions{width:100%;justify-content:flex-start}}
