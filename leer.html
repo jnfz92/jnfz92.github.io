@@ -231,9 +231,9 @@ permalink: /leer.html
   if(article.descripcion){let meta=doc.querySelector('meta[name="description"]');if(!meta){meta=doc.createElement('meta');meta.name='description';doc.head.append(meta)}meta.content=article.descripcion}
   // Mantener la cabecera, el menú, los eventos y la sesión: cambiar solo el contenido editorial.
   // La anterior sustitución de document.head/body reiniciaba la navegación en cada lectura.
-  const articleMain=doc.querySelector('main');
+  const articleLoadedMain=doc.querySelector('main');
   const loader=document.querySelector('main');
-  if(!articleMain||!loader)throw Error('No se encontró el contenido principal de la lección');
+  if(!articleLoadedMain||!loader)throw Error('No se encontró el contenido principal de la lección');
   const oldTitle=document.title;
   document.title=article.titulo||oldTitle;
   document.documentElement.lang=doc.documentElement.lang||'es';
@@ -260,9 +260,9 @@ permalink: /leer.html
   stylesheet('/assets/navigation-optimized.css?v=20261101-menu-2');
 
   const canonicalUrl=new URL('leer.html?slug='+encodeURIComponent(resolveSlug(slug)),location.href).href;
-  let canonical=document.head.querySelector('link[rel="canonical"]');
-  if(!canonical){canonical=document.createElement('link');canonical.rel='canonical';document.head.append(canonical)}
-  canonical.href=canonicalUrl;
+  let pageCanonical=document.head.querySelector('link[rel="canonical"]');
+  if(!pageCanonical){pageCanonical=document.createElement('link');pageCanonical.rel='canonical';document.head.append(pageCanonical)}
+  pageCanonical.href=canonicalUrl;
   if(article.descripcion){
     let meta=document.head.querySelector('meta[name="description"]');
     if(!meta){meta=document.createElement('meta');meta.name='description';document.head.append(meta)}
@@ -289,7 +289,7 @@ permalink: /leer.html
     if(active)active.setAttribute('aria-current','page');
     nav.querySelector('.ee-more > summary')?.classList.add('ee-more-current');
   }
-  loader.replaceWith(document.importNode(articleMain,true));
+  loader.replaceWith(document.importNode(articleLoadedMain,true));
   // Imágenes fuera de la zona inicial: carga diferida para ahorrar transferencia.
   document.querySelectorAll('main img').forEach((img,index)=>{
     img.decoding='async';
