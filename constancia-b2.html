@@ -5,6 +5,8 @@ permalink: /constancia-b2.html
 <html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Constancia personal de estudio · Easy English</title>
 <link rel="stylesheet" href="/assets/site.css?v=20261030-unified-blue-2">
+<link rel="stylesheet" href="/assets/navigation.css?v=20261030-menu-blue-3">
+<script src="/assets/navigation.js?v=20261030-menu-blue-4" defer></script>
 <style>
 body{font-family:system-ui,-apple-system,sans-serif;color:#172b4b;background:#f4f7fc;min-height:100vh;margin:0}
 .wrap{max-width:850px;margin:40px auto;padding:0 18px}.paper{background:#fff;border:3px solid #174a9e;border-radius:22px;padding:clamp(30px,8vw,75px);text-align:center;box-shadow:0 15px 50px #0a23552b}
@@ -16,9 +18,9 @@ body{font-family:system-ui,-apple-system,sans-serif;color:#172b4b;background:#f4
 #certificate[hidden],#printButton[hidden]{display:none!important}
 .actions{display:flex;gap:12px;align-items:center;justify-content:center;flex-wrap:wrap;margin:28px auto}.actions a,.actions button{background:#1e5eff;color:#fff;border:0;border-radius:11px;padding:13px 20px;font-weight:800;text-decoration:none;cursor:pointer}.actions a{background:#e3edff;color:#214f9d}
 #certificateStatus{text-align:center;color:#335177;font-weight:700}
-@media print{body{background:white}.wrap{max-width:none;margin:0;padding:0}.paper{box-shadow:none;border-radius:0;min-height:83vh;display:flex;flex-direction:column;justify-content:center}.actions,#certificateStatus{display:none!important}}
+@media print{body{background:white}.wrap{max-width:none;margin:0;padding:0}.paper{box-shadow:none;border-radius:0;min-height:83vh;display:flex;flex-direction:column;justify-content:center}#ee-shared-header,.actions,#certificateStatus{display:none!important}}
 </style></head>
-<body class="ee-site"><main class="wrap">
+<body class="ee-site">{% include header.html %}<main class="wrap">
 <p id="certificateStatus" role="status">Comprobando tu progreso del curso…</p>
 <div class="paper" id="certificate" hidden>
 <small>Easy English · Reconocimiento personal</small>
