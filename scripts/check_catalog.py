@@ -45,6 +45,31 @@ for path in ["index.html","articulos.html","curso.html","examenes.html","practic
     check("<title" in html, f"Falta título HTML: {path}")
 
 check(len(navigation_versions) == 1, f"Versiones de navegación inconsistentes: {sorted(navigation_versions)}")
+
+# La navegación debe proceder de la misma plantilla en cada página Jekyll.
+shared_pages = sorted(root.glob("*.html")) + sorted((root / "category").glob("*.html"))
+shared_pages += [root / "_layouts/default.html"]
+for path in shared_pages:
+    source = path.read_text(encoding="utf-8")
+    name = str(path.relative_to(root))
+    check(source.count("{% include header.html %}") == 1,
+          f"Cabecera compartida ausente o duplicada: {name}")
+    check("navigation.css" in source and "navigation.js" in source,
+          f"Faltan estilos o JS de navegación: {name}")
+    check('class="ee-site' in source,
+          f"Falta el diseño base ee-site: {name}")
+
+check("navigation-optimized.css" in header and "navigation-optimized.js" in header,
+      "Falta el diseño optimizado en la plantilla única.")
+reader = read("leer.html")
+check("document.head.replaceChildren" not in reader and
+      "document.body.replaceChildren" not in reader,
+      "El lector no debe sustituir la sesión, la cabecera ni el documento.")
+for filename in ("perfil.html", "aula-b2.html", "mensajes.html", "mi-vocabulario.html",
+                 "constancia-b2.html"):
+    check('name="robots" content="noindex' in read(filename),
+          f"No se excluyó del índice la página privada: {filename}")
+
 check('<urlset' in read("sitemap.xml"), "Falta el sitemap.")
 check('Sitemap:' in read("robots.txt"), "El robots.txt no declara el sitemap.")
 
