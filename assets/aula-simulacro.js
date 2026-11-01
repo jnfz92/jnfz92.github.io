@@ -49,9 +49,23 @@ async function finish(expired){
   box.append(A.elt('p',correct+' de '+bank.length+' correctas · '+responded+' contestadas · '+Math.ceil(used/60)+' min.','aula-score'));
   if(expired)box.append(A.elt('p','Se ha agotado el tiempo del minisimulacro.'));
   box.append(A.elt('p','Resultado privado guardado. Esta actividad no sustituye un examen B2 oficial.','aula-tiny'));
-  A.feedback(bank,answers,box)
+  A.feedback(bank,answers,box);
+  await loadHistory()
  }catch(e){A.note('aulaStatus','No se pudo guardar el simulacro: '+e.message)}
  finally{busy=false;$('mockStart').disabled=false;$('mockStart').textContent='Repetir minisimulacro'}
 }
+async function loadHistory(){
+ const result=await db.from('simulacros_b2').select('modalidad,aciertos,total,creado_en,duracion_segundos').eq('usuario_id',A.user.id).order('creado_en',{ascending:false}).limit(10);
+ if(result.error)throw result.error;
+ const root=$('mockHistory');root.replaceChildren();
+ if(!result.data?.length){root.textContent='Todavía no has realizado prácticas cronometradas o de Listening.';return}
+ result.data.forEach(item=>{
+  const date=new Date(item.creado_en).toLocaleDateString('es-ES');
+  const label=item.modalidad==='listening'?'🎧 Listening':'✎ Use of English / Reading';
+  root.append(A.elt('div',label+' · '+item.aciertos+'/'+item.total+' correctas · '+date,'aula-review'))
+ })
+}
+window.addEventListener('ee-aula-ready',()=>loadHistory().catch(e=>A.note('mockHistory','No se pudo cargar el historial: '+e.message)));
+window.addEventListener('ee-aula-mock-updated',()=>loadHistory().catch(()=>{}));
 window.addEventListener('pagehide',()=>{if(clock)clearInterval(clock)});
 })();
