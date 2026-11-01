@@ -66,6 +66,7 @@ $('privateDashboard').replaceChildren(
  document.querySelector('.ee-reading-pick'),
  $('nameTitle').closest('.panel'),
  document.querySelector('#reviewPreferencesTitle').closest('.panel'),
+  $('courseProgressPanel'),
   document.querySelector('.ee-learning-overview'),
  highlights,
  $('articleList').closest('.panel'),
@@ -454,12 +455,40 @@ async function results(){
  await loadLearningStrengths(scores,activeUserId);
  if(examResponse.error){const p=document.createElement('p');p.className='muted';p.textContent='No se pudieron cargar los títulos de los exámenes.';box.append(p)}
 }
+async function loadCourseProgress(userId) {
+ const statusBox=$('courseProfileStatus');
+ statusBox.textContent='Consultando las unidades y tu progreso guardado…';
+ const [catalog,marked]=await Promise.all([
+  eeDb.from('unidades_curso').select('slug,orden,titulo').eq('publicado',true).order('orden'),
+  eeDb.from('progreso_curso').select('unidad_slug').eq('usuario_id',userId)
+ ]);
+ if(catalog.error)throw catalog.error;
+ if(marked.error)throw marked.error;
+ if(!user||user.id!==userId)return;
+ const units=catalog.data||[];
+ const completed=new Set((marked.data||[]).map(row=>row.unidad_slug));
+ const done=units.filter(row=>completed.has(row.slug)).length;
+ const pct=units.length?Math.round(100*done/units.length):0;
+ $('courseProfileDone').textContent=String(done);
+ $('courseProfilePending').textContent=String(units.length-done);
+ $('courseProfilePercent').textContent=pct+'%';
+ $('courseProfileBar').style.width=pct+'%';
+ $('courseProfileMeter').setAttribute('aria-valuenow',String(pct));
+ statusBox.textContent=units.length
+  ?done+' de '+units.length+' unidades completadas. Este avance no es una nota de examen.'
+  :'Todavía no hay unidades publicadas.';
+ const next=units.find(row=>!completed.has(row.slug));
+ $('courseProfileContinue').href=next?'/curso.html#unidad-'+String(next.orden).padStart(2,'0'):'/curso.html';
+ $('courseProfileContinue').textContent=next?'Continuar: unidad '+String(next.orden).padStart(2,'0')+' →':'Revisar todas las unidades ✓';
+}
 async function changeUser(next){
  readingPages.read=1;readingPages.pending=1;
  user=next;
  suggestedHref=null;cloudUserId=null;
  $('learningStatus').textContent='Consultando tu progreso…';$('learningActivityHistory').replaceChildren();
  $('learningReads').textContent='—';$('learningExams').textContent='—';$('learningActivities').textContent='—';$('learningErrors').textContent='—';
+ $('courseProfileDone').textContent='—';$('courseProfilePending').textContent='—';$('courseProfilePercent').textContent='—';
+ $('courseProfileBar').style.width='0%';$('courseProfileMeter').setAttribute('aria-valuenow','0');
  $('authLayout').hidden=!!user;
   $('accountStatus').hidden=!!user;
   if(user)$('accountStatus').textContent='';
@@ -474,6 +503,10 @@ async function changeUser(next){
  if(user){
    profile={name:'',read:{}};
    render();
+   const courseUserId=user.id;
+   void loadCourseProgress(courseUserId).catch(e=>{
+    if(user?.id===courseUserId)$('courseProfileStatus').textContent='No se pudo cargar el progreso del curso: '+e.message;
+   });
    try{await loadCloud()}catch(e){$('readingPickStatus').textContent='No se pudieron consultar tus lecturas guardadas.';status('Conectado, pero no se pudo cargar tu perfil: '+e.message)}
  }else{
    // No mostrar datos privados ni lecturas locales en ausencia de sesión.
