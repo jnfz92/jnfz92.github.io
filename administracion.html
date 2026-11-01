@@ -1,0 +1,37 @@
+---
+permalink: /administracion.html
+---
+<!doctype html><html lang="es"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Administración editorial · Easy English</title>
+<meta name="robots" content="noindex,nofollow">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/assets/site.css?v=20261030-unified-blue-2">
+<link rel="stylesheet" href="/assets/navigation.css?v=20261030-menu-blue-3">
+<script src="/assets/navigation.js?v=20261030-menu-blue-4" defer></script>
+<style>
+body{background:#f5f7fc;color:#1a2d4e}.admin-wrap{max-width:1070px;margin:25px auto 85px;padding:0 18px}
+.admin-hero{background:linear-gradient(120deg,#14284d,#244b95);color:white;padding:35px;border-radius:22px}
+.admin-hero h1{color:white;font-size:clamp(33px,5vw,48px);margin:7px 0}
+.admin-box{background:#fff;padding:25px;border:1px solid #dce5f3;border-radius:15px;margin:20px 0}
+.admin-box h2{margin-top:0}.admin-row{display:flex;align-items:center;justify-content:space-between;gap:13px;padding:13px 0;border-bottom:1px solid #e5ebf5}
+.admin-row>div{flex:1;min-width:0}.admin-row strong{display:block;overflow-wrap:anywhere}.admin-row small{display:block;color:#61728f;font-size:12px}
+.admin-row button,.admin-row select{padding:9px 12px;border-radius:9px;border:1px solid #ccd9ee;background:#e8f0ff;color:#2352a2;cursor:pointer;font-weight:750}
+.admin-row button:disabled{opacity:.6}.admin-chip{font-size:11px;border-radius:50px;padding:4px 8px;background:#e9f5ec;color:#24633e}
+.admin-chip.off{background:#fff0eb;color:#a34434}#adminStatus{font-weight:750;color:#2855a0}
+[hidden]{display:none!important}@media(max-width:620px){.admin-row{align-items:flex-start;flex-wrap:wrap}.admin-hero{padding:22px}.admin-box{padding:18px}}
+</style></head><body class="ee-site">{% include header.html %}
+<main class="admin-wrap">
+<section class="admin-hero"><p>✦ EASY ENGLISH · ADMINISTRACIÓN</p><h1>Panel editorial</h1><p>Publica contenido, revisa sugerencias y modera comentarios. Este panel es exclusivo de administradores autorizados.</p></section>
+<p id="adminStatus" role="status" aria-live="polite">Comprobando permisos…</p>
+<div id="adminDashboard" hidden>
+<section class="admin-box"><h2>Unidades del curso</h2><p>Publicar u ocultar unidades. Al ocultar una unidad se conserva el progreso privado del alumno.</p><div id="adminUnits"></div></section>
+<section class="admin-box"><h2>Actividades interactivas</h2><p>Activa o desactiva actividades para los alumnos.</p><div id="adminActivities"></div></section>
+<section class="admin-box"><h2>Sugerencias recibidas</h2><p>Revisa los envíos y marca si una sugerencia ha sido publicada o rechazada.</p><div id="adminSuggestions"></div></section>
+<section class="admin-box"><h2>Comentarios de artículos</h2><p>Oculta o vuelve a mostrar comentarios inapropiados sin borrarlos.</p><div id="adminComments"></div></section>
+<p><a href="/aula-b2.html">← Volver a mi aula</a></p>
+</div></main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="/supabase-config.js"></script>
+<script src="/assets/admin-ee.js?v=20261101-admin-1" defer></script>
+</body></html>
