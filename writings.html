@@ -13,7 +13,7 @@ permalink: /writings.html
 <link rel="stylesheet" href="/assets/navigation.css?v=20261030-menu-blue-3">
 <link rel="stylesheet" href="/assets/writings.css?v=20261030-unified-blue-2">
 <script src="/assets/navigation.js?v=20261030-menu-blue-4" defer></script>
-<link rel="canonical" href="https://jnfz92.github.io/writings.html"></head>
+<link rel="canonical" href="https://jnfz92.github.io/writings.html"><style>.writing-feedback{margin-top:16px;background:#f2f6ff;border-radius:13px;padding:16px;color:#213959}.writing-feedback:empty{display:none}.writing-feedback h3{margin:0 0 12px;font-size:18px}.writing-feedback li{margin:8px 0}.writing-feedback-note{color:#667792;font-size:12px}</style></head>
 <body class="ee-site ee-library ee-writings">
 {% include header.html %}
 <main class="container">
@@ -47,8 +47,8 @@ permalink: /writings.html
           <div class="writing-field writing-field-full"><label for="wtexto">Tu respuesta en inglés</label><textarea id="wtexto" rows="13" placeholder="Write your answer here…" spellcheck="true"></textarea></div>
         </div>
         <div class="writing-counter"><span id="wcount" role="status" aria-live="polite">0 palabras · objetivo: 140–190</span><span class="writing-counter-hint">Objetivo Cambridge B2</span></div>
-        <div class="writing-actions"><button type="button" id="wguardar">Guardar borrador</button><button type="button" id="wnuevo" class="writing-secondary">Nuevo borrador</button><button type="button" id="wborrar" class="writing-danger">Eliminar</button></div>
-        <p id="westado" class="writing-status" role="status" aria-live="polite">Comprobando tu sesión…</p>
+        <div class="writing-actions"><button type="button" id="writingCheck" class="writing-secondary">Revisar mi texto ✦</button><button type="button" id="wguardar">Guardar borrador</button><button type="button" id="wnuevo" class="writing-secondary">Nuevo borrador</button><button type="button" id="wborrar" class="writing-danger">Eliminar</button></div>
+        <p id="westado" class="writing-status" role="status" aria-live="polite">Comprobando tu sesión…</p><div id="writingFeedback" class="writing-feedback" aria-live="polite"></div>
       </div>
       <aside class="writing-sidebar">
         <div class="writing-side-panel"><span class="eyebrow">Tu biblioteca personal</span><h3>Mis borradores</h3><p>Recupera un texto para continuar practicando donde lo dejaste.</p><label for="wlista">Texto guardado</label><select id="wlista"><option value="">Nuevo writing</option></select><p class="writing-private">🔒 Tus textos solo son visibles para tu cuenta. <a href="/perfil.html">Ir a mi perfil →</a></p></div>
@@ -61,4 +61,4 @@ permalink: /writings.html
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script src="/supabase-config.js"></script>
 <script src="/assets/writing-editor.js?v=20261030-blue-js-2" defer></script>
-</body></html>
+<script src="/assets/writing-feedback.js?v=20261101-review-1" defer></script></body></html>
