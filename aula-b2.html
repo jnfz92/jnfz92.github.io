@@ -11,7 +11,7 @@ permalink: /aula-b2.html
 <link rel="stylesheet" href="/assets/navigation.css?v=20261030-menu-blue-3">
 <link rel="stylesheet" href="/assets/aula-b2.css?v=20261101-aula-1">
 <script src="/assets/navigation.js?v=20261030-menu-blue-4" defer></script>
-</head><body class="ee-site ee-aula">
+<style>.aula-simulator{border-top:1px solid #dbe5f2;padding-top:12px}.aula-simulator select{display:block;width:100%;margin:9px 0;border:1px solid #ccd9ea;background:white;color:#244268;padding:10px;border-radius:10px}.aula-simulator label{font-size:13px;font-weight:800}</style></head><body class="ee-site ee-aula">
 {% include header.html %}
 <main class="aula-wrap">
 <section class="aula-hero"><p class="aula-kicker">✦ EASY ENGLISH · TU ESPACIO PERSONAL</p>
@@ -72,7 +72,14 @@ permalink: /aula-b2.html
 <p class="aula-sub">Entrena con minisimulacros originales cronometrados y consulta el tiempo de cada prueba del B2 First. Los minisimulacros de esta web <strong>no son exámenes oficiales completos</strong>.</p>
 <div class="aula-grid">
 <div class="aula-mini"><h3>Reading &amp; Use of English</h3><p>Minisimulacro de 12 preguntas · 15 minutos.</p><button id="mockStart" type="button" class="aula-button">Empezar minisimulacro</button></div>
-<div class="aula-mini"><h3>Simulación por partes</h3><p>Reading/Use of English 75 min, Writing 80 min, Listening aprox. 40 min y Speaking aprox. 14 min por pareja.</p><div class="aula-actions"><a href="/practicar.html" class="aula-linkbutton">Banco de exámenes</a><a href="/writings.html" class="aula-linkbutton">Writing</a><a href="/speaking-lab.html" class="aula-linkbutton">Speaking</a></div></div>
+<div class="aula-mini"><h3>Simulación por partes</h3><p>Reading/Use of English 75 min, Writing 80 min, Listening aprox. 40 min y Speaking aprox. 14 min por pareja.</p>
+<div class="aula-simulator">
+<label for="guidedPhase">Parte a cronometrar</label>
+<select id="guidedPhase"><option value="reading">Reading &amp; Use of English · 75 min</option><option value="writing">Writing · 80 min</option><option value="listening">Listening · 40 min</option><option value="speaking">Speaking · 14 min</option></select>
+<p><strong id="guidedTimer" style="font-size:26px;color:#1c54a3">75:00</strong></p>
+<div class="aula-actions"><button id="guidedStart" type="button" class="aula-button secondary">Iniciar / pausar</button><button id="guidedReset" type="button" class="aula-button secondary">Reiniciar</button></div>
+<p id="guidedStatus" class="aula-tiny" role="status">Cronómetro de entrenamiento. Usa los ejercicios enlazados debajo.</p>
+</div><div class="aula-actions"><a href="/practicar.html" class="aula-linkbutton">Banco de exámenes</a><a href="/writings.html" class="aula-linkbutton">Writing</a><a href="/speaking-lab.html" class="aula-linkbutton">Speaking</a></div></div>
 </div>
 <form id="mockForm" hidden><p><strong>Tiempo restante: <span id="mockTimer">15:00</span></strong></p><div id="mockQuestions" class="aula-questions"></div><button class="aula-button" type="submit">Finalizar y corregir</button></form>
 <div id="mockResult" class="aula-results" role="status" aria-live="polite"></div>
@@ -91,4 +98,5 @@ permalink: /aula-b2.html
 <script src="/assets/aula-repaso.js?v=20261101-aula-2" defer></script>
 <script src="/assets/aula-listening.js?v=20261101-aula-2" defer></script>
 <script src="/assets/aula-simulacro.js?v=20261101-aula-2" defer></script>
+<script src="/assets/aula-cronometro.js?v=20261101-aula-3" defer></script>
 </body></html>
