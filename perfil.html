@@ -8,7 +8,7 @@ permalink: /perfil.html
 <meta name="description" content="Tu perfil y progreso de lectura en Easy English.">
 <title>Mi perfil · Easy English</title>
 <link rel="stylesheet" href="/assets/perfil.css?v=20261030-unified-blue-2">
-<link rel="stylesheet" href="assets/site.css?v=20261030-unified-blue-2"><script src="assets/site.js?v=20261013" defer></script><link rel="stylesheet" href="/assets/navigation.css?v=20261030-menu-blue-3"><script src="/assets/navigation.js?v=20261030-menu-blue-4" defer></script><link rel="stylesheet" href="/assets/perfil-reading.css?v=20261030-unified-blue-2"><link rel="stylesheet" href="/assets/perfil-dashboard.css?v=20261101-favorites-1"></head>
+<link rel="stylesheet" href="assets/site.css?v=20261030-unified-blue-2"><script src="assets/site.js?v=20261013" defer></script><link rel="stylesheet" href="/assets/navigation.css?v=20261030-menu-blue-3"><script src="/assets/navigation.js?v=20261030-menu-blue-4" defer></script><link rel="stylesheet" href="/assets/perfil-reading.css?v=20261030-unified-blue-2"><link rel="stylesheet" href="/assets/perfil-dashboard.css?v=20261101-achievements-1"></head>
 <body class="ee-site ee-profile">
 {% include header.html %}<main class="container">
 <section class="hero"><span class="eyebrow">✦ TU ESPACIO DE APRENDIZAJE</span><h1>Tu aprendizaje, en un solo lugar.</h1><p class="intro">Sigue tus lecturas, revisa lo que te queda por aprender y consulta tus resultados con claridad.</p><div class="hero-actions"><a href="/mi-vocabulario.html">🧠 Mi vocabulario ↗</a><a href="practicar.html">✎ Hacer un examen ↗</a><a href="practicar.html#cuaderno-fallos">📘 Mi cuaderno de errores ↗</a><a href="#articlesTitle" id="continueLink" hidden>📚 Continuar aprendiendo ↓</a></div></section>
@@ -91,6 +91,11 @@ permalink: /perfil.html
  <div class="meter" role="progressbar" id="weeklyGoalMeter" aria-label="Progreso del objetivo semanal" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="weeklyGoalBar"></span></div>
 </div>
 <p class="muted" role="status" id="weeklyGoalStatus">Comprobando tu objetivo guardado…</p>
+</section><section class="panel" id="achievementPanel" aria-labelledby="achievementTitle">
+<p class="section-kicker">MI CONSTANCIA</p><h2 id="achievementTitle">Mis logros personales</h2>
+<p class="muted">Se desbloquean automáticamente con lecturas, exámenes, unidades estudiadas y días consecutivos. No son títulos ni certificaciones oficiales.</p>
+<p class="muted" id="achievementStatus" role="status" aria-live="polite">Calculando tus logros…</p>
+<div id="achievementList" class="ee-achievement-list"></div>
 </section><section class="panel ee-learning-overview" aria-labelledby="learningOverviewTitle"><span class="section-kicker">TODO TU APRENDIZAJE</span><h2 id="learningOverviewTitle">Mi progreso en un vistazo</h2><p class="muted">Lecturas, exámenes y actividades en un mismo lugar. Las notas originales se mantienen independientes.</p><div class="stats"><div class="stat"><strong id="learningReads">—</strong><span>Lecturas completadas</span></div><div class="stat"><strong id="learningExams">—</strong><span>Exámenes realizados</span></div><div class="stat"><strong id="learningActivities">—</strong><span>Actividades entregadas</span></div><div class="stat"><strong id="learningErrors">—</strong><span>Errores por repasar</span></div></div><p class="muted" id="learningStatus" role="status" aria-live="polite">Consultando tu progreso…</p><p><a class="back" href="practicar.html#cuaderno-fallos">✎ Repasar todos mis errores →</a> · <a class="back" href="actividades.html">Practicar actividades →</a></p><h3>Mis actividades recientes</h3><div id="learningActivityHistory" class="list"></div></section><section class="panel" id="recentStudyPanel" aria-labelledby="recentStudyTitle">
 <p class="section-kicker">MIS ESTADÍSTICAS RECIENTES</p><h2 id="recentStudyTitle">Cómo voy últimamente</h2>
 <p class="muted">Compara tu actividad reciente, sin mezclar notas de exámenes con unidades que marcas manualmente.</p>
@@ -131,5 +136,5 @@ permalink: /perfil.html
 </main><footer class="ee-footer"><p>Un poco de ingl?s. Un paso m?s cada d?a.</p></footer>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script src="supabase-config.js"></script>
-<script src="/assets/perfil.js?v=20261101-favorites-1"></script>
+<script src="/assets/perfil.js?v=20261101-achievements-1"></script>
 </body></html>
