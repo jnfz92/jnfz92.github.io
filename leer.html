@@ -298,7 +298,7 @@ permalink: /leer.html
   // Mantener scripts del artículo y los comentarios, sin volver a descargar navegación ni duplicar Supabase.
   const scripts=[...doc.querySelectorAll('script')].filter(s=>{
     const src=s.getAttribute('src')||'';
-    return !/navigation(?:-optimized)?\\.js|site\\.js|supabase-js|supabase-config\\.js/i.test(src)&&s.type!=='application/ld+json';
+    return !/navigation(?:-optimized)?\.js|site\.js|supabase-js|supabase-config\.js/i.test(src)&&s.type!=='application/ld+json';
   });
   const activeExternal=new Set([...document.querySelectorAll('script[src]')].map(s=>new URL(s.src,location.href).pathname));
   const includesConfig=!!window.eeDb;
