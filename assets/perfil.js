@@ -4,6 +4,7 @@
 const $=id=>document.getElementById(id), key='easyEnglish.blogProfile.v1';
 let user=null,articles=[],articleView='all',loading=false,articlesLoaded=false,cloudUserId=null,suggestedHref=null;
 let savedFavorites=new Set(),favoritesReady=false;
+let achievementProgress={reads:null,course:null,exams:null,streak:null};
 const READING_PAGE_SIZE=10;
 const readingPages={read:1,pending:1};
 // Equivalencias de artículos consolidados: conservar el historial sin dar por leída
@@ -70,6 +71,7 @@ $('privateDashboard').replaceChildren(
  document.querySelector('#reviewPreferencesTitle').closest('.panel'),
   $('courseProgressPanel'),
  $('weeklyGoalPanel'),
+ $('achievementPanel'),
   document.querySelector('.ee-learning-overview'),
  $('recentStudyPanel'),
  highlights,
@@ -123,6 +125,8 @@ function render(){
  const pct=total?Math.round(done/total*100):0;
  $('readStat').textContent=ready?String(done):'—';
  $('homeReadingCount').textContent=ready?String(done):'—';
+ achievementProgress.reads=user&&ready?done:null;
+ renderAchievements();
  $('learningReads').textContent=cloudUserId===user?.id?String(done):'—';
  $('totalStat').textContent=articlesLoaded?String(total):'—';
  $('percentageStat').textContent=ready?pct+'%':'—';
@@ -319,7 +323,7 @@ async function loadLearningOverview(){
  }
  if(!(attempts.data||[]).length)box.textContent='Todavía no has entregado actividades interactivas.';
 }
-async function loadStreak(){if(!user)return;const {data,error}=await eeDb.rpc('racha_actual');if(error){$('streakMessage').textContent='No se pudo cargar la racha: '+error.message;return}const r=Array.isArray(data)?data[0]:data;if(!r)return;$('streakCurrent').textContent=String(r.racha||0);$('streakBest').textContent=String(r.mejor_racha||0);$('streakDays').textContent=String(r.dias_total||0);$('streakMessage').textContent=r.hoy_completado?'✅ ¡Has cumplido tu objetivo de hoy!':'Completa hoy una lección o un examen para mantener tu racha.'}
+async function loadStreak(){if(!user)return;const {data,error}=await eeDb.rpc('racha_actual');if(error){$('streakMessage').textContent='No se pudo cargar la racha: '+error.message;return}const r=Array.isArray(data)?data[0]:data;if(!r)return;$('streakCurrent').textContent=String(r.racha||0);$('streakBest').textContent=String(r.mejor_racha||0);$('streakDays').textContent=String(r.dias_total||0);$('streakMessage').textContent=r.hoy_completado?'✅ ¡Has cumplido tu objetivo de hoy!':'Completa hoy una lección o un examen para mantener tu racha.';achievementProgress.streak=Number(r.mejor_racha)||0;renderAchievements()}
 /* Estadísticas de fortalezas y dificultades de los exámenes guardados.
    Las soluciones solo se solicitan con ver_correccion para intentos propios. */
 function profileQuestionTopic(q){
@@ -464,6 +468,7 @@ async function results(){
  const last7=scores.filter(x=>new Date(x.fecha).getTime()>=weekStart);
  const last30=scores.filter(x=>new Date(x.fecha).getTime()>=monthStart);
  const last30Nums=last30.map(x=>Number(x.nota)).filter(Number.isFinite);
+ achievementProgress.exams=scores.length;renderAchievements();
  $('recentExam7').textContent=String(last7.length);
  $('recentExam30').textContent=String(last30.length);
  $('recentAverage30').textContent=last30Nums.length?(last30Nums.reduce((sum,x)=>sum+x,0)/last30Nums.length).toFixed(1)+'%':'—';
@@ -484,6 +489,33 @@ async function results(){
  if(!scores.length)box.textContent='Aún no tienes resultados guardados. Empieza tu primer examen.';
  await loadLearningStrengths(scores,activeUserId);
  if(examResponse.error){const p=document.createElement('p');p.className='muted';p.textContent='No se pudieron cargar los títulos de los exámenes.';box.append(p)}
+}
+function renderAchievements(){
+ const definitions=[
+  {name:'Primera lectura',icon:'📖',key:'reads',target:1,description:'Leer un artículo'},
+  {name:'Lector constante',icon:'📚',key:'reads',target:10,description:'Completar 10 lecturas'},
+  {name:'Primer paso B2',icon:'🧩',key:'course',target:1,description:'Estudiar una unidad'},
+  {name:'Diez unidades',icon:'🎯',key:'course',target:10,description:'Marcar 10 unidades'},
+  {name:'Ruta B2 completa',icon:'🏆',key:'course',target:44,description:'Marcar 44 unidades'},
+  {name:'Primer examen',icon:'✎',key:'exams',target:1,description:'Realizar un examen'},
+  {name:'Experiencia en exámenes',icon:'💡',key:'exams',target:10,description:'Realizar 10 exámenes'},
+  {name:'Semana constante',icon:'🔥',key:'streak',target:7,description:'Mantener 7 días seguidos'}
+ ];
+ const container=$('achievementList');container.replaceChildren();
+ let unlocked=0;
+ for(const item of definitions){
+  const value=achievementProgress[item.key];
+  const ready=typeof value==='number';
+  const done=ready&&value>=item.target;
+  if(done)unlocked++;
+  const card=document.createElement('div');card.className='ee-achievement'+(done?' is-unlocked':'');
+  const symbol=document.createElement('span');symbol.className='ee-achievement-symbol';symbol.textContent=item.icon;symbol.setAttribute('aria-hidden','true');
+  const body=document.createElement('div'),name=document.createElement('strong'),hint=document.createElement('small'),count=document.createElement('span');
+  name.textContent=item.name;hint.textContent=item.description;
+  count.className='ee-achievement-count';count.textContent=ready?(done?'✓ Conseguido':value+' / '+item.target):'Consultando…';
+  body.append(name,hint,count);card.append(symbol,body);container.append(card);
+ }
+ $('achievementStatus').textContent=unlocked+' de '+definitions.length+' logros conseguidos. La finalización de unidades se marca manualmente.';
 }
 function weeklyMonday() {
  const monday=new Date();
@@ -617,6 +649,7 @@ async function loadCourseProgress(userId) {
  $('courseProfilePending').textContent=String(units.length-done-inProgress);
  $('courseProfilePercent').textContent=pct+'%';
  $('homeCoursePercent').textContent=pct+'%';
+ achievementProgress.course=done;renderAchievements();
  $('courseProfileBar').style.width=pct+'%';
  $('courseProfileMeter').setAttribute('aria-valuenow',String(pct));
  statusBox.textContent=units.length
@@ -635,6 +668,7 @@ async function changeUser(next){
  user=next;
  suggestedHref=null;cloudUserId=null;
  savedFavorites=new Set();favoritesReady=false;
+ achievementProgress={reads:null,course:null,exams:null,streak:null};renderAchievements();
  $('favoritesCount').textContent='0';$('favoritesList').replaceChildren();
  $('favoritesStatus').textContent='Consultando tus recursos guardados…';
  $('learningStatus').textContent='Consultando tu progreso…';$('learningActivityHistory').replaceChildren();
