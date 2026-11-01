@@ -23,6 +23,7 @@ function play(){
 $('listenStart').onclick=()=>{
  index=(index+1)%bank.length;const item=bank[index];
  $('listenExercise').hidden=false;
+ $('listenCheck').disabled=false;
  A.note('listenQuestion',item.q);A.note('listenFeedback','');
  const options=$('listenOptions');options.replaceChildren();
  item.options.forEach((text,i)=>{
@@ -32,10 +33,24 @@ $('listenStart').onclick=()=>{
  play()
 };
 $('playListening').onclick=()=>{if(index>=0)play()};
-$('listenCheck').onclick=()=>{
+$('listenCheck').onclick=async()=>{
+ if(!A.check())return;
  const selected=document.querySelector('input[name=listenAnswer]:checked');
  if(!selected){A.note('listenFeedback','Elige una respuesta.');return}
- const item=bank[index];
- A.note('listenFeedback',(Number(selected.value)===item.correct?'✓ Correcto. ':'Inténtalo otra vez. ')+item.why)
+ const item=bank[index],choice=Number(selected.value),correct=Number(choice===item.correct);
+ $('listenCheck').disabled=true;
+ A.note('listenFeedback','Guardando respuesta…');
+ try{
+  const result=await A.db.from('simulacros_b2').insert({
+   usuario_id:A.user.id,modalidad:'listening',aciertos:correct,total:1,
+   respuestas:{ejercicio:index,respuesta:choice},duracion_segundos:0
+  });
+  if(result.error)throw result.error;
+  A.note('listenFeedback',(correct?'✓ Correcto. ':'Todavía no. ')+item.why+' Resultado guardado en tu cuenta.');
+  window.dispatchEvent(new Event('ee-aula-mock-updated'))
+ }catch(error){
+  $('listenCheck').disabled=false;
+  A.note('listenFeedback','No se pudo guardar el resultado: '+error.message)
+ }
 };
 })();
