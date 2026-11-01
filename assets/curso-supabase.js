@@ -18,7 +18,7 @@
     completedStat: $('courseCompletedStat'), count: $('courseUnitsStat'),
     grammar: $('courseGrammarStat'), vocabulary: $('courseVocabularyStat'), importLocal: $('courseImportLocal'), startedStat: $('courseStartedStat')
   };
-  const state = { units: [], filter: 'all', query: '', completed: new Set(), started: new Set(), storageOK: true, user: null, syncReady: false, busy: new Set(), authRevision: 0 };
+  const state = { units: [], filter: 'all', query: '', completed: new Set(), started: new Set(), favorites: new Set(), favoritesReady:false, storageOK: true, user: null, syncReady: false, busy: new Set(), authRevision: 0 };
   const path = slug => '/leer.html?slug=' + encodeURIComponent(slug);
   const normalize = value => String(value || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
   const elt = (tag, className, value) => {
@@ -114,6 +114,49 @@
   async function toggleStarted(key) {
     await setUnitState(key,state.started.has(key)?'pendiente':'en_curso');
   }
+  async function loadFavorites(owner,revision) {
+    state.favoritesReady=false;
+    refreshFavorites();
+    try {
+      const {data,error}=await window.eeDb.from('recursos_guardados')
+        .select('referencia').eq('usuario_id',owner).eq('tipo','unidad');
+      if(error)throw error;
+      if(state.user?.id!==owner||revision!==state.authRevision)return;
+      state.favorites=new Set((data||[]).map(row=>row.referencia));
+      state.favoritesReady=true;
+      refreshFavorites();
+    }catch(error){
+      if(state.user?.id===owner)updateStorageNote('El progreso funciona, pero no se pudieron cargar los favoritos: '+error.message);
+    }
+  }
+  function refreshFavorites() {
+    for(const card of container.querySelectorAll('.course-unit')){
+      const button=card.querySelector('[data-favorite]');
+      if(!button)continue;
+      const saved=state.favorites.has(card.dataset.unitKey);
+      button.disabled=!state.user||!state.favoritesReady;
+      button.setAttribute('aria-pressed',String(saved));
+      button.textContent=saved?'★ Unidad guardada':'☆ Guardar unidad';
+      button.title=state.user?'Añadir o quitar esta unidad de tus favoritos':'Inicia sesión para guardar favoritos en tu cuenta';
+    }
+  }
+  async function toggleFavorite(key) {
+    if(!state.user||!state.favoritesReady)return;
+    const owner=state.user.id;
+    const saved=state.favorites.has(key);
+    state.favoritesReady=false;refreshFavorites();
+    try{
+      const query=window.eeDb.from('recursos_guardados');
+      const {error}=saved
+        ?await query.delete().eq('usuario_id',owner).eq('tipo','unidad').eq('referencia',key)
+        :await query.insert({usuario_id:owner,tipo:'unidad',referencia:key});
+      if(error)throw error;
+      if(state.user?.id!==owner)return;
+      if(saved)state.favorites.delete(key);else state.favorites.add(key);
+      updateStorageNote(saved?'Unidad retirada de tus favoritos.':'Unidad guardada en tu perfil.');
+    }catch(error){updateStorageNote('No se pudo actualizar el favorito: '+error.message)}
+    finally{if(state.user?.id===owner){state.favoritesReady=true;refreshFavorites()}}
+  }
   async function syncAccount() {
     if (!window.eeDb) { updateStorageNote('No se ha podido iniciar la sincronización.'); return; }
     const revision = ++state.authRevision;
@@ -127,11 +170,13 @@
       state.syncReady = !nextUser;
       if (!nextUser) {
         loadLocalState();
-        refreshProgress();
+        state.favorites=new Set();
+        state.favoritesReady=false;
+        refreshProgress();refreshFavorites();
         updateStorageNote();
         return;
       }
-      if (changed) { state.completed = new Set(); state.started = new Set(); refreshProgress(); }
+      if (changed) { state.completed = new Set(); state.started = new Set(); state.favorites=new Set();state.favoritesReady=false;refreshProgress();refreshFavorites(); }
       const result = await window.eeDb.from('progreso_curso').select('unidad_slug,estado').eq('usuario_id', nextUser.id);
       if (result.error) throw result.error;
       if (revision !== state.authRevision) return;
@@ -140,6 +185,7 @@
       state.syncReady = true;
       refreshProgress();
       updateStorageNote();
+      void loadFavorites(nextUser.id,revision);
     } catch (error) {
       if (revision !== state.authRevision) return;
       state.syncReady = false;
@@ -221,6 +267,10 @@
     start.setAttribute('aria-pressed',String(started));
     start.addEventListener('click',()=>{void toggleStarted(key)});
     footer.append(start);
+    const favorite=elt('button','course-complete course-favorite','☆ Guardar unidad');
+    favorite.type='button';favorite.dataset.favorite='';
+    favorite.addEventListener('click',()=>{void toggleFavorite(key)});
+    footer.append(favorite);
 
     if (item.activities.length) {
       const activityLink = elt('a', 'course-activity-link', '✎ Actividades de la unidad ↗');
@@ -396,6 +446,7 @@
     const linkedSlugs = new Set([...byUnit.values()].flat().map(x => x.articulo_slug));
     const extras = articles.filter(a => !linkedSlugs.has(a.slug));
     renderGroups();
+    refreshFavorites();
     renderExtras(extras);
     syncProgress();
     // El catálogo se crea de forma asíncrona: resolver aquí el enlace a la unidad.
