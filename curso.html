@@ -188,7 +188,9 @@ details[open] .course-chevron{transform:rotate(180deg)}
    <p id="courseProgressCopy" class="course-progress-copy">Marca unidades como completadas para ver tu avance.</p>
   </div>
   <a id="courseResume" href="#courseCatalog">Empezar mi ruta <span aria-hidden="true">→</span></a>
-  <p id="courseStorageNote" class="course-storage-note">El avance se guarda solo en este navegador; no es una nota de examen.</p>
+  <p id="courseStorageNote" class="course-storage-note">Comprobando dónde guardar tu progreso…</p>
+  <button type="button" id="courseImportLocal" class="course-complete" hidden>Importar unidades estudiadas en este navegador</button>
+  <a href="/perfil.html" class="course-storage-note">Gestionar mi cuenta y progreso →</a>
  </aside>
 </section>
 <section class="course-stats" aria-label="Resumen del curso">
@@ -231,5 +233,7 @@ details[open] .course-chevron{transform:rotate(180deg)}
 <div id="courseExtras"></div>
 <div class="course-footer">¿Quieres repasar por tu cuenta? <a href="/mi-vocabulario.html">Mi vocabulario ↗</a> · <a href="/actividades.html">Actividades ↗</a> · <a href="/articulos.html">Todos los artículos ↗</a></div>
 </main>
-<script src="/assets/curso-supabase.js?v=20261031-learning-dashboard-1" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="/supabase-config.js"></script>
+<script src="/assets/curso-supabase.js?v=20261101-cloud-progress-1" defer></script>
 </body></html>
