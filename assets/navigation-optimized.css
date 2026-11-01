@@ -107,7 +107,10 @@
   #ee-shared-header .ee-nav.ee-resource-mode > a{display:none}
   #ee-shared-header .ee-nav.ee-resource-mode > .ee-more{order:0}
   #ee-shared-header .ee-nav.ee-resource-mode .ee-more > summary{
-    position:sticky;top:0;z-index:2;background:#fff
+    position:static;background:#fff
+  }
+  #ee-shared-header .ee-nav.ee-resource-mode .ee-more-panel a{
+    scroll-margin-top:72px
   }
   #ee-shared-header .ee-more{width:100%}
   #ee-shared-header .ee-more>summary .ee-chevron{margin-left:auto}
