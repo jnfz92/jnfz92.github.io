@@ -4,6 +4,7 @@
   const API = 'https://wnluofonzteaqtlfshgy.supabase.co/rest/v1/';
   const KEY = 'sb_publishable_Ef-AXAapcwaPExEFS6kmug_tKLaulM8';
   const STORAGE = 'easyenglish-b2-manual-completed-v1';
+  const STARTED_STORAGE = 'easyenglish-b2-manual-started-v1';
   const $ = id => document.getElementById(id);
   const container = $('courseUnits');
   if (!container) return;
@@ -15,9 +16,9 @@
     ring: $('courseProgressRing'), value: $('courseProgressValue'),
     copy: $('courseProgressCopy'), stored: $('courseStorageNote'),
     completedStat: $('courseCompletedStat'), count: $('courseUnitsStat'),
-    grammar: $('courseGrammarStat'), vocabulary: $('courseVocabularyStat'), importLocal: $('courseImportLocal')
+    grammar: $('courseGrammarStat'), vocabulary: $('courseVocabularyStat'), importLocal: $('courseImportLocal'), startedStat: $('courseStartedStat')
   };
-  const state = { units: [], filter: 'all', query: '', completed: new Set(), storageOK: true, user: null, syncReady: false, busy: new Set(), authRevision: 0 };
+  const state = { units: [], filter: 'all', query: '', completed: new Set(), started: new Set(), storageOK: true, user: null, syncReady: false, busy: new Set(), authRevision: 0 };
   const path = slug => '/leer.html?slug=' + encodeURIComponent(slug);
   const normalize = value => String(value || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
   const elt = (tag, className, value) => {
@@ -40,6 +41,17 @@
       return new Set();
     }
   }
+  function readStarted() {
+    try {
+      const parsed=JSON.parse(localStorage.getItem(STARTED_STORAGE)||'[]');
+      return new Set(Array.isArray(parsed)?parsed.filter(x=>typeof x==='string'):[]);
+    } catch (_) { state.storageOK=false; return new Set(); }
+  }
+  function loadLocalState() {
+    state.completed=readCompleted();
+    state.started=readStarted();
+    for(const slug of state.completed)state.started.delete(slug);
+  }
   function updateStorageNote(message) {
     ui.stored.textContent = message || (state.user
       ? (state.syncReady
@@ -48,11 +60,13 @@
       : (state.storageOK
         ? 'Sin sesión: el avance se guarda en este navegador. Inicia sesión para sincronizarlo.'
         : 'Este navegador no permite guardar el avance.'));
-    if (ui.importLocal) ui.importLocal.hidden = !(state.user && state.syncReady && readCompleted().size);
+    if (ui.importLocal) ui.importLocal.hidden = !(state.user && state.syncReady && (readCompleted().size || readStarted().size));
   }
   function saveLocal() {
-    try { localStorage.setItem(STORAGE, JSON.stringify([...state.completed])); }
-    catch (_) { state.storageOK = false; }
+    try {
+      localStorage.setItem(STORAGE, JSON.stringify([...state.completed]));
+      localStorage.setItem(STARTED_STORAGE, JSON.stringify([...state.started]));
+    } catch (_) { state.storageOK = false; }
     updateStorageNote();
   }
   function refreshProgress() {
@@ -60,36 +74,45 @@
     syncProgress();
     applyFilters();
   }
-  async function toggleCompleted(key) {
-    if (state.busy.has(key) || (state.user && !state.syncReady)) return;
-    const wasDone = state.completed.has(key);
-    if (!state.user) {
-      if (wasDone) state.completed.delete(key);
-      else state.completed.add(key);
-      saveLocal();
-      refreshProgress();
-      return;
-    }
-    const userId = state.user.id;
-    state.busy.add(key);
-    const button = [...container.querySelectorAll('[data-complete]')].find(b => b.closest('.course-unit')?.dataset.unitKey === key);
-    if (button) button.disabled = true;
+  async function setUnitState(key, nextState) {
+    if(state.busy.has(key)||(state.user&&!state.syncReady))return;
+    const current=state.completed.has(key)?'completada':state.started.has(key)?'en_curso':'pendiente';
+    if(current===nextState)return;
+    const buttons=[...container.querySelectorAll('.course-unit')]
+      .filter(card=>card.dataset.unitKey===key)
+      .flatMap(card=>[...card.querySelectorAll('[data-complete],[data-start]')]);
+    state.busy.add(key);buttons.forEach(b=>b.disabled=true);
+    const owner=state.user?.id;
     try {
-      const response = wasDone
-        ? await window.eeDb.from('progreso_curso').delete().eq('usuario_id', userId).eq('unidad_slug', key)
-        : await window.eeDb.from('progreso_curso').insert({usuario_id:userId, unidad_slug:key});
-      if (response.error) throw response.error;
-      if (state.user?.id !== userId) return;
-      if (wasDone) state.completed.delete(key);
-      else state.completed.add(key);
+      if(owner) {
+        const query=window.eeDb.from('progreso_curso');
+        const result=nextState==='pendiente'
+          ?await query.delete().eq('usuario_id',owner).eq('unidad_slug',key)
+          :await query.upsert({
+             usuario_id:owner,unidad_slug:key,estado:nextState,
+             completada_en:nextState==='completada'?new Date().toISOString():null
+           },{onConflict:'usuario_id,unidad_slug'});
+        if(result.error)throw result.error;
+        if(state.user?.id!==owner)return;
+      }
+      state.completed.delete(key);state.started.delete(key);
+      if(nextState==='completada')state.completed.add(key);
+      if(nextState==='en_curso')state.started.add(key);
+      if(!owner)saveLocal();
       refreshProgress();
       updateStorageNote();
-    } catch (error) {
-      if (state.user?.id === userId) updateStorageNote('No se pudo guardar la unidad: ' + error.message);
+    } catch(error) {
+      updateStorageNote('No se pudo guardar el cambio: '+error.message);
     } finally {
       state.busy.delete(key);
-      if (button) button.disabled = false;
+      buttons.forEach(b=>b.disabled=false);
     }
+  }
+  async function toggleCompleted(key) {
+    await setUnitState(key,state.completed.has(key)?'pendiente':'completada');
+  }
+  async function toggleStarted(key) {
+    await setUnitState(key,state.started.has(key)?'pendiente':'en_curso');
   }
   async function syncAccount() {
     if (!window.eeDb) { updateStorageNote('No se ha podido iniciar la sincronización.'); return; }
@@ -103,16 +126,17 @@
       state.user = nextUser;
       state.syncReady = !nextUser;
       if (!nextUser) {
-        state.completed = readCompleted();
+        loadLocalState();
         refreshProgress();
         updateStorageNote();
         return;
       }
-      if (changed) { state.completed = new Set(); refreshProgress(); }
-      const result = await window.eeDb.from('progreso_curso').select('unidad_slug').eq('usuario_id', nextUser.id);
+      if (changed) { state.completed = new Set(); state.started = new Set(); refreshProgress(); }
+      const result = await window.eeDb.from('progreso_curso').select('unidad_slug,estado').eq('usuario_id', nextUser.id);
       if (result.error) throw result.error;
       if (revision !== state.authRevision) return;
-      state.completed = new Set((result.data || []).map(x => x.unidad_slug));
+      state.completed = new Set((result.data || []).filter(x => x.estado==='completada').map(x=>x.unidad_slug));
+      state.started = new Set((result.data || []).filter(x => x.estado==='en_curso').map(x=>x.unidad_slug));
       state.syncReady = true;
       refreshProgress();
       updateStorageNote();
@@ -135,6 +159,7 @@
     const {unit, lessons, topics, exam} = item;
     const key = unit.slug;
     const done = state.completed.has(key);
+    const started = state.started.has(key);
     const details = elt('details', 'course-unit');
     details.id = 'unidad-' + String(unit.orden).padStart(2, '0');
     details.dataset.unitKey = key;
@@ -144,7 +169,7 @@
     const summary = elt('summary');
     const meta = elt('div', 'course-card-top');
     meta.append(elt('span', 'course-card-no', 'UNIDAD ' + String(unit.orden).padStart(2, '0')));
-    const status = elt('span', 'course-card-status' + (done ? ' is-complete' : ''), done ? '✓ Estudiada' : '○ Por estudiar');
+    const status = elt('span', 'course-card-status' + (done?' is-complete':started?' is-started':''), done?'✓ Estudiada':started?'◉ En curso':'○ Por estudiar');
     status.dataset.status = '';
     meta.append(status);
 
@@ -190,6 +215,12 @@
     complete.setAttribute('aria-pressed', String(done));
     complete.addEventListener('click', () => { void toggleCompleted(key); });
     footer.append(complete);
+    const start = elt('button', 'course-complete course-start', started?'↶ Dejar pendiente':'◉ Marcar en curso');
+    start.type='button';
+    start.dataset.start='';
+    start.setAttribute('aria-pressed',String(started));
+    start.addEventListener('click',()=>{void toggleStarted(key)});
+    footer.append(start);
 
     if (item.activities.length) {
       const activityLink = elt('a', 'course-activity-link', '✎ Actividades de la unidad ↗');
@@ -254,17 +285,19 @@
     const total = state.units.length;
     const completed = state.units.filter(x => state.completed.has(x.unit.slug)).length;
     const percent = total ? Math.round(completed * 100 / total) : 0;
+    const started = state.units.filter(x=>state.started.has(x.unit.slug)).length;
     ui.value.textContent = percent + '%';
     ui.ring.style.setProperty('--p', percent + '%');
     ui.ring.setAttribute('aria-valuenow', String(percent));
     ui.copy.replaceChildren();
-    ui.copy.append(elt('strong', '', completed + ' de ' + total + ' unidades'), document.createTextNode(' marcadas como estudiadas.'));
+    ui.copy.append(elt('strong', '', completed + ' de ' + total + ' unidades'), document.createTextNode(' estudiadas · '+started+' en curso.'));
     ui.completedStat.textContent = String(completed);
+    if(ui.startedStat)ui.startedStat.textContent=String(started);
     ui.count.textContent = String(total);
     ui.grammar.textContent = String(state.units.filter(x => x.unit.nivel === 'Grammar').length);
     ui.vocabulary.textContent = String(state.units.filter(x => x.unit.nivel === 'Vocabulary').length);
 
-    const next = state.units.find(x => !state.completed.has(x.unit.slug));
+    const next = state.units.find(x => state.started.has(x.unit.slug)) || state.units.find(x => !state.completed.has(x.unit.slug));
     if (next) {
       ui.resume.textContent = 'Continuar: unidad ' + next.unit.orden + ' →';
       ui.resume.href = '#unidad-' + String(next.unit.orden).padStart(2, '0');
@@ -291,16 +324,24 @@
 
     for (const card of container.querySelectorAll('.course-unit')) {
       const done = state.completed.has(card.dataset.unitKey);
+      const started = state.started.has(card.dataset.unitKey);
       const status = card.querySelector('[data-status]');
       if (status) {
-        status.classList.toggle('is-complete', done);
-        status.textContent = done ? '✓ Estudiada' : '○ Por estudiar';
+        status.classList.toggle('is-complete',done);
+        status.classList.toggle('is-started',started);
+        status.textContent=done?'✓ Estudiada':started?'◉ En curso':'○ Por estudiar';
       }
       const btn = card.querySelector('[data-complete]');
       if (btn) {
         btn.disabled = state.busy.has(card.dataset.unitKey) || (state.user && !state.syncReady);
         btn.setAttribute('aria-pressed', String(done));
-        btn.textContent = done ? '✓ Marcada como estudiada' : '✓ Marcar como estudiada';
+        btn.textContent = done ? '↶ Quitar completada' : '✓ Marcar como estudiada';
+      }
+      const start=card.querySelector('[data-start]');
+      if(start) {
+        start.disabled=done||state.busy.has(card.dataset.unitKey)||(state.user&&!state.syncReady);
+        start.setAttribute('aria-pressed',String(started));
+        start.textContent=started?'↶ Dejar pendiente':'◉ Marcar en curso';
       }
     }
   }
@@ -310,11 +351,13 @@
       let count = 0;
       for (const card of group.querySelectorAll('.course-unit')) {
         const done = state.completed.has(card.dataset.unitKey);
+        const started = state.started.has(card.dataset.unitKey);
         const track = card.dataset.group;
         const category = state.filter === 'all' ||
           state.filter === track ||
           (state.filter === 'done' && done) ||
-          (state.filter === 'todo' && !done);
+          (state.filter === 'started' && started) ||
+          (state.filter === 'todo' && !done && !started);
         const matches = !state.query || card.dataset.search.includes(state.query);
         card.hidden = !(category && matches);
         if (!card.hidden) { visible++; count++; }
@@ -378,28 +421,35 @@
   });
   ui.search.addEventListener('input', () => { state.query = normalize(ui.search.value.trim()); applyFilters(); });
   window.addEventListener('storage', event => {
-    if (event.key === STORAGE && !state.user) { state.completed = readCompleted(); refreshProgress(); }
+    if ([STORAGE,STARTED_STORAGE].includes(event.key) && !state.user) { loadLocalState(); refreshProgress(); }
   });
   if (ui.importLocal) ui.importLocal.addEventListener('click', async () => {
     if (!state.user || !state.syncReady) return;
-    const local = [...readCompleted()].filter(key => state.units.some(item => item.unit.slug === key));
+    const localDone = [...readCompleted()].filter(key=>state.units.some(item=>item.unit.slug===key));
+    const localStarted = [...readStarted()].filter(key=>!localDone.includes(key)&&state.units.some(item=>item.unit.slug===key));
+    const local = [
+      ...localDone.filter(key=>!state.completed.has(key)).map(unidad_slug=>({unidad_slug,estado:'completada',completada_en:new Date().toISOString()})),
+      ...localStarted.filter(key=>!state.completed.has(key)&&!state.started.has(key)).map(unidad_slug=>({unidad_slug,estado:'en_curso',completada_en:null}))
+    ];
     if (!local.length) return;
     const userId = state.user.id;
     ui.importLocal.disabled = true;
     try {
-      const {error} = await window.eeDb.from('progreso_curso')
-        .upsert(local.map(unidad_slug => ({usuario_id:userId, unidad_slug})), {onConflict:'usuario_id,unidad_slug', ignoreDuplicates:true});
+      const {error} = local.length ? await window.eeDb.from('progreso_curso')
+        .upsert(local.map(record=>({usuario_id:userId,...record})),{onConflict:'usuario_id,unidad_slug'})
+        :{error:null};
       if (error) throw error;
       if (state.user?.id !== userId) return;
       // El progreso local se conserva hasta confirmar que ha sido importado.
       localStorage.removeItem(STORAGE);
+      localStorage.removeItem(STARTED_STORAGE);
       await syncAccount();
       updateStorageNote('Progreso de este navegador importado a tu cuenta.');
     } catch (error) {
       updateStorageNote('No se pudo importar el progreso local: ' + error.message);
     } finally { ui.importLocal.disabled = false; }
   });
-  state.completed = readCompleted();
+  loadLocalState();
   if (window.eeDb) {
     window.eeDb.auth.onAuthStateChange(event => {
       if (['SIGNED_IN','SIGNED_OUT','USER_UPDATED'].includes(event)) {
