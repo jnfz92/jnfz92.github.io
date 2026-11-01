@@ -1,7 +1,6 @@
 name: Browser E2E
 on:
-  push:
-    branches: [main]
+  # Comprobar la web publicada, no la versión anterior aún en caché.
   workflow_dispatch:
   workflow_run:
     workflows: ["pages build and deployment"]
@@ -17,6 +16,8 @@ jobs:
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
