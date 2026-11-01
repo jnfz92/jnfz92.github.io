@@ -209,6 +209,14 @@
     const details = elt('details', 'course-unit');
     details.id = 'unidad-' + String(unit.orden).padStart(2, '0');
     details.dataset.unitKey = key;
+    // Recuerda únicamente la última unidad abierta en este navegador (sin datos personales).
+    details.addEventListener('toggle',()=>{
+      if(!details.open)return;
+      try{localStorage.setItem('easyenglish-last-unit-v1',JSON.stringify({
+        numero:Number(unit.orden),titulo:String(unit.titulo||'').slice(0,90),
+        ruta:'/curso.html#unidad-'+String(unit.orden).padStart(2,'0')
+      }))}catch(_){}
+    });
     details.dataset.group = unit.nivel === 'Vocabulary' ? 'vocabulary' : 'grammar';
     details.dataset.search = normalize([unit.titulo, unit.descripcion, ...lessons.map(x => x.titulo)].join(' '));
 
