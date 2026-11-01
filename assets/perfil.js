@@ -68,6 +68,7 @@ $('privateDashboard').replaceChildren(
  $('nameTitle').closest('.panel'),
  document.querySelector('#reviewPreferencesTitle').closest('.panel'),
   $('courseProgressPanel'),
+ $('weeklyGoalPanel'),
   document.querySelector('.ee-learning-overview'),
  $('recentStudyPanel'),
  highlights,
@@ -474,6 +475,60 @@ async function results(){
  await loadLearningStrengths(scores,activeUserId);
  if(examResponse.error){const p=document.createElement('p');p.className='muted';p.textContent='No se pudieron cargar los títulos de los exámenes.';box.append(p)}
 }
+function weeklyMonday() {
+ const monday=new Date();
+ monday.setHours(0,0,0,0);
+ monday.setDate(monday.getDate()-((monday.getDay()+6)%7));
+ return monday.toISOString();
+}
+function resetWeeklyGoal() {
+ $('weeklyGoalScore').textContent='—';
+ $('weeklyGoalLabel').textContent='Elige una meta semanal';
+ $('weeklyGoalBar').style.width='0%';
+ $('weeklyGoalMeter').setAttribute('aria-valuenow','0');
+ $('weeklyGoalStatus').textContent='Puedes guardar tu meta personal para empezar.';
+ $('homeWeeklyGoal').textContent='Configurar mi objetivo semanal →';
+}
+async function loadWeeklyGoal(owner) {
+ resetWeeklyGoal();
+ $('weeklyGoalStatus').textContent='Consultando tu objetivo semanal…';
+ const {data,error}=await eeDb.from('objetivos_semanales').select('tipo,cantidad').eq('usuario_id',owner).maybeSingle();
+ if(!user||user.id!==owner)return;
+ if(error)throw error;
+ if(!data){$('weeklyGoalStatus').textContent='No has definido un objetivo. Elige una meta y pulsa «Guardar objetivo».';return;}
+ $('weeklyGoalType').value=data.tipo;
+ $('weeklyGoalTarget').value=String(data.cantidad);
+ const table=data.tipo==='unidades'?'progreso_curso':data.tipo==='examenes'?'resultados':'actividad_intentos';
+ const dateField=data.tipo==='unidades'?'completada_en':'fecha';
+ let query=eeDb.from(table).select('*',{count:'exact',head:true}).eq('usuario_id',owner).gte(dateField,weeklyMonday());
+ if(data.tipo==='unidades')query=query.eq('estado','completada');
+ const result=await query;
+ if(!user||user.id!==owner)return;
+ if(result.error)throw result.error;
+ const count=result.count??0;
+ const percentage=Math.min(100,Math.round(count/data.cantidad*100));
+ $('weeklyGoalScore').textContent=count+' / '+data.cantidad;
+ $('weeklyGoalLabel').textContent=data.tipo==='unidades'?'Unidades esta semana':data.tipo==='examenes'?'Exámenes esta semana':'Actividades esta semana';
+ $('weeklyGoalBar').style.width=percentage+'%';
+ $('weeklyGoalMeter').setAttribute('aria-valuenow',String(percentage));
+ $('weeklyGoalStatus').textContent=count>=data.cantidad?'¡Objetivo semanal alcanzado!':'Te quedan '+(data.cantidad-count)+' para completar tu meta. Se reinicia cada lunes.';
+ $('homeWeeklyGoal').textContent='Objetivo semanal: '+count+' de '+data.cantidad+' →';
+}
+$('weeklyGoalForm').onsubmit=async event=>{
+ event.preventDefault();
+ if(!user||!$('weeklyGoalForm').reportValidity())return;
+ const owner=user.id,button=$('weeklyGoalSave');
+ const tipo=$('weeklyGoalType').value,cantidad=Number($('weeklyGoalTarget').value);
+ if(!['unidades','examenes','actividades'].includes(tipo)||!Number.isInteger(cantidad)||cantidad<1||cantidad>20)return;
+ button.disabled=true;
+ $('weeklyGoalStatus').textContent='Guardando tu objetivo…';
+ try{
+  const {error}=await eeDb.from('objetivos_semanales').upsert({usuario_id:owner,tipo,cantidad,actualizado_en:new Date().toISOString()},{onConflict:'usuario_id'});
+  if(error)throw error;
+  if(user?.id===owner)await loadWeeklyGoal(owner);
+ }catch(error){if(user?.id===owner)$('weeklyGoalStatus').textContent='No se pudo guardar el objetivo: '+error.message}
+ finally{button.disabled=false}
+};
 async function loadCourseProgress(userId) {
  const statusBox=$('courseProfileStatus');
  statusBox.textContent='Consultando las unidades y tu progreso guardado…';
@@ -517,6 +572,7 @@ async function changeUser(next){
  $('courseProfileDone').textContent='—';$('courseProfileStarted').textContent='—';$('courseProfilePending').textContent='—';$('courseProfilePercent').textContent='—';
  $('homeCoursePercent').textContent='—';$('homeExamCount').textContent='—';$('homeErrorCount').textContent='—';$('homeReadingCount').textContent='—';
  $('homeNextTitle').textContent='Tu próxima unidad';$('homeNextDescription').textContent='Buscando dónde continuar en el curso…';
+ resetWeeklyGoal();
  $('recentExam7').textContent='—';$('recentExam30').textContent='—';$('recentAverage30').textContent='—';$('recentActivities30').textContent='—';
  $('courseProfileBar').style.width='0%';$('courseProfileMeter').setAttribute('aria-valuenow','0');
  $('authLayout').hidden=!!user;
@@ -534,6 +590,7 @@ async function changeUser(next){
    profile={name:'',read:{}};
    render();
    const courseUserId=user.id;
+   void loadWeeklyGoal(courseUserId).catch(e=>{if(user?.id===courseUserId)$('weeklyGoalStatus').textContent='No se pudo cargar el objetivo: '+e.message});
    void loadCourseProgress(courseUserId).catch(e=>{
     if(user?.id===courseUserId)$('courseProfileStatus').textContent='No se pudo cargar el progreso del curso: '+e.message;
    });
