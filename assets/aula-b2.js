@@ -62,5 +62,5 @@ async function initialize(){
  A.reloadToday();A.reloadPlan();
  window.dispatchEvent(new Event('ee-aula-ready'))
 }
-initialize().catch(e=>A.note('aulaStatus','Error de sesión: '+e.message))
+document.addEventListener('DOMContentLoaded',()=>{initialize().catch(e=>A.note('aulaStatus','Error de sesión: '+e.message))},{once:true})
 })();
