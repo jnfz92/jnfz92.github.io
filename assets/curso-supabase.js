@@ -355,6 +355,15 @@
     renderGroups();
     renderExtras(extras);
     syncProgress();
+    // El catálogo se crea de forma asíncrona: resolver aquí el enlace a la unidad.
+    const deepLink = decodeURIComponent(location.hash.slice(1));
+    if (/^unidad-\d{2}$/.test(deepLink)) {
+      const target = document.getElementById(deepLink);
+      if (target) {
+        target.open = true;
+        requestAnimationFrame(() => target.scrollIntoView({block:'start'}));
+      }
+    }
     applyFilters();
     updateStorageNote();
   }
