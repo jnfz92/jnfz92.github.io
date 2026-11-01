@@ -468,26 +468,29 @@ async function loadCourseProgress(userId) {
  statusBox.textContent='Consultando las unidades y tu progreso guardado…';
  const [catalog,marked]=await Promise.all([
   eeDb.from('unidades_curso').select('slug,orden,titulo').eq('publicado',true).order('orden'),
-  eeDb.from('progreso_curso').select('unidad_slug').eq('usuario_id',userId)
+  eeDb.from('progreso_curso').select('unidad_slug,estado').eq('usuario_id',userId)
  ]);
  if(catalog.error)throw catalog.error;
  if(marked.error)throw marked.error;
  if(!user||user.id!==userId)return;
  const units=catalog.data||[];
- const completed=new Set((marked.data||[]).map(row=>row.unidad_slug));
+ const completed=new Set((marked.data||[]).filter(row=>row.estado==='completada').map(row=>row.unidad_slug));
+ const started=new Set((marked.data||[]).filter(row=>row.estado==='en_curso').map(row=>row.unidad_slug));
  const done=units.filter(row=>completed.has(row.slug)).length;
+ const inProgress=units.filter(row=>started.has(row.slug)).length;
  const pct=units.length?Math.round(100*done/units.length):0;
  $('courseProfileDone').textContent=String(done);
- $('courseProfilePending').textContent=String(units.length-done);
+ $('courseProfileStarted').textContent=String(inProgress);
+ $('courseProfilePending').textContent=String(units.length-done-inProgress);
  $('courseProfilePercent').textContent=pct+'%';
  $('homeCoursePercent').textContent=pct+'%';
  $('courseProfileBar').style.width=pct+'%';
  $('courseProfileMeter').setAttribute('aria-valuenow',String(pct));
  statusBox.textContent=units.length
-  ?done+' de '+units.length+' unidades completadas. Este avance no es una nota de examen.'
+  ?done+' completadas · '+inProgress+' en curso · '+(units.length-done-inProgress)+' pendientes. No es una nota de examen.'
   :'Todavía no hay unidades publicadas.';
- const next=units.find(row=>!completed.has(row.slug));
- $('homeNextTitle').textContent=next?'Siguiente: unidad '+String(next.orden).padStart(2,'0'):'¡Ruta B2 completada!';
+ const next=units.find(row=>started.has(row.slug))||units.find(row=>!completed.has(row.slug));
+ $('homeNextTitle').textContent=next?(started.has(next.slug)?'En curso: unidad ':'Siguiente: unidad ')+String(next.orden).padStart(2,'0'):'¡Ruta B2 completada!';
  $('homeNextDescription').textContent=next?String(next.titulo||'Continúa donde lo dejaste.'):'Has marcado todas las unidades como estudiadas. Puedes repasarlas cuando quieras.';
  $('homeContinue').href=next?'/curso.html#unidad-'+String(next.orden).padStart(2,'0'):'/curso.html';
  $('homeContinue').textContent=next?'Continuar curso →':'Repasar unidades →';
@@ -500,7 +503,7 @@ async function changeUser(next){
  suggestedHref=null;cloudUserId=null;
  $('learningStatus').textContent='Consultando tu progreso…';$('learningActivityHistory').replaceChildren();
  $('learningReads').textContent='—';$('learningExams').textContent='—';$('learningActivities').textContent='—';$('learningErrors').textContent='—';
- $('courseProfileDone').textContent='—';$('courseProfilePending').textContent='—';$('courseProfilePercent').textContent='—';
+ $('courseProfileDone').textContent='—';$('courseProfileStarted').textContent='—';$('courseProfilePending').textContent='—';$('courseProfilePercent').textContent='—';
  $('homeCoursePercent').textContent='—';$('homeExamCount').textContent='—';$('homeErrorCount').textContent='—';$('homeReadingCount').textContent='—';
  $('homeNextTitle').textContent='Tu próxima unidad';$('homeNextDescription').textContent='Buscando dónde continuar en el curso…';
  $('courseProfileBar').style.width='0%';$('courseProfileMeter').setAttribute('aria-valuenow','0');
