@@ -39,3 +39,14 @@
 .ee-saved-item small{display:block;margin-top:5px;color:#6b7a91}
 .ee-saved-item button{cursor:pointer}
 @media(max-width:540px){.ee-reading-item-actions{width:100%;justify-content:flex-start}}
+
+/* Insignias privadas por progreso confirmado */
+.ee-achievement-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.ee-achievement{display:flex;align-items:center;gap:12px;border:1px solid #dce5f2;background:#f7f8fb;border-radius:13px;padding:15px;opacity:.75}
+.ee-achievement.is-unlocked{border-color:#adc8ee;background:#edf4ff;opacity:1}
+.ee-achievement-symbol{font-size:28px;filter:grayscale(.7)}
+.ee-achievement.is-unlocked .ee-achievement-symbol{filter:none}
+.ee-achievement strong{font-size:14px;display:block;color:#20344f}
+.ee-achievement small{display:block;font-size:12px;color:#6a7a91;margin-top:3px}
+.ee-achievement-count{display:inline-block;margin-top:7px;font-weight:800;font-size:11px;color:#2857a6}
+@media(max-width:600px){.ee-achievement-list{grid-template-columns:1fr}}
