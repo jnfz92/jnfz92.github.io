@@ -13,3 +13,7 @@
 .ee-home-shortcuts a:hover{background:#eaf1ff}
 @media(max-width:760px){.ee-home-stats{grid-template-columns:repeat(2,minmax(0,1fr))}.ee-home-next{align-items:stretch;flex-direction:column}.ee-home-next a{text-align:center}}
 @media(max-width:430px){.ee-home-stats{gap:8px}.ee-home-stat{padding:12px}.ee-home-shortcuts a{flex:1 1 43%;text-align:center}}
+
+/* Tendencias de estudio a 7 y 30 días */
+.ee-site.ee-profile .ee-recent-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr))}
+@media(max-width:740px){.ee-site.ee-profile .ee-recent-stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
