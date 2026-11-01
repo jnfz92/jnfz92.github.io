@@ -51,7 +51,7 @@ const fakeSupabase = String.raw`
     rpc:async(name,args)=>{
       state.calls.push('rpc:'+name);
       if(name==='entregar_examen')return {data:{resultado_id:'10000000-0000-4000-8000-000000000001'},error:null};
-      if(name==='ver_correccion')return {data:[{pregunta_id:301,respuesta_correcta:0,explicacion:'La forma correcta es study.'}],error:null};
+      if(name==='ver_correccion'){if(state.failCorrection)return {data:null,error:{message:'Sin conexión al obtener corrección'}};return {data:[{pregunta_id:301,respuesta_correcta:0,explicacion:'La forma correcta es study.'}],error:null};}
       if(name==='entregar_repaso_fallos')return {data:{
         aciertos:1,total:1,correcciones:{'301':{respuesta_correcta:0,explicacion:'Study es correcto.',correcta:true}}
       },error:null};
@@ -143,4 +143,51 @@ test('diseño adaptable: sin desbordamiento horizontal', async ({page},testInfo)
     await button.click();
     await expect(page.locator('#ee-shared-header')).not.toHaveClass(/ee-menu-open/);
   }
+});
+
+
+test('El banco de exámenes recupera respuestas y el orden de opciones después de recargar',async({page})=>{
+ await page.goto(WEBSITE+'?examen=17&e2e=draft',{waitUntil:'domcontentloaded'});
+ await page.locator('#email').fill('playwright@example.test');
+ await page.locator('#password').fill('test-password');
+ await page.locator('#login button').first().click();
+ await expect(page.locator('#exam fieldset')).toHaveCount(1);
+ const firstOrder=await page.locator('#exam fieldset label').allTextContents();
+ await page.locator('#exam input[name="question-301"][value="0"]').check();
+ const draft=await page.evaluate(()=>JSON.parse(localStorage.getItem('ee-exam-answers-v1:playwright-test-user:17')));
+ expect(draft.answers).toMatchObject({'301':0});
+ await page.reload();
+ await page.locator('#email').fill('playwright@example.test');
+ await page.locator('#password').fill('test-password');
+ await page.locator('#login button').first().click();
+ await expect(page.locator('#exam fieldset')).toHaveCount(1);
+ await expect(page.locator('#exam input[name="question-301"][value="0"]')).toBeChecked();
+ expect(await page.locator('#exam fieldset label').allTextContents()).toEqual(firstOrder);
+ await expect(page.locator('#message')).toContainText('Respuestas recuperadas');
+});
+
+test('La corrección ya entregada se recupera sin entregar un segundo examen',async({page})=>{
+ await page.goto(WEBSITE+'?examen=17&e2e=correction',{waitUntil:'domcontentloaded'});
+ await page.locator('#email').fill('playwright@example.test');
+ await page.locator('#password').fill('test-password');
+ await page.locator('#login button').first().click();
+ await expect(page.locator('#exam fieldset')).toHaveCount(1);
+ await page.locator('#exam input[name="question-301"][value="0"]').check();
+ await page.evaluate(()=>{window.__e2e.state.failCorrection=true});
+ await page.locator('#exam button[type=submit]').click();
+ await expect(page.locator('#message')).toContainText('no se pudo descargar la corrección');
+ const draft=await page.evaluate(()=>JSON.parse(localStorage.getItem('ee-exam-answers-v1:playwright-test-user:17')));
+ expect(draft.resultId).toBe('10000000-0000-4000-8000-000000000001');
+ await page.reload();
+ await page.locator('#email').fill('playwright@example.test');
+ await page.locator('#password').fill('test-password');
+ await page.locator('#login button').first().click();
+ await expect(page.locator('#exam fieldset')).toHaveCount(1);
+ await expect(page.locator('#exam button[type=submit]')).toContainText('Recuperar corrección');
+ await page.locator('#exam button[type=submit]').click();
+ await expect(page.locator('#scoreSummary')).toBeVisible();
+ const calls=await page.evaluate(()=>window.__e2e.state.calls);
+ expect(calls).toContain('rpc:ver_correccion');
+ expect(calls).not.toContain('rpc:entregar_examen');
+ expect(await page.evaluate(()=>localStorage.getItem('ee-exam-answers-v1:playwright-test-user:17'))).toBeNull();
 });
