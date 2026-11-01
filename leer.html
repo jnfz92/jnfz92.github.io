@@ -7,7 +7,7 @@ permalink: /leer.html
 <title>Cargando lección · Easy English</title>
 <link rel="stylesheet" href="assets/site.css?v=20261030-unified-blue-2">
 <style>body{font-family:system-ui,sans-serif;background:#f7faff;color:#161a22;margin:0}.loader{max-width:720px;margin:12vh auto;padding:24px}.loader a{color:#1e5eff}</style><link rel="stylesheet" href="/assets/navigation.css?v=20261030-menu-blue-3"><script src="/assets/navigation.js?v=20261030-menu-blue-4" defer></script></head>
-<body>{% include header.html %}<main class="loader"><h1>Easy English</h1><p id="loading" role="status">Cargando el artículo desde Supabase…</p><p><a href="articulos.html">Volver al blog</a></p></main>
+<body class="ee-site">{% include header.html %}<main class="loader"><h1>Easy English</h1><p id="loading" role="status">Cargando el artículo desde Supabase…</p><p><a href="articulos.html">Volver al blog</a></p></main>
 <script>
 (async function(){
  const endpoint='https://wnluofonzteaqtlfshgy.supabase.co/rest/v1/';
@@ -232,11 +232,16 @@ permalink: /leer.html
   // Las cabeceras y pies editoriales antiguos no son parte de la lección.
   // Solo se reemplaza navegación global; los índices internos siguen intactos.
   doc.querySelectorAll('body > header, body > footer').forEach(node=>node.remove());
-  doc.querySelectorAll('script[src*="navigation.js"]').forEach(node=>node.remove());
+  doc.querySelectorAll('script[src*="navigation.js"],script[src*="navigation-optimized.js"]').forEach(node=>node.remove());
+  doc.querySelectorAll('link[href*="navigation.css"],link[href*="navigation-optimized.css"]').forEach(node=>node.remove());
   const sharedHeader=document.getElementById('ee-shared-header');
   if(sharedHeader){
     const headerCopy=sharedHeader.cloneNode(true);
     headerCopy.classList.remove('ee-menu-open');
+    headerCopy.removeAttribute('data-ee-optimized');
+    headerCopy.querySelectorAll('.ee-more[open]').forEach(el=>el.open=false);
+    const backdrop=headerCopy.querySelector('.ee-nav-backdrop');
+    if(backdrop)backdrop.hidden=true;
     const toggle=headerCopy.querySelector('.ee-nav-toggle');
     if(toggle){
       toggle.removeAttribute('data-menu-ready');
@@ -263,9 +268,17 @@ permalink: /leer.html
   brandStyle.rel='stylesheet';
   brandStyle.href=new URL('/assets/brand-system.css?v=20261031-unified-1',location.href).href;
   doc.head.append(brandStyle);
+  // Este mismo diseño y comportamiento se usa en todas las páginas.
+  const optimizedStyle=doc.createElement('link');
+  optimizedStyle.rel='stylesheet';
+  optimizedStyle.href=new URL('/assets/navigation-optimized.css?v=20261101-menu-2',location.href).href;
+  doc.head.append(optimizedStyle);
   const navScript=doc.createElement('script');
   navScript.src=new URL('/assets/navigation.js?v=20261030-menu-blue-4',location.href).href;
   navScript.defer=true;doc.body.append(navScript);
+  const optimizedScript=doc.createElement('script');
+  optimizedScript.src=new URL('/assets/navigation-optimized.js?v=20261101-menu-2',location.href).href;
+  optimizedScript.defer=true;doc.body.append(optimizedScript);
   // Renderizar sobre el DOM existente: document.write() después de un fetch
   // puede sustituir todo el documento y romper enlaces o scripts en WebView.
   // Conservar estilos y volver a activar solo los scripts que necesita la lección.
