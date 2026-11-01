@@ -1,4 +1,4 @@
-/* Easy English B2 · panel del curso: contenidos desde Supabase, progreso manual local. */
+/* Easy English B2 · progreso por cuenta para registrados, local para visitantes. */
 (() => {
   'use strict';
   const API = 'https://wnluofonzteaqtlfshgy.supabase.co/rest/v1/';
@@ -15,9 +15,9 @@
     ring: $('courseProgressRing'), value: $('courseProgressValue'),
     copy: $('courseProgressCopy'), stored: $('courseStorageNote'),
     completedStat: $('courseCompletedStat'), count: $('courseUnitsStat'),
-    grammar: $('courseGrammarStat'), vocabulary: $('courseVocabularyStat')
+    grammar: $('courseGrammarStat'), vocabulary: $('courseVocabularyStat'), importLocal: $('courseImportLocal')
   };
-  const state = { units: [], filter: 'all', query: '', completed: new Set(), storageOK: true };
+  const state = { units: [], filter: 'all', query: '', completed: new Set(), storageOK: true, user: null, syncReady: false, busy: new Set(), authRevision: 0 };
   const path = slug => '/leer.html?slug=' + encodeURIComponent(slug);
   const normalize = value => String(value || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
   const elt = (tag, className, value) => {
@@ -40,13 +40,87 @@
       return new Set();
     }
   }
-  function saveCompleted() {
+  function updateStorageNote(message) {
+    ui.stored.textContent = message || (state.user
+      ? (state.syncReady
+        ? 'Avance sincronizado con tu cuenta. No equivale a aprobar un examen.'
+        : 'No se ha podido sincronizar tu avance. Revisa tu conexión antes de marcar unidades.')
+      : (state.storageOK
+        ? 'Sin sesión: el avance se guarda en este navegador. Inicia sesión para sincronizarlo.'
+        : 'Este navegador no permite guardar el avance.'));
+    if (ui.importLocal) ui.importLocal.hidden = !(state.user && state.syncReady && readCompleted().size);
+  }
+  function saveLocal() {
+    try { localStorage.setItem(STORAGE, JSON.stringify([...state.completed])); }
+    catch (_) { state.storageOK = false; }
+    updateStorageNote();
+  }
+  function refreshProgress() {
+    if (!state.units.length) return;
+    syncProgress();
+    applyFilters();
+  }
+  async function toggleCompleted(key) {
+    if (state.busy.has(key) || (state.user && !state.syncReady)) return;
+    const wasDone = state.completed.has(key);
+    if (!state.user) {
+      if (wasDone) state.completed.delete(key);
+      else state.completed.add(key);
+      saveLocal();
+      refreshProgress();
+      return;
+    }
+    const userId = state.user.id;
+    state.busy.add(key);
+    const button = [...container.querySelectorAll('[data-complete]')].find(b => b.closest('.course-unit')?.dataset.unitKey === key);
+    if (button) button.disabled = true;
     try {
-      localStorage.setItem(STORAGE, JSON.stringify([...state.completed]));
-    } catch (_) { state.storageOK = false; }
-    ui.stored.textContent = state.storageOK
-      ? 'Avance manual guardado solo en este navegador. No equivale a aprobar un examen.'
-      : 'El navegador no permite guardar el avance; los cambios solo durarán hasta que cierres esta página.';
+      const response = wasDone
+        ? await window.eeDb.from('progreso_curso').delete().eq('usuario_id', userId).eq('unidad_slug', key)
+        : await window.eeDb.from('progreso_curso').insert({usuario_id:userId, unidad_slug:key});
+      if (response.error) throw response.error;
+      if (state.user?.id !== userId) return;
+      if (wasDone) state.completed.delete(key);
+      else state.completed.add(key);
+      refreshProgress();
+      updateStorageNote();
+    } catch (error) {
+      if (state.user?.id === userId) updateStorageNote('No se pudo guardar la unidad: ' + error.message);
+    } finally {
+      state.busy.delete(key);
+      if (button) button.disabled = false;
+    }
+  }
+  async function syncAccount() {
+    if (!window.eeDb) { updateStorageNote('No se ha podido iniciar la sincronización.'); return; }
+    const revision = ++state.authRevision;
+    try {
+      const { data, error } = await window.eeDb.auth.getUser();
+      if (error && error.name !== 'AuthSessionMissingError') throw error;
+      if (revision !== state.authRevision) return;
+      const nextUser = data?.user || null;
+      const changed = state.user?.id !== nextUser?.id;
+      state.user = nextUser;
+      state.syncReady = !nextUser;
+      if (!nextUser) {
+        state.completed = readCompleted();
+        refreshProgress();
+        updateStorageNote();
+        return;
+      }
+      if (changed) { state.completed = new Set(); refreshProgress(); }
+      const result = await window.eeDb.from('progreso_curso').select('unidad_slug').eq('usuario_id', nextUser.id);
+      if (result.error) throw result.error;
+      if (revision !== state.authRevision) return;
+      state.completed = new Set((result.data || []).map(x => x.unidad_slug));
+      state.syncReady = true;
+      refreshProgress();
+      updateStorageNote();
+    } catch (error) {
+      if (revision !== state.authRevision) return;
+      state.syncReady = false;
+      updateStorageNote('No se pudo consultar el progreso de la cuenta: ' + error.message);
+    }
   }
   function parseDescription(raw) {
     const desc = String(raw || '');
@@ -114,13 +188,7 @@
     complete.type = 'button';
     complete.dataset.complete = '';
     complete.setAttribute('aria-pressed', String(done));
-    complete.addEventListener('click', () => {
-      if (state.completed.has(key)) state.completed.delete(key);
-      else state.completed.add(key);
-      saveCompleted();
-      syncProgress();
-      applyFilters();
-    });
+    complete.addEventListener('click', () => { void toggleCompleted(key); });
     footer.append(complete);
 
     if (item.activities.length) {
@@ -230,6 +298,7 @@
       }
       const btn = card.querySelector('[data-complete]');
       if (btn) {
+        btn.disabled = state.busy.has(card.dataset.unitKey) || (state.user && !state.syncReady);
         btn.setAttribute('aria-pressed', String(done));
         btn.textContent = done ? '✓ Marcada como estudiada' : '✓ Marcar como estudiada';
       }
@@ -287,9 +356,7 @@
     renderExtras(extras);
     syncProgress();
     applyFilters();
-    ui.stored.textContent = state.storageOK
-      ? 'Avance manual guardado solo en este navegador. No equivale a aprobar un examen.'
-      : 'El progreso se mantendrá solo mientras tengas abierta esta página.';
+    updateStorageNote();
   }
   document.querySelectorAll('[data-course-filter]').forEach(button => {
     button.addEventListener('click', () => {
@@ -302,9 +369,36 @@
   });
   ui.search.addEventListener('input', () => { state.query = normalize(ui.search.value.trim()); applyFilters(); });
   window.addEventListener('storage', event => {
-    if (event.key === STORAGE) { state.completed = readCompleted(); syncProgress(); applyFilters(); }
+    if (event.key === STORAGE && !state.user) { state.completed = readCompleted(); refreshProgress(); }
+  });
+  if (ui.importLocal) ui.importLocal.addEventListener('click', async () => {
+    if (!state.user || !state.syncReady) return;
+    const local = [...readCompleted()].filter(key => state.units.some(item => item.unit.slug === key));
+    if (!local.length) return;
+    const userId = state.user.id;
+    ui.importLocal.disabled = true;
+    try {
+      const {error} = await window.eeDb.from('progreso_curso')
+        .upsert(local.map(unidad_slug => ({usuario_id:userId, unidad_slug})), {onConflict:'usuario_id,unidad_slug', ignoreDuplicates:true});
+      if (error) throw error;
+      if (state.user?.id !== userId) return;
+      // El progreso local se conserva hasta confirmar que ha sido importado.
+      localStorage.removeItem(STORAGE);
+      await syncAccount();
+      updateStorageNote('Progreso de este navegador importado a tu cuenta.');
+    } catch (error) {
+      updateStorageNote('No se pudo importar el progreso local: ' + error.message);
+    } finally { ui.importLocal.disabled = false; }
   });
   state.completed = readCompleted();
+  if (window.eeDb) {
+    window.eeDb.auth.onAuthStateChange(event => {
+      if (['SIGNED_IN','SIGNED_OUT','USER_UPDATED'].includes(event)) {
+        setTimeout(() => { void syncAccount(); }, 0);
+      }
+    });
+  }
+  void syncAccount();
   load().catch(err => {
     console.warn('Curso Easy English: no se pudieron cargar los datos', err);
     ui.status.textContent = 'No se pudo cargar el curso. Comprueba tu conexión e inténtalo de nuevo.';
