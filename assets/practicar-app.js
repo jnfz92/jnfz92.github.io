@@ -161,6 +161,49 @@ function clearExam(){
 
 // La selección y carga de exámenes requieren una sesión verificada.
 let sessionUserId=null,sessionCheckVersion=0,listVersion=0,listedFor=null;
+
+/* Borradores locales por usuario y examen: no almacena credenciales ni respuestas correctas. */
+const EXAM_DRAFT_PREFIX='ee-exam-answers-v1:';
+function examDraftKey(owner=sessionUserId,id=examId){
+  return owner&&Number.isInteger(Number(id))&&Number(id)>0?
+    EXAM_DRAFT_PREFIX+owner+':'+String(id):null
+}
+function readExamDraft(owner,id){
+  const key=examDraftKey(owner,id);
+  if(!key)return null;
+  try{
+    const item=JSON.parse(localStorage.getItem(key)||'null');
+    return item?.v===1&&item.owner===owner&&item.exam===Number(id)&&
+      item.answers&&typeof item.answers==='object'&&
+      item.orders&&typeof item.orders==='object'?item:null
+  }catch(_){return null}
+}
+function examSelections(){
+  const answers={},orders={};
+  for(const q of questions){
+    orders[q.id]=q.displayOrder;
+    const input=$('exam').querySelector('input[name="question-'+q.id+'"]:checked');
+    if(input)answers[q.id]=Number(input.value)
+  }
+  return {answers,orders}
+}
+function saveExamDraft(){
+  const key=examDraftKey();
+  if(!key||!questions.length)return;
+  try{
+    const selection=examSelections();
+    localStorage.setItem(key,JSON.stringify({
+      v:1,owner:sessionUserId,exam:examId,
+      answers:selection.answers,orders:selection.orders,
+      resultId:pendingResultId||null,savedAt:Date.now()
+    }))
+  }catch(_){message('No se pudo guardar el borrador en este navegador. Mantén abierta esta página.')}
+}
+function clearExamDraft(){
+  const key=examDraftKey();
+  if(key)try{localStorage.removeItem(key)}catch(_){}
+}
+
 function applyExamAccess(user){
   const nextId=user?.id||null,changed=sessionUserId!==nextId;
   sessionUserId=nextId;
@@ -309,7 +352,9 @@ async function load(){
   if(check.error||check.data?.user?.id!==owner)return;
   if(version!==loadVersion||owner!==sessionUserId)return;
   if(!Array.isArray(data)||!data.length)throw new Error('Este examen no tiene preguntas publicadas.');
-  examId=requestedId;questions=data;submitting=false;pendingResultId=null;
+  examId=requestedId;questions=data;submitting=false;
+  const savedDraft=readExamDraft(owner,examId);
+  pendingResultId=savedDraft?.resultId||null;
   $('scoreSummary').hidden=true;
   if($('detailedReport'))$('detailedReport').hidden=true;
   $('examProgress').hidden=false;
@@ -337,10 +382,19 @@ async function load(){
     fs.id='pregunta-'+q.id;
     legend.textContent=q.orden+'. '+q.enunciado;fs.append(legend);
     // Se muestra un orden aleatorio, pero se envía a Supabase el índice ORIGINAL.
-    q.displayOrder=q.opciones.map((_,i)=>i);
-    for(let i=q.displayOrder.length-1;i>0;i--){
-      const j=Math.floor(Math.random()*(i+1));
-      [q.displayOrder[i],q.displayOrder[j]]=[q.displayOrder[j],q.displayOrder[i]];
+    const savedOrder=savedDraft?.orders?.[q.id];
+    const canonical=q.opciones.map((_,i)=>i);
+    // Conserva incluso las letras A/B/C que vio el alumno antes de recargar.
+    if(Array.isArray(savedOrder)&&savedOrder.length===canonical.length&&
+      new Set(savedOrder).size===canonical.length&&
+      savedOrder.every(n=>Number.isInteger(n)&&canonical.includes(n))){
+      q.displayOrder=savedOrder;
+    }else{
+      q.displayOrder=canonical;
+      for(let i=q.displayOrder.length-1;i>0;i--){
+        const j=Math.floor(Math.random()*(i+1));
+        [q.displayOrder[i],q.displayOrder[j]]=[q.displayOrder[j],q.displayOrder[i]];
+      }
     }
     q.displayOrder.forEach((originalIndex,displayIndex)=>{
       const label=document.createElement('label'),input=document.createElement('input');
@@ -358,8 +412,24 @@ async function load(){
   }
   const submit=document.createElement('button');
   submit.type='submit';submit.textContent='Corregir y guardar resultado';form.append(submit);
+  if(savedDraft){
+    for(const q of questions){
+      const choice=savedDraft.answers?.[q.id];
+      if(!Number.isInteger(choice)||choice<0||choice>=q.opciones.length)continue;
+      const radio=form.querySelector('input[name="question-'+q.id+'"][value="'+choice+'"]');
+      if(radio)radio.checked=true;
+    }
+    if(pendingResultId){
+      form.querySelectorAll('input[type=radio]').forEach(input=>input.disabled=true);
+      submit.textContent='Recuperar corrección del resultado guardado';
+    }
+  }
   updateProgress();
-  message('Examen preparado: '+questions.length+' preguntas.');
+  if(!savedDraft)saveExamDraft();
+  message(savedDraft?(pendingResultId
+    ?'Resultado ya entregado. Recupera la corrección sin enviar el examen de nuevo.'
+    :'Respuestas recuperadas del navegador. Puedes continuar el examen.'):
+    'Examen preparado: '+questions.length+' preguntas. Se guardará cada respuesta automáticamente.');
   const params=new URLSearchParams(location.search);
   const targetId=Number(params.get('pregunta'));
   const target=params.get('examen')===String(examId)&&targetId?
@@ -376,7 +446,8 @@ function updateProgress(){
   $('progressFill').style.width=percentage+'%';
   $('progressFill').setAttribute('aria-valuenow',String(percentage));
 }
-$('exam').addEventListener('change',updateProgress);
+$('exam').addEventListener('change',()=>{updateProgress();saveExamDraft()});
+window.addEventListener('pagehide',()=>{if(!submitting&&questions.length&&$('scoreSummary').hidden)saveExamDraft()});
 $('examlist').addEventListener('change',syncExamSelection);
 $('load').onclick=()=>load().catch(fail);
 
@@ -408,6 +479,7 @@ $('exam').onsubmit=async e=>{
       result=Array.isArray(delivered.data)?delivered.data[0]:delivered.data;
       if(!result||!result.resultado_id)throw new Error('El servidor no devolvió un resultado válido.');
       pendingResultId=result.resultado_id;
+      saveExamDraft(); // ID del resultado: recuperable si falla la descarga de la corrección.
     }
     const correction=await eeDb.rpc('ver_correccion',{p_resultado_id:pendingResultId});
     if(correction.error)throw new Error('El resultado ya está guardado, pero no se pudo descargar la corrección: '+correction.error.message);
@@ -440,6 +512,7 @@ $('exam').onsubmit=async e=>{
     errorsLink.textContent='Ir a mi cuaderno de errores ↘';
     summary.append(label,score,explanation,link,document.createTextNode(' · '),errorsLink);
     renderExamReport(responses,solutions,correct);
+    clearExamDraft();
     await history();
     summary.scrollIntoView({behavior:'smooth',block:'center'});
   }catch(error){
