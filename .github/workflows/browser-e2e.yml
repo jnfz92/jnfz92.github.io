@@ -1,6 +1,7 @@
 name: Browser E2E
-# La web se prueba una vez publicada; el push directo podía probar la versión anterior.
 on:
+  push:
+    branches: [main]
   workflow_dispatch:
   workflow_run:
     workflows: ["pages build and deployment"]
@@ -23,7 +24,7 @@ jobs:
         run: npm install --no-save --no-package-lock @playwright/test@1.56.1
       - name: Install Chromium
         run: npx playwright install --with-deps chromium
-      - name: Browser smoke tests
+      - name: Browser regression tests (desktop + mobile)
         run: npx playwright test --config=tests/playwright.config.cjs
         env:
           EASY_ENGLISH_URL: https://jnfz92.github.io
