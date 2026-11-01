@@ -29,7 +29,8 @@ test('inicio y navegación real',async ({page})=>{
     await expect(nav).toBeVisible();
     await expect(page.locator('.ee-nav-toggle')).toHaveAttribute('aria-expanded','true');
   }else await expect(nav).toBeVisible();
-  await nav.getByRole('link',{name:/Artículos/i}).click();
+  await nav.locator('details.ee-more > summary').click();
+  await nav.locator('.ee-more-panel a[href="/articulos.html"]').click();
   await expect(page).toHaveURL(/\/articulos\.html$/);
 });
 test('Escape cierra menú móvil',async ({page})=>{
