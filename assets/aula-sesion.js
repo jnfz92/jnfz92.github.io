@@ -7,6 +7,7 @@ function render(){
  {key:'unidad',label:next?'Continuar unidad '+next.orden:'Repasar unidades',url:next?'/curso.html#unidad-'+String(next.orden).padStart(2,'0'):'/curso.html',minutes:15},
  {key:'repaso',label:'Repasar errores',url:'/practicar.html#cuaderno-fallos',minutes:10},
  {key:'vocabulario',label:'Repasar vocabulario',url:'/mi-vocabulario.html',minutes:5},
+ {key:'reading',label:'Practicar Reading',url:'/articulos.html',minutes:15},
  {key:'writing',label:'Practicar Writing',url:'/writings.html#editor',minutes:15},
  {key:'listening',label:'Practicar Listening',url:'#practice',minutes:10},
  {key:'speaking',label:'Practicar Speaking',url:'/speaking-lab.html',minutes:10}
