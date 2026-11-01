@@ -9,6 +9,17 @@ function activate(){
   const more=header.querySelector('.ee-more');
   if(!nav||!toggle||!backdrop)return;
   header.dataset.eeOptimized='true';
+  // Funciona incluso con la versión antigua del script de navegación en caché.
+  function mainAnchor(){
+    const main=document.querySelector('main');
+    if(!main)return;
+    if(!main.id)main.id='contenido-principal';
+    if(main.id==='contenido-principal')main.setAttribute('tabindex','-1');
+    const skip=document.querySelector('.ee-skip-link');
+    if(skip)skip.href='#'+encodeURIComponent(main.id);
+  }
+  mainAnchor();
+  window.addEventListener('easyenglish:article-rendered',mainAnchor);
   const isMobile=()=>window.matchMedia('(max-width: 900px)').matches;
   const sync=()=>{
     const open=isMobile()&&header.classList.contains('ee-menu-open');
