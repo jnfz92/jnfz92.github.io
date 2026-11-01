@@ -3,6 +3,7 @@
 'use strict';
 const $=id=>document.getElementById(id), key='easyEnglish.blogProfile.v1';
 let user=null,articles=[],articleView='all',loading=false,articlesLoaded=false,cloudUserId=null,suggestedHref=null;
+let savedFavorites=new Set(),favoritesReady=false;
 const READING_PAGE_SIZE=10;
 const readingPages={read:1,pending:1};
 // Equivalencias de artículos consolidados: conservar el historial sin dar por leída
@@ -72,6 +73,7 @@ $('privateDashboard').replaceChildren(
   document.querySelector('.ee-learning-overview'),
  $('recentStudyPanel'),
  highlights,
+ $('favoritesPanel'),
  $('articleList').closest('.panel'),
  document.querySelector('a[href="comunidad.html"]').closest('.panel'),
  $('resetProfile').closest('.panel'),
@@ -204,7 +206,15 @@ function render(){
     }catch(error){status('No se pudo guardar el cambio: '+error.message);}
     finally{loading=false;btn.disabled=false}
    };
-   row.append(detail,btn);list.append(row);
+   const controls=document.createElement('div');controls.className='ee-reading-item-actions';
+   const savedButton=document.createElement('button');savedButton.type='button';
+   const isSaved=savedFavorites.has('articulo:'+a.slug);
+   savedButton.textContent=isSaved?'★ Guardado':'☆ Guardar';
+   savedButton.setAttribute('aria-pressed',String(isSaved));
+   savedButton.setAttribute('aria-label',(isSaved?'Quitar de favoritos: ':'Guardar en favoritos: ')+a.title);
+   savedButton.disabled=!user||!favoritesReady;
+   savedButton.onclick=()=>{void toggleSavedResource('articulo',a.slug)};
+   controls.append(btn,savedButton);row.append(detail,controls);list.append(row);
   }
   box.append(list);
   if(entries.length){
@@ -529,6 +539,63 @@ $('weeklyGoalForm').onsubmit=async event=>{
  }catch(error){if(user?.id===owner)$('weeklyGoalStatus').textContent='No se pudo guardar el objetivo: '+error.message}
  finally{button.disabled=false}
 };
+async function loadSavedResources(owner) {
+ favoritesReady=false;
+ const list=$('favoritesList');
+ list.textContent='Consultando tus guardados…';
+ const [saved,units,posts]=await Promise.all([
+  eeDb.from('recursos_guardados').select('tipo,referencia,guardado_en').eq('usuario_id',owner).order('guardado_en',{ascending:false}).limit(200),
+  eeDb.from('unidades_curso').select('slug,titulo,orden').eq('publicado',true),
+  eeDb.from('articulos').select('slug,titulo')
+ ]);
+ if(!user||user.id!==owner)return;
+ if(saved.error)throw saved.error;
+ if(units.error)throw units.error;
+ if(posts.error)throw posts.error;
+ savedFavorites=new Set((saved.data||[]).map(x=>x.tipo+':'+x.referencia));
+ favoritesReady=true;
+ const unitMap=new Map((units.data||[]).map(x=>[x.slug,x]));
+ const articleMap=new Map((posts.data||[]).map(x=>[x.slug,x]));
+ const records=saved.data||[];
+ $('favoritesCount').textContent=String(records.length);
+ list.replaceChildren();
+ for(const row of records) {
+  const item=document.createElement('div');item.className='item ee-saved-item';
+  const desc=document.createElement('div');
+  const link=document.createElement('a');
+  const catalog=row.tipo==='unidad'?unitMap.get(row.referencia):articleMap.get(row.referencia);
+  const label=catalog?.titulo||row.referencia;
+  link.textContent=(row.tipo==='unidad'?'📘 ':'📖 ')+label;
+  link.href=row.tipo==='unidad'?(catalog?'/curso.html#unidad-'+String(catalog.orden).padStart(2,'0'):'/curso.html'):'/leer.html?slug='+encodeURIComponent(row.referencia);
+  const hint=document.createElement('small');hint.textContent=row.tipo==='unidad'?'Unidad B2':'Artículo';
+  desc.append(link,hint);
+  const remove=document.createElement('button');remove.type='button';
+  remove.textContent='Quitar';remove.setAttribute('aria-label','Quitar de favoritos: '+label);
+  remove.onclick=()=>{void toggleSavedResource(row.tipo,row.referencia)};
+  item.append(desc,remove);list.append(item);
+ }
+ $('favoritesStatus').textContent=records.length
+  ?'Tienes '+records.length+' recursos guardados. Puedes abrirlos o quitarlos cuando quieras.'
+  :'Todavía no has guardado recursos. Usa ☆ Guardar en las unidades o los artículos.';
+ render();
+}
+async function toggleSavedResource(tipo,referencia) {
+ if(!user||!favoritesReady||!referencia)return;
+ const owner=user.id,key=tipo+':'+referencia,already=savedFavorites.has(key);
+ favoritesReady=false;
+ try{
+  const query=eeDb.from('recursos_guardados');
+  const {error}=already
+   ?await query.delete().eq('usuario_id',owner).eq('tipo',tipo).eq('referencia',referencia)
+   :await query.insert({usuario_id:owner,tipo,referencia});
+  if(error)throw error;
+  if(user?.id===owner)await loadSavedResources(owner);
+ }catch(error){
+  if(user?.id===owner)$('favoritesStatus').textContent='No se pudo actualizar el favorito: '+error.message;
+ }finally{
+  if(user?.id===owner){favoritesReady=true;render()}
+ }
+}
 async function loadCourseProgress(userId) {
  const statusBox=$('courseProfileStatus');
  statusBox.textContent='Consultando las unidades y tu progreso guardado…';
@@ -567,6 +634,9 @@ async function changeUser(next){
  readingPages.read=1;readingPages.pending=1;
  user=next;
  suggestedHref=null;cloudUserId=null;
+ savedFavorites=new Set();favoritesReady=false;
+ $('favoritesCount').textContent='0';$('favoritesList').replaceChildren();
+ $('favoritesStatus').textContent='Consultando tus recursos guardados…';
  $('learningStatus').textContent='Consultando tu progreso…';$('learningActivityHistory').replaceChildren();
  $('learningReads').textContent='—';$('learningExams').textContent='—';$('learningActivities').textContent='—';$('learningErrors').textContent='—';
  $('courseProfileDone').textContent='—';$('courseProfileStarted').textContent='—';$('courseProfilePending').textContent='—';$('courseProfilePercent').textContent='—';
@@ -590,6 +660,7 @@ async function changeUser(next){
    profile={name:'',read:{}};
    render();
    const courseUserId=user.id;
+   void loadSavedResources(courseUserId).catch(e=>{if(user?.id===courseUserId)$('favoritesStatus').textContent='No se pudieron cargar los favoritos: '+e.message});
    void loadWeeklyGoal(courseUserId).catch(e=>{if(user?.id===courseUserId)$('weeklyGoalStatus').textContent='No se pudo cargar el objetivo: '+e.message});
    void loadCourseProgress(courseUserId).catch(e=>{
     if(user?.id===courseUserId)$('courseProfileStatus').textContent='No se pudo cargar el progreso del curso: '+e.message;
@@ -717,7 +788,7 @@ $('readingPickMark').onclick=async()=>{
  finally{loading=false;button.disabled=false}
 };
 $('resetProfile').onclick=async()=>{if(!confirm('¿Eliminar tu nombre y progreso de lectura? Las notas no se borrarán.'))return;try{if(user){const a=await eeDb.from('lecturas').delete().eq('usuario_id',user.id);if(a.error)throw a.error;const b=await eeDb.from('perfiles').upsert({usuario_id:user.id,nombre:''});if(b.error)throw b.error;await loadCloud();status('Perfil sincronizado reiniciado.')}else{profile={name:'',read:{}};localSave();render()}}catch(e){status('Error al reiniciar: '+e.message)}};
-eeDb.from('articulos').select('ruta,slug,titulo').order('titulo').then(({data,error})=>{if(error)throw error;articles=(data||[]).filter(a=>/^post\/[a-z0-9-]+\.html$/.test(a.ruta)).map(a=>({href:a.ruta,link:'leer.html?slug='+encodeURIComponent(a.slug),title:(a.titulo||a.slug).replace(/\s*[·|–-]\s*Easy English\s*$/i,'')}));articlesLoaded=true;render()}).catch(e=>{$('readingPickStatus').textContent='No se pudo cargar el catálogo de artículos.';status('No se pudo cargar la biblioteca desde Supabase: '+e.message)});
+eeDb.from('articulos').select('ruta,slug,titulo').order('titulo').then(({data,error})=>{if(error)throw error;articles=(data||[]).filter(a=>/^post\/[a-z0-9-]+\.html$/.test(a.ruta)).map(a=>({href:a.ruta,link:'leer.html?slug='+encodeURIComponent(a.slug),title:(a.titulo||a.slug).replace(/\s*[·|–-]\s*Easy English\s*$/i,''),slug:a.slug}));articlesLoaded=true;render()}).catch(e=>{$('readingPickStatus').textContent='No se pudo cargar el catálogo de artículos.';status('No se pudo cargar la biblioteca desde Supabase: '+e.message)});
 // Renovaciones de token, cierres de sesión y cambios entre pestañas.
 let authRevision=0;
 eeDb.auth.onAuthStateChange((event)=>{
