@@ -1,0 +1,64 @@
+---
+permalink: /constancia-b2.html
+---
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Constancia personal de estudio · Easy English</title>
+<link rel="stylesheet" href="/assets/site.css?v=20261030-unified-blue-2">
+<style>
+body{font-family:system-ui,-apple-system,sans-serif;color:#172b4b;background:#f4f7fc;min-height:100vh;margin:0}
+.wrap{max-width:850px;margin:40px auto;padding:0 18px}.paper{background:#fff;border:3px solid #174a9e;border-radius:22px;padding:clamp(30px,8vw,75px);text-align:center;box-shadow:0 15px 50px #0a23552b}
+.paper small{display:block;color:#2b5ba9;letter-spacing:.2em;font-weight:850;text-transform:uppercase}
+.paper h1{font-size:clamp(32px,6vw,54px);line-height:1.13;margin:20px 0;color:#193a76}
+.paper .name{font-size:clamp(26px,4vw,39px);font-weight:900;color:#163a83;margin:24px 0}
+.paper p{color:#53637a;font-size:16px;line-height:1.7}.seal{display:grid;place-items:center;margin:28px auto;font-size:52px;background:#e9f1ff;border-radius:50%;height:105px;width:105px}
+.note{font-size:12px!important;border-top:1px solid #dfe9fa;margin-top:35px;padding-top:20px}
+#certificate[hidden],#printButton[hidden]{display:none!important}
+.actions{display:flex;gap:12px;align-items:center;justify-content:center;flex-wrap:wrap;margin:28px auto}.actions a,.actions button{background:#1e5eff;color:#fff;border:0;border-radius:11px;padding:13px 20px;font-weight:800;text-decoration:none;cursor:pointer}.actions a{background:#e3edff;color:#214f9d}
+#certificateStatus{text-align:center;color:#335177;font-weight:700}
+@media print{body{background:white}.wrap{max-width:none;margin:0;padding:0}.paper{box-shadow:none;border-radius:0;min-height:83vh;display:flex;flex-direction:column;justify-content:center}.actions,#certificateStatus{display:none!important}}
+</style></head>
+<body class="ee-site"><main class="wrap">
+<p id="certificateStatus" role="status">Comprobando tu progreso del curso…</p>
+<div class="paper" id="certificate" hidden>
+<small>Easy English · Reconocimiento personal</small>
+<div class="seal" aria-hidden="true">🏆</div>
+<h1>Constancia de recorrido de estudio</h1>
+<p>Se reconoce a</p>
+<div class="name" id="certificateName"></div>
+<p>por haber marcado como estudiadas las <strong id="certificateTotal">44</strong> unidades de la ruta de aprendizaje B2 de Easy English.</p>
+<p id="certificateDate"></p>
+<p class="note">Constancia personal de participación basada en el registro manual de unidades. No acredita el dominio del nivel B2, no constituye una titulación oficial y no sustituye a un examen certificado.</p>
+</div>
+<div class="actions"><a href="/perfil.html">← Mi perfil</a><button type="button" id="printButton" hidden onclick="window.print()">Imprimir o guardar como PDF</button></div>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="/supabase-config.js"></script>
+<script>
+(async()=>{
+ 'use strict';
+ const $=id=>document.getElementById(id);
+ try{
+  const {data:{user},error:authError}=await eeDb.auth.getUser();
+  if(authError||!user){$('certificateStatus').textContent='Inicia sesión desde Mi perfil para consultar tu constancia personal.';return}
+  const [catalog,progress,profile]=await Promise.all([
+   eeDb.from('unidades_curso').select('slug').eq('publicado',true),
+   eeDb.from('progreso_curso').select('unidad_slug').eq('usuario_id',user.id).eq('estado','completada'),
+   eeDb.from('perfiles').select('nombre').eq('usuario_id',user.id).maybeSingle()
+  ]);
+  if(catalog.error||progress.error||profile.error)throw catalog.error||progress.error||profile.error;
+  const available=new Set((catalog.data||[]).map(row=>row.slug));
+  const completed=new Set((progress.data||[]).map(row=>row.unidad_slug));
+  const studied=[...available].filter(slug=>completed.has(slug)).length;
+  if(!available.size||studied<available.size){
+   $('certificateStatus').textContent='Has marcado '+studied+' de '+available.size+' unidades. Esta constancia se habilita cuando completes toda la ruta.';
+   return;
+  }
+  $('certificateName').textContent=profile.data?.nombre?.trim()||'Estudiante de Easy English';
+  $('certificateTotal').textContent=String(available.size);
+  $('certificateDate').textContent='Emitida el '+new Date().toLocaleDateString('es-ES',{day:'numeric',month:'long',year:'numeric'});
+  $('certificate').hidden=false;$('printButton').hidden=false;
+  $('certificateStatus').textContent='Ya puedes imprimir tu constancia personal.';
+ }catch(error){$('certificateStatus').textContent='No se pudo comprobar tu progreso: '+error.message}
+})();
+</script></body></html>
