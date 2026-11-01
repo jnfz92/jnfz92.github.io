@@ -525,6 +525,7 @@ function weeklyMonday() {
  return monday.toISOString();
 }
 function resetWeeklyGoal() {
+ $('weeklyGoalType').value='unidades';$('weeklyGoalTarget').value='3';
  $('weeklyGoalScore').textContent='—';
  $('weeklyGoalLabel').textContent='Elige una meta semanal';
  $('weeklyGoalBar').style.width='0%';
@@ -677,6 +678,7 @@ async function changeUser(next){
  $('courseProfileDone').textContent='—';$('courseProfileStarted').textContent='—';$('courseProfilePending').textContent='—';$('courseProfilePercent').textContent='—';
  $('homeCoursePercent').textContent='—';$('homeExamCount').textContent='—';$('homeErrorCount').textContent='—';$('homeReadingCount').textContent='—';
  $('homeNextTitle').textContent='Tu próxima unidad';$('homeNextDescription').textContent='Buscando dónde continuar en el curso…';
+ $('homeContinue').href='/curso.html#unidad-01';$('homeContinue').textContent='Continuar curso →';
  resetWeeklyGoal();
  $('recentExam7').textContent='—';$('recentExam30').textContent='—';$('recentAverage30').textContent='—';$('recentActivities30').textContent='—';
  $('courseProfileBar').style.width='0%';$('courseProfileMeter').setAttribute('aria-valuenow','0');
