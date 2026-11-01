@@ -25,7 +25,7 @@ if curriculum:
     check(len(slugs) >= 80, "La ruta de aprendizaje parece incompleta.")
 else:
     slugs = []
-fallback = re.findall(r'href="leer\.html\?slug=([a-z0-9-]+)"', library)
+fallback = re.findall(r'href="/?leer\.html\?slug=([a-z0-9-]+)"', library)
 check(len(fallback) == len(set(fallback)), "Tarjetas duplicadas en la biblioteca.")
 check(set(fallback).issubset(set(slugs)), "La biblioteca contiene slugs ajenos a la ruta.")
 check(len(fallback) >= 75, "El catálogo HTML de respaldo tiene pocas tarjetas.")
