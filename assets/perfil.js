@@ -69,6 +69,7 @@ $('privateDashboard').replaceChildren(
  document.querySelector('#reviewPreferencesTitle').closest('.panel'),
   $('courseProgressPanel'),
   document.querySelector('.ee-learning-overview'),
+ $('recentStudyPanel'),
  highlights,
  $('articleList').closest('.panel'),
  document.querySelector('a[href="comunidad.html"]').closest('.panel'),
@@ -261,7 +262,7 @@ async function loadLearningOverview(){
  $('learningExams').textContent='—';$('learningActivities').textContent='—';
  $('learningErrors').textContent='—';box.textContent='Consultando actividades…';
  $('learningStatus').textContent='Consultando tu progreso en exámenes, actividades y errores…';
- const [exams,activityCount,attempts,classicErrors,activityErrors,available]=await Promise.all([
+ const [exams,activityCount,attempts,classicErrors,activityErrors,available,activityRecent]=await Promise.all([
    eeDb.from('resultados').select('id',{count:'exact',head:true}).eq('usuario_id',owner),
    eeDb.from('actividad_intentos').select('id',{count:'exact',head:true}).eq('usuario_id',owner),
    eeDb.from('actividad_intentos').select('actividad_id,aciertos,evaluables,pendientes_revision,fecha')
@@ -270,16 +271,18 @@ async function loadLearningOverview(){
      .eq('usuario_id',owner).eq('dominada',false),
    eeDb.from('actividad_fallos').select('pregunta_id',{count:'exact',head:true})
      .eq('usuario_id',owner).eq('dominada',false),
-   eeDb.from('actividades').select('id,titulo,slug')
+   eeDb.from('actividades').select('id,titulo,slug'),
+   eeDb.from('actividad_intentos').select('id',{count:'exact',head:true}).eq('usuario_id',owner).gte('fecha',new Date(Date.now()-30*86400000).toISOString())
  ]);
  if(!user||user.id!==owner)return;
- const errors=[exams.error,activityCount.error,attempts.error,classicErrors.error,activityErrors.error,available.error].filter(Boolean);
+ const errors=[exams.error,activityCount.error,attempts.error,classicErrors.error,activityErrors.error,available.error,activityRecent.error].filter(Boolean);
  if(errors.length){
    $('learningStatus').textContent='No se pudo obtener todo tu progreso: '+errors[0].message;
    box.textContent='Vuelve a cargar tu perfil para consultar tus actividades.';
    return;
  }
  $('learningExams').textContent=String(exams.count??0);
+ $('recentActivities30').textContent=String(activityRecent.count??0);
  $('homeExamCount').textContent=String(exams.count??0);
  $('learningActivities').textContent=String(activityCount.count??0);
  const pending=(classicErrors.count??0)+(activityErrors.count??0);
@@ -444,8 +447,16 @@ async function results(){
  ]);
  if(!user||user.id!==activeUserId)return;
  box.replaceChildren();
- if(resultResponse.error){box.textContent='No se pudieron consultar tus notas: '+resultResponse.error.message;return}
+ if(resultResponse.error){box.textContent='No se pudieron consultar tus notas: '+resultResponse.error.message;$('recentStudyStatus').textContent='No se pudieron consultar las estadísticas: '+resultResponse.error.message;return}
  const scores=resultResponse.data||[],examNames=new Map((examResponse.data||[]).map(e=>[String(e.id),e.titulo]));
+ const now=Date.now(),weekStart=now-7*86400000,monthStart=now-30*86400000;
+ const last7=scores.filter(x=>new Date(x.fecha).getTime()>=weekStart);
+ const last30=scores.filter(x=>new Date(x.fecha).getTime()>=monthStart);
+ const last30Nums=last30.map(x=>Number(x.nota)).filter(Number.isFinite);
+ $('recentExam7').textContent=String(last7.length);
+ $('recentExam30').textContent=String(last30.length);
+ $('recentAverage30').textContent=last30Nums.length?(last30Nums.reduce((sum,x)=>sum+x,0)/last30Nums.length).toFixed(1)+'%':'—';
+ $('recentStudyStatus').textContent='Datos de los últimos 7 y 30 días. El gráfico de evolución y los temas más difíciles aparecen debajo.';
  const nums=scores.map(x=>Number(x.nota)).filter(Number.isFinite);
  $('examCount').textContent=String(scores.length);
  $('bestScore').textContent=nums.length?Math.max(...nums).toFixed(1).replace(/\\.0$/,'')+'%':'—';
@@ -506,6 +517,7 @@ async function changeUser(next){
  $('courseProfileDone').textContent='—';$('courseProfileStarted').textContent='—';$('courseProfilePending').textContent='—';$('courseProfilePercent').textContent='—';
  $('homeCoursePercent').textContent='—';$('homeExamCount').textContent='—';$('homeErrorCount').textContent='—';$('homeReadingCount').textContent='—';
  $('homeNextTitle').textContent='Tu próxima unidad';$('homeNextDescription').textContent='Buscando dónde continuar en el curso…';
+ $('recentExam7').textContent='—';$('recentExam30').textContent='—';$('recentAverage30').textContent='—';$('recentActivities30').textContent='—';
  $('courseProfileBar').style.width='0%';$('courseProfileMeter').setAttribute('aria-valuenow','0');
  $('authLayout').hidden=!!user;
   $('accountStatus').hidden=!!user;
