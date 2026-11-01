@@ -63,6 +63,7 @@ highlights.append(
 );
 $('privateDashboard').replaceChildren(
  dashboardStatus,
+ $('learningHome'),
  document.querySelector('.ee-reading-pick'),
  $('nameTitle').closest('.panel'),
  document.querySelector('#reviewPreferencesTitle').closest('.panel'),
@@ -106,13 +107,18 @@ function updateSuggestedReading(chooseAnother=false){
  $('readingPickAnother').hidden=unread.length<2;
  actions.hidden=false;
 }
-function header(){$('studentName').value=profile.name;$('greeting').textContent=profile.name?'¡Hola, '+profile.name+'!':'Añade tu nombre para personalizar tu espacio.'}
+function header(){
+ $('studentName').value=profile.name;
+ $('greeting').textContent=profile.name?'¡Hola, '+profile.name+'!':'Añade tu nombre para personalizar tu espacio.';
+ $('learningHomeGreeting').textContent=profile.name?'¡Hola, '+profile.name+'! Aquí tienes tu ruta y tus próximos pasos.':'Consulta tu avance y continúa tu aprendizaje B2.';
+}
 function render(){
  header();
  const total=articles.length,done=articles.filter(a=>profile.read[a.href]).length,pending=total-done;
  const ready=articlesLoaded&&(!user||cloudUserId===user.id);
  const pct=total?Math.round(done/total*100):0;
  $('readStat').textContent=ready?String(done):'—';
+ $('homeReadingCount').textContent=ready?String(done):'—';
  $('learningReads').textContent=cloudUserId===user?.id?String(done):'—';
  $('totalStat').textContent=articlesLoaded?String(total):'—';
  $('percentageStat').textContent=ready?pct+'%':'—';
@@ -274,9 +280,11 @@ async function loadLearningOverview(){
    return;
  }
  $('learningExams').textContent=String(exams.count??0);
+ $('homeExamCount').textContent=String(exams.count??0);
  $('learningActivities').textContent=String(activityCount.count??0);
  const pending=(classicErrors.count??0)+(activityErrors.count??0);
  $('learningErrors').textContent=String(pending);
+ $('homeErrorCount').textContent=String(pending);
  $('learningStatus').textContent=pending?
    'Tienes '+pending+' preguntas pendientes de repaso: '+(classicErrors.count??0)+
    ' de exámenes y '+(activityErrors.count??0)+' de actividades. Puedes repasarlas juntas.':
@@ -472,12 +480,17 @@ async function loadCourseProgress(userId) {
  $('courseProfileDone').textContent=String(done);
  $('courseProfilePending').textContent=String(units.length-done);
  $('courseProfilePercent').textContent=pct+'%';
+ $('homeCoursePercent').textContent=pct+'%';
  $('courseProfileBar').style.width=pct+'%';
  $('courseProfileMeter').setAttribute('aria-valuenow',String(pct));
  statusBox.textContent=units.length
   ?done+' de '+units.length+' unidades completadas. Este avance no es una nota de examen.'
   :'Todavía no hay unidades publicadas.';
  const next=units.find(row=>!completed.has(row.slug));
+ $('homeNextTitle').textContent=next?'Siguiente: unidad '+String(next.orden).padStart(2,'0'):'¡Ruta B2 completada!';
+ $('homeNextDescription').textContent=next?String(next.titulo||'Continúa donde lo dejaste.'):'Has marcado todas las unidades como estudiadas. Puedes repasarlas cuando quieras.';
+ $('homeContinue').href=next?'/curso.html#unidad-'+String(next.orden).padStart(2,'0'):'/curso.html';
+ $('homeContinue').textContent=next?'Continuar curso →':'Repasar unidades →';
  $('courseProfileContinue').href=next?'/curso.html#unidad-'+String(next.orden).padStart(2,'0'):'/curso.html';
  $('courseProfileContinue').textContent=next?'Continuar: unidad '+String(next.orden).padStart(2,'0')+' →':'Revisar todas las unidades ✓';
 }
@@ -488,6 +501,8 @@ async function changeUser(next){
  $('learningStatus').textContent='Consultando tu progreso…';$('learningActivityHistory').replaceChildren();
  $('learningReads').textContent='—';$('learningExams').textContent='—';$('learningActivities').textContent='—';$('learningErrors').textContent='—';
  $('courseProfileDone').textContent='—';$('courseProfilePending').textContent='—';$('courseProfilePercent').textContent='—';
+ $('homeCoursePercent').textContent='—';$('homeExamCount').textContent='—';$('homeErrorCount').textContent='—';$('homeReadingCount').textContent='—';
+ $('homeNextTitle').textContent='Tu próxima unidad';$('homeNextDescription').textContent='Buscando dónde continuar en el curso…';
  $('courseProfileBar').style.width='0%';$('courseProfileMeter').setAttribute('aria-valuenow','0');
  $('authLayout').hidden=!!user;
   $('accountStatus').hidden=!!user;
