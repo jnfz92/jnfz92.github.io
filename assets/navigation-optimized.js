@@ -36,6 +36,18 @@ function activate(){
     toggle.setAttribute('aria-label','Abrir menú de navegación');
     sync();
   }
+  // Abrir Recursos no debe dejar su primera opción oculta bajo la barra sticky.
+  // El scroll ocurre dentro del panel móvil, manteniendo el primer enlace pulsable.
+  if(more)more.addEventListener('toggle',()=>{
+    if(!more.open||!isMobile()||!header.classList.contains('ee-menu-open'))return;
+    requestAnimationFrame(()=>{
+      if(!more.open||!header.classList.contains('ee-menu-open'))return;
+      const menuTop=nav.getBoundingClientRect().top;
+      const detailsTop=more.getBoundingClientRect().top;
+      const offset=detailsTop-menuTop-12;
+      if(Math.abs(offset)>2)nav.scrollTop+=offset;
+    });
+  });
   backdrop.addEventListener('click',close);
   nav.addEventListener('click',event=>{
     if(event.target.closest('a[href]'))close()
