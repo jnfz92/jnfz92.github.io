@@ -68,6 +68,7 @@ $('privateDashboard').replaceChildren(
  $('learningHome'),
  document.querySelector('.ee-reading-pick'),
  $('nameTitle').closest('.panel'),
+ $('bitacoraPanel'),
  document.querySelector('#reviewPreferencesTitle').closest('.panel'),
   $('courseProgressPanel'),
  $('weeklyGoalPanel'),
