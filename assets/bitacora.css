@@ -1,0 +1,22 @@
+/* Bitácora del alumno, integrada en el perfil y sus tokens. */
+.ee-profile .bitacora-form{display:grid;gap:12px;margin:17px 0}
+.ee-profile .bitacora-form label{margin-bottom:0}
+.ee-profile .bitacora-form textarea,.ee-profile .bitacora-form input,.ee-profile .bitacora-toolbar input,.ee-profile .bitacora-toolbar select,.ee-profile .bitacora-form select{width:100%;min-width:0;border:1px solid var(--line);border-radius:11px;padding:11px 13px;font:inherit;background:#fff;color:var(--ink)}
+.ee-profile .bitacora-form textarea{min-height:116px;resize:vertical}
+.ee-profile .bitacora-actions{display:flex;flex-wrap:wrap;gap:10px}
+.ee-profile .bitacora-category-form{display:flex;gap:10px;align-items:end}
+.ee-profile .bitacora-category-form input{flex:1}
+.ee-profile .bitacora-categories{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0 24px}
+.ee-profile .bitacora-chip{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);background:var(--soft);border-radius:99px;padding:5px 9px 5px 13px;font-size:13px;font-weight:700}
+.ee-profile .bitacora-chip button{border:0;background:transparent;color:var(--ink);font-size:21px;line-height:1;cursor:pointer}
+.ee-profile .bitacora-toolbar{display:grid;grid-template-columns:minmax(0,2fr) minmax(0,1fr);gap:12px;margin:10px 0}
+.ee-profile .bitacora-note{padding:17px;border:1px solid var(--line);border-radius:15px;background:#fff;margin:12px 0}
+.ee-profile .bitacora-note-top{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.ee-profile .bitacora-note-top time{font-size:13px;color:var(--muted)}
+.ee-profile .bitacora-note-tag{font-size:13px;color:var(--brand)}
+.ee-profile .bitacora-note-content{white-space:pre-wrap;overflow-wrap:anywhere;margin:12px 0}
+.ee-profile .bitacora-note-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.ee-profile .bitacora-note-actions small{margin-right:auto;color:var(--muted)}
+.ee-profile .bitacora-note-actions button{padding:7px 12px;font-size:13px}
+.ee-profile .bitacora-status.is-error{color:#a61b24}
+@media(max-width:600px){.ee-profile .bitacora-toolbar{grid-template-columns:1fr}.ee-profile .bitacora-category-form{flex-wrap:wrap}.ee-profile .bitacora-category-form input{flex-basis:100%}}
