@@ -8,7 +8,7 @@ permalink: /perfil.html
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="Tu perfil y progreso de lectura en Easy English.">
 <title>Mi perfil · Easy English</title>
-<link rel="stylesheet" href="/assets/perfil.css?v=20261030-unified-blue-2">
+<link rel="stylesheet" href="/assets/bitacora.css?v=20261103-1"><link rel="stylesheet" href="/assets/perfil.css?v=20261030-unified-blue-2">
 <link rel="stylesheet" href="assets/site.css?v=20261030-unified-blue-2"><script src="assets/site.js?v=20261013" defer></script><link rel="stylesheet" href="/assets/navigation.css?v=20261030-menu-blue-3"><script src="/assets/navigation.js?v=20261030-menu-blue-4" defer></script><link rel="stylesheet" href="/assets/perfil-reading.css?v=20261030-unified-blue-2"><link rel="stylesheet" href="/assets/perfil-dashboard.css?v=20261101-achievements-1"><link rel="preconnect" href="https://wnluofonzteaqtlfshgy.supabase.co" crossorigin>
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 </head>
@@ -65,7 +65,32 @@ permalink: /perfil.html
 <p class="muted" id="greeting" role="status">Introduce tu nombre para personalizar tu espacio.</p>
 <p class="muted">Tu nombre y tus lecturas se sincronizan automáticamente con tu cuenta de Supabase.</p>
 </section>
-<section class="panel" aria-labelledby="reviewPreferencesTitle"><p class="section-kicker">MI CUADERNO DE FALLOS</p><h2 id="reviewPreferencesTitle">Mis temas de repaso favoritos</h2><p class="muted">Configura todas las categorías de tus próximos exámenes de errores en una página independiente. Tus preferencias se guardan en tu cuenta.</p><p><a class="primary" href="categorias-repaso.html">Configurar mis categorías →</a></p><p><a class="back" href="practicar.html#cuaderno-fallos">Ir al cuaderno de fallos →</a></p></section><section class="panel" id="courseProgressPanel" aria-labelledby="courseProgressTitle">
+<section class="panel bitacora-panel" id="bitacoraPanel" aria-labelledby="bitacoraTitle">
+<p class="section-kicker">MI CUADERNO PERSONAL</p>
+<h2 id="bitacoraTitle">📓 Mi bitácora</h2>
+<p class="muted">Apunta tus dudas de inglés, organízalas por conceptos y vuelve a consultarlas cuando quieras. Solo tú puedes ver tus anotaciones.</p>
+<form id="bitacoraCategoryForm" class="bitacora-form" autocomplete="off">
+<label for="bitacoraNewCategory">Crear nuevo concepto o categoría</label>
+<div class="bitacora-category-form"><input id="bitacoraNewCategory" type="text" maxlength="60" placeholder="Ej.: Present perfect, Writing, Vocabulary…" required><button class="secondary" type="submit">+ Añadir categoría</button></div>
+</form>
+<div class="bitacora-categories" id="bitacoraCategories" aria-label="Mis categorías"></div>
+<form id="bitacoraNoteForm" class="bitacora-form">
+<label for="bitacoraCategory">Concepto de mi anotación</label>
+<select id="bitacoraCategory"><option value="">Sin categoría</option></select>
+<label for="bitacoraContent">Mi duda o anotación</label>
+<textarea id="bitacoraContent" maxlength="10000" required placeholder="Ej.: ¿En qué casos se usa present perfect y cuándo past simple?"></textarea>
+<p class="muted">La fecha y la hora se registran automáticamente al guardar.</p>
+<div class="bitacora-actions"><button class="primary" id="bitacoraSave" type="submit">Guardar anotación</button><button class="secondary" id="bitacoraCancelEdit" type="button" hidden>Cancelar edición</button></div>
+</form>
+<p class="muted bitacora-status" id="bitacoraStatus" role="status" aria-live="polite"></p>
+<h3>Historial de mi bitácora</h3>
+<div class="bitacora-toolbar">
+<input id="bitacoraSearch" type="search" aria-label="Buscar anotaciones" placeholder="Buscar entre mis dudas…">
+<select id="bitacoraFilter" aria-label="Filtrar por categoría"><option value="all">Todas las categorías</option><option value="none">Sin categoría</option></select>
+</div>
+<p class="muted" id="bitacoraCount" aria-live="polite">0 anotaciones</p>
+<div id="bitacoraHistory" aria-live="polite"></div>
+</section><section class="panel" aria-labelledby="reviewPreferencesTitle"><p class="section-kicker">MI CUADERNO DE FALLOS</p><h2 id="reviewPreferencesTitle">Mis temas de repaso favoritos</h2><p class="muted">Configura todas las categorías de tus próximos exámenes de errores en una página independiente. Tus preferencias se guardan en tu cuenta.</p><p><a class="primary" href="categorias-repaso.html">Configurar mis categorías →</a></p><p><a class="back" href="practicar.html#cuaderno-fallos">Ir al cuaderno de fallos →</a></p></section><section class="panel" id="courseProgressPanel" aria-labelledby="courseProgressTitle">
 <p class="section-kicker">MI RUTA DE APRENDIZAJE B2</p>
 <h2 id="courseProgressTitle">Mi progreso en el curso</h2>
 <p class="muted">Las unidades que marques como estudiadas se guardan de forma privada en tu cuenta y se sincronizan entre dispositivos.</p>
@@ -139,5 +164,5 @@ permalink: /perfil.html
 </main><footer class="ee-footer"><p>Un poco de ingl?s. Un paso m?s cada d?a.</p></footer>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script src="supabase-config.js"></script>
-<script src="/assets/perfil.js?v=20261101-aula-integration-1"></script>
+<script src="/assets/bitacora.js?v=20261103-1" defer></script><script src="/assets/perfil.js?v=20261101-aula-integration-1"></script>
 </body></html>
