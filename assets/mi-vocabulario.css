@@ -86,3 +86,6 @@
  .ee-vocab-session-actions{width:100%}
  .ee-vocabulario .ee-vocab-session-actions a{flex:1 1 190px}
 }
+
+/* El mensaje de estado vacío no deja una franja en la cabecera. */
+.ee-vocabulario #vocab-status:empty{display:none}
