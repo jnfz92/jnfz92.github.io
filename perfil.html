@@ -184,13 +184,7 @@ permalink: /perfil.html
 <div class="bitacora-actions"><button class="primary" id="bitacoraSave" type="submit">Guardar anotación</button><button class="secondary" id="bitacoraCancelEdit" type="button" hidden>Cancelar edición</button></div>
 </form>
 <p class="muted bitacora-status" id="bitacoraStatus" role="status" aria-live="polite"></p>
-<h3>Historial de mi bitácora</h3>
-<div class="bitacora-toolbar">
-<input id="bitacoraSearch" type="search" aria-label="Buscar anotaciones" placeholder="Buscar entre mis dudas…">
-<select id="bitacoraFilter" aria-label="Filtrar por categoría"><option value="all">Todas las categorías</option><option value="none">Sin categoría</option></select>
-</div>
-<p class="muted" id="bitacoraCount" aria-live="polite">0 anotaciones</p>
-<div id="bitacoraHistory" aria-live="polite"></div>
+<p class="bitacora-history-link"><a class="primary" href="/historial-bitacora.html">📚 Ver historial completo, buscar y editar anotaciones →</a></p>
 </section></details>
 <details class="profile-disclosure"><summary><span class="profile-disclosure-title">Preferencias de repaso</span><span class="profile-disclosure-sub">Categorías de errores</span><span class="profile-disclosure-chevron" aria-hidden="true">⌄</span></summary><section class="panel" aria-labelledby="reviewPreferencesTitle"><p class="section-kicker">MI CUADERNO DE FALLOS</p><h2 id="reviewPreferencesTitle">Mis temas de repaso favoritos</h2><p class="muted">Configura todas las categorías de tus próximos exámenes de errores en una página independiente. Tus preferencias se guardan en tu cuenta.</p><p><a class="primary" href="categorias-repaso.html">Configurar mis categorías →</a></p><p><a class="back" href="practicar.html#cuaderno-fallos">Ir al cuaderno de fallos →</a></p></section></details>
 <details class="profile-disclosure"><summary><span class="profile-disclosure-title">Comunidad</span><span class="profile-disclosure-sub">Buscar y seguir compañeros</span><span class="profile-disclosure-chevron" aria-hidden="true">⌄</span></summary><section class="panel"><p class="section-kicker">COMUNIDAD EASY ENGLISH</p><h2>Encuentra compañeros</h2><p class="muted">Busca usuarios por su alias público, síguelos y gestiona tus seguidos.</p><a class="back" href="comunidad.html">Explorar comunidad →</a></section></details>
@@ -261,7 +255,7 @@ permalink: /perfil.html
 </main><footer class="ee-footer"><p>Un poco de ingl?s. Un paso m?s cada d?a.</p></footer>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script src="supabase-config.js"></script>
-<script src="/assets/bitacora.js?v=20261104-pagination-1" defer></script><script src="/assets/perfil.js?v=20261104-pagination-1"></script>
+<script src="/assets/bitacora.js?v=20261104-history-1" defer></script><script src="/assets/perfil.js?v=20261104-pagination-1"></script>
 <script>
 (function(){
   const tabs=[...document.querySelectorAll('[data-profile-tab]')];
