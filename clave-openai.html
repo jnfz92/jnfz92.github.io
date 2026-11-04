@@ -37,7 +37,7 @@ permalink: /clave-openai.html
 <body class="ee-site ee-openai-page">
 {% include header.html %}
 <main id="contenido-principal">
-<a class="ee-openai-back" href="/perfil.html#profile-panel-cuenta">← Volver a mi perfil</a>
+<a class="ee-openai-back" id="openaiReturnLink" href="/perfil.html#profile-panel-cuenta">← Volver a mi perfil</a>
 <p class="section-kicker">HERRAMIENTAS OPCIONALES</p>
 <h1>Mi clave temporal de OpenAI</h1>
 <p class="ee-openai-intro">Introduce tu clave API solo cuando quieras usar una función de OpenAI. No quedará guardada permanentemente en tu perfil ni en Supabase.</p>
@@ -50,7 +50,7 @@ permalink: /clave-openai.html
 <div class="ee-openai-actions"><button class="ee-openai-save" type="submit">Guardar temporalmente</button><button class="ee-openai-remove" id="openaiDeleteKey" type="button">Borrar clave ahora</button></div>
 </form>
 <p id="openaiKeyStatus" role="status" aria-live="polite"></p>
-<p class="ee-openai-note">Caduca a los 30 minutos y también desaparece al cerrar esta pestaña. Nunca se muestra la clave guardada en pantalla. Esta configuración no activa por sí sola ninguna función de inteligencia artificial.</p>
+<p class="ee-openai-note">Caduca a los 30 minutos y también desaparece al cerrar esta pestaña. Nunca se muestra la clave guardada en pantalla. Con una clave temporal vigente y una sesión iniciada, podrás activar el planificador B2 y el corrector Writing tras aceptar el envío de tus datos.</p>
 <div class="ee-openai-warning"><strong>Seguridad:</strong> la clave se conserva temporalmente en el almacenamiento de sesión de este navegador. El código que se ejecuta en una página web puede acceder a ese almacenamiento; por eso no es adecuado para usos sensibles o claves de alto presupuesto. Para funciones reales de OpenAI, lo recomendable es un servidor intermedio que proteja la clave. Puedes crear una clave con límites de gasto en <a href="https://platform.openai.com/api-keys" target="_blank" rel="noopener noreferrer">la plataforma de OpenAI</a>.</div>
 </section>
 </main>
