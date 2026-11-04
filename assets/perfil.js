@@ -681,10 +681,10 @@ async function changeUser(next){
  resetWeeklyGoal();
  $('recentExam7').textContent='—';$('recentExam30').textContent='—';$('recentAverage30').textContent='—';$('recentActivities30').textContent='—';
  $('courseProfileBar').style.width='0%';$('courseProfileMeter').setAttribute('aria-valuenow','0');
- $('authLayout').hidden=!!user;
-  $('accountStatus').hidden=!!user;
+ $('authLayout').hidden=!!user||recoveryLinkVerified;
+  $('accountStatus').hidden=!!user||recoveryLinkVerified;
   if(user)$('accountStatus').textContent='';
- $('privateDashboard').hidden=!user;
+ $('privateDashboard').hidden=!user||recoveryLinkVerified;
  $('continueLink').hidden=!user;
  $('authForm').hidden=!!user;
  $('signout').hidden=!user;
@@ -846,9 +846,9 @@ $('passwordRecoveryForm').onsubmit=async e=>{
   $('passwordRecoveryConfirm').value='';
   history.replaceState(null,'',location.pathname);
   // Evita dejar al navegador mostrando el formulario de acceso previo tras el cambio.
-  authMessage('Contraseña actualizada correctamente. Ya puedes acceder con tu nueva contraseña.');
   const {data}=await eeDb.auth.getUser();
   if(data?.user)await changeUser(data.user);
+  status('Contraseña actualizada correctamente. Ya puedes acceder con tu nueva contraseña.');
   // La contraseña nueva no debe permanecer en un campo oculto.
  }catch(error){recoveryStatus.textContent='No se pudo actualizar la contraseña: '+readableAuthError(error);}
  finally{button.disabled=false}
@@ -967,6 +967,8 @@ eeDb.auth.getUser().then(({data,error})=>{
   if(error&&error.name!=='AuthSessionMissingError'){
     changeUser(null);authMessage('No se pudo comprobar la sesión: '+readableAuthError(error),true);return;
   }
-  changeUser(data?.user||null);
+  changeUser(data?.user||null).then(()=>{
+    if(recoveryLink&&data?.user)showRecovery();
+  });
 }).catch(error=>{changeUser(null);authMessage('No se pudo comprobar la sesión: '+readableAuthError(error),true)});
 })();
