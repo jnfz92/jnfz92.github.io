@@ -12,11 +12,11 @@
   const filtered=articles.filter(a=>norm([a.titulo,a.descripcion,a.slug].join(' ')).includes(norm(search)));
   const pages=Math.max(1,Math.ceil(filtered.length/pageSize));
   page=Math.min(Math.max(1,page),pages);
-  count.textContent=filtered.length+' artículo'+(filtered.length===1?'':'s')+' de vocabulario';
+  count.textContent=filtered.length+' artículo'+(filtered.length===1?'':'s')+' de vocabulario guardados en tu cuenta';
   list.replaceChildren();nav.replaceChildren();
   if(!filtered.length){
    const p=document.createElement('p');p.className='muted';
-   p.textContent=loaded?'No hay artículos que coincidan con la búsqueda.':'Cargando artículos de vocabulario…';list.append(p);
+   p.textContent=loaded?(articles.length?'No hay artículos que coincidan con la búsqueda.':'No tienes artículos de vocabulario guardados en esta cuenta. Tus anotaciones personales están arriba.'): 'Cargando tus artículos…';list.append(p);
   }
   filtered.slice((page-1)*pageSize,page*pageSize).forEach(a=>{
    const card=document.createElement('article');card.className='bitacora-vocab-card';
@@ -40,38 +40,25 @@
   }
  }
  async function load(){
-  count.textContent='Cargando artículos…';
-  const {data,error}=await db.from('articulos').select('slug,titulo,descripcion').eq('categoria_slug','vocabulary').order('titulo',{ascending:true}).range(0,999);
+  count.textContent='Cargando tus artículos privados…';
+  list.replaceChildren();
+  const {data:{user},error:authError}=await db.auth.getUser();
+  if(authError||!user){
+   loaded=true;articles=[];count.textContent='Inicia sesión para consultar tus artículos privados.';
+   return;
+  }
+  const {data:saved,error:savedError}=await db.from('recursos_guardados')
+   .select('referencia').eq('usuario_id',user.id).eq('tipo','articulo').range(0,999);
+  if(savedError){count.textContent='No se pudieron consultar tus artículos guardados.';return}
+  const slugs=[...new Set((saved||[]).map(x=>x.referencia).filter(Boolean))];
+  if(!slugs.length){loaded=true;articles=[];draw();return}
+  const {data,error}=await db.from('articulos')
+   .select('slug,titulo,descripcion').eq('categoria_slug','vocabulary').in('slug',slugs).order('titulo',{ascending:true});
   loaded=true;
-  if(error){count.textContent='No se pudieron cargar los artículos de vocabulario.';list.replaceChildren();return}
-  articles=(data||[]).filter(a=>a.slug);
+  if(error){count.textContent='No se pudieron cargar tus artículos privados.';return}
+  articles=data||[];
   draw();
  }
- const importBtn=$('bitacoraImportVocabulary');
- const importStatus=$('bitacoraImportStatus');
- if(importBtn)importBtn.addEventListener('click',async()=>{
-  importBtn.disabled=true;
-  importStatus.textContent='Guardando artículos en tu cuenta…';
-  try{
-   const {data:{user},error:authError}=await db.auth.getUser();
-   if(authError||!user)throw Error('Inicia sesión en tu perfil para guardar artículos.');
-   if(!loaded||!articles.length)throw Error('Todavía no se ha cargado el vocabulario.');
-   const {data:existing,error:existingError}=await db.from('bitacora_anotaciones').select('contenido').eq('usuario_id',user.id).range(0,999);
-   if(existingError)throw existingError;
-   const saved=new Set((existing||[]).map(n=>String(n.contenido||'').match(/^Artículo de vocabulario: (https?:\/\/\S+)/)?.[1]).filter(Boolean));
-   const records=articles.map(a=>({
-    usuario_id:user.id,
-    contenido:'Artículo de vocabulario: '+location.origin+'/leer.html?slug='+encodeURIComponent(a.slug)+'\n'+(a.titulo||a.slug)
-   })).filter(n=>!saved.has(n.contenido.split('\n')[0].slice('Artículo de vocabulario: '.length)));
-   if(records.length){
-    const {error}=await db.from('bitacora_anotaciones').insert(records);
-    if(error)throw error;
-    window.dispatchEvent(new Event('easyenglish:bitacora-refresh'));
-   }
-   importStatus.textContent=records.length?'Guardados '+records.length+' artículos en tus anotaciones. Los demás ya estaban guardados.':'Todos los artículos ya estaban guardados en tus anotaciones.';
-  }catch(error){importStatus.textContent='No se pudieron guardar: '+error.message}
-  finally{importBtn.disabled=false}
- });
  const searchEl=$('bitacoraVocabularySearch');
  searchEl.addEventListener('input',()=>{search=searchEl.value;page=1;draw()});
  void load();
