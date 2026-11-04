@@ -23,6 +23,7 @@ permalink: /aula-b2.html
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <style>
 .aula-ai-box{border:1px solid #c9dcfa;background:linear-gradient(130deg,#edf4ff,#fff);border-radius:17px;padding:20px;margin-top:21px;color:#23426c}
+.aula-ai-shortcut{display:flex;align-items:center;gap:14px;width:fit-content;max-width:100%;margin:20px 0 4px;padding:15px 22px;border:2px solid #174fa8;border-radius:16px;background:linear-gradient(110deg,#174fa8,#2877dc);color:#fff!important;text-decoration:none!important;box-shadow:0 8px 22px #174fa833;transition:transform .18s ease,box-shadow .18s ease}.aula-ai-shortcut:hover{transform:translateY(-2px);box-shadow:0 12px 26px #174fa844}.aula-ai-shortcut>span:first-child{font-size:25px}.aula-ai-shortcut strong,.aula-ai-shortcut small{display:block}.aula-ai-shortcut strong{font-size:16px;line-height:1.3}.aula-ai-shortcut small{font-size:12px;margin-top:3px;color:#e4efff}.aula-ai-shortcut .aula-ai-shortcut-arrow{font-size:24px;margin-left:8px}.aula-ai-box{scroll-margin-top:90px}@media(max-width:560px){.aula-ai-shortcut{width:100%;box-sizing:border-box;padding:14px}.aula-ai-shortcut strong{font-size:15px}}
 .aula-ai-box h3{font-size:21px;color:#163f86;margin:8px 0}
 .aula-ai-box p{line-height:1.65}
 .aula-ai-consent{display:flex;align-items:flex-start;gap:9px;line-height:1.6;font-size:13px;margin:16px 0}
@@ -48,7 +49,8 @@ permalink: /aula-b2.html
 <main class="aula-wrap" id="aulaPrivateContent" hidden>
 <section class="aula-hero"><p class="aula-kicker">✦ EASY ENGLISH · TU ESPACIO PERSONAL</p>
 <h1>Mi aula B2</h1><p>Un camino concreto para saber qué practicar hoy, sin perder de vista tu progreso.</p>
-<div class="aula-hero-links"><a href="#today">Mi sesión de hoy</a><a href="#diagnostic">Mi diagnóstico</a><a href="#plan">Mi plan</a><a href="#mock">Mis simulacros</a></div></section>
+<div class="aula-hero-links"><a href="#today">Mi sesión de hoy</a><a href="#diagnostic">Mi diagnóstico</a><a href="#plan">Mi plan</a><a href="#mock">Mis simulacros</a></div>
+<a class="aula-ai-shortcut" href="#aulaAiOrganizer"><span aria-hidden="true">✦</span><span><strong>Organizar mi curso con IA</strong><small>Crear mi plan de estudio personalizado</small></span><span class="aula-ai-shortcut-arrow" aria-hidden="true">→</span></a></section>
 <p id="aulaStatus" class="aula-system" role="status" aria-live="polite">Comprobando tu sesión…</p>
 <section id="today" class="aula-card" aria-labelledby="todayTitle">
 <div class="aula-heading"><div><span class="aula-kicker">01 · TU RUTINA</span><h2 id="todayTitle">Mi sesión de hoy</h2></div><span id="todayDate" class="aula-pill"></span></div>
@@ -84,7 +86,7 @@ permalink: /aula-b2.html
 <p class="aula-tiny">Los avisos del navegador solo se muestran con esta página abierta. Para recibir recordatorios sin tenerla abierta, importa el calendario a una app que tenga sus propias notificaciones. Los permisos de notificación son opcionales.</p>
 <p id="planStatus" class="aula-tiny" role="status" aria-live="polite"></p>
 <div id="planSummary" class="aula-results"></div>
-<section class="aula-ai-box" aria-labelledby="aulaAiTitle">
+<section id="aulaAiOrganizer" class="aula-ai-box" aria-labelledby="aulaAiTitle">
  <span class="aula-kicker">PROFESOR PERSONAL CON OPENAI</span>
  <h3 id="aulaAiTitle">Organizar mi preparación B2 con IA</h3>
  <p class="aula-sub">Utiliza tus unidades completadas, diagnóstico y disponibilidad para preparar una semana modelo personalizada con tareas reales del curso. El plan se puede guardar en tu cuenta.</p>
