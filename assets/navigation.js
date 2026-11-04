@@ -172,7 +172,7 @@
     if(document.querySelector('link[href*="academy-premium.css"]'))return;
     const link=document.createElement('link');
     link.rel='stylesheet';
-    link.href=new URL('assets/academy-premium.css?v=20261104-android-card-1',root).href;
+    link.href=new URL('assets/academy-premium.css?v=20261104-android-clean-2',root).href;
     document.head.append(link);
   }
 
