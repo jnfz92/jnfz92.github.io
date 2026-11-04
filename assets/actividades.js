@@ -273,6 +273,44 @@
     box.textContent=heading+solution+(grading.explicacion?'\n'+grading.explicacion:'');
     box.hidden=false;
   }
+  // La corrección de redacciones es opcional y no altera la calificación de Supabase.
+  function attachEssayAI(){
+    const ai=window.eeAI;
+    if(!ai||!user||!ai.keyFor(user.id))return;
+    for(const q of questions.filter(q=>q.tipo==='redaccion')){
+      const answer=String(pending?.answers?.[q.id]||'').trim();
+      if(answer.length<20)continue;
+      const target=$('activity-q-'+q.id);
+      const area=element('section','activity-ai-card');
+      area.append(element('h3','','Revisión orientativa con OpenAI'));
+      area.append(element('p','','Tu actividad ya está entregada. Puedes pedir una revisión lingüística opcional que no sustituye la corrección docente ni la nota del ejercicio.'));
+      const label=element('label','activity-ai-consent'),check=element('input');check.type='checkbox';
+      label.append(check,document.createTextNode(' Autorizo enviar esta respuesta a OpenAI para obtener recomendaciones; puede generar costes en mi clave API.'));
+      const action=element('button','activity-btn','Corregir esta redacción con IA');action.type='button';action.disabled=true;
+      const state=element('p','activity-status',''),output=element('div');
+      check.onchange=()=>{action.disabled=!check.checked};
+      action.onclick=async()=>{
+        if(!check.checked)return;
+        action.disabled=true;state.textContent='Revisando la redacción con IA…';output.replaceChildren();
+        try{
+          const result=await ai.run(eeDb,'writing',{writing:{type:'essay',text:answer}});
+          if(result.summary)output.append(element('p','',String(result.summary).slice(0,950)));
+          if(result.scores&&typeof result.scores==='object'){
+            const line=['content','communicative','organisation','language'].map(k=>k+': '+String(result.scores[k]??'—')+'/5').join(' · ');
+            output.append(element('p','',line+' (orientativo, no Cambridge oficial)'));
+          }
+          for(const c of (Array.isArray(result.corrections)?result.corrections:[]).slice(0,7)){
+            const item=element('p','','Original: '+String(c.original||'').slice(0,400)+'\nMejora: '+String(c.corrected||'').slice(0,400)+'\nMotivo: '+String(c.why||'').slice(0,450));
+            item.style.whiteSpace='pre-wrap';output.append(item);
+          }
+          if(result.suggestedVersion)output.append(element('pre','',String(result.suggestedVersion).slice(0,12000)));
+          state.textContent='Revisión de IA completada. La entrega original no ha cambiado.';
+        }catch(error){state.textContent=error.message||'No se pudo realizar la revisión.'}
+        finally{action.disabled=!check.checked}
+      };
+      area.append(label,action,state,output);target.append(area);
+    }
+  }
   function showResult(data){
     if(!data||typeof data.detalle!=='object'||questions.some(q=>!data.detalle[q.id]))
       throw Error('El servidor no devolvió toda la corrección.');
@@ -292,6 +330,7 @@
     review.href='practicar.html#cuaderno-fallos';
     review.style.cssText='display:inline-block;margin:9px 8px 4px 0;text-decoration:none;';
     summary.append(heading,details,review,again);summary.hidden=false;
+    attachEssayAI();
     $('activitySubmit').disabled=true;$('activitySubmit').textContent='Actividad terminada';
     setText('activitySessionStatus','Intento registrado. Los errores autocorregibles se añaden a tu repaso personal.');
     summary.scrollIntoView({behavior:'smooth',block:'center'});
