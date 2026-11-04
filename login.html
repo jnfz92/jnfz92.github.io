@@ -1,0 +1,74 @@
+---
+permalink: /login.html
+---
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,follow">
+<meta name="theme-color" content="#0c398e">
+<meta name="description" content="Accede a Easy English o crea tu cuenta gratis para guardar tus avances.">
+<title>Iniciar sesión o registrarse · Easy English</title>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/assets/login.css?v=20261104-auth-1">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js" defer></script>
+<script src="/supabase-config.js?v=20261029-2" defer></script>
+<script src="/assets/login.js?v=20261104-auth-1" defer></script>
+</head>
+<body class="ee-auth-page">
+<main class="ee-auth-shell">
+ <section class="ee-auth-brand" aria-labelledby="brandTitle">
+  <a href="/" class="ee-auth-brand-logo"><img src="/favicon.svg" width="42" height="42" alt=""> <span>Easy English</span></a>
+  <div class="ee-auth-brand-copy">
+   <span class="ee-auth-eyebrow">TU ACADEMIA DIGITAL</span>
+   <h1 id="brandTitle">Tu inglés.<br><em>Tu progreso.</em></h1>
+   <p>Aprende B2 paso a paso, guarda tus resultados y continúa donde lo dejaste.</p>
+   <div class="ee-auth-benefits"><span>✓ 44 unidades B2</span><span>✓ Exámenes y repaso</span><span>✓ Tu avance guardado</span></div>
+  </div>
+  <div class="ee-auth-brand-rings" aria-hidden="true"></div>
+  <span class="ee-auth-brand-footer">Aprende inglés a tu ritmo.</span>
+ </section>
+ <section class="ee-auth-right" aria-label="Acceso a tu cuenta">
+  <div class="ee-auth-panel">
+   <a class="ee-auth-back" href="/">← Volver al inicio</a>
+   <div class="ee-auth-mark"><img src="/favicon.svg" width="36" height="36" alt=""></div>
+   <div class="ee-auth-forms-header">
+    <h2 id="formTitle">¡Qué bueno verte de nuevo!</h2>
+    <p id="formSubtitle">Inicia sesión para continuar aprendiendo.</p>
+   </div>
+   <div class="ee-auth-tabs" role="tablist" aria-label="Acceso y registro">
+    <button type="button" id="tabLogin" role="tab" aria-selected="true" aria-controls="loginForm">Iniciar sesión</button>
+    <button type="button" id="tabRegister" role="tab" aria-selected="false" aria-controls="registerForm">Crear cuenta</button>
+   </div>
+   <form id="loginForm" novalidate>
+    <label for="loginEmail">Correo electrónico</label>
+    <input id="loginEmail" name="email" type="email" placeholder="tu@email.com" autocomplete="username" required>
+    <label for="loginPassword">Contraseña</label>
+    <input id="loginPassword" name="password" type="password" placeholder="Tu contraseña" autocomplete="current-password" minlength="6" required>
+    <button class="ee-auth-submit" type="submit" id="loginSubmit">Entrar a mi cuenta <span aria-hidden="true">→</span></button>
+    <button class="ee-auth-text-link" type="button" id="forgotLink">¿Has olvidado tu contraseña?</button>
+   </form>
+   <form id="registerForm" hidden novalidate>
+    <label for="registerEmail">Correo electrónico</label>
+    <input id="registerEmail" type="email" placeholder="tu@email.com" autocomplete="email" required>
+    <label for="registerPassword">Contraseña</label>
+    <input id="registerPassword" type="password" placeholder="Mínimo 8 caracteres" minlength="8" autocomplete="new-password" required>
+    <label for="registerConfirmation">Confirmar contraseña</label>
+    <input id="registerConfirmation" type="password" placeholder="Repite tu contraseña" minlength="8" autocomplete="new-password" required>
+    <button class="ee-auth-submit" id="registerSubmit" type="submit">Crear mi cuenta gratis <span aria-hidden="true">→</span></button>
+    <p class="ee-auth-helper">Si tu correo requiere verificación, te enviaremos un enlace de confirmación.</p>
+   </form>
+   <form id="resetForm" hidden novalidate>
+    <label for="resetEmail">Correo de tu cuenta</label>
+    <input id="resetEmail" type="email" autocomplete="email" placeholder="tu@email.com" required>
+    <button class="ee-auth-submit" type="submit" id="resetSubmit">Enviar enlace de recuperación <span aria-hidden="true">→</span></button>
+    <button class="ee-auth-text-link" type="button" id="backToLogin">← Volver a iniciar sesión</button>
+   </form>
+   <p class="ee-auth-status" id="loginStatus" role="status" aria-live="polite" hidden></p>
+   <p class="ee-auth-help">¿Tienes dudas? <a href="/sugerencias.html">Contacta con Easy English</a></p>
+  </div>
+ </section>
+</main>
+</body>
+</html>
