@@ -24,6 +24,7 @@ permalink: /aula-b2.html
 <style>
 .aula-ai-box{border:1px solid #c9dcfa;background:linear-gradient(130deg,#edf4ff,#fff);border-radius:17px;padding:20px;margin-top:21px;color:#23426c}
 .aula-ai-shortcut{display:flex;align-items:center;gap:14px;width:fit-content;max-width:100%;margin:20px 0 4px;padding:15px 22px;border:2px solid #174fa8;border-radius:16px;background:linear-gradient(110deg,#174fa8,#2877dc);color:#fff!important;text-decoration:none!important;box-shadow:0 8px 22px #174fa833;transition:transform .18s ease,box-shadow .18s ease}.aula-ai-shortcut:hover{transform:translateY(-2px);box-shadow:0 12px 26px #174fa844}.aula-ai-shortcut>span:first-child{font-size:25px}.aula-ai-shortcut strong,.aula-ai-shortcut small{display:block}.aula-ai-shortcut strong{font-size:16px;line-height:1.3}.aula-ai-shortcut small{font-size:12px;margin-top:3px;color:#e4efff}.aula-ai-shortcut .aula-ai-shortcut-arrow{font-size:24px;margin-left:8px}.aula-ai-box{scroll-margin-top:90px}@media(max-width:560px){.aula-ai-shortcut{width:100%;box-sizing:border-box;padding:14px}.aula-ai-shortcut strong{font-size:15px}}
+.aula-ai-wizard{margin:18px 0;padding:18px;background:#fff;border:1px solid #d8e5f6;border-radius:16px}.aula-ai-progress{font-size:13px;font-weight:800;color:#28518b}.aula-ai-progress>div{height:7px;background:#e7eef8;border-radius:20px;overflow:hidden;margin-top:8px}.aula-ai-progress i{display:block;height:100%;width:33.333%;background:#2464c5;border-radius:20px;transition:width .2s}.aula-ai-step h4{font-size:19px;margin:22px 0 5px}.aula-ai-step>p{font-size:14px;color:#61738d;margin:5px 0 17px}.aula-ai-days{border:0;padding:0;margin:16px 0}.aula-ai-days legend{font-size:13px;font-weight:800;margin-bottom:10px}.aula-ai-days{display:flex;flex-wrap:wrap;gap:8px}.aula-ai-days label{position:relative}.aula-ai-days input{position:absolute;opacity:0}.aula-ai-days span{display:grid;place-items:center;min-width:42px;height:42px;padding:0 7px;border:1px solid #cbd8ea;border-radius:11px;background:#f8faff;font-weight:800;color:#315077;cursor:pointer}.aula-ai-days input:checked+span{background:#e5efff;border:2px solid #2863ba;color:#17458c}.aula-ai-days input:focus-visible+span{outline:3px solid #8db7fa}.aula-ai-field{display:block;font-weight:750;font-size:13px;margin:15px 0;color:#315077}.aula-ai-field select,.aula-ai-field input{display:block;width:100%;box-sizing:border-box;margin-top:7px;padding:12px;border:1px solid #cbd8ea;border-radius:10px;background:#fff;color:#23426c;font:inherit}.aula-ai-review{padding:13px;border-radius:12px;background:#f2f6fd;line-height:1.8;font-size:14px}.aula-ai-nav{display:flex;justify-content:space-between;gap:10px;margin-top:15px}.aula-ai-nav button[hidden]{display:none}.aula-ai-consent{display:flex;gap:9px;align-items:flex-start;font-size:13px;line-height:1.5;margin:16px 0}.aula-ai-consent input{margin-top:3px;flex:none}.aula-ai-step #aulaAiGenerate{width:100%}@media(max-width:480px){.aula-ai-wizard{padding:13px}.aula-ai-days{gap:6px}.aula-ai-days span{min-width:36px;height:40px}}
 .aula-ai-box h3{font-size:21px;color:#163f86;margin:8px 0}
 .aula-ai-box p{line-height:1.65}
 .aula-ai-consent{display:flex;align-items:flex-start;gap:9px;line-height:1.6;font-size:13px;margin:16px 0}
@@ -90,10 +91,31 @@ permalink: /aula-b2.html
  <span class="aula-kicker">PROFESOR PERSONAL CON OPENAI</span>
  <h3 id="aulaAiTitle">Organizar mi preparación B2 con IA</h3>
  <p class="aula-sub">Utiliza tus unidades completadas, diagnóstico y disponibilidad para preparar una semana modelo personalizada con tareas reales del curso. El plan se puede guardar en tu cuenta.</p>
- <div class="aula-fields"><label for="aulaAiWeeks">Duración objetivo<select id="aulaAiWeeks"><option value="4">4 semanas</option><option value="8">8 semanas</option><option value="12" selected>12 semanas</option><option value="16">16 semanas</option><option value="24">24 semanas</option></select></label></div>
+ <div class="aula-ai-wizard" id="aulaAiWizard">
+  <div class="aula-ai-progress" aria-label="Progreso del formulario"><span id="aulaAiStepLabel">Paso 1 de 3</span><div><i id="aulaAiProgressBar"></i></div></div>
+  <section class="aula-ai-step" data-ai-step="1">
+   <h4>1. ¿Cuándo puedes estudiar?</h4><p>Marca los días que normalmente te vienen bien.</p>
+   <fieldset class="aula-ai-days"><legend>Días disponibles</legend>
+    <label><input type="checkbox" name="aulaAiDay" value="1" checked><span>Lun</span></label><label><input type="checkbox" name="aulaAiDay" value="2"><span>Mar</span></label><label><input type="checkbox" name="aulaAiDay" value="3" checked><span>Mié</span></label><label><input type="checkbox" name="aulaAiDay" value="4"><span>Jue</span></label><label><input type="checkbox" name="aulaAiDay" value="5" checked><span>Vie</span></label><label><input type="checkbox" name="aulaAiDay" value="6"><span>Sáb</span></label><label><input type="checkbox" name="aulaAiDay" value="0"><span>Dom</span></label>
+   </fieldset>
+   <label class="aula-ai-field">¿Cuánto tiempo tienes cada día?<select id="aulaAiMinutes"><option value="15">15 minutos</option><option value="30" selected>30 minutos</option><option value="45">45 minutos</option><option value="60">1 hora</option><option value="90">1 hora y media</option></select></label>
+  </section>
+  <section class="aula-ai-step" data-ai-step="2" hidden>
+   <h4>2. ¿Cuál es tu objetivo?</h4><p>No pasa nada si todavía no tienes fecha de examen.</p>
+   <label class="aula-ai-field">¿Cuándo te gustaría estar preparado?<select id="aulaAiWeeks"><option value="4">En 1 mes</option><option value="8">En 2 meses</option><option value="12" selected>En 3 meses</option><option value="16">En 4 meses</option><option value="24">En 6 meses</option></select></label>
+   <label class="aula-ai-field">¿Tienes fecha de examen? (opcional)<input id="aulaAiExamDate" type="date"></label>
+   <label class="aula-ai-field">¿Qué te cuesta más?<select id="aulaAiFocus"><option value="auto">No lo sé, que la IA lo detecte</option><option value="grammar">Gramática</option><option value="vocabulary">Vocabulario</option><option value="reading">Reading</option><option value="writing">Writing</option><option value="listening">Listening</option><option value="speaking">Speaking</option></select></label>
+  </section>
+  <section class="aula-ai-step" data-ai-step="3" hidden>
+   <h4>3. ¡Listo para crear tu plan!</h4><p>La IA combinará tus respuestas con tu diagnóstico y el progreso real que llevas en el curso.</p>
+   <div id="aulaAiReview" class="aula-ai-review"></div>
+   <label class="aula-ai-consent"><input id="aulaAiConsent" type="checkbox"> Autorizo el envío a OpenAI de un resumen de mi progreso, las unidades de estudio y mis respuestas para crear el plan. Se utilizará mi clave API temporal, con posibles costes.</label>
+   <button id="aulaAiGenerate" class="aula-button" type="button" disabled>✦ Generar mi plan con IA</button>
+  </section>
+  <div class="aula-ai-nav"><button id="aulaAiBack" class="aula-button secondary" type="button" hidden>← Atrás</button><button id="aulaAiNext" class="aula-button" type="button">Continuar →</button></div>
+ </div>
  <p id="aulaAiAccess" role="status">Comprobando tu clave temporal de OpenAI…</p>
- <label class="aula-ai-consent"><input id="aulaAiConsent" type="checkbox"> Autorizo el envío a OpenAI de un resumen de mi progreso, las unidades de estudio y las preferencias de disponibilidad. Se utilizará mi clave API temporal, con posibles costes.</label>
- <div class="aula-actions"><button id="aulaAiGenerate" class="aula-button" type="button" disabled>Generar plan personalizado con IA</button><a href="/clave-openai.html?next=%2Faula-b2.html%23plan" id="aulaAiKeyLink" class="aula-linkbutton">🔑 Configurar clave</a><button type="button" id="aulaAiDelete" class="aula-button secondary" hidden>Eliminar plan IA guardado</button></div>
+ <div class="aula-actions"><a href="/clave-openai.html?next=%2Faula-b2.html%23plan" id="aulaAiKeyLink" class="aula-linkbutton">🔑 Configurar clave</a><button type="button" id="aulaAiDelete" class="aula-button secondary" hidden>Eliminar plan IA guardado</button></div>
  <p id="aulaAiStatus" role="status" aria-live="polite"></p>
  <div id="aulaAiResult" aria-live="polite"></div>
  <p class="aula-tiny">El resultado de IA es una propuesta orientativa. Puedes seguir usando el plan convencional aunque no tengas una clave.</p>
@@ -151,6 +173,6 @@ permalink: /aula-b2.html
 <script src="/assets/aula-simulacro.js?v=20261101-aula-draft-1" defer></script>
 <script src="/assets/aula-cronometro.js?v=20261101-aula-3" defer></script>
 <script src="/assets/ee-ai.js?v=20261104-byok-1" defer></script>
-<script src="/assets/aula-ai-plan.js?v=20261104-roadmap-2" defer></script>
+<script src="/assets/aula-ai-plan.js?v=20261104-wizard-1" defer></script>
 {% include footer.html %}
 </body></html>
