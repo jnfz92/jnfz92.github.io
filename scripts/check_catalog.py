@@ -28,7 +28,10 @@ else:
 fallback = re.findall(r'href="/?leer\.html\?slug=([a-z0-9-]+)"', library)
 check(len(fallback) == len(set(fallback)), "Tarjetas duplicadas en la biblioteca.")
 check(set(fallback).issubset(set(slugs)), "La biblioteca contiene slugs ajenos a la ruta.")
-check(len(fallback) >= 75, "El catálogo HTML de respaldo tiene pocas tarjetas.")
+# Los artículos de vocabulario son privados y no forman parte del catálogo público.
+check(len(fallback) >= 60, "El catálogo HTML público de respaldo tiene pocas tarjetas.")
+check('data-cat="vocabulary"' not in library and 'data-cat="vocabulary"' not in home,
+      "No debe haber tarjetas públicas de vocabulario privado.")
 check('data-filter="writing"' in library, "Falta el filtro de Writing.")
 check('id="articleLevel"' in library, "Falta el filtro de nivel.")
 check('id="articleSort"' in library, "Falta el selector de orden.")
