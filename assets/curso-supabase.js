@@ -55,11 +55,15 @@
   function updateStorageNote(message) {
     ui.stored.textContent = message || (state.user
       ? (state.syncReady
-        ? 'Avance sincronizado con tu cuenta. No equivale a aprobar un examen.'
+        ? '✓ Progreso sincronizado con tu cuenta. No equivale a aprobar un examen.'
         : 'No se ha podido sincronizar tu avance. Revisa tu conexión antes de marcar unidades.')
       : (state.storageOK
-        ? 'Sin sesión: el avance se guarda en este navegador. Inicia sesión para sincronizarlo.'
+        ? 'Sin sesión: las unidades marcadas se guardan únicamente en este navegador. Accede para sincronizarlas con tu cuenta.'
         : 'Este navegador no permite guardar el avance.'));
+    const guestLinks=document.getElementById('courseAccountLinks');
+    if(guestLinks)guestLinks.hidden=!!state.user;
+    const profileLink=document.getElementById('courseProfileLink');
+    if(profileLink)profileLink.hidden=!state.user;
     if (ui.importLocal) ui.importLocal.hidden = !(state.user && state.syncReady && (readCompleted().size || readStarted().size));
   }
   function saveLocal() {
@@ -134,14 +138,20 @@
       const button=card.querySelector('[data-favorite]');
       if(!button)continue;
       const saved=state.favorites.has(card.dataset.unitKey);
-      button.disabled=!state.user||!state.favoritesReady;
-      button.setAttribute('aria-pressed',String(saved));
-      button.textContent=saved?'★ Unidad guardada':'☆ Guardar unidad';
-      button.title=state.user?'Añadir o quitar esta unidad de tus favoritos':'Inicia sesión para guardar favoritos en tu cuenta';
+      button.disabled=!!state.user&&!state.favoritesReady;
+      button.setAttribute('aria-pressed',String(!!state.user&&saved));
+      button.textContent=state.user?(saved?'★ Unidad guardada':'☆ Guardar unidad'):'🔒 Guardar en mi cuenta';
+      button.title=state.user?'Añadir o quitar esta unidad de tus favoritos':'Abrir el inicio de sesión para guardar esta unidad';
     }
   }
   async function toggleFavorite(key) {
-    if(!state.user||!state.favoritesReady)return;
+    if(!state.user){
+      const card=[...container.querySelectorAll('.course-unit')].find(item=>item.dataset.unitKey===key);
+      const next='/curso.html'+(card?.id?'#'+encodeURIComponent(card.id):'');
+      location.assign('/login.html?next='+encodeURIComponent(next));
+      return;
+    }
+    if(!state.favoritesReady)return;
     const owner=state.user.id;
     const saved=state.favorites.has(key);
     state.favoritesReady=false;refreshFavorites();
