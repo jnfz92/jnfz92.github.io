@@ -13,8 +13,9 @@ permalink: /sugerencias.html
   <script src="/assets/navigation.js?v=20261030-menu-blue-4" defer></script>
   <script src="/assets/sugerencias.js?v=20261017-sugerencias1" defer></script>
   <style>
-    .suggestions-page{max-width:900px!important;padding-top:38px!important}
-    .suggestions-intro{max-width:720px;margin:0 auto 28px}
+    .ee-site main.suggestions-page{width:100%;max-width:1120px!important;box-sizing:border-box;padding:38px 28px 48px!important;margin:0 auto}
+    .ee-site .suggestions-intro{display:block;width:100%;max-width:none!important;box-sizing:border-box;margin:0 0 28px}
+    @media(max-width:600px){.ee-site main.suggestions-page{padding:24px 16px 42px!important}}
     .suggestion-form,.suggestion-list{background:#fff;border:1px solid var(--ee-line);border-radius:20px;padding:clamp(20px,4vw,32px);margin:20px 0}
     .suggestion-form label{display:block;margin:16px 0 6px;font-weight:750}
     .suggestion-form input,.suggestion-form textarea{width:100%;padding:12px 14px;border:1px solid var(--ee-line);border-radius:11px;font:inherit;color:var(--ee-ink);background:#fff}
