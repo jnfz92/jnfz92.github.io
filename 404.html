@@ -6,4 +6,5 @@ const match=location.pathname.match(/^\/post\/([a-z0-9-]+)\.html$/i);
 const aliases={ 'phrasal-verbs-with-get':'get-phrasal-verbs', 'agreeing-disagreeing':'polite-disagreement', 'expressing-opinions':'opinion-speculation-expressions', 'environment-vocabulary':'pollution-environment-vocabulary', 'adverbs-of-frequency':'todos-los-tiempos-de-presente-en-ingles', 'might':'modal-verb-might' };
 if(match){location.replace('/leer.html?slug='+encodeURIComponent(aliases[match[1]]||match[1])+location.hash)}
 else{document.getElementById('message').textContent='La página solicitada no existe. Puedes volver a la biblioteca de Easy English.'}
-</script></body></html>
+</script>{% include footer.html %}
+</body></html>
