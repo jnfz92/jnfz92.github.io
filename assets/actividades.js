@@ -6,6 +6,53 @@
     listening:'Listening',speaking:'Speaking',vocabulary:'Vocabulario',grammar:'Gramática'};
   let activities=[],questions=[],chosen=null,user=null,attempts=[],busy=false,submitted=false;
   let pending=null,loadVersion=0;
+  // Borrador temporal de respuestas de invitados: solo en esta pestaña, máximo una hora.
+  const GUEST_DRAFT='ee:activity-login-draft:v1',DRAFT_TTL=60*60*1000;
+  function activityTarget(){
+    const url=new URL('/actividades.html',location.origin);
+    if(chosen?.slug)url.searchParams.set('actividad',chosen.slug);
+    return url.pathname+url.search;
+  }
+  function loginDestination(){return '/login.html?next='+encodeURIComponent(activityTarget())}
+  function saveGuestDraft(){
+    if(!chosen)return;
+    try{
+      const fields=[...$('activityQuestions').querySelectorAll('input[name],textarea[name],select[name]')]
+        .map(field=>({name:field.name,type:field.type,value:field.value,checked:field.checked}));
+      sessionStorage.setItem(GUEST_DRAFT,JSON.stringify({
+        slug:chosen.slug,created:Date.now(),fields
+      }));
+    }catch(error){console.warn('No se pudieron guardar las respuestas temporalmente',error)}
+  }
+  function restoreGuestDraft(){
+    if(!chosen)return;
+    try{
+      const raw=sessionStorage.getItem(GUEST_DRAFT);
+      if(!raw)return;
+      const draft=JSON.parse(raw);
+      if(!draft||Date.now()-draft.created>DRAFT_TTL){sessionStorage.removeItem(GUEST_DRAFT);return}
+      if(draft.slug!==chosen.slug||!Array.isArray(draft.fields))return;
+      const fields=[...$('activityQuestions').querySelectorAll('input[name],textarea[name],select[name]')];
+      for(const field of fields){
+        const saved=draft.fields.find(x=>x.name===field.name&&
+          ((field.type==='radio'||field.type==='checkbox')?x.value===field.value:true));
+        if(!saved)continue;
+        if(field.type==='radio'||field.type==='checkbox')field.checked=!!saved.checked;
+        else field.value=saved.value||'';
+        field.dispatchEvent(new Event('input',{bubbles:true}));
+      }
+      sessionStorage.removeItem(GUEST_DRAFT);
+      setText('activitySessionStatus','Hemos recuperado tus respuestas de esta pestaña. Revisa la actividad y pulsa Corregir y guardar.');
+    }catch(error){console.warn('No se pudieron recuperar las respuestas',error)}
+  }
+  function updateActivityAccess(){
+    const notice=$('activityAccessNotice'),link=$('activityLoginLink');
+    if(notice)notice.hidden=!!user;
+    if(link)link.href=loginDestination();
+    const button=$('activitySubmit');
+    if(button&&!submitted)button.textContent=user?'Corregir y guardar actividad':'Iniciar sesión para corregir y guardar';
+  }
+  $('activityLoginLink')?.addEventListener('click',saveGuestDraft);
 
   const setText=(id,s)=>{$(id).textContent=s};
   function element(tag,className,txt){
@@ -158,6 +205,7 @@
     setText('activitySessionStatus','Preparando los ejercicios…');
     $('activitySubmit').disabled=false;
     $('activitySubmit').textContent='Corregir y guardar actividad';
+    updateActivityAccess();
     $('activityQuestions').replaceChildren();
     try{
       const {data,error}=await eeDb.from('actividad_preguntas')
@@ -169,6 +217,7 @@
       chosen=a;questions=data;
       questions.forEach((q,i)=>$('activityQuestions').append(renderQuestion(q,i)));
       setText('activitySessionStatus','Actividad preparada: '+data.length+' '+(data.length===1?'pregunta':'preguntas')+'.');
+      restoreGuestDraft();
       $('activitySessionPanel').scrollIntoView({behavior:'smooth',block:'start'});
     }catch(e){
       if(version!==loadVersion)return;
@@ -252,9 +301,15 @@
     busy=true;$('activitySubmit').disabled=true;
     setText('activitySessionStatus','Guardando y corrigiendo en Supabase…');
     try{
-      const {data:{user:current},error:authError}=await eeDb.auth.getUser();
-      if(authError)throw authError;
-      if(!current)throw Error('Inicia sesión desde el perfil para entregar y guardar esta actividad.');
+      const {data,error:authError}=await eeDb.auth.getUser();
+      if(authError&&authError.name!=='AuthSessionMissingError')throw authError;
+      const current=data?.user;
+      if(!current){
+        saveGuestDraft();
+        setText('activitySessionStatus','Respuestas guardadas temporalmente. Inicia sesión y vuelve aquí para corregirlas.');
+        location.assign(loginDestination());
+        return;
+      }
       if(user&&user.id!==current.id)throw Error('La sesión ha cambiado; vuelve a abrir la actividad.');
       const {data,error}=await eeDb.rpc('entregar_actividad',{
         p_actividad_id:pending.actividad,p_respuestas:pending.answers,p_intento_id:pending.id
@@ -283,13 +338,15 @@
   async function refreshUser(){
     const {data:{user:current},error}=await eeDb.auth.getUser();
     user=error?null:current;
-    setText('activityAuthStatus',user?'Sesión iniciada: '+user.email+'. Los intentos se guardan en tu cuenta.':
-      'No has iniciado sesión. Puedes ver las preguntas pero no entregar tus respuestas.');
+    setText('activityAuthStatus',user?'✓ Sesión iniciada. Tus entregas se guardarán en tu cuenta.':
+      'Sin sesión: puedes practicar; para corregir y guardar necesitarás acceder a tu cuenta.');
+    updateActivityAccess();
     await loadAttempts();
   }
   eeDb.auth.onAuthStateChange(event=>{
     if(event==='SIGNED_OUT'){user=null;attempts=[];back(true);renderCatalog();
-      setText('activityAuthStatus','Sin sesión. Inicia sesión desde el perfil para guardar tus intentos.');}
+      setText('activityAuthStatus','Sin sesión. Inicia sesión para corregir y guardar tus intentos.');
+      updateActivityAccess();}
   });
   Promise.all([loadCatalog(),refreshUser()]).catch(e=>
     setText('activityCatalogStatus','Error al cargar actividades: '+(e.message||String(e))));
