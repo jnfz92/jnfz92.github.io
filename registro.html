@@ -1,0 +1,57 @@
+---
+permalink: /registro.html
+---
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,follow">
+<meta name="theme-color" content="#0c398e">
+<meta name="description" content="Crea tu cuenta de Easy English gratis para guardar tus avances.">
+<title>Crear cuenta · Easy English</title>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/assets/login.css?v=20261104-separate-layout-2">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js" defer></script>
+<script src="/supabase-config.js?v=20261029-2" defer></script>
+<script src="/assets/registro.js?v=20261104-separate-register-1" defer></script>
+</head>
+<body class="ee-auth-page ee-auth-register">
+<main class="ee-auth-shell">
+ <section class="ee-auth-brand" aria-labelledby="brandTitle">
+  <a href="/" class="ee-auth-brand-logo"><img src="/favicon.svg" width="42" height="42" alt=""> <span>Easy English</span></a>
+  <div class="ee-auth-brand-copy">
+   <span class="ee-auth-eyebrow">TU ACADEMIA DIGITAL</span>
+   <h1 id="brandTitle">Tu inglés.<br><em>Tu progreso.</em></h1>
+   <p>Aprende B2 paso a paso, guarda tus resultados y continúa donde lo dejaste.</p>
+   <div class="ee-auth-benefits"><span>✓ 44 unidades B2</span><span>✓ Exámenes y repaso</span><span>✓ Tu avance guardado</span></div>
+  </div>
+  <div class="ee-auth-brand-rings" aria-hidden="true"></div>
+  <span class="ee-auth-brand-footer">Aprende inglés a tu ritmo.</span>
+ </section>
+ <section class="ee-auth-right" aria-label="Crea tu cuenta">
+  <div class="ee-auth-panel">
+   <a class="ee-auth-back" href="/">← Volver al inicio</a>
+   <div class="ee-auth-mark"><img src="/favicon.svg" width="36" height="36" alt=""></div>
+   <div class="ee-auth-forms-header">
+    <h2 id="formTitle">Empieza con Easy English.</h2>
+    <p id="formSubtitle">Regístrate gratis y guarda tus avances desde el primer día.</p>
+   </div>
+   <p class="ee-auth-switch">¿Ya tienes una cuenta? <a id="loginLink" href="/login.html">Inicia sesión →</a></p>
+   <form id="registerForm" novalidate>
+    <label for="registerEmail">Correo electrónico</label>
+    <input id="registerEmail" type="email" placeholder="tu@email.com" autocomplete="email" required>
+    <label for="registerPassword">Contraseña</label>
+    <input id="registerPassword" type="password" placeholder="Mínimo 8 caracteres" minlength="8" autocomplete="new-password" required>
+    <label for="registerConfirmation">Confirmar contraseña</label>
+    <input id="registerConfirmation" type="password" placeholder="Repite tu contraseña" minlength="8" autocomplete="new-password" required>
+    <button class="ee-auth-submit" id="registerSubmit" type="submit">Crear mi cuenta gratis <span aria-hidden="true">→</span></button>
+    <p class="ee-auth-helper">Si tu correo requiere verificación, te enviaremos un enlace de confirmación.</p>
+   </form>
+   <p class="ee-auth-status" id="loginStatus" role="status" aria-live="polite" hidden></p>
+   <p class="ee-auth-help">¿Tienes dudas? <a href="/sugerencias.html">Contacta con Easy English</a></p>
+  </div>
+ </section>
+</main>
+</body>
+</html>
