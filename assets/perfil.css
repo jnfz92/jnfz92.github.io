@@ -170,3 +170,18 @@ footer{background:#fffdfb}
 .ee-site.ee-profile #authLayout #registerForm label{display:block;width:100%}
 .ee-site.ee-profile #authLayout #registerForm input{box-sizing:border-box;display:block;align-self:stretch;width:100%;max-width:100%;min-width:0;min-height:49px}
 .ee-site.ee-profile #authLayout #registerForm button[type="submit"]{box-sizing:border-box;display:block;width:100%;align-self:stretch}
+
+/* Recuperación de contraseña: formulario independiente y ancho completo. */
+.ee-site.ee-profile #passwordResetRequest{width:100%;min-width:0;box-sizing:border-box;margin-top:14px;padding:17px;background:#f1f6ff;border:1px solid #d7e4f7;border-radius:13px}
+.ee-site.ee-profile #passwordResetRequest[hidden],.ee-site.ee-profile #passwordRecoveryPanel[hidden]{display:none!important}
+.ee-site.ee-profile #passwordResetRequest h3{font-size:18px;margin:0 0 7px;color:#173f83}
+.ee-site.ee-profile #passwordResetRequest p{font-size:13px;line-height:1.6;margin:0 0 10px}
+.ee-site.ee-profile #passwordResetRequest form{display:flex;flex-direction:column;align-items:stretch;gap:9px;width:100%;max-width:none;margin:10px 0}
+.ee-site.ee-profile #passwordResetRequest label{display:block;width:100%}
+.ee-site.ee-profile #passwordResetRequest input,.ee-site.ee-profile #passwordRecoveryForm input{box-sizing:border-box;width:100%;max-width:100%;min-height:48px;padding:11px 13px;border-radius:11px;border:1px solid #c7d7eb;background:#fff}
+.ee-site.ee-profile #passwordResetRequest button,.ee-site.ee-profile #passwordRecoveryForm button{box-sizing:border-box;width:100%;min-height:48px}
+.ee-site.ee-profile #passwordResetRequestStatus{overflow-wrap:anywhere;margin-top:10px}
+.ee-site.ee-profile #passwordRecoveryPanel{margin:20px auto 30px;max-width:620px}
+.ee-site.ee-profile #passwordRecoveryForm{display:flex;flex-direction:column;gap:10px;max-width:none}
+.ee-site.ee-profile #passwordRecoveryForm label{margin-top:8px}
+.ee-site.ee-profile #passwordRecoveryStatus{margin:14px 0 0;min-height:24px;overflow-wrap:anywhere}
