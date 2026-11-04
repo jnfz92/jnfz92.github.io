@@ -1,49 +1,75 @@
-{% comment %}Footer único de Easy English: mismos estilos en todas las páginas, incluida la portada.{% endcomment %}
+{% comment %}Footer oficial compartido: igual que el footer azul oscuro del perfil (noviembre 2026).{% endcomment %}
 <style>
-/* Estilos encapsulados: evitan diferencias entre index, perfil y las demás páginas. */
-html body.ee-site > footer.ee-footer {
-  box-sizing:border-box !important;
-  display:block !important;
-  width:100% !important;
-  max-width:none !important;
-  min-width:0 !important;
-  clear:both !important;
-  float:none !important;
-  position:relative !important;
-  margin:0 !important;
-  padding:42px 28px !important;
-  border:0 !important;
-  border-top:1px solid #d9e4ff !important;
-  border-radius:0 !important;
-  background:#ebedf2 !important;
-  color:#667085 !important;
-  box-shadow:none !important;
-  font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif !important;
-  font-size:13px !important;
-  font-weight:400 !important;
-  line-height:1.6 !important;
-  text-align:left !important;
-  text-transform:none !important;
-  letter-spacing:normal !important;
+html body.ee-site > footer#ee-shared-footer.ee-footer{
+ box-sizing:border-box!important;display:block!important;position:relative!important;float:none!important;clear:both!important;
+ width:100%!important;max-width:none!important;margin:0!important;
+ padding:48px 24px 18px!important;background:#0d1f42!important;color:#c9d7ef!important;
+ border:0!important;border-top:1px solid #29426b!important;border-radius:0!important;
+ box-shadow:none!important;text-align:left!important;
+ font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif!important;
+ font-size:13px!important;line-height:1.7!important;
 }
-html body.ee-site > footer.ee-footer > p {
-  box-sizing:border-box !important;
-  display:block !important;
-  width:100% !important;
-  max-width:1140px !important;
-  margin:4px auto !important;
-  padding:0 !important;
-  border:0 !important;
-  background:transparent !important;
-  color:inherit !important;
-  font:inherit !important;
-  text-align:left !important;
-  letter-spacing:normal !important;
+#ee-shared-footer .ee-premium-footer-inner{
+ width:min(1160px,100%);max-width:1160px;margin:0 auto;display:grid;
+ grid-template-columns:2fr 1fr 1fr;gap:50px;padding:0 0 34px;
 }
-@media (max-width:640px) {
-  html body.ee-site > footer.ee-footer {padding:30px 20px !important;}
+#ee-shared-footer .ee-premium-footer-about strong{display:block;font-size:20px;color:#fff;letter-spacing:-.04em}
+#ee-shared-footer .ee-premium-footer-about p{font-size:13px;line-height:1.8;color:#b9c9e4;max-width:350px;margin:12px 0 0}
+#ee-shared-footer .ee-premium-footer-inner h2{font-size:12px;line-height:1.5;letter-spacing:.13em;text-transform:uppercase;color:#c7dcff;margin:2px 0 16px;font-weight:900}
+#ee-shared-footer .ee-premium-footer-inner a{display:block;text-decoration:none;color:#c2d3ed;font-size:13px;font-weight:650;margin:10px 0}
+#ee-shared-footer .ee-premium-footer-inner a:hover{color:#fff;text-decoration:underline}
+#ee-shared-footer .ee-premium-footer-inner a:focus-visible{outline:2px solid #94c5ff;outline-offset:3px}
+#ee-shared-footer .ee-premium-footer-bottom{border-top:1px solid #2a4269;padding:16px 0 0;margin:0 auto;width:min(1160px,100%);color:#95aaca;font-size:11px}
+html body.ee-site button#ee-global-top.ee-top{
+ position:fixed!important;bottom:22px!important;right:18px!important;z-index:100!important;
+ width:44px!important;height:44px!important;min-width:44px!important;min-height:44px!important;
+ display:flex!important;align-items:center!important;justify-content:center!important;
+ border:1px solid #d4e4ff!important;border-radius:13px!important;padding:0!important;
+ background:#1c4eb3!important;color:#fff!important;font-size:19px!important;line-height:1!important;
+ cursor:pointer!important;box-shadow:0 10px 25px #0f32744a!important;
 }
+html body.ee-site button#ee-global-top.ee-top:hover{background:#2862d4!important}
+html body.ee-site button#ee-global-top.ee-top:focus-visible{outline:3px solid #f7b731!important;outline-offset:3px}
+html body.ee-site .ee-top:not(#ee-global-top){display:none!important}
+@media(max-width:650px){
+ html body.ee-site > footer#ee-shared-footer.ee-footer{padding:35px 21px 18px!important}
+ #ee-shared-footer .ee-premium-footer-inner{grid-template-columns:1fr 1fr;gap:24px}
+ #ee-shared-footer .ee-premium-footer-about{grid-column:1/-1}
+ #ee-shared-footer .ee-premium-footer-bottom{font-size:10px}
+ html body.ee-site button#ee-global-top.ee-top{bottom:18px!important;right:14px!important}
+}
+@media(max-width:390px){#ee-shared-footer .ee-premium-footer-inner{grid-template-columns:1fr}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto!important}}
 </style>
-<footer class="ee-footer" aria-label="Pie de página de Easy English">
-  <p>Un poco de inglés. Un paso más cada día.</p>
+<footer id="ee-shared-footer" class="ee-footer" aria-label="Pie de página de Easy English">
+ <div class="ee-premium-footer-inner">
+  <div class="ee-premium-footer-about">
+   <strong>✦ Easy English</strong>
+   <p>Un poco de inglés. Un paso más cada día. Aprende con una ruta clara, práctica y recursos a tu ritmo.</p>
+  </div>
+  <div>
+   <h2>Aprende</h2>
+   <a href="/curso.html">Curso B2</a>
+   <a href="/articulos.html">Biblioteca</a>
+   <a href="/vocabulario.html">Vocabulario</a>
+  </div>
+  <div>
+   <h2>Tu espacio</h2>
+   <a href="/examenes.html">Exámenes</a>
+   <a href="/perfil.html">Crear cuenta</a>
+   <a href="https://wnluofonzteaqtlfshgy.supabase.co/storage/v1/object/public/easy-english-downloads/EnglishAPK-v1.2.3.apk">Descargar APK Android</a>
+   <a href="/sugerencias.html">Sugerencias</a>
+  </div>
+ </div>
+ <div class="ee-premium-footer-bottom">Easy English · Plataforma independiente de aprendizaje de inglés.</div>
 </footer>
+<button id="ee-global-top" class="ee-top" type="button" aria-label="Volver arriba" title="Volver arriba">↑</button>
+<script>
+(function(){
+ var topButton=document.getElementById('ee-global-top');
+ if(!topButton)return;
+ topButton.addEventListener('click',function(){
+  window.scrollTo({top:0,behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});
+ });
+})();
+</script>
