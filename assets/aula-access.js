@@ -1,15 +1,15 @@
 /* Navegación y puerta de entrada de Mi aula. La autorización de datos la aplica Supabase RLS. */
 (()=>{
  'use strict';
- const link=document.querySelector('#ee-shared-header a[data-ee-private-aula]');
+ const links=()=>[...document.querySelectorAll('#ee-shared-header a[data-ee-private-link]')];
  const gate=document.getElementById('aulaAccessGate');
  const classroom=document.getElementById('aulaPrivateContent');
- if(!link&&!gate)return;
+ if(!links().length&&!gate)return;
  const SUPABASE_URL='https://wnluofonzteaqtlfshgy.supabase.co';
  const PUBLIC_KEY='sb_publishable_Ef-AXAapcwaPExEFS6kmug_tKLaulM8';
  let db=null,revision=0;
  function show(authorized,reason){
-  if(link)link.hidden=!authorized;
+  links().forEach(link=>{link.hidden=!authorized});
   if(classroom)classroom.hidden=!authorized;
   if(gate){
    gate.hidden=authorized;
@@ -55,9 +55,13 @@
    db=window.eeDb||client.createClient(SUPABASE_URL,PUBLIC_KEY);
    db.auth.onAuthStateChange(event=>{
     if(event==='SIGNED_OUT'){revision++;show(false,'La sesión se ha cerrado. Inicia sesión para acceder a Mi aula.');}
-    else if(event==='SIGNED_IN'||event==='USER_UPDATED')Promise.resolve().then(refresh);
+    else if(event==='SIGNED_IN'||event==='USER_UPDATED'||event==='TOKEN_REFRESHED')Promise.resolve().then(refresh);
    });
    await refresh();
+   // Al volver a una pestaña restaurada, no fiarse de la sesión anterior.
+   window.addEventListener('pageshow',event=>{if(event.persisted)void refresh()});
+   // El encabezado también puede insertarse de forma asíncrona en páginas antiguas.
+   window.addEventListener('easyenglish:header-ready',()=>{void refresh()});
   }catch(e){show(false,'No se pudo comprobar el acceso. Abre Mi perfil para iniciar sesión.');}
  }
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});
