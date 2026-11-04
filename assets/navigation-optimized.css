@@ -163,3 +163,12 @@
  #ee-shared-header .ee-nav{flex:initial;width:min(395px,calc(100vw - 20px));margin:0}
  #ee-shared-header .ee-more-panel{grid-template-columns:minmax(0,1fr)}
 }
+
+/* Tu comunidad: la descarga sigue inmediatamente a Sugerencias,
+   sin ocupar la altura sobrante de las demás columnas. */
+#ee-shared-header .ee-more-panel .ee-menu-group[aria-label="Tu comunidad"]{
+ justify-content:flex-start;
+}
+#ee-shared-header .ee-more-panel .ee-menu-group[aria-label="Tu comunidad"] > a.ee-app-download-link{
+ margin-top:0!important;
+}
