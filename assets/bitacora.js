@@ -16,10 +16,13 @@
     select.replaceChildren(new Option('Sin categoría', ''));
     categories.forEach(c => select.add(new Option(c.nombre,c.id)));
     select.value = categories.some(c => c.id === selected) ? selected : '';
-    const filter = $('bitacoraFilter'), previous = filter.value;
-    filter.replaceChildren(new Option('Todas las categorías','all'),new Option('Sin categoría','none'));
-    categories.forEach(c => filter.add(new Option(c.nombre,c.id)));
-    filter.value = previous === 'all' || previous === 'none' || categories.some(c=>c.id===previous) ? previous : 'all';}
+    const filter = $('bitacoraFilter');
+    if (filter) {
+      const previous = filter.value;
+      filter.replaceChildren(new Option('Todas las categorías','all'),new Option('Sin categoría','none'));
+      categories.forEach(c => filter.add(new Option(c.nombre,c.id)));
+      filter.value = previous === 'all' || previous === 'none' || categories.some(c=>c.id===previous) ? previous : 'all';
+    }
     const list = $('bitacoraCategories');
     list.replaceChildren();
     categories.forEach(c => {
@@ -141,6 +144,21 @@
   $('bitacoraCancelEdit').onclick=clearEditor;
   if($('bitacoraSearch'))$('bitacoraSearch').oninput=()=>{notesPage=1;render()};
   if($('bitacoraFilter'))$('bitacoraFilter').onchange=()=>{notesPage=1;render()};
+  // Permite comentar un artículo de vocabulario sin alterar ni duplicar notas previas.
+  window.addEventListener('easyenglish:bitacora-prefill',event=>{
+    if(!owner)return;
+    const title=String(event.detail?.title||'').trim();
+    const slug=String(event.detail?.slug||'').trim();
+    if(!title||!slug)return;
+    const editor=$('bitacoraEditor');
+    if(editor)editor.open=true;
+    clearEditor();
+    $('bitacoraContent').value='Artículo de vocabulario: '+title+'\n'+location.origin+'/leer.html?slug='+encodeURIComponent(slug)+'\n\nMis apuntes:\n';
+    $('bitacoraContent').focus();
+    root.scrollIntoView({behavior:'smooth',block:'start'});
+    status('Añade tus apuntes y pulsa «Guardar anotación» para conservarlos en tu cuenta.');
+  });
+
   async function syncOwner(){
     const seq=++revision;
     const {data,error}=await db.auth.getUser();
