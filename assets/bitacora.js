@@ -19,7 +19,7 @@
     const filter = $('bitacoraFilter'), previous = filter.value;
     filter.replaceChildren(new Option('Todas las categorías','all'),new Option('Sin categoría','none'));
     categories.forEach(c => filter.add(new Option(c.nombre,c.id)));
-    filter.value = previous === 'all' || previous === 'none' || categories.some(c=>c.id===previous) ? previous : 'all';
+    filter.value = previous === 'all' || previous === 'none' || categories.some(c=>c.id===previous) ? previous : 'all';}
     const list = $('bitacoraCategories');
     list.replaceChildren();
     categories.forEach(c => {
@@ -35,6 +35,7 @@
     $('bitacoraSave').textContent='Guardar anotación';$('bitacoraCancelEdit').hidden=true;
   }
   function render() {
+    if(!$('bitacoraHistory'))return;
     const q=normalize($('bitacoraSearch').value.trim()), filter=$('bitacoraFilter').value;
     const shown=notes.filter(n=>(filter==='all'||(filter==='none'&&!n.categoria_id)||n.categoria_id===filter)
       &&(!q||normalize(n.contenido+' '+(categories.find(c=>c.id===n.categoria_id)?.nombre||'')).includes(q)));
@@ -60,7 +61,7 @@
         const revised=document.createElement('small');revised.textContent='Editada: '+formatDate(n.actualizado_en);footer.append(revised);
       }
       const edit=document.createElement('button');edit.type='button';edit.className='secondary';edit.textContent='Editar';
-      edit.onclick=()=>{editing=n.id;$('bitacoraContent').value=n.contenido;$('bitacoraCategory').value=n.categoria_id||'';$('bitacoraSave').textContent='Guardar cambios';$('bitacoraCancelEdit').hidden=false;$('bitacoraContent').focus();root.scrollIntoView({block:'start',behavior:'smooth'});};
+      edit.onclick=()=>{const details=$('bitacoraEditor');if(details)details.open=true;editing=n.id;$('bitacoraContent').value=n.contenido;$('bitacoraCategory').value=n.categoria_id||'';$('bitacoraSave').textContent='Guardar cambios';$('bitacoraCancelEdit').hidden=false;$('bitacoraContent').focus();root.scrollIntoView({block:'start',behavior:'smooth'});};
       const del=document.createElement('button');del.type='button';del.className='secondary';del.textContent='Eliminar';
       del.onclick=()=>removeNote(n);
       footer.append(edit,del);article.append(header,content,footer);list.append(article);
@@ -138,8 +139,8 @@
     finally{loading=false;$('bitacoraSave').disabled=false;}
   });
   $('bitacoraCancelEdit').onclick=clearEditor;
-  $('bitacoraSearch').oninput=()=>{notesPage=1;render()};
-  $('bitacoraFilter').onchange=()=>{notesPage=1;render()};
+  if($('bitacoraSearch'))$('bitacoraSearch').oninput=()=>{notesPage=1;render()};
+  if($('bitacoraFilter'))$('bitacoraFilter').onchange=()=>{notesPage=1;render()};
   async function syncOwner(){
     const seq=++revision;
     const {data,error}=await db.auth.getUser();
@@ -147,6 +148,7 @@
     const next=error?null:data.user?.id||null;
     if(next===owner && next!==null)return;
     owner=next;categories=[];notes=[];clearEditor();optionList();render();
+    const access=$('bitacoraAccess');if(access){access.textContent=next?'':'Inicia sesión desde tu perfil para consultar tus anotaciones.';root.hidden=!next;}
     if(next)await refresh();
     else status('');
   }
