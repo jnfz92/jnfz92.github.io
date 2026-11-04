@@ -83,6 +83,21 @@ for filename in ("perfil.html", "aula-b2.html", "mensajes.html", "mi-vocabulario
     check('name="robots" content="noindex' in read(filename),
           f"No se excluyó del índice la página privada: {filename}")
 
+# Las 17 partes oficiales del B2 First deben seguir visibles sin artículos de Supabase.
+first = read("first-certificate.html")
+check(first.count('class="ee-first-part"') == 17,
+      "First Certificate debe mostrar las 17 partes oficiales.")
+for section in ("use-of-english", "reading", "writing", "listening", "speaking"):
+    check(f'id="{section}"' in first,
+          f"Falta la categoría de First Certificate: {section}")
+check("supabase-config.js" not in first and "articulos-supabase.js" not in first,
+      "La estructura del B2 First no debe depender de Supabase.")
+check('href="/first-certificate.html"' in header and
+      'id="firstPreviewTitle"' in library,
+      "El temario completo de First Certificate debe encontrarse desde el menú y la biblioteca.")
+check("https://jnfz92.github.io/first-certificate.html" in read("sitemap.xml"),
+      "Falta First Certificate en el sitemap.")
+
 check('<urlset' in read("sitemap.xml"), "Falta el sitemap.")
 check('Sitemap:' in read("robots.txt"), "El robots.txt no declara el sitemap.")
 
