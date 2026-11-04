@@ -147,3 +147,19 @@
 }
 .ee-skip-link:focus-visible{transform:translateY(0);outline:3px solid #facc15;outline-offset:2px}
 #contenido-principal{scroll-margin-top:95px}
+
+/* Menú sin huecos al ocultar enlaces que requieren sesión. */
+#ee-shared-header .ee-nav{flex:0 1 auto;margin-left:auto;justify-content:flex-start}
+#ee-shared-header .ee-nav a[data-ee-private-link][hidden],
+#ee-shared-header .ee-nav a[data-ee-private-link][hidden]:is(:hover,:focus,:active),
+#ee-shared-header .ee-more-panel a[data-ee-private-link][hidden]{
+ display:none!important;flex:none!important;width:0!important;min-width:0!important;
+ min-height:0!important;padding:0!important;margin:0!important;border:0!important;
+}
+#ee-shared-header .ee-more-panel{
+ grid-template-columns:repeat(3,minmax(0,1fr));
+}
+@media(max-width:900px){
+ #ee-shared-header .ee-nav{flex:initial;width:min(395px,calc(100vw - 20px));margin:0}
+ #ee-shared-header .ee-more-panel{grid-template-columns:minmax(0,1fr)}
+}
