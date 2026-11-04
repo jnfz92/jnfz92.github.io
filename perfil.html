@@ -252,7 +252,7 @@ permalink: /perfil.html
 <details class="profile-disclosure"><summary><span class="profile-disclosure-title">Datos y seguridad</span><span class="profile-disclosure-sub">Exportar, cerrar sesión o eliminar</span><span class="profile-disclosure-chevron" aria-hidden="true">⌄</span></summary><section class="panel account-danger" id="accountActions" hidden aria-labelledby="deleteAccountTitle"><span class="section-kicker">SEGURIDAD DE LA CUENTA</span><h2 id="deleteAccountTitle">Mis datos y seguridad</h2><p class="muted">Descarga una copia de tu historial de aprendizaje, cierra sesión o elimina tu cuenta y sus datos asociados.</p><div class="account-actions"><button class="secondary" type="button" id="exportAccountData">Descargar mis datos de aprendizaje (JSON)</button><button class="secondary" type="button" id="signout">↪ Cerrar sesión</button><button class="danger-button" type="button" id="showDeleteAccount">Eliminar mi cuenta</button></div><p id="exportAccountStatus" class="muted" role="status" aria-live="polite"></p><div id="deleteAccountPanel" hidden><p class="muted"><strong>Esta acción no se puede deshacer.</strong> Escribe ELIMINAR MI CUENTA para confirmarlo.</p><label for="deleteConfirm">Confirmación</label><input id="deleteConfirm" type="text" autocomplete="off" placeholder="ELIMINAR MI CUENTA"><div class="account-actions"><button class="danger-button" id="confirmDeleteAccount" type="button" disabled>Eliminar definitivamente</button><button class="secondary" id="cancelDeleteAccount" type="button">Cancelar</button></div><p class="muted" id="deleteAccountStatus" role="status"></p></div></section></details>
 </div>
 </div>
-</main><footer class="ee-footer"><p>Un poco de ingl?s. Un paso m?s cada d?a.</p></footer>
+</main>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script src="supabase-config.js"></script>
 <script src="/assets/bitacora.js?v=20261104-history-1" defer></script><script src="/assets/perfil.js?v=20261104-pagination-1"></script>
@@ -296,4 +296,5 @@ permalink: /perfil.html
   revealHash();
 })();
 </script>
+{% include footer.html %}
 </body></html>
