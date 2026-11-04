@@ -98,7 +98,7 @@ permalink: /leer.html
   if(session?.access_token)headers.Authorization='Bearer '+session.access_token;
   if(resolveSlug(slug)==='speaking-mi-rutina-jueves-fin-de-semana-b1-b2'&&!session?.access_token){
    status.textContent='Este artículo es privado. Inicia sesión en Easy English para leerlo.';
-   const login=document.createElement('a');login.href='/perfil.html';login.textContent='Iniciar sesión en mi perfil';
+   const login=document.createElement('a');login.href='/login.html?next='+encodeURIComponent(location.pathname+location.search);login.textContent='Iniciar sesión para leer este artículo';
    status.after(login);return;
   }
   const list=await loadJSON('articulos?select=html,titulo,descripcion&slug=eq.'+encodeURIComponent(resolveSlug(slug))+'&limit=1');
@@ -219,7 +219,7 @@ permalink: /leer.html
   // Carga secuencial: SDK de autenticación, configuración pública y cliente de comentarios.
   if(!doc.querySelector('script[src*="supabase-js"]'))addScript('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js');
   if(!doc.querySelector('script[src*="supabase-config.js"]'))addScript('/supabase-config.js');
-  addScript('/assets/comentarios-articulos.js?v=20261018');
+  addScript('/assets/comentarios-articulos.js?v=20261104-auth-links-1');
   // Mantener el favicon en el documento sustituido con HTML de Supabase.
   const favicon=doc.createElement('link');favicon.rel='icon';favicon.type='image/svg+xml';favicon.href='/favicon.svg?v=20261030-blue-logo-2';doc.head.append(favicon);
   // La URL canónica y la descripción corresponden al artículo, no al cargador.
