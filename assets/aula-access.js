@@ -4,7 +4,7 @@
  const links=()=>[...document.querySelectorAll('#ee-shared-header a[data-ee-private-link]')];
  const gate=document.getElementById('aulaAccessGate');
  const classroom=document.getElementById('aulaPrivateContent');
- if(!links().length&&!gate)return;
+ // El menú puede insertarse después de cargar la página: no salir antes de comprobarlo.
  const SUPABASE_URL='https://wnluofonzteaqtlfshgy.supabase.co';
  const PUBLIC_KEY='sb_publishable_Ef-AXAapcwaPExEFS6kmug_tKLaulM8';
  let db=null,revision=0;
