@@ -11,6 +11,11 @@ on:
       - 'assets/curso-supabase.js'
       - 'assets/continue-learning.js'
       - 'assets/aula-*.js'
+      - 'assets/actividades.js'
+      - 'assets/ee-ai.js'
+      - 'assets/writing-ai.js'
+      - 'assets/writing-editor.js'
+      - 'assets/clave-openai.js'
       - '_includes/header.html'
       - 'sitemap.xml'
       - 'robots.txt'
@@ -26,3 +31,11 @@ jobs:
       - uses: actions/checkout@v4
       - name: Check catalog and navigation
         run: python3 scripts/check_catalog.py
+      - name: Check JavaScript syntax for learning and AI features
+        run: |
+          node --check assets/actividades.js
+          node --check assets/ee-ai.js
+          node --check assets/writing-ai.js
+          node --check assets/aula-ai-plan.js
+          node --check assets/clave-openai.js
+          node --check assets/writing-editor.js
