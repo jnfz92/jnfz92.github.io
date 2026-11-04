@@ -54,7 +54,7 @@ permalink: /leer.html
   return node;
  }
  async function completeIndex(doc){
-  const list=await loadJSON('articulos?select=slug,titulo,descripcion&order=titulo.asc&limit=1000');
+  const list=await loadJSON('articulos?select=slug,titulo,descripcion&usuario_id=is.null&order=titulo.asc&limit=1000');
   const used=new Set([slug]);
   for(const a of doc.querySelectorAll('section.section a.card[href]')){
    const found=originalSlug(a.getAttribute('href'));
