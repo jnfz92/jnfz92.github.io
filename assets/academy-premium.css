@@ -297,24 +297,16 @@ body.ee-site{background:#f7f9fc;color:#172744;-webkit-font-smoothing:antialiased
 .ee-landing .ee-action-row .ee-action-apk{color:#fff!important;background:#0b285e;border:1px solid #a2c6ff;box-shadow:0 6px 20px #071d4220}
 .ee-landing .ee-action-row .ee-action-apk:hover{background:#173c85}
 
-/* Descarga para Android: diseño compacto y un CTA principal. */
-.ee-landing .ee-apk-showcase{display:grid;grid-template-columns:70px minmax(0,1fr) minmax(225px,260px);align-items:center;gap:24px;margin:6px 0 58px;padding:28px 30px;border-radius:24px;background:linear-gradient(110deg,#eff5ff 0%,#fff 74%);border:1px solid #d4e3fb;box-shadow:0 12px 32px #0f306512}
-.ee-landing .ee-apk-showcase-icon{width:68px;height:68px;border-radius:20px;display:grid;place-items:center;background:linear-gradient(150deg,#448bff,#1e5eff 60%,#1544b0);box-shadow:0 10px 25px #1e5eff33}
-.ee-landing .ee-apk-showcase-icon span{font-size:25px;font-weight:950;letter-spacing:-.075em;color:#fff}
+/* Descarga Android: diseño limpio y un único enlace. */
+.ee-landing .ee-apk-showcase{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:24px;margin:8px 0 56px;padding:30px 34px;border:1px solid #dce5f2;border-radius:19px;background:#fff;box-shadow:0 5px 22px #163e8c0b}
 .ee-landing .ee-apk-showcase-copy{min-width:0}
-.ee-landing .ee-apk-eyebrow{font-size:10px;font-weight:900;letter-spacing:.12em;color:#315ead}
-.ee-landing .ee-apk-showcase-copy h2{color:#122f68;font-size:clamp(22px,2.65vw,29px);line-height:1.18;letter-spacing:-.035em;margin:9px 0 7px}
-.ee-landing .ee-apk-showcase-copy>p{font-size:14px;line-height:1.55;color:#526887;margin:0;max-width:450px}
-.ee-landing .ee-apk-features{display:flex;flex-wrap:wrap;gap:7px 18px;margin-top:14px;color:#284d89;font-size:12px;font-weight:750}
-.ee-landing .ee-apk-showcase-actions{display:flex;flex-direction:column;align-items:stretch;min-width:0;gap:8px}
-.ee-landing .ee-apk-showcase-download{display:flex;align-items:center;justify-content:center;gap:10px;padding:14px 15px;min-height:54px;border-radius:14px;border:1px solid #1a53e6;background:#1e5eff;color:#fff!important;text-decoration:none!important;font-size:14px;font-weight:850;line-height:1.2;box-shadow:0 8px 18px #1e5eff38;transition:transform .15s,background .15s,box-shadow .15s}
-.ee-landing .ee-apk-showcase-download:hover{background:#164bce;transform:translateY(-2px);box-shadow:0 12px 22px #1e5eff42}
+.ee-landing .ee-apk-eyebrow{display:block;color:#2c59a8;font-size:11px;font-weight:800;letter-spacing:.1em}
+.ee-landing .ee-apk-showcase-copy h2{margin:9px 0 8px;color:#15356c;font-size:clamp(23px,2.8vw,30px);line-height:1.2;letter-spacing:-.025em}
+.ee-landing .ee-apk-showcase-copy>p{max-width:560px;margin:0;color:#516480;font-size:14px;line-height:1.65}
+.ee-landing .ee-apk-showcase-actions{display:flex;flex-direction:column;align-items:stretch;gap:10px;min-width:230px}
+.ee-landing .ee-apk-showcase-download{display:flex;align-items:center;justify-content:center;gap:14px;min-height:52px;padding:14px 22px;border-radius:12px;background:#1e5eff;color:#fff!important;text-decoration:none!important;font-size:15px;font-weight:850;line-height:1.2;box-shadow:none;transition:background .15s}
+.ee-landing .ee-apk-showcase-download:hover{background:#1749bf}
 .ee-landing .ee-apk-showcase-download:focus-visible{outline:3px solid #e9a640;outline-offset:3px}
-.ee-landing .ee-apk-showcase-download svg{flex-shrink:0}
-.ee-landing .ee-apk-download-meta{font-size:11px;color:#687d9a;text-align:center;font-weight:750}
-.ee-landing .ee-apk-install-help{font-size:11px;color:#526887;text-align:center}
-.ee-landing .ee-apk-install-help summary{display:inline-block;cursor:pointer;text-decoration:underline;text-underline-offset:3px;font-weight:650}
-.ee-landing .ee-apk-install-help p{line-height:1.5;margin:7px 0 0;text-align:left}
-@media(max-width:980px){.ee-landing .ee-apk-showcase{grid-template-columns:64px minmax(0,1fr);padding:26px}.ee-landing .ee-apk-showcase-icon{width:62px;height:62px}.ee-landing .ee-apk-showcase-actions{grid-column:2;max-width:330px}}
-@media(max-width:600px){.ee-landing .ee-apk-showcase{grid-template-columns:54px minmax(0,1fr);column-gap:14px;row-gap:17px;padding:20px 17px;margin-bottom:42px;border-radius:19px}.ee-landing .ee-apk-showcase-icon{width:52px;height:52px;border-radius:15px;align-self:start}.ee-landing .ee-apk-showcase-icon span{font-size:20px}.ee-landing .ee-apk-showcase-copy h2{font-size:clamp(21px,5.2vw,26px)}.ee-landing .ee-apk-showcase-copy>p{font-size:13px}.ee-landing .ee-apk-features{font-size:11px;gap:5px 11px}.ee-landing .ee-apk-showcase-actions{grid-column:1/-1;max-width:none}.ee-landing .ee-apk-showcase-download{min-height:52px}}
-@media(prefers-reduced-motion:reduce){.ee-landing .ee-apk-showcase-download{transition:none}.ee-landing .ee-apk-showcase-download:hover{transform:none}}
+.ee-landing .ee-apk-download-meta{font-size:12px;text-align:center;color:#687c99}
+@media(max-width:740px){.ee-landing .ee-apk-showcase{grid-template-columns:minmax(0,1fr);padding:23px 20px;gap:20px;margin-bottom:42px}.ee-landing .ee-apk-showcase-actions{min-width:0;width:100%}.ee-landing .ee-apk-showcase-download{width:100%}.ee-landing .ee-apk-showcase-copy h2{font-size:25px}}
+@media(prefers-reduced-motion:reduce){.ee-landing .ee-apk-showcase-download{transition:none}}
