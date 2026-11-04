@@ -37,8 +37,24 @@ permalink: /examenes.html
  .ee-site.ee-exam .catalog-card{padding:18px}
 }
 </style>
-<link rel="canonical" href="https://jnfz92.github.io/examenes.html"></head><body class="ee-site ee-exam">{% include header.html %}<main class="exam-catalog"><section class="catalog-hero"><span class="exam-eyebrow">✦ PRACTICE MAKES PROGRESS</span><h1>Tu próximo examen,<br><em>tu próxima mejora.</em></h1><p>Practica inglés B1–B2 con preguntas reales y explicaciones para aprender de cada intento.</p><a class="cta" href="practicar.html">Practicar y guardar mis notas ↗</a><a class="ee-exam-gold-button" href="repasar-leidos.html">✨ Generar examen de mis artículos leídos</a><span class="catalog-facts">EXÁMENES PROTEGIDOS · CORRECCIÓN EXPLICADA</span></section><div class="catalog-heading"><div><span class="exam-section-tag">ELIGE TU RETO</span><h2>Biblioteca de exámenes</h2><p>Inicia sesión para acceder a los exámenes y guardar todas tus respuestas y notas en Supabase.</p></div></div><p id="catalogStatus" role="status" aria-live="polite">Comprobando sesión de Supabase…</p><div class="catalog-grid" id="catalogGrid"></div></main>
+<link rel="canonical" href="https://jnfz92.github.io/examenes.html"></head><body class="ee-site ee-exam">{% include header.html %}<main class="exam-catalog"><section class="catalog-hero"><span class="exam-eyebrow">✦ PRACTICE MAKES PROGRESS</span><h1>Tu próximo examen,<br><em>tu próxima mejora.</em></h1><p>Practica inglés B1–B2 con preguntas reales y explicaciones para aprender de cada intento.</p><a class="cta" href="practicar.html">Practicar y guardar mis notas ↗</a><a class="ee-exam-gold-button" href="repasar-leidos.html">✨ Generar examen de mis artículos leídos</a><span class="catalog-facts">EXÁMENES PROTEGIDOS · CORRECCIÓN EXPLICADA</span></section><div class="catalog-heading"><div><span class="exam-section-tag">ELIGE TU RETO</span><h2>Biblioteca de exámenes</h2><p>Inicia sesión para acceder a los exámenes y guardar todas tus respuestas y notas en Supabase.</p></div></div><p id="catalogStatus" role="status" aria-live="polite">Comprobando tu sesión…</p><section class="ee-exam-session" id="examSessionNotice" aria-labelledby="examSessionTitle" hidden><div class="ee-exam-session-icon" aria-hidden="true">🔐</div><div class="ee-exam-session-copy"><span class="ee-exam-session-eyebrow">ACCESO A LOS EXÁMENES</span><h3 id="examSessionTitle">Tus exámenes, en un mismo lugar.</h3><p id="examSessionDescription">Inicia sesión para acceder a la biblioteca, realizar los exámenes y guardar tus resultados.</p><div class="ee-exam-session-actions"><a class="ee-exam-session-primary" href="/perfil.html">Iniciar sesión <span aria-hidden="true">→</span></a><a class="ee-exam-session-secondary" href="/perfil.html">Crear una cuenta gratis</a></div></div></section><div class="catalog-grid" id="catalogGrid"></div></main>
 <style>
+/* Estado de sesión: tarjeta clara en lugar de un mensaje aislado. */
+.ee-site.ee-exam .ee-exam-session{display:flex;align-items:flex-start;gap:20px;max-width:780px;margin:0 0 38px;padding:clamp(22px,3vw,32px);border:1px solid #d6e3fa;border-radius:22px;background:linear-gradient(135deg,#fff 0%,#eff5ff 100%);box-shadow:0 9px 28px #17488c0d}
+.ee-site.ee-exam .ee-exam-session[hidden]{display:none!important}
+.ee-exam-session-icon{display:grid;place-items:center;flex:0 0 58px;width:58px;height:58px;border-radius:17px;background:#e3eeff;font-size:27px}
+.ee-exam-session-copy{min-width:0}
+.ee-exam-session-eyebrow{font-size:10px;font-weight:900;letter-spacing:.13em;color:#2860b4}
+.ee-site.ee-exam .ee-exam-session h3{margin:5px 0 9px;color:#163e8c;font-size:clamp(23px,3vw,29px);line-height:1.2}
+.ee-site.ee-exam .ee-exam-session p{margin:0;max-width:590px;color:#526986;font-size:14px;line-height:1.65}
+.ee-exam-session-actions{display:flex;align-items:center;flex-wrap:wrap;gap:12px;margin-top:22px}
+.ee-site.ee-exam .ee-exam-session-actions a{display:inline-flex;align-items:center;justify-content:center;gap:12px;min-height:45px;padding:11px 17px;border-radius:11px;text-decoration:none;font-size:14px;font-weight:800}
+.ee-site.ee-exam .ee-exam-session-primary{background:#1e5eff;color:#fff}
+.ee-site.ee-exam .ee-exam-session-primary:hover{background:#164ac9;color:#fff}
+.ee-site.ee-exam .ee-exam-session-secondary{background:#fff;color:#1d4d9c;border:1px solid #ccdcf7}
+.ee-site.ee-exam .ee-exam-session-secondary:hover{background:#eaf2ff}
+@media(max-width:560px){.ee-site.ee-exam .ee-exam-session{gap:14px;flex-direction:column}.ee-exam-session-icon{width:49px;height:49px;flex-basis:49px}.ee-exam-session-actions{width:100%}.ee-site.ee-exam .ee-exam-session-actions a{flex:1 1 190px}}
+
 .catalog-card .catalog-secondary{display:inline-block;margin-top:12px;font-size:13px;font-weight:700;color:#58667f}
 .catalog-card .catalog-go{width:fit-content;min-height:35px}
 #catalogStatus{color:#536077;font-size:14px;margin:0 0 20px}
@@ -48,14 +64,25 @@ permalink: /examenes.html
 <script>
 (async function(){
  const grid=document.getElementById('catalogGrid'), status=document.getElementById('catalogStatus'), facts=document.querySelector('.catalog-facts');
- function note(t){status.textContent=t}
+ const notice=document.getElementById('examSessionNotice'), description=document.getElementById('examSessionDescription');
+ let revision=0;
+ function note(t){status.textContent=t;status.hidden=!t}
+ function guest(message){
+  notice.hidden=false;
+  description.textContent=message||'Inicia sesión para acceder a la biblioteca, realizar los exámenes y guardar tus resultados.';
+  note('');
+ }
  async function load(){
-  grid.replaceChildren();
-  let user=null;
+  const ticket=++revision;
+  grid.replaceChildren();notice.hidden=true;note('Comprobando tu sesión…');
   try{
-   const a=await eeDb.auth.getUser();if(a.error)throw a.error;user=a.data.user;
-   if(!user){note('🔒 Inicia sesión en Mi perfil para ver los exámenes.');const a=document.createElement('a');a.href='perfil.html';a.textContent='Iniciar sesión o registrarse →';grid.append(a);return}
+   const a=await eeDb.auth.getUser();
+   if(ticket!==revision)return;
+   if(a.error&&a.error.name!=='AuthSessionMissingError')throw a.error;
+   const user=a.data?.user;
+   if(!user){guest();return}
    const r=await eeDb.from('examenes').select('id,titulo,fecha,nivel,descripcion').eq('publicado',true).order('fecha',{ascending:false});
+   if(ticket!==revision)return;
    if(r.error)throw r.error;
    (r.data||[]).forEach(e=>{const a=document.createElement('a');a.className='catalog-card';a.href='practicar.html?examen='+encodeURIComponent(e.id);
    const tag=document.createElement('span');tag.className='catalog-tag';tag.textContent='INGLÉS '+(e.nivel||'');a.append(tag);
@@ -63,8 +90,11 @@ permalink: /examenes.html
    const p=document.createElement('p');p.textContent=e.descripcion||'20 preguntas, corrección y resultados privados';a.append(p);
    const go=document.createElement('span');go.className='catalog-go';go.textContent='Empezar examen protegido →';a.append(go);grid.append(a)});
    if(facts)facts.textContent=(r.data||[]).length+' EXÁMENES DISPONIBLES · CORRECCIÓN EXPLICADA';
-   note((r.data||[]).length+' exámenes disponibles para tu cuenta');
-  }catch(err){note('No se pudo cargar el catálogo: '+err.message)}
+   note((r.data||[]).length ? (r.data||[]).length+' exámenes disponibles para tu cuenta' : 'Todavía no hay exámenes publicados.');
+  }catch(err){
+   if(ticket!==revision)return;
+   note('No hemos podido comprobar tu sesión o cargar los exámenes. Actualiza la página para volver a intentarlo.');
+  }
  }
  await load();
  eeDb.auth.onAuthStateChange(()=>{setTimeout(load,0)});
