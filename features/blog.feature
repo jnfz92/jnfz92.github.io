@@ -19,6 +19,7 @@ Característica: Navegación y acceso público a Easy English
       | Exámenes | /examenes.html |
       | Practicar | /practicar.html |
       | Perfil | /perfil.html |
+      | Acceso | /login.html |
       | Actividades | /actividades.html |
       | Vocabulario | /vocabulario.html |
       | Comunidad | /comunidad.html |
@@ -36,11 +37,11 @@ Característica: Navegación y acceso público a Easy English
     Entonces el artículo muestra un título principal
 
   @publico
-  Escenario: La selección de exámenes existe y ofrece un modo de empezar
+  Escenario: Los exámenes privados redirigen al acceso
     Dado que navego a "/practicar.html"
-    Entonces encuentro el selector de exámenes
+    Entonces aparece la página central de inicio de sesión y registro
 
   @publico
-  Escenario: El perfil ofrece autenticación sin exponer los datos privados
+  Escenario: El perfil privado redirige al acceso
     Dado que navego a "/perfil.html"
-    Entonces existe un formulario de autenticación del perfil
+    Entonces aparece la página central de inicio de sesión y registro
