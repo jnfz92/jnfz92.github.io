@@ -12,11 +12,26 @@ permalink: /aula-b2.html
 <link rel="stylesheet" href="/assets/navigation.css?v=20261030-menu-blue-3">
 <link rel="stylesheet" href="/assets/aula-b2.css?v=20261101-aula-1">
 <script src="/assets/navigation.js?v=20261030-menu-blue-4" defer></script>
-<style>.aula-simulator{border-top:1px solid #dbe5f2;padding-top:12px}.aula-simulator select{display:block;width:100%;margin:9px 0;border:1px solid #ccd9ea;background:white;color:#244268;padding:10px;border-radius:10px}.aula-simulator label{font-size:13px;font-weight:800}</style><link rel="preconnect" href="https://wnluofonzteaqtlfshgy.supabase.co" crossorigin>
+<style>
+.ee-aula .aula-access-gate{min-height:55vh;display:flex;align-items:center;justify-content:center;padding:42px 18px 70px}
+.ee-aula .aula-access-message{width:min(650px,100%);padding:32px;background:#fff;border:1px solid #dce7fa;border-radius:22px;box-shadow:0 12px 34px #163e8c12;text-align:center}
+.ee-aula .aula-access-message h1{font-size:clamp(22px,4vw,32px);line-height:1.2;color:#153c7c}
+.ee-aula .aula-access-message p{color:#5d7190}
+.ee-aula .aula-access-message .aula-linkbutton{display:inline-flex;text-decoration:none;margin-top:12px}
+.ee-aula #aulaAccessGate[hidden],.ee-aula #aulaPrivateContent[hidden]{display:none!important}
+.aula-simulator{border-top:1px solid #dbe5f2;padding-top:12px}.aula-simulator select{display:block;width:100%;margin:9px 0;border:1px solid #ccd9ea;background:white;color:#244268;padding:10px;border-radius:10px}.aula-simulator label{font-size:13px;font-weight:800}</style><link rel="preconnect" href="https://wnluofonzteaqtlfshgy.supabase.co" crossorigin>
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 </head><body class="ee-site ee-aula">
 {% include header.html %}
-<main class="aula-wrap">
+<section id="aulaAccessGate" class="aula-wrap aula-access-gate" role="status" aria-live="polite">
+ <div class="aula-access-message">
+  <span class="aula-kicker">ACCESO PERSONAL</span>
+  <h1>Mi aula es solo para usuarios registrados</h1>
+  <p data-aula-access-message>Comprobando tu sesión…</p>
+  <a href="/perfil.html" class="aula-linkbutton">Iniciar sesión o crear cuenta →</a>
+ </div>
+</section>
+<main class="aula-wrap" id="aulaPrivateContent" hidden>
 <section class="aula-hero"><p class="aula-kicker">✦ EASY ENGLISH · TU ESPACIO PERSONAL</p>
 <h1>Mi aula B2</h1><p>Un camino concreto para saber qué practicar hoy, sin perder de vista tu progreso.</p>
 <div class="aula-hero-links"><a href="#today">Mi sesión de hoy</a><a href="#diagnostic">Mi diagnóstico</a><a href="#plan">Mi plan</a><a href="#mock">Mis simulacros</a></div></section>
