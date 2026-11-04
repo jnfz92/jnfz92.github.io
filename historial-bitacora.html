@@ -1,0 +1,78 @@
+---
+permalink: /historial-bitacora.html
+---
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,follow"><meta name="theme-color" content="#1e5eff">
+<meta name="description" content="Historial privado de anotaciones, búsqueda, filtros y categorías de Easy English.">
+<title>Historial de mi bitácora · Easy English</title>
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="stylesheet" href="/assets/perfil.css?v=20261030-unified-blue-2">
+<link rel="stylesheet" href="/assets/site.css?v=20261030-unified-blue-2">
+<link rel="stylesheet" href="/assets/navigation.css?v=20261030-menu-blue-3">
+<link rel="stylesheet" href="/assets/bitacora.css?v=20261104-history-1">
+<script src="/assets/navigation.js?v=20261030-menu-blue-4" defer></script>
+<style>
+.ee-bitacora-history main{max-width:900px;margin:0 auto;padding:28px 18px 70px}
+.ee-bitacora-history .history-intro{margin:0 0 20px}
+.ee-bitacora-history .history-intro h1{font-size:clamp(1.8rem,4vw,2.6rem);margin:6px 0}
+.ee-bitacora-history .history-links{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+.ee-bitacora-history .history-links a{padding:9px 14px;border:1px solid #c8d9f5;border-radius:11px;color:#2252a5;font-weight:750;background:#fff}
+.ee-bitacora-history .panel{margin-top:14px}
+.ee-bitacora-history .bitacora-panel{max-width:100%}
+.ee-bitacora-history #bitacoraEditor{border:1px solid #dce7f7;border-radius:14px;padding:14px;background:#f8faff;margin-top:16px}
+.ee-bitacora-history #bitacoraEditor summary{font-weight:800;color:#2051a2;cursor:pointer}
+.ee-bitacora-history #bitacoraEditor[open] summary{margin-bottom:12px}
+.ee-bitacora-history .history-list-heading{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.ee-bitacora-history .history-list-heading h3{margin:8px 0}
+.ee-bitacora-history .profile-list-pagination{display:flex;justify-content:center;align-items:center;gap:12px;flex-wrap:wrap;margin:16px 0;padding:12px}
+.ee-bitacora-history .profile-list-pagination[hidden]{display:none}
+.ee-bitacora-history .profile-list-pagination button{border:1px solid #bed2ee;background:#fff;color:#2353a5;border-radius:10px;padding:10px 14px;font-weight:800}
+.ee-bitacora-history .profile-list-pagination button:disabled{opacity:.45}
+.ee-bitacora-history .profile-list-pagination span{font-size:13px;color:#526888;font-weight:700}
+@media(max-width:600px){.ee-bitacora-history main{padding:18px 12px 50px}.ee-bitacora-history .panel{padding:16px}.ee-bitacora-history .history-links a{flex:1 1 100%;text-align:center}}
+</style>
+</head>
+<body class="ee-site ee-profile ee-bitacora-history">
+{% include header.html %}
+<main>
+<header class="history-intro">
+<p class="eyebrow">✦ MI CUADERNO DE INGLÉS</p>
+<h1>Historial de mi bitácora</h1>
+<p class="muted">Todas tus anotaciones personales en un solo lugar. Busca por palabra, filtra por concepto y consulta tus dudas sin ocupar espacio en el perfil.</p>
+<div class="history-links"><a href="/perfil.html#bitacoraTitle">← Volver al perfil</a><a href="/perfil.html">Mi aprendizaje</a></div>
+</header>
+<p id="bitacoraAccess" role="status" aria-live="polite">Comprobando tu sesión…</p>
+<section class="panel bitacora-panel" id="bitacoraPanel" hidden aria-labelledby="bitacoraTitle">
+<p class="section-kicker">MI CUADERNO PERSONAL</p>
+<h2 id="bitacoraTitle">Mis anotaciones</h2>
+<p class="muted">Tus notas son privadas y están sincronizadas con tu cuenta.</p>
+<details id="bitacoraEditor"><summary>+ Nueva anotación o gestionar categorías</summary><form id="bitacoraCategoryForm" class="bitacora-form" autocomplete="off">
+<label for="bitacoraNewCategory">Crear nuevo concepto o categoría</label>
+<div class="bitacora-category-form"><input id="bitacoraNewCategory" type="text" maxlength="60" placeholder="Ej.: Present perfect, Writing, Vocabulary…" required><button class="secondary" type="submit">+ Añadir categoría</button></div>
+</form>
+<div class="bitacora-categories" id="bitacoraCategories" aria-label="Mis categorías"></div>
+<form id="bitacoraNoteForm" class="bitacora-form">
+<label for="bitacoraCategory">Concepto de mi anotación</label>
+<select id="bitacoraCategory"><option value="">Sin categoría</option></select>
+<label for="bitacoraContent">Mi duda o anotación</label>
+<textarea id="bitacoraContent" maxlength="10000" required placeholder="Ej.: ¿En qué casos se usa present perfect y cuándo past simple?"></textarea>
+<p class="muted">La fecha y la hora se registran automáticamente al guardar.</p>
+<div class="bitacora-actions"><button class="primary" id="bitacoraSave" type="submit">Guardar anotación</button><button class="secondary" id="bitacoraCancelEdit" type="button" hidden>Cancelar edición</button></div>
+</form>
+<p class="muted bitacora-status" id="bitacoraStatus" role="status" aria-live="polite"></p>
+</details><div class="history-list-heading"><h3>Mis notas guardadas</h3><span class="muted">6 por página</span></div>
+<div class="bitacora-toolbar">
+<input id="bitacoraSearch" type="search" aria-label="Buscar anotaciones" placeholder="Buscar entre mis dudas…">
+<select id="bitacoraFilter" aria-label="Filtrar por categoría"><option value="all">Todas las categorías</option><option value="none">Sin categoría</option></select>
+</div>
+<p class="muted" id="bitacoraCount" aria-live="polite">0 anotaciones</p>
+<div id="bitacoraHistory" aria-live="polite"></div>
+</section>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="/supabase-config.js"></script>
+<script src="/assets/bitacora.js?v=20261104-history-1" defer></script>
+</body></html>
