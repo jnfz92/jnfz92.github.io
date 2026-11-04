@@ -15,14 +15,19 @@
   }
   function loginDestination(){return '/login.html?next='+encodeURIComponent(activityTarget())}
   function saveGuestDraft(){
-    if(!chosen)return;
+    if(!chosen)return false;
     try{
       const fields=[...$('activityQuestions').querySelectorAll('input[name],textarea[name],select[name]')]
         .map(field=>({name:field.name,type:field.type,value:field.value,checked:field.checked}));
       sessionStorage.setItem(GUEST_DRAFT,JSON.stringify({
         slug:chosen.slug,created:Date.now(),fields
       }));
-    }catch(error){console.warn('No se pudieron guardar las respuestas temporalmente',error)}
+      return true;
+    }catch(error){
+      console.warn('No se pudieron guardar las respuestas temporalmente',error);
+      setText('activitySessionStatus','El navegador no pudo conservar tus respuestas. Cópialas antes de iniciar sesión.');
+      return false;
+    }
   }
   function restoreGuestDraft(){
     if(!chosen)return;
@@ -52,7 +57,7 @@
     const button=$('activitySubmit');
     if(button&&!submitted)button.textContent=user?'Corregir y guardar actividad':'Iniciar sesión para corregir y guardar';
   }
-  $('activityLoginLink')?.addEventListener('click',saveGuestDraft);
+  $('activityLoginLink')?.addEventListener('click',event=>{if(!saveGuestDraft())event.preventDefault()});
 
   const setText=(id,s)=>{$(id).textContent=s};
   function element(tag,className,txt){
@@ -215,6 +220,7 @@
       if(version!==loadVersion)return;
       if(!data?.length||data.length>50)throw Error('Esta actividad no tiene entre 1 y 50 preguntas.');
       chosen=a;questions=data;
+      updateActivityAccess();
       questions.forEach((q,i)=>$('activityQuestions').append(renderQuestion(q,i)));
       setText('activitySessionStatus','Actividad preparada: '+data.length+' '+(data.length===1?'pregunta':'preguntas')+'.');
       restoreGuestDraft();
@@ -305,7 +311,7 @@
       if(authError&&authError.name!=='AuthSessionMissingError')throw authError;
       const current=data?.user;
       if(!current){
-        saveGuestDraft();
+        if(!saveGuestDraft())throw Error('No se pudieron conservar las respuestas en esta pestaña.');
         setText('activitySessionStatus','Respuestas guardadas temporalmente. Inicia sesión y vuelve aquí para corregirlas.');
         location.assign(loginDestination());
         return;
