@@ -58,7 +58,7 @@ permalink: /historial-bitacora.html
 <header class="history-intro">
 <p class="eyebrow">✦ MI CUADERNO DE INGLÉS</p>
 <h1>Historial de mi bitácora</h1>
-<p class="muted">Tus anotaciones privadas y los artículos de vocabulario reunidos en un solo lugar, con búsqueda y páginas para encontrarlo todo fácilmente.</p>
+<p class="muted">Tus notas personales y tus artículos de vocabulario guardados, visibles solo desde tu cuenta.</p>
 <div class="history-links"><a href="/perfil.html#bitacoraTitle">← Volver al perfil</a><a href="#bitacoraHistoryTitle">Mis anotaciones</a><a href="#bitacoraVocabularyTitle">Artículos de vocabulario</a></div>
 </header>
 <p id="bitacoraAccess" role="status" aria-live="polite">Comprobando tu sesión…</p>
@@ -89,11 +89,10 @@ permalink: /historial-bitacora.html
 <div id="bitacoraHistory" aria-live="polite"></div>
 <nav class="profile-list-pagination" id="bitacoraPagination" aria-label="Páginas de anotaciones" hidden></nav>
 <section id="bitacoraVocabulary" class="bitacora-vocabulary-library" aria-labelledby="bitacoraVocabularyTitle">
- <div class="history-list-heading"><div><p class="section-kicker">TU BIBLIOTECA DE VOCABULARIO</p><h3 id="bitacoraVocabularyTitle">Artículos de vocabulario</h3></div><span class="bitacora-vocab-tag">Todos disponibles</span></div>
- <p class="muted">Los artículos de vocabulario están siempre reunidos aquí. Puedes leerlos y añadir tus apuntes personales sin crear notas duplicadas.</p>
+ <div class="history-list-heading"><div><p class="section-kicker">TU BIBLIOTECA DE VOCABULARIO</p><h3 id="bitacoraVocabularyTitle">Mis artículos guardados</h3></div><span class="bitacora-vocab-tag">Solo para mí</span></div>
+ <p class="muted">Aquí aparecen únicamente los artículos de vocabulario guardados por tu cuenta. Ningún artículo de otro usuario se mostrará en tu historial.</p>
  <label class="bitacora-search-label" for="bitacoraVocabularySearch">Buscar artículos</label>
  <input id="bitacoraVocabularySearch" type="search" placeholder="Buscar phrasal verbs, expresiones, temas…" autocomplete="off">
- <div class="bitacora-import-row"><button id="bitacoraImportVocabulary" type="button" class="primary">Guardar todos en mis anotaciones</button><p id="bitacoraImportStatus" class="muted" role="status" aria-live="polite"></p></div>
  <p class="muted" id="bitacoraVocabularyCount" role="status" aria-live="polite">Cargando artículos…</p>
  <div id="bitacoraVocabularyItems" class="bitacora-vocab-grid"></div>
  <nav id="bitacoraVocabularyPagination" class="profile-list-pagination" aria-label="Páginas de artículos de vocabulario" hidden></nav>
@@ -103,6 +102,6 @@ permalink: /historial-bitacora.html
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script src="/supabase-config.js"></script>
 <script src="/assets/bitacora.js?v=20261104-vocab-history-3" defer></script>
-<script src="/assets/bitacora-vocabulario.js?v=20261104-2" defer></script>
+<script src="/assets/bitacora-vocabulario.js?v=20261104-private-3" defer></script>
 {% include footer.html %}
 </body></html>
