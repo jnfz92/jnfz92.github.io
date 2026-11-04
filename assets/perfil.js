@@ -6,6 +6,26 @@ let user=null,articles=[],articleView='all',loading=false,articlesLoaded=false,c
 let savedFavorites=new Set(),favoritesReady=false;
 let achievementProgress={reads:null,course:null,exams:null,streak:null};
 const READING_PAGE_SIZE=10;
+
+function profilePaginate(root,items,pageSize=8){
+ if(!root)return;
+ root.parentElement?.querySelectorAll(':scope > .profile-list-pagination').forEach(old=>old.remove());
+ let page=1;
+ const nav=document.createElement('nav');nav.className='profile-list-pagination';
+ nav.setAttribute('aria-label','Paginación de '+(root.id||'resultados'));root.after(nav);
+ function draw(){
+  const total=Math.max(1,Math.ceil(items.length/pageSize));page=Math.min(page,total);
+  root.replaceChildren(...items.slice((page-1)*pageSize,page*pageSize));
+  nav.replaceChildren();nav.hidden=total===1;if(total===1)return;
+  const info=document.createElement('span');info.textContent='Página '+page+' de '+total+' · '+items.length+' elementos';
+  const prev=document.createElement('button');prev.type='button';prev.textContent='← Anterior';prev.disabled=page===1;
+  const next=document.createElement('button');next.type='button';next.textContent='Siguiente →';next.disabled=page===total;
+  prev.onclick=()=>{page--;draw()};next.onclick=()=>{page++;draw()};
+  nav.append(prev,info,next);
+ }
+ draw();
+}
+
 const readingPages={read:1,pending:1};
 // Equivalencias de artículos consolidados: conservar el historial sin dar por leída
 // una guía completa cuando solo se leyó uno de sus capítulos anteriores.
@@ -56,32 +76,7 @@ $('privateDashboard').prepend(dashboardStatus);
 $('accountActions').querySelector('.section-kicker').textContent='SEGURIDAD DE LA CUENTA';
 const accountActions=$('accountActions').querySelector('.account-actions');
 accountActions.prepend($('signout'));
-const highlights=document.createElement('div');
-highlights.className='profile-highlights';
-highlights.append(
- $('streakTitle').closest('.panel'),
- $('examHistory').closest('.panel'),
- $('readMeter').closest('.panel')
-);
-$('privateDashboard').replaceChildren(
- dashboardStatus,
- $('learningHome'),
- document.querySelector('.ee-reading-pick'),
- $('nameTitle').closest('.panel'),
- $('bitacoraPanel'),
- document.querySelector('#reviewPreferencesTitle').closest('.panel'),
-  $('courseProgressPanel'),
- $('weeklyGoalPanel'),
- $('achievementPanel'),
-  document.querySelector('.ee-learning-overview'),
- $('recentStudyPanel'),
- highlights,
- $('favoritesPanel'),
- $('articleList').closest('.panel'),
- document.querySelector('a[href="comunidad.html"]').closest('.panel'),
- $('resetProfile').closest('.panel'),
- $('accountActions')
-);
+// Mantener pestañas, secciones y desplegables del HTML.
 function localSave(){try{localStorage.setItem(key,JSON.stringify(profile))}catch{status('No se pudieron guardar los cambios en este navegador.')}}
 // El artículo recomendado depende únicamente de las lecturas confirmadas en Supabase.
 // No declarar "todo leído" hasta disponer tanto del catálogo como del progreso del alumno.
@@ -322,6 +317,7 @@ async function loadLearningOverview(){
      (r.pendientes_revision?' · '+r.pendientes_revision+' en revisión':'');
    info.append(title,detail);item.append(info);box.append(item);
  }
+ if((attempts.data||[]).length)profilePaginate(box,[...box.children],5);
  if(!(attempts.data||[]).length)box.textContent='Todavía no has entregado actividades interactivas.';
 }
 async function loadStreak(){if(!user)return;const {data,error}=await eeDb.rpc('racha_actual');if(error){$('streakMessage').textContent='No se pudo cargar la racha: '+error.message;return}const r=Array.isArray(data)?data[0]:data;if(!r)return;$('streakCurrent').textContent=String(r.racha||0);$('streakBest').textContent=String(r.mejor_racha||0);$('streakDays').textContent=String(r.dias_total||0);$('streakMessage').textContent=r.hoy_completado?'✅ ¡Has cumplido tu objetivo de hoy!':'Completa hoy una lección o un examen para mantener tu racha.';achievementProgress.streak=Number(r.mejor_racha)||0;renderAchievements()}
@@ -478,7 +474,7 @@ async function results(){
  $('examCount').textContent=String(scores.length);
  $('bestScore').textContent=nums.length?Math.max(...nums).toFixed(1).replace(/\\.0$/,'')+'%':'—';
  $('averageScore').textContent=nums.length?(nums.reduce((s,x)=>s+x,0)/nums.length).toFixed(1)+'%':'—';
- for(const r of scores.slice(0,30)){
+ for(const r of scores){
   const el=document.createElement('div');el.className='item';
   const info=document.createElement('div'),name=document.createElement('strong'),detail=document.createElement('small');
   name.textContent=examNames.get(String(r.examen_id))||'Examen '+r.examen_id;
@@ -487,6 +483,7 @@ async function results(){
   const grade=document.createElement('strong');grade.textContent=Number(r.nota).toFixed(1).replace(/\\.0$/,'')+'%';grade.className='exam-grade';
   info.append(name,detail);el.append(info,grade);box.append(el);
  }
+ if(scores.length)profilePaginate(box,[...box.children],8);
  if(!scores.length)box.textContent='Aún no tienes resultados guardados. Empieza tu primer examen.';
  await loadLearningStrengths(scores,activeUserId);
  if(examResponse.error){const p=document.createElement('p');p.className='muted';p.textContent='No se pudieron cargar los títulos de los exámenes.';box.append(p)}
@@ -609,6 +606,7 @@ async function loadSavedResources(owner) {
   remove.onclick=()=>{void toggleSavedResource(row.tipo,row.referencia)};
   item.append(desc,remove);list.append(item);
  }
+ if(records.length)profilePaginate(list,[...list.children],8);
  $('favoritesStatus').textContent=records.length
   ?'Tienes '+records.length+' recursos guardados. Puedes abrirlos o quitarlos cuando quieras.'
   :'Todavía no has guardado recursos. Usa ☆ Guardar en las unidades o los artículos.';
