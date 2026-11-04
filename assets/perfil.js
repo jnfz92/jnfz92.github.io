@@ -846,7 +846,7 @@ $('exportAccountData').onclick=async()=>{
   label.textContent='No se pudo exportar el historial: '+error.message;
  }finally{button.disabled=false}
 };
-async function logOut(){const {error}=await eeDb.auth.signOut();if(error)return status('Error: '+error.message);await changeUser(null);status('Has cerrado sesión.')}$('signout').onclick=logOut;
+async function logOut(){const {error}=await eeDb.auth.signOut();if(error)return status('Error: '+error.message);try{sessionStorage.removeItem('easyenglish:openai:temporary:v1')}catch(e){}await changeUser(null);status('Has cerrado sesión.')}$('signout').onclick=logOut;
 $('showDeleteAccount').onclick=()=>{$('deleteAccountPanel').hidden=false;$('deleteConfirm').value='';$('confirmDeleteAccount').disabled=true;$('deleteAccountPanel').scrollIntoView({behavior:'smooth',block:'nearest'})};
 $('cancelDeleteAccount').onclick=()=>{$('deleteAccountPanel').hidden=true;$('deleteConfirm').value='';$('deleteAccountStatus').textContent=''};
 $('deleteConfirm').oninput=()=>{$('confirmDeleteAccount').disabled=$('deleteConfirm').value.trim()!=='ELIMINAR MI CUENTA'};
