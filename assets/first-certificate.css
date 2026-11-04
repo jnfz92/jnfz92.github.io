@@ -12,9 +12,9 @@
 .ee-first-stats{display:flex;flex-wrap:wrap;gap:9px;margin:24px 0 0}
 .ee-first-stats span{padding:10px 13px;border:1px solid #ffffff54;background:#ffffff14;border-radius:999px;color:#fff;font-size:12px;font-weight:800}
 .ee-first-jump{display:flex;flex-wrap:wrap;gap:10px;padding:10px 0 26px}
-.ee-first-jump a{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:10px 17px;border:1px solid #cbdcf6;background:#fff;color:#17448c;text-decoration:none;font-size:13px;font-weight:850;border-radius:12px}
-.ee-first-jump a:hover{border-color:#2769cb;background:#eaf2ff}
-.ee-first-jump a:focus-visible,.ee-first-guide:focus-visible{outline:3px solid #eeae45;outline-offset:4px}
+.ee-first-jump span{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:10px 17px;border:1px solid #cbdcf6;background:#fff;color:#17448c;text-decoration:none;font-size:13px;font-weight:850;border-radius:12px}
+
+
 .ee-first-paper{scroll-margin-top:95px;margin:18px 0 38px}
 .ee-first-paper-heading{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:10px;margin:0 0 15px}
 .ee-first-paper-heading>div{min-width:0}
@@ -39,5 +39,5 @@
 .ee-first-writing-types span{font-size:11px;color:#315b91;background:#f0f5fc;border:1px solid #dfe8f7;border-radius:8px;padding:5px 7px}
 .ee-first-note{background:#eef5ff;border:1px solid #d2e0f8;border-radius:18px;padding:21px 24px;margin:32px 0;color:#315277;font-size:14px;line-height:1.7}
 .ee-first-note a{color:#1454ae;font-weight:850}
-@media(max-width:680px){.ee-site.ee-first-page .ee-first-main{padding:14px 16px 52px}.ee-first-hero{border-radius:22px}.ee-first-part-grid{grid-template-columns:1fr}.ee-first-hero::after{bottom:-32px;right:-10px;font-size:150px}.ee-first-jump{gap:7px}.ee-first-jump a{flex:1 1 auto;padding:9px}}
+@media(max-width:680px){.ee-site.ee-first-page .ee-first-main{padding:14px 16px 52px}.ee-first-hero{border-radius:22px}.ee-first-part-grid{grid-template-columns:1fr}.ee-first-hero::after{bottom:-32px;right:-10px;font-size:150px}.ee-first-jump{gap:7px}.ee-first-jump span{flex:1 1 auto;padding:9px}}
 @media(prefers-reduced-motion:reduce){.ee-first-paper{scroll-margin-top:0}}
