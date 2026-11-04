@@ -167,6 +167,10 @@ details[open] .course-chevron{transform:rotate(180deg)}
 .course-extras-grid{grid-template-columns:1fr}
 }
 @media(prefers-reduced-motion:reduce){.course-shell *{transition:none!important;scroll-behavior:auto!important}}
+.ee-course-account-links{display:flex;flex-wrap:wrap;gap:9px}
+.ee-course-account-links[hidden]{display:none!important}
+.ee-course-account-links a{display:inline-flex;align-items:center;justify-content:center;padding:10px 12px;border-radius:10px;background:#eaf2ff;border:1px solid #cbdffa;color:#194c9e;text-decoration:none;font-size:12px;font-weight:800;min-height:44px;flex:1 1 auto}
+.ee-course-account-links a:hover{background:#dbeaff}
 </style>
 <link rel="preconnect" href="https://wnluofonzteaqtlfshgy.supabase.co" crossorigin>
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
@@ -194,8 +198,12 @@ details[open] .course-chevron{transform:rotate(180deg)}
   </div>
   <a id="courseResume" href="#courseCatalog">Empezar mi ruta <span aria-hidden="true">→</span></a>
   <p id="courseStorageNote" class="course-storage-note">Comprobando dónde guardar tu progreso…</p>
+  <div id="courseAccountLinks" class="ee-course-account-links" hidden>
+   <a href="/login.html?next=%2Fcurso.html">Iniciar sesión y sincronizar →</a>
+   <a href="/registro.html?next=%2Fcurso.html">Crear cuenta gratis</a>
+  </div>
   <button type="button" id="courseImportLocal" class="course-complete" hidden>Importar unidades estudiadas en este navegador</button>
-  <a href="/perfil.html" class="course-storage-note">Gestionar mi cuenta y progreso →</a>
+  <a id="courseProfileLink" href="/perfil.html" class="course-storage-note">Gestionar mi cuenta y progreso →</a>
  </aside>
 </section>
 <section class="course-stats" aria-label="Resumen del curso">
@@ -242,6 +250,6 @@ details[open] .course-chevron{transform:rotate(180deg)}
 </main>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script src="/supabase-config.js"></script>
-<script src="/assets/curso-supabase.js?v=20261101-favorites-1" defer></script>
+<script src="/assets/curso-supabase.js?v=20261104-auth-progress-1" defer></script>
 {% include footer.html %}
 </body></html>
