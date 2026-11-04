@@ -346,9 +346,9 @@
     busy=true;$('activitySubmit').disabled=true;
     setText('activitySessionStatus','Guardando y corrigiendo en Supabase…');
     try{
-      const {data,error:authError}=await eeDb.auth.getUser();
+      const {data:authData,error:authError}=await eeDb.auth.getUser();
       if(authError&&authError.name!=='AuthSessionMissingError')throw authError;
-      const current=data?.user;
+      const current=authData?.user;
       if(!current){
         if(!saveGuestDraft())throw Error('No se pudieron conservar las respuestas en esta pestaña.');
         setText('activitySessionStatus','Respuestas guardadas temporalmente. Inicia sesión y vuelve aquí para corregirlas.');
