@@ -132,7 +132,7 @@ permalink: /articulos.html
 <article class="card" data-cat="listening" data-level="B1-B2"><div class="meta"><span class="tag">Listening · B1-B2</span></div><h2>Listening con The Rings of Power: temporada 1</h2><p>Study English with The Rings of Power Season 1: official English subtitles, 28+ fantasy words, useful everyday expressions, bilingual examples, original exercises and online sources.</p><a class="read" href="/leer.html?slug=the-rings-of-power-season-1-english-subtitles">Leer artículo →</a></article>
 </div>
 <div class="empty" id="emptyState">No hay artículos en esta categoría.</div>
-</section></main><footer class="ee-footer"><p>Un poco de ingl?s. Un paso m?s cada d?a.</p></footer><script>
+</section></main><script>
 const filters=[...document.querySelectorAll('.filter')];
 const grid=document.querySelector('.blog .grid');
 const empty=document.getElementById('emptyState');
@@ -182,4 +182,5 @@ query.closest('.search-wrap').insertAdjacentElement('afterend',clear);
 filters.forEach(x=>x.setAttribute('aria-pressed',String(x.classList.contains('active'))));
 cacheArticles();refreshArticles();
 document.addEventListener('easyenglish:articles-loaded',()=>{cacheArticles();refreshArticles()});
-</script><script src="assets/articulos-supabase.js?v=20261030-faster-home-3" defer></script></body></html>
+</script><script src="assets/articulos-supabase.js?v=20261030-faster-home-3" defer></script>{% include footer.html %}
+</body></html>
