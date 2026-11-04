@@ -19,7 +19,7 @@
  border-radius:50%;background:radial-gradient(circle,#b2d2ff33,transparent 70%);
  transform:translate3d(0,var(--ee-parallax-front,0px),0)}
 .ee-parallax-hero>div:not(.ee-parallax-art){position:relative;z-index:1}
-.ee-parallax-hero .ee-product-preview{transform:translate3d(0,var(--ee-parallax-card,0px),0) rotate(1deg);transition:box-shadow .2s}
+.ee-site .ee-landing .ee-parallax-hero .ee-product-preview{transform:translate3d(0,var(--ee-parallax-card,0px),0) rotate(1deg);transition:box-shadow .2s}
 .ee-parallax-hero .ee-landing-kicker{backdrop-filter:blur(8px)}
 .ee-site.ee-marketing .ee-path-band.ee-parallax-band{isolation:isolate;position:relative}
 .ee-parallax-band .ee-path-steps{position:relative;isolation:isolate}
@@ -28,6 +28,6 @@
 .ee-parallax-cta::before{content:"";position:absolute;z-index:-1;width:440px;height:440px;border:70px solid #ffffff0b;border-radius:50%;right:-220px;top:-245px;transform:translateY(var(--ee-parallax-back,0px));pointer-events:none}
 .ee-parallax-cta>*{position:relative;z-index:1}
 @media(max-width:980px){.ee-parallax-hero .ee-parallax-lines{left:30%}.ee-parallax-hero .ee-parallax-orb-one{right:-175px}}
-@media(max-width:770px){.ee-parallax-hero .ee-product-preview{transform:translate3d(0,var(--ee-parallax-card,0px),0)}.ee-parallax-hero .ee-parallax-lines{left:10%;top:28%;opacity:.6}.ee-parallax-hero .ee-parallax-orb-one{width:340px;height:340px;right:-165px;top:-160px}}
+@media(max-width:770px){.ee-site .ee-landing .ee-parallax-hero .ee-product-preview{transform:translate3d(0,var(--ee-parallax-card,0px),0)}.ee-parallax-hero .ee-parallax-lines{left:10%;top:28%;opacity:.6}.ee-parallax-hero .ee-parallax-orb-one{width:340px;height:340px;right:-165px;top:-160px}}
 @media(max-width:600px){.ee-parallax-hero .ee-parallax-art{opacity:.7}.ee-parallax-hero .ee-parallax-lines{display:none}.ee-parallax-hero .ee-parallax-orb-two{width:260px;height:260px;bottom:-185px}}
 @media(prefers-reduced-motion:reduce){.ee-parallax-hero .ee-parallax-art>span,.ee-parallax-hero .ee-product-preview,.ee-parallax-band .ee-path-steps::before,.ee-parallax-cta::before{transform:none!important;will-change:auto!important;transition:none!important}}
