@@ -1,0 +1,20 @@
+{
+  "id": "/",
+  "name": "Easy English · Aprende inglés B2",
+  "short_name": "Easy English",
+  "description": "Aprende inglés B2 desde tu móvil con lecciones, vocabulario y práctica.",
+  "lang": "es",
+  "start_url": "/?source=pwa",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#f7faff",
+  "theme_color": "#1e5eff",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}
