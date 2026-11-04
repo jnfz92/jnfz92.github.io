@@ -55,6 +55,10 @@ body.ee-site{background:#f7f8fa;color:#1a2435}
 .activity-summary strong{display:block;font-size:26px}
 .activity-actions{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
 .activity-back{color:#1e5eff;font-weight:800;text-decoration:underline}
+.activity-access-notice{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;padding:16px 19px;margin:17px 0;border:1px solid #cbdcf8;border-radius:14px;background:#eff5ff;color:#21426e}
+.activity-access-notice p{margin:0;max-width:68ch;line-height:1.55;font-size:14px}
+.activity-access-notice a{display:inline-flex;align-items:center;justify-content:center;padding:10px 15px;border-radius:10px;background:#1e5eff;color:white!important;font-weight:800;text-decoration:none;min-height:44px}
+.activity-access-notice[hidden]{display:none!important}
 @media(max-width:600px){.activity-shell{padding-top:12px}.activity-panel,.activity-question{padding:17px}.activity-hero{padding:24px}}
 </style>
 <link rel="stylesheet" href="/assets/navigation.css?v=20261030-menu-blue-3"><script src="/assets/navigation.js?v=20261030-menu-blue-4" defer></script></head>
@@ -70,13 +74,17 @@ body.ee-site{background:#f7f8fa;color:#1a2435}
 <div class="activity-topline"><span class="activity-kicker" id="activitySkill"></span><button class="activity-btn secondary" id="activityBack" type="button">← Todas las actividades</button></div>
 <h2 id="activitySessionTitle">Actividad</h2><p class="activity-muted" id="activityDescription"></p>
 <p id="activitySessionStatus" class="activity-status" role="status" aria-live="polite"></p>
+<div class="activity-access-notice" id="activityAccessNotice" hidden>
+ <p><strong>🔒 Para corregir y guardar necesitas una cuenta.</strong> Puedes responder ahora. Al iniciar sesión, recuperaremos las respuestas de esta actividad en la misma pestaña.</p>
+ <a href="/login.html?next=%2Factividades.html" id="activityLoginLink">Iniciar sesión →</a>
+</div>
 <form id="activityForm"><div id="activityQuestions" class="activity-questions"></div><button id="activitySubmit" class="activity-btn" type="submit">Corregir y guardar actividad</button></form>
 <div id="activitySummary" class="activity-summary" role="status" hidden></div>
 </section>
-<section class="activity-panel"><h2>Tu cuenta</h2><p class="activity-muted" id="activityAuthStatus" role="status">Comprobando sesión…</p><p class="activity-muted">Puedes consultar las actividades sin iniciar sesión. Para entregar respuestas y guardar tu progreso, <a class="activity-back" href="perfil.html">inicia sesión desde tu perfil</a>.</p></section>
+<section class="activity-panel"><h2>Tu progreso</h2><p class="activity-muted" id="activityAuthStatus" role="status">Comprobando sesión…</p><p class="activity-muted">Las actividades se pueden consultar sin cuenta. Para corregirlas y guardar tu progreso necesitas <a class="activity-back" href="/login.html?next=%2Factividades.html">iniciar sesión</a> o <a class="activity-back" href="/registro.html?next=%2Factividades.html">crear una cuenta gratis</a>.</p></section>
 </main>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script src="supabase-config.js"></script>
-<script src="assets/actividades.js?v=20261017a"></script>
+<script src="assets/actividades.js?v=20261104-auth-continue-1"></script>
 {% include footer.html %}
 </body></html>
