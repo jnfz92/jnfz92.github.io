@@ -47,6 +47,31 @@
   articles=(data||[]).filter(a=>a.slug);
   draw();
  }
+ const importBtn=$('bitacoraImportVocabulary');
+ const importStatus=$('bitacoraImportStatus');
+ if(importBtn)importBtn.addEventListener('click',async()=>{
+  importBtn.disabled=true;
+  importStatus.textContent='Guardando artículos en tu cuenta…';
+  try{
+   const {data:{user},error:authError}=await db.auth.getUser();
+   if(authError||!user)throw Error('Inicia sesión en tu perfil para guardar artículos.');
+   if(!loaded||!articles.length)throw Error('Todavía no se ha cargado el vocabulario.');
+   const {data:existing,error:existingError}=await db.from('bitacora_anotaciones').select('contenido').eq('usuario_id',user.id).range(0,999);
+   if(existingError)throw existingError;
+   const saved=new Set((existing||[]).map(n=>String(n.contenido||'').match(/^Artículo de vocabulario: (https?:\/\/\S+)/)?.[1]).filter(Boolean));
+   const records=articles.map(a=>({
+    usuario_id:user.id,
+    contenido:'Artículo de vocabulario: '+location.origin+'/leer.html?slug='+encodeURIComponent(a.slug)+'\n'+(a.titulo||a.slug)
+   })).filter(n=>!saved.has(n.contenido.split('\n')[0].slice('Artículo de vocabulario: '.length)));
+   if(records.length){
+    const {error}=await db.from('bitacora_anotaciones').insert(records);
+    if(error)throw error;
+    window.dispatchEvent(new Event('easyenglish:bitacora-refresh'));
+   }
+   importStatus.textContent=records.length?'Guardados '+records.length+' artículos en tus anotaciones. Los demás ya estaban guardados.':'Todos los artículos ya estaban guardados en tus anotaciones.';
+  }catch(error){importStatus.textContent='No se pudieron guardar: '+error.message}
+  finally{importBtn.disabled=false}
+ });
  const searchEl=$('bitacoraVocabularySearch');
  searchEl.addEventListener('input',()=>{search=searchEl.value;page=1;draw()});
  void load();
