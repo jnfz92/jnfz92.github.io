@@ -12,8 +12,8 @@
    if(!db||!ai){access.textContent='El corrector no se encuentra disponible en este momento.';button.disabled=true;return}
    try{const {data,error}=await db.auth.getUser();user=error?null:data?.user;
      if(!user){access.textContent='Para usar IA, primero inicia sesión en Easy English.';setup.href='/login.html?next=%2Fwritings.html%23editor';setup.textContent='Iniciar sesión';}
-     else if(!ai.keyFor(user.id)){access.textContent='Necesitas guardar una clave temporal de OpenAI (caduca en 30 minutos).';setup.href='/clave-openai.html';setup.textContent='🔑 Configurar clave de OpenAI';}
-     else{access.textContent='✓ Clave temporal disponible. Selecciona la casilla de consentimiento para habilitar la corrección.';setup.href='/clave-openai.html';setup.textContent='Administrar clave temporal';}
+     else if(!ai.keyFor(user.id)){access.textContent='Necesitas guardar una clave temporal de OpenAI (caduca en 30 minutos).';setup.href='/clave-openai.html?next=%2Fwritings.html%23editor';setup.textContent='🔑 Configurar clave de OpenAI';}
+     else{access.textContent='✓ Clave temporal disponible. Selecciona la casilla de consentimiento para habilitar la corrección.';setup.href='/clave-openai.html?next=%2Fwritings.html%23editor';setup.textContent='Administrar clave temporal';}
    }catch{user=null;access.textContent='No se pudo verificar tu cuenta.'}
    ready();
  }
@@ -64,6 +64,14 @@
    }catch(error){status.textContent=error.message||'No se pudo obtener una corrección.'}
    finally{busy=false;await refresh()}
  };
+ setup.addEventListener('click',event=>{
+   if(!user)return;
+   try{
+     sessionStorage.setItem('ee:writing-login-draft:v1',JSON.stringify({
+       time:Date.now(),type:$('wtipo').value,title:$('wtitulo').value,body:$('wtexto').value
+     }));
+   }catch(err){event.preventDefault();status.textContent='No se pudo conservar tu texto. Cópialo antes de ir a configurar la clave.'}
+ });
  consent.onchange=ready;
  document.addEventListener('visibilitychange',()=>{if(!document.hidden)refresh()});
  window.addEventListener('pageshow',refresh);
