@@ -184,54 +184,18 @@
     document.head.append(link);
   }
 
-  function ensureFooter(){
-    // La landing comercial ya tiene su propio pie de página con el mismo diseño.
-    if(document.querySelector('.ee-marketing-footer'))return;
-    if(document.getElementById('ee-shared-footer'))return;
-    const footer=document.createElement('footer');
-    footer.id='ee-shared-footer';
-    footer.className='ee-footer';
-    const wrap=document.createElement('div');wrap.className='ee-premium-footer-inner';
-
-    const about=document.createElement('div');about.className='ee-premium-footer-about';
-    const brand=document.createElement('strong');brand.textContent='✦ Easy English';
-    const intro=document.createElement('p');intro.textContent='Un poco de inglés. Un paso más cada día. Aprende con una ruta clara, práctica y recursos a tu ritmo.';
-    about.append(brand,intro);
-
-    const group=(label,items)=>{
-      const col=document.createElement('div');
-      const heading=document.createElement('h2');heading.textContent=label;
-      col.append(heading);
-      for(const [title,href] of items){
-        const a=document.createElement('a');a.href=new URL(href,root).href;a.textContent=title;col.append(a);
-      }
-      return col;
-    };
-    const study=group('Aprende',[['Curso B2','curso.html'],['Biblioteca','articulos.html'],['Vocabulario','vocabulario.html']]);
-    const actions=group('Tu espacio',[['Exámenes','examenes.html'],['Crear cuenta','perfil.html'],['Descargar APK Android','https://wnluofonzteaqtlfshgy.supabase.co/storage/v1/object/public/easy-english-downloads/EnglishAPK-v1.2.3.apk'],['Sugerencias','sugerencias.html']]);
-    wrap.append(about,study,actions);
-    const bottom=document.createElement('div');bottom.className='ee-premium-footer-bottom';
-    bottom.textContent='Easy English · Plataforma independiente de aprendizaje de inglés.';
-    footer.append(wrap,bottom);
-    const previous=document.querySelector('footer.ee-footer, footer.site-footer');
-    if(previous)previous.replaceWith(footer);
-    else document.body.append(footer);
-  }
-
   async function attach(){
     await ensureHeader();
     ensurePremiumCSS();
     ensureBrandCSS();
     setupMenu();
     ensureMainAnchor();
-    ensureFooter();
     setupReadingTools();
   }
   // Las lecciones se insertan sin reconstruir el documento ni el menú compartido.
   window.addEventListener('easyenglish:article-rendered',()=>{
     ensureMainAnchor();
     setupReadingTools();
-    ensureFooter();
   });
   if(document.readyState==='loading'){
     document.addEventListener('DOMContentLoaded',attach,{once:true});
