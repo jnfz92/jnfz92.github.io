@@ -12,11 +12,11 @@
   const filtered=articles.filter(a=>norm([a.titulo,a.descripcion,a.slug].join(' ')).includes(norm(search)));
   const pages=Math.max(1,Math.ceil(filtered.length/pageSize));
   page=Math.min(Math.max(1,page),pages);
-  count.textContent=filtered.length+' artículo'+(filtered.length===1?'':'s')+' de vocabulario guardados en tu cuenta';
+  count.textContent=filtered.length+' artículo'+(filtered.length===1?'':'s')+' de vocabulario de tu cuenta';
   list.replaceChildren();nav.replaceChildren();
   if(!filtered.length){
    const p=document.createElement('p');p.className='muted';
-   p.textContent=loaded?(articles.length?'No hay artículos que coincidan con la búsqueda.':'No tienes artículos de vocabulario guardados en esta cuenta. Tus anotaciones personales están arriba.'): 'Cargando tus artículos…';list.append(p);
+   p.textContent=loaded?(articles.length?'No hay artículos que coincidan con la búsqueda.':'Esta cuenta no tiene artículos de vocabulario propios. Tus anotaciones personales están arriba.'): 'Cargando tus artículos…';list.append(p);
   }
   filtered.slice((page-1)*pageSize,page*pageSize).forEach(a=>{
    const card=document.createElement('article');card.className='bitacora-vocab-card';
@@ -40,25 +40,31 @@
   }
  }
  async function load(){
-  count.textContent='Cargando tus artículos privados…';
+  count.textContent='Cargando los artículos privados de tu cuenta…';
   list.replaceChildren();
   const {data:{user},error:authError}=await db.auth.getUser();
   if(authError||!user){
-   loaded=true;articles=[];count.textContent='Inicia sesión para consultar tus artículos privados.';
+   loaded=true;articles=[];
+   count.textContent='Inicia sesión para consultar tus artículos privados.';
    return;
   }
-  const {data:saved,error:savedError}=await db.from('recursos_guardados')
-   .select('referencia').eq('usuario_id',user.id).eq('tipo','articulo').range(0,999);
-  if(savedError){count.textContent='No se pudieron consultar tus artículos guardados.';return}
-  const slugs=[...new Set((saved||[]).map(x=>x.referencia).filter(Boolean))];
-  if(!slugs.length){loaded=true;articles=[];draw();return}
+  // La política RLS de Supabase limita los artículos a su propietario.
   const {data,error}=await db.from('articulos')
-   .select('slug,titulo,descripcion').eq('categoria_slug','vocabulary').in('slug',slugs).order('titulo',{ascending:true});
+   .select('slug,titulo,descripcion')
+   .eq('categoria_slug','vocabulary')
+   .eq('usuario_id',user.id)
+   .order('titulo',{ascending:true}).range(0,999);
   loaded=true;
   if(error){count.textContent='No se pudieron cargar tus artículos privados.';return}
-  articles=data||[];
+  articles=(data||[]).filter(a=>a.slug);
   draw();
  }
+ db.auth.onAuthStateChange(event=>{
+  if(event==='SIGNED_IN'||event==='SIGNED_OUT') {
+   articles=[];loaded=false;page=1;
+   Promise.resolve().then(load);
+  }
+ });
  const searchEl=$('bitacoraVocabularySearch');
  searchEl.addEventListener('input',()=>{search=searchEl.value;page=1;draw()});
  void load();
