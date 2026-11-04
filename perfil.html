@@ -61,6 +61,14 @@ permalink: /perfil.html
 .ee-site.ee-profile #privateDashboard .profile-disclosure>.panel{margin:0;border:0;border-top:1px solid #e3ebf6;border-radius:0;box-shadow:none}
 .ee-site.ee-profile .profile-disclosure[open]{box-shadow:0 3px 12px #16458a0a}
 @media(max-width:650px){.ee-site.ee-profile .hero-actions a{flex:1 1 45%;text-align:center}.ee-site.ee-profile #privateDashboard .panel{padding:14px}.ee-site.ee-profile .profile-disclosure summary{padding:13px}.ee-site.ee-profile #privateDashboard .ee-home-shortcuts a{padding:9px 7px}}
+
+.profile-list-pagination{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:12px;margin:14px 0 6px;padding:12px;border-top:1px solid #e5edf9}
+.profile-list-pagination[hidden]{display:none!important}
+.profile-list-pagination span{font-size:13px;color:#526888;font-weight:700}
+.profile-list-pagination button{background:#fff;color:#2053ad;border:1px solid #c2d3ee;border-radius:10px;padding:9px 13px;font:inherit;font-size:13px;font-weight:800;cursor:pointer;min-height:42px}
+.profile-list-pagination button:disabled{opacity:.42;cursor:not-allowed}
+.profile-list-pagination button:not(:disabled):hover{background:#eef5ff}
+@media(max-width:480px){.profile-list-pagination{gap:8px}.profile-list-pagination span{order:-1;flex-basis:100%;text-align:center}}
 </style>
 </head>
 <body class="ee-site ee-profile">
@@ -253,7 +261,7 @@ permalink: /perfil.html
 </main><footer class="ee-footer"><p>Un poco de ingl?s. Un paso m?s cada d?a.</p></footer>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script src="supabase-config.js"></script>
-<script src="/assets/bitacora.js?v=20261103-1" defer></script><script src="/assets/perfil.js?v=20261101-aula-integration-1"></script>
+<script src="/assets/bitacora.js?v=20261104-pagination-1" defer></script><script src="/assets/perfil.js?v=20261104-pagination-1"></script>
 <script>
 (function(){
   const tabs=[...document.querySelectorAll('[data-profile-tab]')];
