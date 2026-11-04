@@ -1,33 +1,94 @@
-/* Easy English · Parallax discreto, azul marino / azul eléctrico / blanco. */
-.ee-site.ee-marketing .ee-landing-hero.ee-parallax-hero,
-.ee-site.ee-parallax-preview .ee-landing-hero.ee-parallax-hero{
- isolation:isolate;position:relative;overflow:hidden;
- background:linear-gradient(128deg,#102b63 0%,#19469c 57%,#2564c8 100%);
+/* Easy English — fondos parallax de secciones completas. */
+.ee-site.ee-marketing .ee-landing [data-ee-parallax]{
+ position:relative;isolation:isolate;overflow:hidden;
+ --ee-depth-shift:0px;
 }
-.ee-parallax-hero .ee-parallax-art{position:absolute;inset:0;z-index:0;pointer-events:none;overflow:hidden}
-.ee-parallax-hero .ee-parallax-art>span{position:absolute;display:block;will-change:transform}
-.ee-parallax-hero .ee-parallax-orb-one{height:450px;width:450px;border-radius:50%;top:-210px;right:-95px;
- background:radial-gradient(circle at 35% 32%,#9bc5ff88 0%,#528cf455 35%,#1e5eff08 70%);filter:blur(2px);
- transform:translate3d(0,var(--ee-parallax-back,0px),0)}
-.ee-parallax-hero .ee-parallax-orb-two{height:350px;width:350px;border-radius:50%;bottom:-225px;left:-100px;
- border:72px solid #c6deff16;background:#dbeafe07;
- transform:translate3d(0,var(--ee-parallax-middle,0px),0)}
-.ee-parallax-hero .ee-parallax-lines{width:440px;height:280px;top:21%;left:38%;
- border:1px solid #ffffff24;border-radius:42px;transform:rotate(-18deg) translate3d(0,var(--ee-parallax-back,0px),0);
- box-shadow:36px 35px 0 -1px #ffffff0b,75px 70px 0 -1px #ffffff09}
-.ee-parallax-hero .ee-parallax-light{width:290px;height:290px;top:12%;right:22%;
- border-radius:50%;background:radial-gradient(circle,#b2d2ff33,transparent 70%);
- transform:translate3d(0,var(--ee-parallax-front,0px),0)}
-.ee-parallax-hero>div:not(.ee-parallax-art){position:relative;z-index:1}
-.ee-site .ee-landing .ee-parallax-hero .ee-product-preview{transform:translate3d(0,var(--ee-parallax-card,0px),0) rotate(1deg);transition:box-shadow .2s}
-.ee-parallax-hero .ee-landing-kicker{backdrop-filter:blur(8px)}
-.ee-site.ee-marketing .ee-path-band.ee-parallax-band{isolation:isolate;position:relative}
-.ee-parallax-band .ee-path-steps{position:relative;isolation:isolate}
-.ee-parallax-band .ee-path-steps::before{content:"";position:absolute;z-index:-1;width:290px;height:290px;border-radius:50%;right:-70px;top:-90px;background:radial-gradient(circle,#6b9fff33,transparent 73%);transform:translateY(var(--ee-parallax-middle,0px));pointer-events:none}
-.ee-site.ee-marketing .ee-bottom-cta.ee-parallax-cta{position:relative;isolation:isolate;overflow:hidden}
-.ee-parallax-cta::before{content:"";position:absolute;z-index:-1;width:440px;height:440px;border:70px solid #ffffff0b;border-radius:50%;right:-220px;top:-245px;transform:translateY(var(--ee-parallax-back,0px));pointer-events:none}
-.ee-parallax-cta>*{position:relative;z-index:1}
-@media(max-width:980px){.ee-parallax-hero .ee-parallax-lines{left:30%}.ee-parallax-hero .ee-parallax-orb-one{right:-175px}}
-@media(max-width:770px){.ee-site .ee-landing .ee-parallax-hero .ee-product-preview{transform:translate3d(0,var(--ee-parallax-card,0px),0)}.ee-parallax-hero .ee-parallax-lines{left:10%;top:28%;opacity:.6}.ee-parallax-hero .ee-parallax-orb-one{width:340px;height:340px;right:-165px;top:-160px}}
-@media(max-width:600px){.ee-parallax-hero .ee-parallax-art{opacity:.7}.ee-parallax-hero .ee-parallax-lines{display:none}.ee-parallax-hero .ee-parallax-orb-two{width:260px;height:260px;bottom:-185px}}
-@media(prefers-reduced-motion:reduce){.ee-parallax-hero .ee-parallax-art>span,.ee-parallax-hero .ee-product-preview,.ee-parallax-band .ee-path-steps::before,.ee-parallax-cta::before{transform:none!important;will-change:auto!important;transition:none!important}}
+.ee-site.ee-marketing .ee-landing [data-ee-parallax]>.ee-parallax-scene{
+ display:block!important;position:absolute;z-index:-1;
+ inset:-180px -24px;pointer-events:none;overflow:hidden;
+ transform:translate3d(0,var(--ee-depth-shift),0);
+ will-change:transform;
+}
+.ee-site.ee-marketing .ee-landing [data-ee-parallax]>.ee-parallax-scene::before,
+.ee-site.ee-marketing .ee-landing [data-ee-parallax]>.ee-parallax-scene::after{
+ content:"";position:absolute;display:block;pointer-events:none;
+}
+.ee-site.ee-marketing .ee-landing .ee-parallax-hero{
+ background:#102b63;min-height:615px;
+}
+.ee-site.ee-marketing .ee-landing .ee-parallax-hero>.ee-parallax-scene{
+ background:
+ radial-gradient(ellipse 58% 66% at 90% 8%,#7fb0ff78,transparent 72%),
+ radial-gradient(ellipse 62% 48% at 11% 96%,#071c57bc,transparent 76%),
+ linear-gradient(132deg,#0b2454 5%,#16469a 52%,#397cdd 100%);
+}
+.ee-site.ee-marketing .ee-landing .ee-parallax-hero>.ee-parallax-scene::before{
+ width:130%;height:48%;left:-15%;top:16%;border-top:1px solid #ffffff3d;
+ border-bottom:1px solid #d1e3ff29;transform:rotate(-17deg);
+ background:linear-gradient(180deg,#8fbdff19,transparent 70%);
+}
+.ee-site.ee-marketing .ee-landing .ee-parallax-hero>.ee-parallax-scene::after{
+ height:560px;width:560px;right:-160px;top:20px;border-radius:50%;
+ border:75px solid #d3e6ff19;box-shadow:0 0 0 100px #d3e6ff0b;
+}
+.ee-site.ee-marketing .ee-landing .ee-parallax-hero>.ee-parallax-art{display:none!important}
+.ee-site.ee-marketing .ee-landing .ee-parallax-hero>div:not(.ee-parallax-scene){position:relative;z-index:1}
+.ee-site.ee-marketing .ee-landing .ee-parallax-hero .ee-product-preview{
+ transform:rotate(1deg)!important;transition:none;
+}
+.ee-site.ee-marketing .ee-landing .ee-parallax-band{
+ background:#eaf2ff;
+ min-height:410px;
+}
+.ee-site.ee-marketing .ee-landing .ee-parallax-band>.ee-parallax-scene{
+ background:
+ radial-gradient(ellipse 65% 90% at 14% 20%,#ffffffd1,transparent 74%),
+ linear-gradient(123deg,#e2edff 0%,#c6ddff 52%,#89b8ff 100%);
+}
+.ee-site.ee-marketing .ee-landing .ee-parallax-band>.ee-parallax-scene::before{
+ width:940px;height:940px;left:-450px;top:-400px;
+ border:105px solid #5088de26;border-radius:50%;
+}
+.ee-site.ee-marketing .ee-landing .ee-parallax-band>.ee-parallax-scene::after{
+ width:75%;height:350px;right:-20%;bottom:10%;transform:rotate(-23deg);
+ border-top:2px solid #ffffffb5;border-bottom:2px solid #3a7adb26;
+ background:linear-gradient(180deg,#ffffff34,transparent);
+}
+.ee-site.ee-marketing .ee-landing .ee-parallax-band>.ee-path-copy,
+.ee-site.ee-marketing .ee-landing .ee-parallax-band>.ee-path-steps{position:relative;z-index:1}
+.ee-site.ee-marketing .ee-landing .ee-parallax-band>.ee-path-steps{
+ background:#e5efffe0;
+ backdrop-filter:blur(10px);
+}
+.ee-site.ee-marketing .ee-landing .ee-parallax-band>.ee-path-steps::before{display:none!important}
+.ee-site.ee-marketing .ee-landing .ee-parallax-cta{
+ background:#0f2c66;min-height:250px;
+}
+.ee-site.ee-marketing .ee-landing .ee-parallax-cta>.ee-parallax-scene{
+ background:
+ radial-gradient(ellipse 55% 85% at 82% 40%,#5f9ff65e,transparent 80%),
+ linear-gradient(120deg,#081f4c 0%,#153e89 54%,#2865b9 100%);
+}
+.ee-site.ee-marketing .ee-landing .ee-parallax-cta>.ee-parallax-scene::before{
+ width:720px;height:720px;right:-175px;top:-275px;
+ border-radius:50%;border:95px solid #ffffff19;
+}
+.ee-site.ee-marketing .ee-landing .ee-parallax-cta>.ee-parallax-scene::after{
+ width:120%;height:180px;left:-10%;top:41%;
+ transform:rotate(-14deg);border-top:1px solid #ffffff41;
+ background:linear-gradient(180deg,#b8d7ff16,transparent);
+}
+.ee-site.ee-marketing .ee-landing .ee-parallax-cta>*:not(.ee-parallax-scene){position:relative;z-index:1}
+.ee-site.ee-marketing .ee-landing .ee-parallax-cta::before{display:none!important}
+@media(max-width:770px){
+ .ee-site.ee-marketing .ee-landing .ee-parallax-hero{min-height:0}
+ .ee-site.ee-marketing .ee-landing .ee-parallax-hero .ee-product-preview{transform:none!important}
+ .ee-site.ee-marketing .ee-landing .ee-parallax-band{min-height:0}
+ .ee-site.ee-marketing .ee-landing .ee-parallax-band>.ee-path-steps{backdrop-filter:none}
+ .ee-site.ee-marketing .ee-landing [data-ee-parallax]>.ee-parallax-scene{inset:-145px -24px}
+}
+@media(prefers-reduced-motion:reduce){
+ .ee-site.ee-marketing .ee-landing [data-ee-parallax]>.ee-parallax-scene{
+  transform:none!important;will-change:auto!important;
+ }
+}
