@@ -55,6 +55,16 @@ body.ee-site{background:#f7f8fa;color:#1a2435}
 .activity-summary strong{display:block;font-size:26px}
 .activity-actions{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
 .activity-back{color:#1e5eff;font-weight:800;text-decoration:underline}
+.activity-ai-card{margin-top:19px;padding:18px;background:#eef5ff;border:1px solid #cbdcf9;border-radius:14px;color:#203d69}
+.activity-ai-card h3{font-size:18px;margin:0 0 10px;color:#174684}
+.activity-ai-card p{line-height:1.6;font-size:14px}
+.activity-ai-card .activity-ai-consent{display:flex;align-items:flex-start;gap:9px;font-size:13px;margin:12px 0}
+.activity-ai-card .activity-ai-consent input{margin-top:4px;flex:none;accent-color:#1e5eff}
+.activity-ai-card a{font-weight:800;color:#1558b4}
+.activity-ai-card button{margin:8px 0}
+.activity-ai-card button:disabled{opacity:.5}
+.activity-ai-card pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit;background:#fff;padding:12px;border-radius:10px;max-height:320px;overflow:auto}
+
 .activity-access-notice{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;padding:16px 19px;margin:17px 0;border:1px solid #cbdcf8;border-radius:14px;background:#eff5ff;color:#21426e}
 .activity-access-notice p{margin:0;max-width:68ch;line-height:1.55;font-size:14px}
 .activity-access-notice a{display:inline-flex;align-items:center;justify-content:center;padding:10px 15px;border-radius:10px;background:#1e5eff;color:white!important;font-weight:800;text-decoration:none;min-height:44px}
@@ -85,6 +95,7 @@ body.ee-site{background:#f7f8fa;color:#1a2435}
 </main>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script src="supabase-config.js"></script>
-<script src="assets/actividades.js?v=20261104-auth-continue-1"></script>
+<script src="/assets/ee-ai.js?v=20261104-byok-1"></script>
+<script src="assets/actividades.js?v=20261104-ai-1"></script>
 {% include footer.html %}
 </body></html>
