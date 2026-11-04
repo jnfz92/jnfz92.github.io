@@ -78,7 +78,7 @@
    });
    if(error)throw error;
    if(data?.session){await redirectIfValid()}
-   else{status('Registro recibido. Revisa tu correo y confirma tu cuenta para poder entrar. Comprueba también spam.');mode('login');status('Registro recibido. Revisa tu correo y confirma tu cuenta para poder entrar. Comprueba también spam.')}
+   else{const email=$('registerEmail').value;mode('login');$('loginEmail').value=email;status('Registro recibido. Revisa tu correo y confirma tu cuenta para poder entrar. Comprueba también spam.')}
   }catch(e){status(friendly(e),true)}
   finally{$('registerPassword').value='';$('registerConfirmation').value='';busy('registerSubmit',false)}
  });
