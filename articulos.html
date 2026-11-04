@@ -35,11 +35,43 @@ permalink: /articulos.html
 .ee-library .ee-library-controls select{font:inherit;color:#1a2849;background:#fff;border:1px solid #a4b0c5;border-radius:9px;padding:9px 12px;max-width:100%}
 .ee-library .ee-library-controls select:focus-visible{outline:3px solid #eab44e;outline-offset:2px}
 @media(prefers-reduced-motion:reduce){.ee-library .blog .grid .card{scroll-behavior:auto}}
+/* Taxonomía B2 First independiente del contenido de Supabase. */
+.ee-library .ee-first-preview{margin:2px 0 34px}
+.ee-library .ee-first-preview-header{display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:12px;margin:0 0 15px}
+.ee-library .ee-first-preview-header h2{font-size:clamp(25px,3vw,35px);color:#163e8c;line-height:1.2;margin:5px 0 6px;letter-spacing:-.04em}
+.ee-library .ee-first-preview-header p{font-size:14px;color:#536b8a;max-width:800px;margin:0}
+.ee-library .ee-first-preview-kicker{font-size:11px;color:#2862b6;font-weight:900;letter-spacing:.12em}
+.ee-library .ee-first-preview-all{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:10px 16px;background:#1e5eff;border-radius:11px;color:white;text-decoration:none;font-size:13px;font-weight:850}
+.ee-library .ee-first-preview-all:hover{background:#174dbe;color:#fff}
+.ee-library .ee-first-preview-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:11px}
+.ee-library .ee-first-preview-item{display:flex;flex-direction:column;gap:9px;min-height:138px;padding:18px 16px;border:1px solid #d6e3f6;border-radius:16px;background:linear-gradient(155deg,#fff,#f0f6ff);text-decoration:none;color:#19417f}
+.ee-library .ee-first-preview-item:hover{border-color:#6fa2ea;background:#eaf2ff}
+.ee-library .ee-first-preview-item small{color:#5480ba;font-weight:900;font-size:10px;letter-spacing:.09em}
+.ee-library .ee-first-preview-item strong{font-weight:850;font-size:16px;line-height:1.25}
+.ee-library .ee-first-preview-item span{margin-top:auto;color:#597b9e;font-size:12px;font-weight:700}
+.ee-library .filters a.ee-first-filter-link{display:inline-flex;align-items:center;justify-content:center;text-decoration:none;font:inherit;font-weight:750;white-space:nowrap;color:#1b51a1;background:#e9f2ff;border:1px solid #bad2f5;border-radius:999px;padding:9px 15px;min-height:42px}
+@media(max-width:930px){.ee-library .ee-first-preview-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:570px){.ee-library .ee-first-preview-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.ee-library .ee-first-preview-item{min-height:120px;padding:14px}.ee-library .ee-first-preview-header{align-items:flex-start}}
+
 </style><link rel="canonical" href="https://jnfz92.github.io/articulos.html"><link rel="preconnect" href="https://wnluofonzteaqtlfshgy.supabase.co" crossorigin>
-</head><body class="ee-site ee-library">{% include header.html %}<main class="container"><section class="hero"><span class="eyebrow">Biblioteca Easy English · B2 y fundamentos</span><h1>Una buena explicación puede cambiarlo todo.</h1><p>Encuentra gramática, vocabulario, Writing, Speaking y recursos de estudio. Busca un tema concreto o explora las categorías. Si prefieres seguir un plan, empieza por la ruta de 44 unidades.</p><div class="ee-library-hero-links"><a href="/curso.html">Seguir el curso B2 ↗</a><a href="/examenes.html">Practicar exámenes ↗</a></div></section><section class="blog" id="articulos">
+</head><body class="ee-site ee-library">{% include header.html %}<main class="container"><section class="hero"><span class="eyebrow">Biblioteca Easy English · B2 y fundamentos</span><h1>Una buena explicación puede cambiarlo todo.</h1><p>Encuentra gramática, vocabulario, Writing, Speaking y recursos de estudio. Busca un tema concreto o explora las categorías. Si prefieres seguir un plan, empieza por la ruta de 44 unidades.</p><div class="ee-library-hero-links"><a href="/curso.html">Seguir el curso B2 ↗</a><a href="/examenes.html">Practicar exámenes ↗</a><a href="/first-certificate.html">Formato B2 First: 17 partes ↗</a></div></section>
+<section class="ee-first-preview" aria-labelledby="firstPreviewTitle">
+ <div class="ee-first-preview-header">
+  <div><span class="ee-first-preview-kicker">CAMBRIDGE B2 FIRST · FORMATO COMPLETO</span><h2 id="firstPreviewTitle">Todas las categorías del First Certificate.</h2><p>Las 17 partes aparecen siempre, aunque todavía no existan artículos o ejercicios en Supabase. Explora el temario completo por destrezas.</p></div>
+  <a class="ee-first-preview-all" href="/first-certificate.html">Ver las 17 partes →</a>
+ </div>
+ <div class="ee-first-preview-grid">
+  <a class="ee-first-preview-item" href="/first-certificate.html#use-of-english"><small>BLOQUE 01</small><strong>Use of English</strong><span>Partes 1–4 · 4 formatos →</span></a>
+  <a class="ee-first-preview-item" href="/first-certificate.html#reading"><small>BLOQUE 02</small><strong>Reading</strong><span>Partes 5–7 · 3 formatos →</span></a>
+  <a class="ee-first-preview-item" href="/first-certificate.html#writing"><small>BLOQUE 03</small><strong>Writing</strong><span>2 partes · Essay y elección →</span></a>
+  <a class="ee-first-preview-item" href="/first-certificate.html#listening"><small>BLOQUE 04</small><strong>Listening</strong><span>4 partes · 30 preguntas →</span></a>
+  <a class="ee-first-preview-item" href="/first-certificate.html#speaking"><small>BLOQUE 05</small><strong>Speaking</strong><span>4 partes · Prueba oral →</span></a>
+ </div>
+</section>
+<section class="blog" id="articulos">
 <div class="blog-head"><div><span class="eyebrow">Biblioteca de aprendizaje</span><h2>Explora las lecciones</h2><p>Encuentra rápidamente lo que necesitas estudiar.</p></div><label class="search-wrap" for="articleSearch">⌕ <input id="articleSearch" type="search" placeholder="Buscar por tema o palabra..." autocomplete="off"></label></div>
 <div class="filters" aria-label="Filtrar artículos por categoría">
-<button class="filter active" data-filter="all">Todos</button><button class="filter" data-filter="lesson">Lecciones</button><button class="filter" data-filter="exam">Exámenes</button><button class="filter" data-filter="grammar">Grammar</button><button class="filter" data-filter="vocabulary">Vocabulary</button><button class="filter" data-filter="speaking">Speaking</button><button class="filter" data-filter="writing">Writing</button><button class="filter" data-filter="listening">Listening</button>
+<button class="filter active" data-filter="all">Todos</button><button class="filter" data-filter="lesson">Lecciones</button><button class="filter" data-filter="exam">Exámenes</button><button class="filter" data-filter="grammar">Grammar</button><button class="filter" data-filter="vocabulary">Vocabulary</button><button class="filter" data-filter="speaking">Speaking</button><button class="filter" data-filter="writing">Writing</button><button class="filter" data-filter="listening">Listening</button><a class="filter ee-first-filter-link" href="/first-certificate.html">First Certificate · 17 partes</a>
 </div>
 <div class="ee-library-controls" aria-label="Orden y nivel de los artículos">
 <label for="articleLevel">Nivel <select id="articleLevel"><option value="all">Todos los niveles</option><option value="A1">A1</option><option value="A2">A2</option><option value="B1">B1</option><option value="B2">B2</option><option value="C1">C1</option></select></label>
