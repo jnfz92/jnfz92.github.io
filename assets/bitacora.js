@@ -174,5 +174,6 @@
     if(['SIGNED_IN','SIGNED_OUT','USER_UPDATED','TOKEN_REFRESHED'].includes(event))
       Promise.resolve().then(syncOwner);
   });
+  window.addEventListener('easyenglish:bitacora-refresh',()=>{if(owner)void refresh()});
   void syncOwner();
 })();
