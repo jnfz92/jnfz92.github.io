@@ -23,6 +23,28 @@ permalink: /writings.html
 .ee-writing-login-note a{display:inline-flex;align-items:center;justify-content:center;padding:10px 16px;background:#1e5eff;color:#fff!important;border-radius:10px;font-weight:800;text-decoration:none;min-height:44px}
 .ee-writing-login-note a+a{background:#fff;color:#1e5eff!important;border:1px solid #d3e2fb}
 </style>
+<style>
+.ee-writing-ai{background:linear-gradient(135deg,#f1f6ff,#fff);border:1px solid #cddffb;border-radius:17px;margin:20px 0;padding:20px;color:#1e365e}
+.ee-writing-ai-head{display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap}
+.ee-writing-ai-head h3{font-size:21px;margin:4px 0 8px;color:#153f88}
+.ee-writing-ai>p{font-size:14px;line-height:1.65}
+.ee-writing-ai-chip{border:1px solid #c5d7f5;border-radius:999px;padding:5px 10px;font-size:11px;font-weight:800;color:#2859a0}
+.ee-writing-ai-consent{display:flex;gap:10px;align-items:flex-start;line-height:1.55;font-size:13px;margin:18px 0}
+.ee-writing-ai-consent input{margin-top:4px;flex:none;accent-color:#1e5eff}
+.ee-writing-ai-controls{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.ee-writing-ai-controls button,.ee-writing-ai-controls a{display:inline-flex;min-height:44px;align-items:center;justify-content:center;padding:11px 15px;border-radius:11px;font-size:13px;font-weight:800;text-decoration:none}
+.ee-writing-ai-controls button{background:#1e5eff;color:#fff;border:1px solid #1e5eff;cursor:pointer}
+.ee-writing-ai-controls button:disabled{opacity:.55;cursor:not-allowed}
+.ee-writing-ai-controls a{border:1px solid #aac7f5;color:#1753a2;background:#fff}
+.ee-writing-ai-score-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.ee-writing-ai-score{padding:11px;background:#fff;border:1px solid #dce6f5;border-radius:10px}
+.ee-writing-ai-score strong{display:block;font-size:20px}
+.ee-writing-ai-result h4{font-size:17px;margin:18px 0 9px;color:#16468d}
+.ee-writing-ai-correction{background:#fff;border:1px solid #dae5f6;border-radius:11px;padding:12px;margin:8px 0}
+.ee-writing-ai-correction p{white-space:pre-wrap;overflow-wrap:anywhere;font-size:13px;margin:6px 0;line-height:1.6}
+.ee-writing-ai-result pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit;background:#fff;border:1px solid #dae5f6;border-radius:11px;padding:14px;max-height:390px;overflow:auto}
+@media(max-width:540px){.ee-writing-ai{padding:16px}}
+</style>
 </head>
 <body class="ee-site ee-library ee-writings">
 {% include header.html %}
@@ -59,7 +81,17 @@ permalink: /writings.html
         <div class="writing-counter"><span id="wcount" role="status" aria-live="polite">0 palabras · objetivo: 140–190</span><span class="writing-counter-hint">Objetivo Cambridge B2</span></div>
         <div class="writing-actions"><button type="button" id="writingCheck" class="writing-secondary">Revisar mi texto ✦</button><button type="button" id="wguardar">Guardar borrador</button><button type="button" id="wnuevo" class="writing-secondary">Nuevo borrador</button><button type="button" id="wborrar" class="writing-danger">Eliminar</button></div>
         <div id="writingLoginNotice" class="ee-writing-login-note" hidden><strong>🔒 Guardar borradores requiere una cuenta.</strong><span>La revisión orientativa funciona sin iniciar sesión. Si ya has escrito, conservaremos el texto temporalmente en esta pestaña al acceder.</span><div><a id="writingLoginLink" href="/login.html?next=%2Fwritings.html%23editor">Iniciar sesión →</a><a id="writingRegisterLink" href="/registro.html?next=%2Fwritings.html%23editor">Crear cuenta</a></div></div>
-        <p id="westado" class="writing-status" role="status" aria-live="polite">Comprobando tu sesión…</p><div id="writingFeedback" class="writing-feedback" aria-live="polite"></div>
+        <p id="westado" class="writing-status" role="status" aria-live="polite">Comprobando tu sesión…</p>
+        <section class="ee-writing-ai" aria-labelledby="writingAiTitle">
+         <div class="ee-writing-ai-head"><div><span class="eyebrow">EXCLUSIVO CON TU CLAVE OPENAI</span><h3 id="writingAiTitle">Corrección completa con IA</h3></div><span class="ee-writing-ai-chip">Opcional</span></div>
+         <p>Corrección orientativa B2 First por Content, Communicative Achievement, Organisation y Language, con explicación de errores y versión mejorada.</p>
+         <p id="writingAiAccess" class="ee-writing-ai-access" role="status">Comprobando si tienes una clave temporal…</p>
+         <label class="ee-writing-ai-consent"><input type="checkbox" id="writingAiConsent"> Autorizo el envío del texto de este writing a OpenAI para analizarlo. La solicitud puede generar costes en mi cuenta de API.</label>
+         <div class="ee-writing-ai-controls"><button id="writingAiCheck" type="button" disabled>Corregir con IA</button><a href="/clave-openai.html" id="writingAiSetup">🔑 Configurar clave de OpenAI</a></div>
+         <p id="writingAiStatus" role="status" aria-live="polite"></p>
+         <div id="writingAiResult" aria-live="polite"></div>
+        </section>
+        <div id="writingFeedback" class="writing-feedback" aria-live="polite"></div>
       </div>
       <aside class="writing-sidebar">
         <div class="writing-side-panel"><span class="eyebrow">Tu biblioteca personal</span><h3>Mis borradores</h3><p>Recupera un texto para continuar practicando donde lo dejaste.</p><label for="wlista">Texto guardado</label><select id="wlista"><option value="">Nuevo writing</option></select><p class="writing-private">🔒 Tus textos guardados solo son visibles para tu cuenta. <a href="/login.html?next=%2Fwritings.html%23editor">Acceder a mis borradores →</a></p></div>
@@ -72,5 +104,7 @@ permalink: /writings.html
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script src="/supabase-config.js"></script>
 <script src="/assets/writing-editor.js?v=20261104-guest-draft-2" defer></script>
-<script src="/assets/writing-feedback.js?v=20261101-review-1" defer></script>{% include footer.html %}
+<script src="/assets/writing-feedback.js?v=20261101-review-1" defer></script>
+<script src="/assets/ee-ai.js?v=20261104-byok-1" defer></script>
+<script src="/assets/writing-ai.js?v=20261104-byok-1" defer></script>{% include footer.html %}
 </body></html>
