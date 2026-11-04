@@ -3,7 +3,12 @@
  const $=id=>document.getElementById(id),A=window.EEAula,ai=window.eeAI,db=window.eeDb;
  const go=$('aulaAiGenerate');if(!go||!A||!db||!ai)return;
  const status=$('aulaAiStatus'),access=$('aulaAiAccess'),consent=$('aulaAiConsent'),
-   output=$('aulaAiResult'),weeks=$('aulaAiWeeks'),keyLink=$('aulaAiKeyLink'),remove=$('aulaAiDelete');
+   output=$('aulaAiResult'),weeks=$('aulaAiWeeks'),keyLink=$('aulaAiKeyLink'),remove=$('aulaAiDelete'),
+   next=$('aulaAiNext'),back=$('aulaAiBack'),stepLabel=$('aulaAiStepLabel'),progressBar=$('aulaAiProgressBar'),review=$('aulaAiReview');
+ let currentStep=1;
+ const steps=[...document.querySelectorAll('[data-ai-step]')];
+ function showStep(n){currentStep=Math.max(1,Math.min(3,n));steps.forEach(s=>s.hidden=Number(s.dataset.aiStep)!==currentStep);stepLabel.textContent='Paso '+currentStep+' de 3';progressBar.style.width=(currentStep/3*100)+'%';back.hidden=currentStep===1;next.hidden=currentStep===3;next.textContent=currentStep===2?'Ver resumen →':'Continuar →';if(currentStep===3)updateReview();refresh();}
+ function updateReview(){const days=[...document.querySelectorAll('[name=aulaAiDay]:checked')].map(x=>x.value);const names=['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];review.textContent='Días: '+(days.length?days.map(x=>names[Number(x)]).join(', '):'ninguno')+' · '+$('aulaAiMinutes').selectedOptions[0].textContent+' por sesión · '+weeks.selectedOptions[0].textContent+' · Prioridad: '+$('aulaAiFocus').selectedOptions[0].textContent;}
  const DOW=['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
  const el=(tag,content,cls)=>{const n=document.createElement(tag);if(content!==undefined)n.textContent=String(content);if(cls)n.className=cls;return n};
  let busy=false,available=false,lastPlan=null;
@@ -12,7 +17,7 @@
   available=!!ai.keyFor(A.user.id);
   access.textContent=available?'✓ Clave de OpenAI disponible. Autoriza el uso del resumen de aprendizaje para continuar.':'Primero guarda una clave temporal de OpenAI en tu cuenta.';
   keyLink.textContent=available?'Administrar clave temporal':'🔑 Configurar clave OpenAI';
-  go.disabled=busy||!available||!consent.checked||!A.units.length;
+  go.disabled=busy||!available||!consent.checked||!A.units.length||currentStep!==3;
   if(!available){output.replaceChildren();remove.hidden=true}
  }
  function makeRoadmap(profile){
@@ -86,16 +91,19 @@
    if(data?.plan){lastPlan=data.plan;weeks.value=String(data.semanas);paint(lastPlan);remove.hidden=false;status.textContent='Se ha recuperado tu último plan IA guardado.'}
  }
  async function gather(){
-   const days=[...document.querySelectorAll('[name=planDay]:checked')].map(x=>Number(x.value));
+   const days=[...document.querySelectorAll('[name=aulaAiDay]:checked')].map(x=>Number(x.value));
    if(!days.length)throw Error('Selecciona al menos un día de estudio.');
    if(!A.units.length)throw Error('No se ha podido cargar el catálogo B2.');
    const completed=new Set(A.progress.filter(p=>p.estado==='completada').map(p=>p.unidad_slug));
    const started=new Set(A.progress.filter(p=>p.estado==='en_curso').map(p=>p.unidad_slug));
-   return {days,minutes:Number($('planMinutes').value),weeks:Number(weeks.value),
-    focus:$('planPriority').value,examDate:$('planDate').value,
+   return {days,minutes:Number($('aulaAiMinutes').value),weeks:Number(weeks.value),
+    focus:$('aulaAiFocus').value,examDate:$('aulaAiExamDate').value,
     units:A.units.map(u=>({slug:u.slug,title:u.titulo,state:completed.has(u.slug)?'completed':started.has(u.slug)?'started':'pending'})),
     diagnostic:A.diagnostic?.desglose||null,reviewCount:A.reviewCount||0};
  }
+ next.addEventListener('click',()=>{if(currentStep===1&&!document.querySelector('[name=aulaAiDay]:checked')){status.textContent='Elige al menos un día para estudiar.';return}status.textContent='';showStep(currentStep+1)});
+ back.addEventListener('click',()=>{status.textContent='';showStep(currentStep-1)});
+ document.querySelectorAll('[name=aulaAiDay],#aulaAiMinutes,#aulaAiWeeks,#aulaAiExamDate,#aulaAiFocus').forEach(x=>x.addEventListener('change',()=>{updateReview();refresh()}));
  go.addEventListener('click',async()=>{
    if(busy)return;
    await refresh();
@@ -124,6 +132,7 @@
    lastPlan=null;output.replaceChildren();remove.hidden=true;status.textContent='Plan IA eliminado de tu cuenta.';
  });
  consent.onchange=refresh;
+ showStep(1);
  window.addEventListener('pageshow',()=>{refresh()});
  document.addEventListener('visibilitychange',()=>{if(!document.hidden)refresh()});
  window.addEventListener('ee-aula-ready',async()=>{await refresh();await loadSaved()});
