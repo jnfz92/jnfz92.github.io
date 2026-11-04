@@ -773,30 +773,87 @@ $('registerForm').onsubmit=async e=>{
 };
 $('registerConfirm').addEventListener('input',()=> $('registerConfirm').setCustomValidity(''));
 $('registerPass').addEventListener('input',()=> $('registerConfirm').setCustomValidity(''));
-$('forgotPassword').onclick=async()=>{
-  const email=$('authEmail').value.trim().toLowerCase();
-  if(!email){$('authEmail').focus();authMessage('Indica tu correo en la casilla de acceso para recuperar la contraseña.',true);return}
-  if(!$('authEmail').checkValidity()){$('authEmail').reportValidity();return}
-  const button=$('forgotPassword');button.disabled=true;
-  try{
-    const {error}=await eeDb.auth.resetPasswordForEmail(email,{redirectTo:location.origin+'/perfil.html'});
-    if(error)throw error;
-    authMessage('Si existe una cuenta con ese correo, recibirás un enlace de recuperación.');
-  }catch(error){authMessage('No se pudo solicitar el enlace: '+readableAuthError(error),true)}
-  finally{button.disabled=false}
+// Flujo de recuperación separado del acceso y con mensajes dentro del formulario.
+const recoveryRequest=$('passwordResetRequest'), recoveryRequestStatus=$('passwordResetRequestStatus');
+$('forgotPassword').onclick=()=>{
+ const opening=recoveryRequest.hidden;
+ recoveryRequest.hidden=!opening;
+ $('forgotPassword').setAttribute('aria-expanded',String(opening));
+ if(opening){
+  const previous=$('authEmail').value.trim();
+  if(previous&&!$('passwordResetEmail').value)$('passwordResetEmail').value=previous;
+  $('passwordResetEmail').focus();
+ }
 };
+$('passwordResetRequestForm').onsubmit=async e=>{
+ e.preventDefault();
+ if(!$('passwordResetRequestForm').reportValidity())return;
+ const email=$('passwordResetEmail').value.trim().toLowerCase();
+ const button=$('passwordResetRequestSubmit');
+ button.disabled=true;recoveryRequestStatus.textContent='Enviando enlace de recuperación…';
+ try{
+  const {error}=await eeDb.auth.resetPasswordForEmail(email,{redirectTo:location.origin+'/perfil.html'});
+  if(error)throw error;
+  recoveryRequestStatus.textContent='Si existe una cuenta con ese correo, recibirás un enlace para cambiar la contraseña. Revisa también la carpeta de spam. El enlace puede caducar; utiliza el más reciente.';
+ }catch(error){
+  recoveryRequestStatus.textContent='No se pudo enviar el correo: '+readableAuthError(error);
+ }finally{button.disabled=false}
+};
+let recoveryLinkVerified=false;
+const recoveryPanel=$('passwordRecoveryPanel'), recoveryStatus=$('passwordRecoveryStatus');
+function showRecovery(){
+ recoveryLinkVerified=true;
+ recoveryPanel.hidden=false;
+ $('authLayout').hidden=true;
+ $('privateDashboard').hidden=true;
+ $('accountStatus').hidden=true;
+ recoveryStatus.textContent='Enlace comprobado. Escribe y confirma tu nueva contraseña.';
+ $('passwordRecoveryValue').focus();
+ recoveryPanel.scrollIntoView({block:'start',behavior:'smooth'});
+}
+// El enlace puede llegar con type=recovery en hash, o el evento PASSWORD_RECOVERY.
+const hashParams=new URLSearchParams(location.hash.slice(1));
+const queryParams=new URLSearchParams(location.search);
+const recoveryLink=hashParams.get('type')==='recovery'||queryParams.get('type')==='recovery';
+const linkError=hashParams.get('error_description')||queryParams.get('error_description');
+if(linkError){
+ recoveryRequest.hidden=false;
+ $('forgotPassword').setAttribute('aria-expanded','true');
+ recoveryRequestStatus.textContent='El enlace de recuperación ha caducado o no es válido. Solicita otro desde aquí.';
+}
 $('passwordRecoveryForm').onsubmit=async e=>{
-  e.preventDefault();
-  if(!$('passwordRecoveryForm').reportValidity())return;
-  const button=$('passwordRecoverySubmit');button.disabled=true;
-  try{
-    const {error}=await eeDb.auth.updateUser({password:$('passwordRecoveryValue').value});
-    if(error)throw error;
-    $('passwordRecoveryPanel').hidden=true;
-    status('Contraseña actualizada correctamente.');
-  }catch(error){authMessage('No se pudo cambiar la contraseña: '+readableAuthError(error),true)}
-  finally{$('passwordRecoveryValue').value='';button.disabled=false}
+ e.preventDefault();
+ if(!recoveryLinkVerified){
+  recoveryStatus.textContent='Primero abre el enlace de recuperación que recibiste por correo.';
+  return;
+ }
+ const pass=$('passwordRecoveryValue').value;
+ const confirmation=$('passwordRecoveryConfirm').value;
+ if(pass!==confirmation){
+  recoveryStatus.textContent='Las contraseñas no coinciden.';
+  $('passwordRecoveryConfirm').focus();
+  return;
+ }
+ if(!$('passwordRecoveryForm').reportValidity())return;
+ const button=$('passwordRecoverySubmit');
+ button.disabled=true;recoveryStatus.textContent='Guardando la nueva contraseña…';
+ try{
+  const {error}=await eeDb.auth.updateUser({password:pass});
+  if(error)throw error;
+  recoveryLinkVerified=false;
+  recoveryPanel.hidden=true;
+  $('passwordRecoveryValue').value='';
+  $('passwordRecoveryConfirm').value='';
+  history.replaceState(null,'',location.pathname);
+  // Evita dejar al navegador mostrando el formulario de acceso previo tras el cambio.
+  authMessage('Contraseña actualizada correctamente. Ya puedes acceder con tu nueva contraseña.');
+  const {data}=await eeDb.auth.getUser();
+  if(data?.user)await changeUser(data.user);
+  // La contraseña nueva no debe permanecer en un campo oculto.
+ }catch(error){recoveryStatus.textContent='No se pudo actualizar la contraseña: '+readableAuthError(error);}
+ finally{button.disabled=false}
 };
+$('passwordRecoveryConfirm').addEventListener('input',()=>{if(recoveryStatus.textContent==='Las contraseñas no coinciden.')recoveryStatus.textContent=''});
 $('exportAccountData').onclick=async()=>{
  if(!user)return;
  const owner=user.id,button=$('exportAccountData'),label=$('exportAccountStatus');
@@ -878,8 +935,17 @@ eeDb.from('articulos').select('ruta,slug,titulo').order('titulo').then(({data,er
 let authRevision=0;
 eeDb.auth.onAuthStateChange((event)=>{
   if(event==='PASSWORD_RECOVERY'){
-    $('passwordRecoveryPanel').hidden=false;
-    $('passwordRecoveryValue').focus();
+    showRecovery();
+    return;
+  }
+  if(recoveryLink&&event==='SIGNED_IN'){
+    showRecovery();
+    return;
+  }
+  if(recoveryLinkVerified&&event==='SIGNED_OUT'){
+    recoveryLinkVerified=false;
+    recoveryPanel.hidden=true;
+    authMessage('El enlace ha caducado. Solicita uno nuevo desde «¿Has olvidado tu contraseña?».',true);
   }
   if(!['SIGNED_IN','SIGNED_OUT','TOKEN_REFRESHED','USER_UPDATED'].includes(event))return;
   const version=++authRevision;
