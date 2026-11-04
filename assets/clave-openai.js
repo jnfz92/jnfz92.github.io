@@ -9,6 +9,15 @@
  const sessionStatus=document.getElementById('openaiSessionStatus');
  const remove=document.getElementById('openaiDeleteKey');
  const STORAGE_KEY='easyenglish:openai:temporary:v1';
+ const back=document.getElementById('openaiReturnLink');
+ const next=new URLSearchParams(location.search).get('next');
+ if(back&&next&&next.startsWith('/')&&!next.startsWith('//')&&!next.includes('\\')){
+   const url=new URL(next,location.origin);
+   if(url.origin===location.origin&&['/writings.html','/aula-b2.html','/perfil.html'].includes(url.pathname)){
+     back.href=url.pathname+url.search+url.hash;
+     back.textContent='← Volver a '+(url.pathname==='/writings.html'?'Writing':url.pathname==='/aula-b2.html'?'Mi aula B2':'Mi perfil');
+   }
+ }
  const LIFETIME=30*60*1000;
  let activeUser=null;
  function clear(){try{sessionStorage.removeItem(STORAGE_KEY)}catch(e){}input.value=''}
