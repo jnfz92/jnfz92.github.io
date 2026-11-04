@@ -48,6 +48,7 @@
       const currentMore=header.querySelector('.ee-more>summary');
       if(currentMore)currentMore.classList.toggle('ee-more-current',!!header.querySelector('.ee-more-panel a[aria-current="page"]'));
       document.body.prepend(header);
+      window.dispatchEvent(new Event('easyenglish:header-ready'));
     }catch(error){
       console.warn('No se pudo recuperar la navegación compartida',error);
     }
