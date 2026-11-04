@@ -1,0 +1,62 @@
+---
+permalink: /clave-openai.html
+---
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#1e5eff">
+<title>Clave temporal de OpenAI · Easy English</title>
+<meta name="description" content="Gestiona una clave temporal de OpenAI en tu navegador.">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="stylesheet" href="/assets/site.css?v=20261030-unified-blue-2">
+<link rel="stylesheet" href="/assets/navigation.css?v=20261030-menu-blue-3">
+<script src="/assets/navigation.js?v=20261030-menu-blue-4" defer></script>
+<style>
+.ee-openai-page main{max-width:760px;margin:0 auto;padding:36px 18px 78px}
+.ee-openai-page .ee-openai-back{display:inline-flex;margin:0 0 18px;color:#2356aa;font-weight:750}
+.ee-openai-page h1{font-size:clamp(1.9rem,4vw,2.6rem);line-height:1.2;margin:0 0 12px}
+.ee-openai-page .ee-openai-intro{color:#526887;max-width:620px;margin:0 0 26px}
+.ee-openai-page .ee-openai-card{background:#fff;border:1px solid #d9e4f4;border-radius:18px;padding:clamp(20px,4vw,32px);box-shadow:0 9px 28px #102f6710}
+.ee-openai-page label{display:block;font-weight:800;color:#233b65;margin-bottom:8px}
+.ee-openai-page input{display:block;width:100%;min-height:48px;padding:12px 14px;border:1px solid #bbcae0;border-radius:11px;background:#fff;color:#202a3a;font:inherit}
+.ee-openai-page input:focus-visible{outline:3px solid #96b9ff;outline-offset:2px}
+.ee-openai-page .ee-openai-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+.ee-openai-page button{font:inherit;cursor:pointer;border-radius:11px;min-height:46px;padding:11px 17px;font-weight:800}
+.ee-openai-page .ee-openai-save{background:#1e5eff;color:#fff;border:1px solid #1e5eff}
+.ee-openai-page .ee-openai-remove{background:#fff;border:1px solid #cdd8e9;color:#254b8c}
+.ee-openai-page .ee-openai-note{font-size:13px;color:#60728b;line-height:1.65;margin:16px 0 0}
+.ee-openai-page .ee-openai-warning{border-left:3px solid #d4962a;background:#fff9ee;padding:14px 16px;margin-top:22px;border-radius:0 10px 10px 0;color:#5c4a30;font-size:13px;line-height:1.6}
+.ee-openai-page #openaiKeyStatus{font-size:14px;font-weight:700;min-height:24px;margin:18px 0 0}
+.ee-openai-page .ee-openai-session{display:flex;align-items:center;gap:8px;flex-wrap:wrap;color:#48607f;font-size:13px;font-weight:700;margin:0 0 14px}
+@media(max-width:520px){.ee-openai-page main{padding:22px 14px 60px}.ee-openai-page .ee-openai-actions button{flex:1 1 100%}}
+</style>
+</head>
+<body class="ee-site ee-openai-page">
+{% include header.html %}
+<main id="contenido-principal">
+<a class="ee-openai-back" href="/perfil.html#profile-panel-cuenta">← Volver a mi perfil</a>
+<p class="section-kicker">HERRAMIENTAS OPCIONALES</p>
+<h1>Mi clave temporal de OpenAI</h1>
+<p class="ee-openai-intro">Introduce tu clave API solo cuando quieras usar una función de OpenAI. No quedará guardada permanentemente en tu perfil ni en Supabase.</p>
+<section class="ee-openai-card" aria-labelledby="openaiSettingsTitle">
+<h2 id="openaiSettingsTitle">Clave para esta sesión</h2>
+<p class="ee-openai-session" id="openaiSessionStatus" role="status">Comprobando tu sesión de Easy English…</p>
+<form id="openaiKeyForm" autocomplete="off" hidden>
+<label for="openaiApiKey">Clave API de OpenAI</label>
+<input id="openaiApiKey" type="password" spellcheck="false" autocomplete="off" autocapitalize="off" autocorrect="off" placeholder="sk-…" required minlength="12">
+<div class="ee-openai-actions"><button class="ee-openai-save" type="submit">Guardar temporalmente</button><button class="ee-openai-remove" id="openaiDeleteKey" type="button">Borrar clave ahora</button></div>
+</form>
+<p id="openaiKeyStatus" role="status" aria-live="polite"></p>
+<p class="ee-openai-note">Caduca a los 30 minutos y también desaparece al cerrar esta pestaña. Nunca se muestra la clave guardada en pantalla. Esta configuración no activa por sí sola ninguna función de inteligencia artificial.</p>
+<div class="ee-openai-warning"><strong>Seguridad:</strong> la clave se conserva temporalmente en el almacenamiento de sesión de este navegador. El código que se ejecuta en una página web puede acceder a ese almacenamiento; por eso no es adecuado para usos sensibles o claves de alto presupuesto. Para funciones reales de OpenAI, lo recomendable es un servidor intermedio que proteja la clave. Puedes crear una clave con límites de gasto en <a href="https://platform.openai.com/api-keys" target="_blank" rel="noopener noreferrer">la plataforma de OpenAI</a>.</div>
+</section>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="/supabase-config.js"></script>
+<script src="/assets/clave-openai.js?v=20261104-1" defer></script>
+{% include footer.html %}
+</body>
+</html>
