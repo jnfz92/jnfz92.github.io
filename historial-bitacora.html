@@ -33,6 +33,22 @@ permalink: /historial-bitacora.html
 .ee-bitacora-history .profile-list-pagination button:disabled{opacity:.45}
 .ee-bitacora-history .profile-list-pagination span{font-size:13px;color:#526888;font-weight:700}
 @media(max-width:600px){.ee-bitacora-history main{padding:18px 12px 50px}.ee-bitacora-history .panel{padding:16px}.ee-bitacora-history .history-links a{flex:1 1 100%;text-align:center}}
+
+.ee-bitacora-history .bitacora-vocabulary-library{border-top:1px solid #dbe5f6;margin-top:32px;padding-top:30px;scroll-margin-top:105px}
+.ee-bitacora-history #bitacoraHistoryTitle{scroll-margin-top:105px}
+.ee-bitacora-history .bitacora-vocab-tag{font-size:12px;font-weight:800;color:#2357a8;background:#eaf2ff;border-radius:99px;padding:8px 12px}
+.ee-bitacora-history .bitacora-search-label{display:block;font-size:13px;font-weight:800;color:#244b86;margin:18px 0 6px}
+.ee-bitacora-history #bitacoraVocabularySearch{width:100%;padding:12px 14px;border:1px solid #bdcfe8;border-radius:12px;background:#fff;color:#1f2a44;font:inherit}
+.ee-bitacora-history .bitacora-vocab-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:12px}
+.ee-bitacora-history .bitacora-vocab-card{display:flex;flex-direction:column;min-width:0;padding:19px;border:1px solid #dce5f2;border-radius:15px;background:#fff}
+.ee-bitacora-history .bitacora-vocab-card h4{font-size:16px;line-height:1.4;margin:0 0 8px;color:#163568}
+.ee-bitacora-history .bitacora-vocab-card p{font-size:13px;line-height:1.5;color:#60728b;margin:0 0 15px;flex:1}
+.ee-bitacora-history .bitacora-vocab-actions{display:flex;gap:8px;flex-wrap:wrap}
+.ee-bitacora-history .bitacora-vocab-actions a,.ee-bitacora-history .bitacora-vocab-actions button{display:inline-flex;align-items:center;justify-content:center;padding:9px 12px;border-radius:10px;font-size:12px;font-weight:800;text-decoration:none;min-height:40px}
+.ee-bitacora-history .bitacora-vocab-actions a{background:#1e5eff;color:#fff}
+.ee-bitacora-history .bitacora-vocab-actions button{background:#fff;color:#2355ac;border:1px solid #ccdaf3}
+.ee-bitacora-history #bitacoraStatus:not(:empty){margin:12px 0}
+@media(max-width:650px){.ee-bitacora-history .bitacora-vocab-grid{grid-template-columns:1fr}.ee-bitacora-history .bitacora-vocab-actions>*{flex:1}.ee-bitacora-history .bitacora-vocabulary-library{margin-top:24px;padding-top:22px}}
 </style>
 </head>
 <body class="ee-site ee-profile ee-bitacora-history">
@@ -41,13 +57,13 @@ permalink: /historial-bitacora.html
 <header class="history-intro">
 <p class="eyebrow">✦ MI CUADERNO DE INGLÉS</p>
 <h1>Historial de mi bitácora</h1>
-<p class="muted">Todas tus anotaciones personales en un solo lugar. Busca por palabra, filtra por concepto y consulta tus dudas sin ocupar espacio en el perfil.</p>
-<div class="history-links"><a href="/perfil.html#bitacoraTitle">← Volver al perfil</a><a href="/perfil.html">Mi aprendizaje</a></div>
+<p class="muted">Tus anotaciones privadas y los artículos de vocabulario reunidos en un solo lugar, con búsqueda y páginas para encontrarlo todo fácilmente.</p>
+<div class="history-links"><a href="/perfil.html#bitacoraTitle">← Volver al perfil</a><a href="#bitacoraHistoryTitle">Mis anotaciones</a><a href="#bitacoraVocabularyTitle">Artículos de vocabulario</a></div>
 </header>
 <p id="bitacoraAccess" role="status" aria-live="polite">Comprobando tu sesión…</p>
 <section class="panel bitacora-panel" id="bitacoraPanel" hidden aria-labelledby="bitacoraTitle">
 <p class="section-kicker">MI CUADERNO PERSONAL</p>
-<h2 id="bitacoraTitle">Mis anotaciones</h2>
+<h2 id="bitacoraTitle">Mi bitácora</h2>
 <p class="muted">Tus notas son privadas y están sincronizadas con tu cuenta.</p>
 <details id="bitacoraEditor"><summary>+ Nueva anotación o gestionar categorías</summary><form id="bitacoraCategoryForm" class="bitacora-form" autocomplete="off">
 <label for="bitacoraNewCategory">Crear nuevo concepto o categoría</label>
@@ -62,18 +78,29 @@ permalink: /historial-bitacora.html
 <p class="muted">La fecha y la hora se registran automáticamente al guardar.</p>
 <div class="bitacora-actions"><button class="primary" id="bitacoraSave" type="submit">Guardar anotación</button><button class="secondary" id="bitacoraCancelEdit" type="button" hidden>Cancelar edición</button></div>
 </form>
-<p class="muted bitacora-status" id="bitacoraStatus" role="status" aria-live="polite"></p>
-</details><div class="history-list-heading"><h3>Mis notas guardadas</h3><span class="muted">6 por página</span></div>
+</details>
+<p class="muted bitacora-status" id="bitacoraStatus" role="status" aria-live="polite"></p><div class="history-list-heading"><h3 id="bitacoraHistoryTitle">Mis anotaciones guardadas</h3><span class="muted">6 por página</span></div>
 <div class="bitacora-toolbar">
 <input id="bitacoraSearch" type="search" aria-label="Buscar anotaciones" placeholder="Buscar entre mis dudas…">
 <select id="bitacoraFilter" aria-label="Filtrar por categoría"><option value="all">Todas las categorías</option><option value="none">Sin categoría</option></select>
 </div>
 <p class="muted" id="bitacoraCount" aria-live="polite">0 anotaciones</p>
 <div id="bitacoraHistory" aria-live="polite"></div>
+<nav class="profile-list-pagination" id="bitacoraPagination" aria-label="Páginas de anotaciones" hidden></nav>
+<section id="bitacoraVocabulary" class="bitacora-vocabulary-library" aria-labelledby="bitacoraVocabularyTitle">
+ <div class="history-list-heading"><div><p class="section-kicker">TU BIBLIOTECA DE VOCABULARIO</p><h3 id="bitacoraVocabularyTitle">Artículos de vocabulario</h3></div><span class="bitacora-vocab-tag">Todos disponibles</span></div>
+ <p class="muted">Los artículos de vocabulario están siempre reunidos aquí. Puedes leerlos y añadir tus apuntes personales sin crear notas duplicadas.</p>
+ <label class="bitacora-search-label" for="bitacoraVocabularySearch">Buscar artículos</label>
+ <input id="bitacoraVocabularySearch" type="search" placeholder="Buscar phrasal verbs, expresiones, temas…" autocomplete="off">
+ <p class="muted" id="bitacoraVocabularyCount" role="status" aria-live="polite">Cargando artículos…</p>
+ <div id="bitacoraVocabularyItems" class="bitacora-vocab-grid"></div>
+ <nav id="bitacoraVocabularyPagination" class="profile-list-pagination" aria-label="Páginas de artículos de vocabulario" hidden></nav>
+</section>
 </section>
 </main>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script src="/supabase-config.js"></script>
-<script src="/assets/bitacora.js?v=20261104-history-1" defer></script>
+<script src="/assets/bitacora.js?v=20261104-vocab-history-2" defer></script>
+<script src="/assets/bitacora-vocabulario.js?v=20261104-1" defer></script>
 {% include footer.html %}
 </body></html>
