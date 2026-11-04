@@ -49,6 +49,7 @@ permalink: /historial-bitacora.html
 .ee-bitacora-history .bitacora-vocab-actions button{background:#fff;color:#2355ac;border:1px solid #ccdaf3}
 .ee-bitacora-history #bitacoraStatus:not(:empty){margin:12px 0}
 @media(max-width:650px){.ee-bitacora-history .bitacora-vocab-grid{grid-template-columns:1fr}.ee-bitacora-history .bitacora-vocab-actions>*{flex:1}.ee-bitacora-history .bitacora-vocabulary-library{margin-top:24px;padding-top:22px}}
+.ee-bitacora-history .bitacora-import-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:14px 0 16px}.ee-bitacora-history .bitacora-import-row button{padding:10px 15px;border-radius:11px;font-size:13px;font-weight:800}.ee-bitacora-history .bitacora-import-row button:disabled{opacity:.55}.ee-bitacora-history #bitacoraImportStatus{margin:0;font-size:12px;flex:1 1 260px}
 </style>
 </head>
 <body class="ee-site ee-profile ee-bitacora-history">
@@ -92,6 +93,7 @@ permalink: /historial-bitacora.html
  <p class="muted">Los artículos de vocabulario están siempre reunidos aquí. Puedes leerlos y añadir tus apuntes personales sin crear notas duplicadas.</p>
  <label class="bitacora-search-label" for="bitacoraVocabularySearch">Buscar artículos</label>
  <input id="bitacoraVocabularySearch" type="search" placeholder="Buscar phrasal verbs, expresiones, temas…" autocomplete="off">
+ <div class="bitacora-import-row"><button id="bitacoraImportVocabulary" type="button" class="primary">Guardar todos en mis anotaciones</button><p id="bitacoraImportStatus" class="muted" role="status" aria-live="polite"></p></div>
  <p class="muted" id="bitacoraVocabularyCount" role="status" aria-live="polite">Cargando artículos…</p>
  <div id="bitacoraVocabularyItems" class="bitacora-vocab-grid"></div>
  <nav id="bitacoraVocabularyPagination" class="profile-list-pagination" aria-label="Páginas de artículos de vocabulario" hidden></nav>
@@ -100,7 +102,7 @@ permalink: /historial-bitacora.html
 </main>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script src="/supabase-config.js"></script>
-<script src="/assets/bitacora.js?v=20261104-vocab-history-2" defer></script>
-<script src="/assets/bitacora-vocabulario.js?v=20261104-1" defer></script>
+<script src="/assets/bitacora.js?v=20261104-vocab-history-3" defer></script>
+<script src="/assets/bitacora-vocabulario.js?v=20261104-2" defer></script>
 {% include footer.html %}
 </body></html>
