@@ -1,25 +1,26 @@
-/* Desplazamiento suave, con límite de movimiento y respeto a accesibilidad. */
+/* Parallax real: fondos completos se desplazan a diferente velocidad que el contenido. */
 (()=>{'use strict';
 const sections=[...document.querySelectorAll('[data-ee-parallax]')];
-if(!sections.length||window.matchMedia('(prefers-reduced-motion: reduce)').matches)return;
-let ticking=false;
-const limit=(v,low,high)=>Math.min(high,Math.max(low,v));
-function paint(){
- ticking=false;
- const view=window.innerHeight||800;
+if(!sections.length)return;
+const reduced=window.matchMedia('(prefers-reduced-motion: reduce)');
+let pending=false;
+const clamp=(n,low,high)=>Math.max(low,Math.min(high,n));
+function render(){
+ pending=false;
+ if(reduced.matches){for(const el of sections)el.style.removeProperty('--ee-depth-shift');return;}
+ const height=window.innerHeight||800;
  for(const el of sections){
-  const r=el.getBoundingClientRect();
-  if(r.bottom< -120||r.top>view+120)continue;
-  const progress=limit((view/2-(r.top+r.height/2))/(view+r.height)*2,-1,1);
-  el.style.setProperty('--ee-parallax-back',Math.round(progress*-34)+'px');
-  el.style.setProperty('--ee-parallax-middle',Math.round(progress*23)+'px');
-  el.style.setProperty('--ee-parallax-front',Math.round(progress*37)+'px');
-  el.style.setProperty('--ee-parallax-card',Math.round(progress*-12)+'px');
+  const rect=el.getBoundingClientRect();
+  if(rect.bottom< -200||rect.top>height+200)continue;
+  // Desplazamiento del FONDO (hasta +/-105px), no del contenido.
+  const travel=clamp((height/2-(rect.top+rect.height/2))*0.24,-105,105);
+  el.style.setProperty('--ee-depth-shift',Math.round(travel)+'px');
  }
 }
-const schedule=()=>{if(!ticking){ticking=true;requestAnimationFrame(paint)}};
-window.addEventListener('scroll',schedule,{passive:true});
-window.addEventListener('resize',schedule,{passive:true});
-document.addEventListener('visibilitychange',()=>{if(!document.hidden)schedule()});
-schedule();
+function update(){if(!pending){pending=true;requestAnimationFrame(render);}}
+window.addEventListener('scroll',update,{passive:true});
+window.addEventListener('resize',update,{passive:true});
+reduced.addEventListener?.('change',update);
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)update();});
+update();
 })();
