@@ -106,7 +106,29 @@ async function rate(grade){
  showCard();
  status(position<queue.length?'Respuesta guardada. Continúa con la siguiente palabra.':'¡Sesión completada y respuestas guardadas!');
 }
-async function init(){if(!db){status('No se ha podido iniciar Supabase. Comprueba que tu navegador permite cargar los scripts de cdn.jsdelivr.net y vuelve a intentarlo.');return}const {data,error}=await db.auth.getUser();if(error||!data?.user){status('Inicia sesión para repasar y guardar tus palabras.');$('vocab-login').hidden=false;return}user=data.user;$('vocab-app').hidden=false;try{await refresh()}catch(e){status('Falta configurar la base de datos o ha ocurrido un error: '+e.message)}}
+async function init(){
+ const notice=$('vocab-login'),app=$('vocab-app');
+ // No mostrar información privada hasta comprobar la sesión.
+ notice.hidden=true;app.hidden=true;
+ status('Comprobando tu sesión…');
+ if(!db){status('No se ha podido comprobar la sesión. Actualiza la página para intentarlo de nuevo.');return}
+ try{
+  const {data,error}=await db.auth.getUser();
+  if(error&&error.name!=='AuthSessionMissingError')throw error;
+  if(!data?.user){
+   user=null;
+   status('');
+   notice.hidden=false;
+   return;
+  }
+  user=data.user;
+  notice.hidden=true;
+  app.hidden=false;
+  try{await refresh()}catch(e){status('No hemos podido cargar tus tarjetas. Actualiza la página para volver a intentarlo.')}
+ }catch(e){
+  status('No hemos podido comprobar tu sesión. Actualiza la página para volver a intentarlo.');
+ }
+}
 $('vocab-settings-form').addEventListener('submit',async e=>{e.preventDefault();const checked=[...document.querySelectorAll('[name=vocab-level]:checked')].map(x=>x.value);if(!checked.length){status('Selecciona al menos un nivel.');return}const value=validate({new_per_day:$('vocab-count').value,levels:checked,priority:$('vocab-priority').value,direction:$('vocab-direction').value});const result=await db.from('vocabulario_preferencias').upsert({user_id:user.id,...value},{onConflict:'user_id'});if(result.error){status('No se han guardado los ajustes: '+result.error.message);return}await refresh();status('Preferencias guardadas.')});
 $('vocab-start').addEventListener('click',showCard);$('vocab-reload').addEventListener('click',()=>refresh().catch(e=>status(e.message)));$('vocab-option-list').addEventListener('click',e=>chooseAnswer(e.target.closest('button.ee-vocab-option')));$('vocab-next').addEventListener('click',()=>{if(selectedGrade!==null)rate(selectedGrade)});init();
 })();
