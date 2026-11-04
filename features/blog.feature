@@ -39,9 +39,9 @@ Característica: Navegación y acceso público a Easy English
   @publico
   Escenario: Los exámenes privados redirigen al acceso
     Dado que navego a "/practicar.html"
-    Entonces aparece la página central de inicio de sesión y registro
+    Entonces aparece la página de inicio de sesión con enlace al registro
 
   @publico
   Escenario: El perfil privado redirige al acceso
     Dado que navego a "/perfil.html"
-    Entonces aparece la página central de inicio de sesión y registro
+    Entonces aparece la página de inicio de sesión con enlace al registro
