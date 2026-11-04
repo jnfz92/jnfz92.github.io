@@ -10,6 +10,8 @@
  let db=null,revision=0;
  function show(authorized,reason){
   links().forEach(link=>{link.hidden=!authorized});
+  const profileLink=document.querySelector('#ee-shared-header a[data-ee-profile-entry]');
+  if(profileLink)profileLink.href=authorized?'/perfil.html':'/login.html?next=%2Fperfil.html';
   if(classroom)classroom.hidden=!authorized;
   if(gate){
    gate.hidden=authorized;
