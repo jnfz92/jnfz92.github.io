@@ -66,9 +66,12 @@ function renderComposer(){
  if(!db){composer.append(el('p','ee-comment-auth','No se puede cargar el sistema de comentarios. Inténtalo de nuevo más tarde.'));return;}
  if(!currentUser){
   const msg=el('p','ee-comment-auth','Para comentar o responder, ');
-  const a=el('a','','inicia sesión desde Mi perfil');
-  a.href='/perfil.html';
-  msg.append(a,'.');
+  const next=location.pathname+location.search+'#comentarios';
+  const a=el('a','','inicia sesión');
+  a.href='/login.html?next='+encodeURIComponent(next);
+  const reg=el('a','','crear una cuenta gratis');
+  reg.href='/registro.html?next='+encodeURIComponent(next);
+  msg.append(a,' o ',reg,'.');
   composer.append(msg);
  }else composer.append(form());
 }
