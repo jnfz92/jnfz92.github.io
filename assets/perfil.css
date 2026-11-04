@@ -163,7 +163,8 @@ footer{background:#fffdfb}
  .review-default-topics{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,205px),1fr));gap:9px;margin:18px 0}.review-topic-choice{display:flex;align-items:center;gap:8px;padding:10px 12px;border:1px solid var(--ee-line,#dce0e8);border-radius:12px;background:#fff;cursor:pointer;font-weight:600}.review-topic-choice input{width:18px;height:18px;accent-color:var(--ee-green,#061e55);flex-shrink:0}.review-topic-choice:focus-within{outline:2px solid var(--ee-green,#061e55);outline-offset:2px}
 
 /* Icono de registro equivalente al candado del acceso. */
-.ee-site.ee-profile #registerTitle::before{content:"📝";margin-right:9px}
+.ee-site.ee-profile #registerTitle::before{content:none!important}
+.ee-site.ee-profile #registerTitle .ee-register-title-icon{display:inline-block;font-size:.87em;line-height:1;margin-right:8px;vertical-align:baseline}
 /* Los tres campos y el botón ocupan toda la anchura del registro. */
 .ee-site.ee-profile #authLayout #registerForm{display:flex;flex-direction:column;align-items:stretch;width:100%;max-width:none;min-width:0}
 .ee-site.ee-profile #authLayout #registerForm label{display:block;width:100%}
