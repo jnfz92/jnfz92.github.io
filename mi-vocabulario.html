@@ -9,18 +9,30 @@ permalink: /mi-vocabulario.html
 <meta name="theme-color" content="#1e5eff"><title>Mi vocabulario · Easy English</title>
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <link rel="stylesheet" href="/assets/site.css?v=20261030-unified-blue-2"><link rel="stylesheet" href="/assets/navigation.css?v=20261030-menu-blue-3">
-<link rel="stylesheet" href="/assets/mi-vocabulario.css?v=20261030-choice-1">
+<link rel="stylesheet" href="/assets/mi-vocabulario.css?v=20261104-session-wide-2">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js" defer></script>
 <script src="/supabase-config.js?v=20261029-2" defer></script>
 <script src="/assets/navigation.js?v=20261030-menu-blue-4" defer></script>
-<script src="/assets/mi-vocabulario.js?v=20261030-choice-1" defer></script>
+<script src="/assets/mi-vocabulario.js?v=20261104-session-wide-2" defer></script>
 </head><body class="ee-site ee-vocabulario">{% include header.html %}
 <main class="container">
 <section class="hero ee-vocab-hero"><div class="hero-copy"><span class="eyebrow">✦ Easy English · Repaso inteligente</span>
 <h1>Mi vocabulario.<br><em>Recuerda más cada día.</em></h1>
 <p>Lee la palabra, elige su traducción entre tres opciones y descubre si has acertado antes de continuar.</p>
 <p id="vocab-status" role="status" aria-live="polite">Comprobando tu sesión…</p>
-<a id="vocab-login" href="/perfil.html" hidden>Accede a tu perfil para guardar tu progreso →</a></div></section>
+</div></section>
+<section id="vocab-login" class="ee-vocab-session" aria-labelledby="vocabLoginTitle" hidden>
+ <div class="ee-vocab-session-icon" aria-hidden="true">🔐</div>
+ <div class="ee-vocab-session-content">
+  <span class="ee-vocab-session-eyebrow">TU ESPACIO PERSONAL</span>
+  <h2 id="vocabLoginTitle">Tu vocabulario, siempre a mano.</h2>
+  <p>Inicia sesión para practicar con tus tarjetas, guardar tus respuestas y retomar el repaso donde lo dejaste.</p>
+  <div class="ee-vocab-session-actions">
+   <a class="ee-vocab-session-primary" href="/perfil.html">Iniciar sesión <span aria-hidden="true">→</span></a>
+   <a class="ee-vocab-session-secondary" href="/perfil.html">Crear una cuenta gratis</a>
+  </div>
+ </div>
+</section>
 <section id="vocab-app" hidden>
 <div class="ee-section-heading"><div><span class="eyebrow">Tu sesión</span><h2>Repaso de hoy</h2></div></div>
 <div class="ee-vocab-stats" aria-live="polite"><div><strong id="vocab-due">0</strong><span>Pendientes</span></div><div><strong id="vocab-new">0</strong><span>Nuevas disponibles hoy</span></div><div><strong id="vocab-learned">0</strong><span>En aprendizaje</span></div></div>
