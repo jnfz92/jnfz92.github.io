@@ -48,3 +48,14 @@ a{color:inherit}
 .ee-auth-panel :focus-visible{outline:3px solid #ffc45c;outline-offset:3px}
 @media(max-width:740px){body{padding:0;background:#fff}.ee-auth-shell{min-height:100dvh;grid-template-columns:1fr;border-radius:0;box-shadow:none}.ee-auth-brand{padding:24px;min-height:208px}.ee-auth-brand-copy{margin:26px 0 0}.ee-auth-brand h1{font-size:35px;margin:8px 0}.ee-auth-brand-copy p{font-size:13px;margin:10px 0}.ee-auth-benefits,.ee-auth-brand-footer{display:none}.ee-auth-brand-rings{width:260px;height:260px;bottom:-170px;left:auto;right:-70px}.ee-auth-right{padding:30px 24px 55px;align-items:start}.ee-auth-panel{width:min(400px,100%)}} 
 @media(prefers-reduced-motion:reduce){.ee-auth-panel input{transition:none}}
+
+/* Acceso y registro son páginas separadas: login a la derecha y registro a la izquierda. */
+.ee-auth-switch{font-size:13px;color:#70819b;line-height:1.6;margin:-9px 0 24px}
+.ee-auth-switch a{font-weight:850;color:#1460c9;text-decoration:none}
+.ee-auth-switch a:hover{text-decoration:underline}
+.ee-auth-register .ee-auth-right{grid-column:1;grid-row:1}
+.ee-auth-register .ee-auth-brand{grid-column:2;grid-row:1}
+@media(max-width:740px){
+ .ee-auth-register .ee-auth-right{grid-column:1;grid-row:2}
+ .ee-auth-register .ee-auth-brand{grid-column:1;grid-row:1}
+}
