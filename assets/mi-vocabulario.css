@@ -43,3 +43,46 @@
  .ee-vocabulario button.ee-vocab-next{width:100%}
 }
 @media(prefers-reduced-motion:reduce){.ee-vocabulario button.ee-vocab-option{transition:none}}
+
+/* Estado sin sesión: ocupa todo el ancho disponible, igual que Exámenes. */
+.ee-vocabulario .ee-vocab-session{
+ display:flex;align-items:flex-start;gap:22px;width:100%;max-width:none;
+ box-sizing:border-box;margin:0 0 40px;padding:clamp(22px,3.5vw,36px);
+ border:1px solid #d6e3fa;border-radius:22px;
+ background:linear-gradient(130deg,#fff 0%,#eff5ff 100%);
+ box-shadow:0 9px 28px #17488c0d;
+}
+.ee-vocabulario .ee-vocab-session[hidden]{display:none!important}
+.ee-vocab-session-icon{
+ display:grid;place-items:center;flex:0 0 60px;width:60px;height:60px;
+ border-radius:18px;background:#e3eeff;font-size:28px;
+}
+.ee-vocab-session-content{flex:1;min-width:0}
+.ee-vocab-session-eyebrow{
+ color:#2860b4;font-size:11px;font-weight:900;letter-spacing:.12em
+}
+.ee-vocabulario .ee-vocab-session h2{
+ margin:5px 0 10px;color:#163e8c;
+ font-size:clamp(24px,3.2vw,32px);line-height:1.2;
+}
+.ee-vocabulario .ee-vocab-session p{
+ max-width:730px;margin:0;color:#526986;font-size:15px;line-height:1.65
+}
+.ee-vocab-session-actions{display:flex;align-items:center;flex-wrap:wrap;gap:12px;margin-top:24px}
+.ee-vocabulario .ee-vocab-session-actions a{
+ display:inline-flex;align-items:center;justify-content:center;gap:12px;
+ min-height:46px;padding:12px 18px;border-radius:11px;
+ font-size:14px;font-weight:800;text-decoration:none;
+}
+.ee-vocabulario .ee-vocab-session-primary{background:#1e5eff;color:#fff}
+.ee-vocabulario .ee-vocab-session-primary:hover{background:#164ac9;color:#fff}
+.ee-vocabulario .ee-vocab-session-secondary{
+ background:#fff;color:#1d4d9c;border:1px solid #ccdcf7
+}
+.ee-vocabulario .ee-vocab-session-secondary:hover{background:#eaf2ff}
+@media(max-width:560px){
+ .ee-vocabulario .ee-vocab-session{flex-direction:column;gap:14px}
+ .ee-vocab-session-icon{width:50px;height:50px;flex-basis:50px}
+ .ee-vocab-session-actions{width:100%}
+ .ee-vocabulario .ee-vocab-session-actions a{flex:1 1 190px}
+}
