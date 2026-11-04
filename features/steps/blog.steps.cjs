@@ -28,9 +28,11 @@ Then('existe un formulario de autenticación del perfil',async function(){
  assert.ok(await this.page.locator('input[type="password"]').count()>0);
 });
 
-Then('aparece la página central de inicio de sesión y registro',async function(){
+Then('aparece la página de inicio de sesión con enlace al registro',async function(){
  await this.page.waitForURL(url=>url.pathname==='/login.html'&&url.searchParams.has('next'),{timeout:30000});
  await this.page.locator('#loginForm input[type="email"]').waitFor({state:'visible',timeout:12000});
  assert.ok(await this.page.locator('#loginForm input[type="password"]').count()>0);
- assert.ok(await this.page.locator('#registerForm').count()>0);
+ assert.equal(await this.page.locator('#registerForm').count(),0);
+ const registration=await this.page.locator('#registerLink').getAttribute('href');
+ assert.equal(new URL(registration,BASE).pathname,'/registro.html');
 });
