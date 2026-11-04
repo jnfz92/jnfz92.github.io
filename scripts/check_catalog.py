@@ -55,12 +55,15 @@ shared_pages += [root / "_layouts/default.html"]
 for path in shared_pages:
     source = path.read_text(encoding="utf-8")
     name = str(path.relative_to(root))
-    # La pantalla de acceso utiliza un diseño aislado, sin la cabecera pública.
-    if name == "login.html":
-        check('id="loginForm"' in source and 'id="registerForm"' in source,
-              "La pantalla de acceso debe permitir iniciar sesión y registrarse.")
-        check("assets/login.js" in source and "supabase-config.js" in source,
-              "Falta conectar el login con Supabase.")
+    # Acceso y registro tienen páginas independientes, sin cabecera pública.
+    if name in ("login.html", "registro.html"):
+        form = 'id="loginForm"' if name == "login.html" else 'id="registerForm"'
+        other = 'id="registerForm"' if name == "login.html" else 'id="loginForm"'
+        script = "assets/login.js" if name == "login.html" else "assets/registro.js"
+        check(form in source and other not in source,
+              f"El formulario de {name} debe ser independiente.")
+        check(script in source and "supabase-config.js" in source,
+              f"Falta conectar {name} con Supabase.")
         continue
     check(source.count("{% include header.html %}") == 1,
           f"Cabecera compartida ausente o duplicada: {name}")
