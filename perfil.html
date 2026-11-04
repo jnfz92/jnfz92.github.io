@@ -8,7 +8,7 @@ permalink: /perfil.html
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="Tu perfil y progreso de lectura en Easy English.">
 <title>Mi perfil · Easy English</title>
-<link rel="stylesheet" href="/assets/bitacora.css?v=20261103-1"><link rel="stylesheet" href="/assets/perfil.css?v=20261104-register-title-visible-3">
+<link rel="stylesheet" href="/assets/bitacora.css?v=20261103-1"><link rel="stylesheet" href="/assets/perfil.css?v=20261104-password-recovery-1">
 <link rel="stylesheet" href="assets/site.css?v=20261030-unified-blue-2"><script src="assets/site.js?v=20261013" defer></script><link rel="stylesheet" href="/assets/navigation.css?v=20261030-menu-blue-3"><script src="/assets/navigation.js?v=20261030-menu-blue-4" defer></script><link rel="stylesheet" href="/assets/perfil-reading.css?v=20261030-unified-blue-2"><link rel="stylesheet" href="/assets/perfil-dashboard.css?v=20261101-achievements-1"><link rel="preconnect" href="https://wnluofonzteaqtlfshgy.supabase.co" crossorigin>
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <style>
@@ -83,7 +83,17 @@ permalink: /perfil.html
 <label for="authPass">Contraseña</label><input id="authPass" name="password" type="password" autocomplete="current-password" minlength="6" required>
 <button class="primary" id="loginSubmit" type="submit">Entrar a Easy English</button>
 </form>
-<button class="auth-text-button" id="forgotPassword" type="button">¿Has olvidado tu contraseña?</button>
+<button class="auth-text-button" id="forgotPassword" type="button" aria-expanded="false" aria-controls="passwordResetRequest">¿Has olvidado tu contraseña?</button>
+<div id="passwordResetRequest" class="ee-password-reset-request" hidden>
+ <h3>Recuperar mi contraseña</h3>
+ <p class="muted">Escribe el correo de tu cuenta. Te enviaremos un enlace para elegir una contraseña nueva.</p>
+ <form id="passwordResetRequestForm" autocomplete="on">
+  <label for="passwordResetEmail">Correo electrónico</label>
+  <input id="passwordResetEmail" type="email" autocomplete="email" inputmode="email" placeholder="correo@ejemplo.com" required>
+  <button class="primary" id="passwordResetRequestSubmit" type="submit">Enviar enlace de recuperación</button>
+ </form>
+ <p id="passwordResetRequestStatus" class="muted" role="status" aria-live="polite"></p>
+</div>
 </section>
 <section class="panel auth-card" id="registrationPanel" aria-labelledby="registerTitle">
 <p class="section-kicker">SOY NUEVO AQUÍ</p><h2 id="registerTitle"><span class="ee-register-title-icon" aria-hidden="true">👤</span> Crear una cuenta</h2>
@@ -98,12 +108,19 @@ permalink: /perfil.html
 </section>
 </div>
 <p id="accountStatus" role="status" aria-live="polite" class="muted">Comprobando sesión...</p>
-<section class="panel" id="passwordRecoveryPanel" hidden aria-labelledby="passwordRecoveryTitle">
-<h2 id="passwordRecoveryTitle">Cambia tu contraseña</h2><p class="muted">Elige una contraseña nueva para tu cuenta.</p>
+<section class="panel ee-password-recovery" id="passwordRecoveryPanel" hidden aria-labelledby="passwordRecoveryTitle">
+<p class="section-kicker">RECUPERACIÓN DE ACCESO</p>
+<h2 id="passwordRecoveryTitle">Establecer una nueva contraseña</h2>
+<p class="muted">Elige una contraseña de al menos 8 caracteres y confírmala. Solo podrás guardarla después de abrir un enlace de recuperación válido.</p>
 <form id="passwordRecoveryForm">
-<label for="passwordRecoveryValue">Nueva contraseña</label><input id="passwordRecoveryValue" type="password" autocomplete="new-password" minlength="8" required>
-<button class="primary" id="passwordRecoverySubmit" type="submit">Guardar contraseña</button>
-</form></section><div id="privateDashboard" hidden>
+<label for="passwordRecoveryValue">Nueva contraseña</label>
+<input id="passwordRecoveryValue" type="password" autocomplete="new-password" minlength="8" required>
+<label for="passwordRecoveryConfirm">Confirmar nueva contraseña</label>
+<input id="passwordRecoveryConfirm" type="password" autocomplete="new-password" minlength="8" required>
+<button class="primary" id="passwordRecoverySubmit" type="submit">Guardar nueva contraseña</button>
+</form>
+<p id="passwordRecoveryStatus" class="muted" role="status" aria-live="polite"></p>
+</section><div id="privateDashboard" hidden>
 <div class="profile-workspace-header"><p class="section-kicker">TU ESPACIO, ORDENADO</p><h2 id="workspaceTitle">¿Qué quieres hacer hoy?</h2><p class="muted">Elige un apartado. Abre los detalles solo cuando los necesites.</p></div><nav class="profile-tabs" aria-label="Apartados de mi perfil" role="tablist">
 <button type="button" class="profile-tab is-active" role="tab" id="profile-tab-inicio" aria-controls="profile-panel-inicio" aria-selected="true" tabindex="0" data-profile-tab="inicio">🏠 Inicio</button>
 <button type="button" class="profile-tab" role="tab" id="profile-tab-estudiar" aria-controls="profile-panel-estudiar" aria-selected="false" tabindex="-1" data-profile-tab="estudiar">📚 Estudiar</button>
@@ -261,7 +278,7 @@ permalink: /perfil.html
 </main>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script src="supabase-config.js"></script>
-<script src="/assets/bitacora.js?v=20261104-vocab-history-3" defer></script><script src="/assets/perfil.js?v=20261104-pagination-1"></script>
+<script src="/assets/bitacora.js?v=20261104-vocab-history-3" defer></script><script src="/assets/perfil.js?v=20261104-password-recovery-1"></script>
 <script>
 (function(){
   const tabs=[...document.querySelectorAll('[data-profile-tab]')];
