@@ -15,6 +15,16 @@
   go.disabled=busy||!available||!consent.checked||!A.units.length;
   if(!available){output.replaceChildren();remove.hidden=true}
  }
+ function makeRoadmap(profile){
+   const unfinished=profile.units.filter(u=>u.state!=='completed');
+   const goal=Math.max(4,Number(profile.weeks)||12);
+   const totalMinutes=profile.days.length*profile.minutes*goal;
+   const minutesPerUnit=unfinished.length?Math.floor(totalMinutes/unfinished.length):0;
+   const weeks=Array.from({length:goal},(_,i)=>({
+     week:i+1,slugs:unfinished.filter((u,index)=>Math.floor(index*goal/Math.max(1,unfinished.length))===i).map(u=>u.slug)
+   }));
+   return {weeks,remaining:unfinished.length,totalMinutes,minutesPerUnit};
+ }
  function paint(plan){
    output.replaceChildren();
    if(!plan||typeof plan!=='object')return;
@@ -36,6 +46,29 @@
       ul.append(li);
     }
     block.append(ul);root.append(block);
+   }
+   if(plan.roadmap&&Array.isArray(plan.roadmap.weeks)){
+     const roadmap=plan.roadmap;
+     root.append(el('h4','Ruta completa de unidades pendientes'));
+     root.append(el('p',roadmap.remaining+' unidades por distribuir · '+roadmap.weeks.length+
+       ' semanas · '+roadmap.totalMinutes+' minutos disponibles en total.'));
+     if(roadmap.remaining&&roadmap.minutesPerUnit<55){
+       root.append(el('p','Tu disponibilidad deja aproximadamente '+roadmap.minutesPerUnit+
+         ' minutos por unidad pendiente. Puede que necesites ampliar el plazo, dedicar más días o priorizar temas para estudiar y practicar cada unidad con suficiente profundidad.'));
+     }
+     const knownRoadmap=new Map(A.units.map(u=>[u.slug,u]));
+     for(const week of roadmap.weeks.slice(0,52)){
+       const details=el('details',undefined,'aula-ai-day');
+       details.append(el('summary','Semana '+week.week+' · '+week.slugs.length+' unidades pendientes'));
+       const list=el('ul');
+       if(!week.slugs.length)list.append(el('li','Semana para repaso, Writing y Speaking.'));
+       for(const slug of week.slugs.slice(0,20)){
+         const unit=knownRoadmap.get(slug);if(!unit)continue;
+         const li=el('li',String(unit.titulo||unit.slug).slice(0,180)+' · ');
+         const a=el('a','Abrir unidad →');a.href='/curso.html#unidad-'+String(unit.orden).padStart(2,'0');li.append(a);list.append(li);
+       }
+       details.append(list);root.append(details);
+     }
    }
    if(Array.isArray(plan.strategy)){
     root.append(el('h4','Estrategia de estudio'));const ul=el('ul');
@@ -72,6 +105,8 @@
    try{
      const result=await ai.run(db,'plan',{profile});
      if(!Array.isArray(result.sessions)||!result.sessions.length)throw Error('OpenAI no devolvió sesiones de estudio válidas.');
+     // La ruta completa usa exclusivamente las unidades reales del curso.
+     result.roadmap=makeRoadmap(profile);
      // No almacenar nunca una clave ni los textos de las solicitudes.
      const {error}=await db.from('planes_ia_b2').upsert({
        usuario_id:A.user.id,semanas:profile.weeks,plan:result,actualizado_en:new Date().toISOString()
