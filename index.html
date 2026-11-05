@@ -4,6 +4,8 @@
 <html lang="es">
 <head>
 <meta charset="utf-8">
+<script>/* Si Supabase devuelve la sesión de Google a la portada (Site URL), la pasamos a perfil.html, que la procesa. */
+(function(){var h=location.hash,q=location.search;if(/(?:^|[#&])(access_token|error_description)=/.test(h)||/[?&]code=/.test(q))location.replace('/perfil.html'+q+h)})();</script>
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#112f68">
 <meta name="description" content="Aprende inglés B2 con una ruta de 44 unidades, explicaciones en español, ejemplos en inglés, vocabulario y práctica. Descubre Easy English.">
