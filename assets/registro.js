@@ -25,6 +25,10 @@ async function authenticated(){
  location.replace(destination);return true;
 }
 authenticated().catch(()=>{});
+$('googleRegister').addEventListener('click',async()=>{
+ const {error}=await db.auth.signInWithOAuth({provider:'google',options:{redirectTo:location.origin+destination}});
+ if(error)status(readable(error),true);
+});
 $('registerForm').addEventListener('submit',async e=>{
  e.preventDefault();if(!e.currentTarget.reportValidity())return;
  const password=$('registerPassword').value;
