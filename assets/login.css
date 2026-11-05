@@ -59,3 +59,12 @@ a{color:inherit}
  .ee-auth-register .ee-auth-right{grid-column:1;grid-row:2}
  .ee-auth-register .ee-auth-brand{grid-column:1;grid-row:1}
 }
+
+/* Botón de Google según las pautas de marca de Google Identity */
+.ee-auth-google{width:100%;display:flex;justify-content:center;align-items:center;gap:12px;min-height:46px;margin-top:14px;padding:10px 15px;background:#fff;border:1px solid #747775;border-radius:11px;color:#1f1f1f;font-family:Roboto,Arial,sans-serif;font-weight:500;font-size:14px;cursor:pointer;transition:background .15s,box-shadow .15s}
+.ee-auth-google:hover{background:#f8f9fa;box-shadow:0 1px 3px #3c40434d}
+.ee-auth-google:focus-visible{outline:3px solid #1265dc;outline-offset:2px}
+.ee-auth-google:disabled{opacity:.65;cursor:wait}
+.ee-google-logo{flex:none}
+.ee-auth-divider{display:flex;align-items:center;gap:12px;margin:18px 0 4px;color:#6b7280;font-size:12px}
+.ee-auth-divider::before,.ee-auth-divider::after{content:"";flex:1;height:1px;background:#d9dee7}
