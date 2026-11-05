@@ -53,6 +53,7 @@
           </div>
         </div>
       </details>
+      <a class="ee-notif-link" href="/mensajes.html" data-ee-private-link hidden aria-label="Mensajes"><svg class="ee-nav-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 16V11a6 6 0 1 1 12 0v5l2 2H4zm4 4a2 2 0 0 0 4 0"/></svg><span class="ee-notif-text">Mensajes</span><span class="ee-notif-badge" data-ee-notif-badge hidden></span></a>
       <a class="ee-premium-join ee-profile-entry" href="/perfil.html"{% if ee_section == 'perfil' %} aria-current="page"{% endif %}><svg class="ee-nav-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21v-2a5 5 0 0 1 5-5h6a5 5 0 0 1 5 5v2"/></svg><span>Mi perfil</span></a>
     </nav>
   </div>
@@ -62,4 +63,6 @@
 
 <style>#ee-shared-header [data-ee-private-link][hidden]{display:none!important}</style>
 <script src="/assets/aula-access.js?v=20261104-private-menu-2" defer></script>
+<link rel="stylesheet" href="/assets/notificaciones.css?v=20261105-1">
+<script src="/assets/notificaciones.js?v=20261105-1" defer></script>
 <script src="/assets/private-route.js?v=20261104-auth-gate-1"></script>
