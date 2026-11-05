@@ -36,6 +36,10 @@ async function authenticated(){
  location.replace(destination);return true;
 }
 authenticated().catch(()=>{});
+$('googleLogin').addEventListener('click',async()=>{
+ const {error}=await db.auth.signInWithOAuth({provider:'google',options:{redirectTo:location.origin+destination}});
+ if(error)status(readable(error),true);
+});
 $('loginForm').addEventListener('submit',async e=>{
  e.preventDefault();if(!e.currentTarget.reportValidity())return;
  const button=$('loginSubmit');button.disabled=true;status('Comprobando tus datos…');
