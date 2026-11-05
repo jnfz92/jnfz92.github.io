@@ -28,10 +28,16 @@ else:
 fallback = re.findall(r'href="/?leer\.html\?slug=([a-z0-9-]+)"', library)
 check(len(fallback) == len(set(fallback)), "Tarjetas duplicadas en la biblioteca.")
 check(set(fallback).issubset(set(slugs)), "La biblioteca contiene slugs ajenos a la ruta.")
-# Los artículos de vocabulario son privados y no forman parte del catálogo público.
+# La categoría de vocabulario incluye esta guía pública; los artículos personales siguen siendo privados.
+vocabulary_cards = re.findall(
+    r'<article class="card" data-cat="vocabulary"[^>]*>[\\s\\S]*?href="/leer\\.html\\?slug=([a-z0-9-]+)"',
+    library,
+)
+check(vocabulary_cards == ["make-expressions-b1-b2"],
+      "La biblioteca solo debe mostrar la guía pública MAKE como tarjeta de vocabulario.")
+check('data-cat="vocabulary"' not in home,
+      "No deben aparecer artículos personales de vocabulario en la portada.")
 check(len(fallback) >= 60, "El catálogo HTML público de respaldo tiene pocas tarjetas.")
-check('data-cat="vocabulary"' not in library and 'data-cat="vocabulary"' not in home,
-      "No debe haber tarjetas públicas de vocabulario privado.")
 check('data-filter="writing"' in library, "Falta el filtro de Writing.")
 check('id="articleLevel"' in library, "Falta el filtro de nivel.")
 check('id="articleSort"' in library, "Falta el selector de orden.")
