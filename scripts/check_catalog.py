@@ -28,13 +28,9 @@ else:
 fallback = re.findall(r'href="/?leer\.html\?slug=([a-z0-9-]+)"', library)
 check(len(fallback) == len(set(fallback)), "Tarjetas duplicadas en la biblioteca.")
 check(set(fallback).issubset(set(slugs)), "La biblioteca contiene slugs ajenos a la ruta.")
-# La categoría de vocabulario incluye esta guía pública; los artículos personales siguen siendo privados.
-vocabulary_cards = re.findall(
-    r'<article class="card" data-cat="vocabulary"[^>]*>.*?href="/leer\.html\?slug=([a-z0-9-]+)"',
-    library,
-)
-check(vocabulary_cards == ["make-expressions-b1-b2"],
-      "La biblioteca solo debe mostrar la guía pública MAKE como tarjeta de vocabulario.")
+# Los apuntes personales MAKE pertenecen a la bitácora y no al catálogo público.
+check("make-expressions-b1-b2" not in library,
+      "Los apuntes MAKE deben permanecer en la bitácora privada, no en la biblioteca pública.")
 check('data-cat="vocabulary"' not in home,
       "No deben aparecer artículos personales de vocabulario en la portada.")
 check(len(fallback) >= 60, "El catálogo HTML público de respaldo tiene pocas tarjetas.")
