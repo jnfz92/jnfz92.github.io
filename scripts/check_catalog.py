@@ -30,7 +30,7 @@ check(len(fallback) == len(set(fallback)), "Tarjetas duplicadas en la biblioteca
 check(set(fallback).issubset(set(slugs)), "La biblioteca contiene slugs ajenos a la ruta.")
 # La categoría de vocabulario incluye esta guía pública; los artículos personales siguen siendo privados.
 vocabulary_cards = re.findall(
-    r'<article class="card" data-cat="vocabulary"[^>]*>[\\s\\S]*?href="/leer\\.html\\?slug=([a-z0-9-]+)"',
+    r'<article class="card" data-cat="vocabulary"[^>]*>.*?href="/leer\.html\?slug=([a-z0-9-]+)"',
     library,
 )
 check(vocabulary_cards == ["make-expressions-b1-b2"],
