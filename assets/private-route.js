@@ -6,7 +6,7 @@
   'historial-bitacora.html','constancia-b2.html','administracion.html','clave-openai.html'
  ]);
  const page=location.pathname.split('/').pop();
- if(!privatePages.has(page))return;
+ if(!privatePages.has(page)&&!location.pathname.startsWith('/dashboard/'))return;
  // Los enlaces enviados por Supabase necesitan abrir el formulario de recuperación original.
  const hash=new URLSearchParams(location.hash.slice(1));
  const query=new URLSearchParams(location.search);
