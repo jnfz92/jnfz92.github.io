@@ -22,7 +22,7 @@ permalink: /perfil.html
 .profile-tab:focus-visible{outline:3px solid #3474ed;outline-offset:2px}
 .profile-tab.is-active{background:#fff;border-color:#bcd1ff;color:#1246bf;box-shadow:0 2px 9px #163d8617}
 .profile-tab-panel[hidden]{display:none!important}
-.profile-group-heading{margin:8px 0 18px}
+.profile-group-heading{position:absolute;width:1px;height:1px;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 .profile-group-heading h2{font-size:1.4rem;margin:0 0 3px}
 .profile-group-heading p{margin:0}
 .profile-tab-panel > .panel{margin-bottom:18px}
@@ -48,7 +48,10 @@ permalink: /perfil.html
 .ee-site.ee-profile #privateDashboard .ee-home-next{padding:13px}
 .ee-site.ee-profile #privateDashboard .ee-home-shortcuts{margin-top:12px}
 .ee-site.ee-profile .profile-tabs{gap:5px;padding:6px;margin-bottom:12px;border-radius:13px}
-.ee-site.ee-profile .profile-tab{padding:10px 9px;min-height:42px;border-radius:9px;font-size:.92rem}
+.ee-site.ee-profile .profile-tab{padding:10px 9px;min-height:42px;border-radius:9px;font-size:.92rem;background:transparent!important;color:#254572!important;border-color:transparent!important;box-shadow:none}
+.ee-site.ee-profile .profile-tab:hover{background:#fff!important;color:#1749c7!important}
+.ee-site.ee-profile .profile-tab.is-active{background:#2f6bff!important;color:#fff!important;border-color:#2f6bff!important;box-shadow:0 3px 10px #2f6bff40}
+.ee-site.ee-profile .profile-tabs{position:sticky;top:0;z-index:20;box-shadow:0 4px 14px #16458a14}
 .ee-site.ee-profile .profile-disclosure{margin:10px 0;border:1px solid #d9e4f4;background:#fff;border-radius:15px;overflow:hidden}
 .ee-site.ee-profile .profile-disclosure summary{list-style:none;display:grid;grid-template-columns:1fr auto;column-gap:12px;align-items:center;cursor:pointer;padding:14px 16px}
 .ee-site.ee-profile .profile-disclosure summary::-webkit-details-marker{display:none}
@@ -60,7 +63,11 @@ permalink: /perfil.html
 .ee-site.ee-profile .profile-disclosure summary:focus-visible{outline:3px solid #3474ed;outline-offset:-3px}
 .ee-site.ee-profile #privateDashboard .profile-disclosure>.panel{margin:0;border:0;border-top:1px solid #e3ebf6;border-radius:0;box-shadow:none}
 .ee-site.ee-profile .profile-disclosure[open]{box-shadow:0 3px 12px #16458a0a}
-@media(max-width:650px){.ee-site.ee-profile .hero-actions a{flex:1 1 45%;text-align:center}.ee-site.ee-profile #privateDashboard .panel{padding:14px}.ee-site.ee-profile .profile-disclosure summary{padding:13px}.ee-site.ee-profile #privateDashboard .ee-home-shortcuts a{padding:9px 7px}}
+@media(max-width:650px){.ee-site.ee-profile .hero-actions a{flex:1 1 45%;text-align:center}.ee-site.ee-profile #privateDashboard .panel{padding:14px}.ee-site.ee-profile .profile-disclosure summary{padding:13px}.ee-site.ee-profile #privateDashboard .ee-home-shortcuts a{padding:9px 7px}
+.ee-site.ee-profile #privateDashboard .panel a.primary,.ee-site.ee-profile #privateDashboard .panel button.primary,.ee-site.ee-profile #privateDashboard .panel button.secondary,.ee-site.ee-profile #privateDashboard .panel .form-row button{display:block!important;width:100%;box-sizing:border-box;text-align:center;text-decoration:none}
+.ee-site.ee-profile #privateDashboard .panel .form-row{display:flex;flex-direction:column;gap:8px}
+.ee-site.ee-profile #privateDashboard .panel .ee-goal-form button,.ee-site.ee-profile #privateDashboard .panel .bitacora-actions button{width:100%}
+}
 
 .profile-list-pagination{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:12px;margin:14px 0 6px;padding:12px;border-top:1px solid #e5edf9}
 .profile-list-pagination[hidden]{display:none!important}
@@ -149,11 +156,10 @@ permalink: /perfil.html
 </form>
 <p id="passwordRecoveryStatus" class="muted" role="status" aria-live="polite"></p>
 </section><div id="privateDashboard" hidden>
-<div class="profile-workspace-header"><p class="section-kicker">TU ESPACIO, ORDENADO</p><h2 id="workspaceTitle">¿Qué quieres hacer hoy?</h2><p class="muted">Elige un apartado. Abre los detalles solo cuando los necesites.</p></div><nav class="profile-tabs" aria-label="Apartados de mi perfil" role="tablist">
+<nav class="profile-tabs" aria-label="Apartados de mi perfil" role="tablist">
 <button type="button" class="profile-tab is-active" role="tab" id="profile-tab-inicio" aria-controls="profile-panel-inicio" aria-selected="true" tabindex="0" data-profile-tab="inicio">🏠 Inicio</button>
 <button type="button" class="profile-tab" role="tab" id="profile-tab-estudiar" aria-controls="profile-panel-estudiar" aria-selected="false" tabindex="-1" data-profile-tab="estudiar">📚 Estudiar</button>
-<button type="button" class="profile-tab" role="tab" id="profile-tab-resultados" aria-controls="profile-panel-resultados" aria-selected="false" tabindex="-1" data-profile-tab="resultados">📊 Resultados</button>
-<button type="button" class="profile-tab" role="tab" id="profile-tab-seguimiento" aria-controls="profile-panel-seguimiento" aria-selected="false" tabindex="-1" data-profile-tab="seguimiento">📈 Seguimiento</button>
+<button type="button" class="profile-tab" role="tab" id="profile-tab-progreso" aria-controls="profile-panel-progreso" aria-selected="false" tabindex="-1" data-profile-tab="progreso">📊 Mi progreso</button>
 <button type="button" class="profile-tab" role="tab" id="profile-tab-biblioteca" aria-controls="profile-panel-biblioteca" aria-selected="false" tabindex="-1" data-profile-tab="biblioteca">📖 Biblioteca</button>
 <button type="button" class="profile-tab" role="tab" id="profile-tab-cuenta" aria-controls="profile-panel-cuenta" aria-selected="false" tabindex="-1" data-profile-tab="cuenta">⚙️ Cuenta</button>
 </nav>
@@ -163,20 +169,31 @@ permalink: /perfil.html
 <p class="section-kicker">MI ESPACIO DE ESTUDIO</p>
 <h2 id="learningHomeTitle">Mi panel de aprendizaje</h2>
 <p class="muted" id="learningHomeGreeting">Tus avances y próximos pasos en un solo lugar.</p>
-<div class="ee-home-stats" aria-label="Resumen de mi aprendizaje">
-<div class="ee-home-stat"><strong id="homeCoursePercent">—</strong><span>Curso B2</span></div>
-<div class="ee-home-stat"><strong id="homeReadingCount">—</strong><span>Lecturas</span></div>
-<div class="ee-home-stat"><strong id="homeExamCount">—</strong><span>Exámenes</span></div>
-<div class="ee-home-stat"><strong id="homeErrorCount">—</strong><span>Errores pendientes</span></div>
-</div>
 <div class="ee-home-next">
  <div><strong id="homeNextTitle">Tu próxima unidad</strong><p id="homeNextDescription" class="muted">Buscando dónde continuar en el curso…</p></div>
  <a href="/curso.html#unidad-01" id="homeContinue" class="primary">Continuar curso →</a>
 </div>
-<div class="ee-home-shortcuts" aria-label="Accesos rápidos"><a href="/aula-b2.html">📅 Mi aula personalizada</a>
-<a href="/practicar.html">✎ Hacer examen</a><a href="/mi-vocabulario.html">🧠 Repasar vocabulario</a><a href="#readingPickTitle">📖 Continuar leyendo</a><a href="/curso.html">📘 Ver 44 unidades</a>
-</div><p class="ee-home-goal"><a href="#weeklyGoalPanel" id="homeWeeklyGoal">Configurar mi objetivo semanal →</a></p></section>
-<section class="panel ee-reading-pick" aria-labelledby="readingPickTitle"><p class="section-kicker">📖 TU PRÓXIMA LECTURA</p><h2 id="readingPickTitle">Un artículo para ti</h2><p id="readingPickArticle" class="reading-pick-article"></p><p id="readingPickStatus" class="muted" role="status" aria-live="polite">Buscando un artículo que tengas pendiente…</p><div id="readingPickActions" class="reading-pick-actions" hidden><a id="readingPickLink" class="primary" href="#">Leer artículo →</a><button id="readingPickAnother" class="secondary" type="button">Sugerir otro</button><button id="readingPickMark" class="secondary" type="button">Ya lo he leído ✓</button></div></section>
+<p class="ee-home-goal"><a href="#weeklyGoalPanel" id="homeWeeklyGoal">Configurar mi objetivo semanal →</a></p></section>
+<details open class="profile-disclosure"><summary><span class="profile-disclosure-title">Mi objetivo semanal</span><span class="profile-disclosure-sub">Configurar y consultar la meta</span><span class="profile-disclosure-chevron" aria-hidden="true">⌄</span></summary><section class="panel ee-goal-panel" id="weeklyGoalPanel" aria-labelledby="weeklyGoalTitle">
+<p class="section-kicker">MIS OBJETIVOS</p><h2 id="weeklyGoalTitle">Mi objetivo de esta semana</h2>
+<p class="muted">Elige una meta realista. Se calcula con tus unidades completadas, exámenes realizados o actividades entregadas desde el lunes.</p>
+<form id="weeklyGoalForm" class="ee-goal-form">
+ <div><label for="weeklyGoalType">Quiero completar</label><select id="weeklyGoalType" required>
+ <option value="unidades">Unidades del curso</option><option value="examenes">Exámenes</option><option value="actividades">Actividades</option>
+ </select></div>
+ <div><label for="weeklyGoalTarget">Cantidad por semana</label><input type="number" id="weeklyGoalTarget" min="1" max="20" step="1" required value="3"></div>
+ <button class="primary" id="weeklyGoalSave" type="submit">Guardar objetivo</button>
+</form>
+<div class="ee-goal-progress" aria-live="polite">
+ <div class="ee-goal-summary"><strong id="weeklyGoalScore">—</strong><span id="weeklyGoalLabel">Unidades esta semana</span></div>
+ <div class="meter" role="progressbar" id="weeklyGoalMeter" aria-label="Progreso del objetivo semanal" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="weeklyGoalBar"></span></div>
+</div>
+<p class="muted" role="status" id="weeklyGoalStatus">Comprobando tu objetivo guardado…</p>
+</section></details>
+<details open class="profile-disclosure"><summary><span class="profile-disclosure-title">Mi racha</span><span class="profile-disclosure-sub">Días seguidos y mejor marca</span><span class="profile-disclosure-chevron" aria-hidden="true">⌄</span></summary><section class="panel ee-streak" aria-labelledby="streakTitle"><p class="section-kicker">🔥 CONSTANCIA DIARIA</p><h2 id="streakTitle">Tu racha de aprendizaje</h2><div class="stats"><div class="stat"><strong id="streakCurrent">—</strong><span>🔥 Días seguidos</span></div><div class="stat"><strong id="streakBest">—</strong><span>🏆 Mejor racha</span></div><div class="stat"><strong id="streakDays">—</strong><span>📅 Días estudiados</span></div></div><p id="streakMessage" class="muted" role="status">Consultando tu racha...</p><p class="muted">Completa una lectura, un examen o una actividad interactiva para registrar actividad. Un día solo cuenta una vez.</p></section></details>
+</div>
+<div class="profile-tab-panel" id="profile-panel-estudiar" role="tabpanel" aria-labelledby="profile-tab-estudiar" hidden>
+<div class="profile-group-heading"><h2>Estudiar</h2><p class="muted">Herramientas para practicar</p></div>
 <details class="profile-disclosure"><summary><span class="profile-disclosure-title">Curso B2 en detalle</span><span class="profile-disclosure-sub">Unidades realizadas y pendientes</span><span class="profile-disclosure-chevron" aria-hidden="true">⌄</span></summary><section class="panel" id="courseProgressPanel" aria-labelledby="courseProgressTitle">
 <p class="section-kicker">MI RUTA DE APRENDIZAJE B2</p>
 <h2 id="courseProgressTitle">Mi progreso en el curso</h2>
@@ -190,29 +207,13 @@ permalink: /perfil.html
 <div class="meter" id="courseProfileMeter" role="progressbar" aria-label="Progreso del curso B2" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="courseProfileBar"></span></div>
 <p class="muted" id="courseProfileStatus" role="status" aria-live="polite">Cargando tu progreso…</p>
 <p><a class="primary" id="courseProfileContinue" href="/curso.html#unidad-01" style="display:inline-block;text-decoration:none">Continuar mi curso →</a></p>
+<hr style="border:0;border-top:1px solid #e3ebf6;margin:16px 0">
+<h3 style="font-size:1rem;color:#1e426e;margin:0 0 8px">Repaso y errores</h3>
+<p class="muted">Configura tus categorías de repaso y revisa tus fallos en páginas dedicadas.</p>
+<p><a class="primary" href="categorias-repaso.html">Configurar mis categorías →</a> · <a class="back" href="practicar.html#cuaderno-fallos">Ir al cuaderno de fallos →</a></p>
 </section></details>
-<details class="profile-disclosure"><summary><span class="profile-disclosure-title">Mi objetivo semanal</span><span class="profile-disclosure-sub">Configurar y consultar la meta</span><span class="profile-disclosure-chevron" aria-hidden="true">⌄</span></summary><section class="panel ee-goal-panel" id="weeklyGoalPanel" aria-labelledby="weeklyGoalTitle">
-<p class="section-kicker">MIS OBJETIVOS</p><h2 id="weeklyGoalTitle">Mi objetivo de esta semana</h2>
-<p class="muted">Elige una meta realista. Se calcula con tus unidades completadas, exámenes realizados o actividades entregadas desde el lunes.</p>
-<form id="weeklyGoalForm" class="ee-goal-form">
- <div><label for="weeklyGoalType">Quiero completar</label><select id="weeklyGoalType" required>
- <option value="unidades">Unidades del curso</option><option value="examenes">Exámenes</option><option value="actividades">Actividades interactivas</option>
- </select></div>
- <div><label for="weeklyGoalTarget">Cantidad por semana</label><input type="number" id="weeklyGoalTarget" min="1" max="20" step="1" required value="3"></div>
- <button class="primary" id="weeklyGoalSave" type="submit">Guardar objetivo</button>
-</form>
-<div class="ee-goal-progress" aria-live="polite">
- <div class="ee-goal-summary"><strong id="weeklyGoalScore">—</strong><span id="weeklyGoalLabel">Unidades esta semana</span></div>
- <div class="meter" role="progressbar" id="weeklyGoalMeter" aria-label="Progreso del objetivo semanal" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="weeklyGoalBar"></span></div>
-</div>
-<p class="muted" role="status" id="weeklyGoalStatus">Comprobando tu objetivo guardado…</p>
-</section></details>
-<details class="profile-disclosure"><summary><span class="profile-disclosure-title">Mi racha</span><span class="profile-disclosure-sub">Días seguidos y mejor marca</span><span class="profile-disclosure-chevron" aria-hidden="true">⌄</span></summary><section class="panel ee-streak" aria-labelledby="streakTitle"><p class="section-kicker">🔥 CONSTANCIA DIARIA</p><h2 id="streakTitle">Tu racha de aprendizaje</h2><div class="stats"><div class="stat"><strong id="streakCurrent">—</strong><span>🔥 Días seguidos</span></div><div class="stat"><strong id="streakBest">—</strong><span>🏆 Mejor racha</span></div><div class="stat"><strong id="streakDays">—</strong><span>📅 Días estudiados</span></div></div><p id="streakMessage" class="muted" role="status">Consultando tu racha...</p><p class="muted">Completa una lectura, un examen o una actividad interactiva para registrar actividad. Un día solo cuenta una vez.</p></section></details>
-</div>
-<div class="profile-tab-panel" id="profile-panel-estudiar" role="tabpanel" aria-labelledby="profile-tab-estudiar" hidden>
-<div class="profile-group-heading"><h2>Estudiar</h2><p class="muted">Herramientas para practicar</p></div>
-<section class="panel" aria-labelledby="myVocabTitle"><p class="section-kicker">🧠 REPASO INTELIGENTE</p><h2 id="myVocabTitle">Mi vocabulario</h2><p class="muted">Practica inglés y español con tarjetas, repasa las palabras pendientes y guarda tu progreso en tu cuenta.</p><p><a class="primary" style="display:inline-block;text-decoration:none" href="/mi-vocabulario.html">Abrir mi vocabulario →</a></p></section>
-<details class="profile-disclosure"><summary><span class="profile-disclosure-title">Mi bitácora</span><span class="profile-disclosure-sub">Anotaciones y dudas personales</span><span class="profile-disclosure-chevron" aria-hidden="true">⌄</span></summary><section class="panel bitacora-panel" id="bitacoraPanel" aria-labelledby="bitacoraTitle">
+<section class="panel ee-reading-pick" aria-labelledby="readingPickTitle"><p class="section-kicker">📖 TU PRÓXIMA LECTURA</p><h2 id="readingPickTitle">Un artículo para ti</h2><p id="readingPickArticle" class="reading-pick-article"></p><p id="readingPickStatus" class="muted" role="status" aria-live="polite">Buscando un artículo que tengas pendiente…</p><div id="readingPickActions" class="reading-pick-actions" hidden><a id="readingPickLink" class="primary" href="#">Leer artículo →</a><button id="readingPickAnother" class="secondary" type="button">Sugerir otro</button><button id="readingPickMark" class="secondary" type="button">Ya lo he leído ✓</button></div></section>
+<details class="profile-disclosure"><summary><span class="profile-disclosure-title">Mi bitácora</span><span class="profile-disclosure-sub">Anotaciones, dudas y vocabulario</span><span class="profile-disclosure-chevron" aria-hidden="true">⌄</span></summary><section class="panel bitacora-panel" id="bitacoraPanel" aria-labelledby="bitacoraTitle">
 <p class="section-kicker">MI CUADERNO PERSONAL</p>
 <h2 id="bitacoraTitle">📓 Mi bitácora</h2>
 <p class="muted">Apunta tus dudas de inglés, organízalas por conceptos y vuelve a consultarlas cuando quieras. Solo tú puedes ver tus anotaciones.</p>
@@ -230,43 +231,34 @@ permalink: /perfil.html
 <div class="bitacora-actions"><button class="primary" id="bitacoraSave" type="submit">Guardar anotación</button><button class="secondary" id="bitacoraCancelEdit" type="button" hidden>Cancelar edición</button></div>
 </form>
 <p class="muted bitacora-status" id="bitacoraStatus" role="status" aria-live="polite"></p>
-<p class="bitacora-history-link"><a class="primary" href="/historial-bitacora.html">📚 Abrir historial y biblioteca de vocabulario →</a></p><p class="muted">Solo verás tus notas personales y los artículos de vocabulario que pertenezcan a tu cuenta.</p>
+<p class="bitacora-history-link"><a class="primary" href="/historial-bitacora.html">📚 Abrir historial y biblioteca de vocabulario →</a></p>
+<hr style="border:0;border-top:1px solid #e3ebf6;margin:14px 0">
+<h3 id="myVocabTitle" style="font-size:1rem;color:#1e426e;margin:0 0 6px">🧠 Mi vocabulario</h3>
+<p class="muted">Practica inglés y español con tarjetas y guarda tu progreso.</p>
+<p><a class="primary" style="display:inline-block;text-decoration:none" href="/mi-vocabulario.html">Abrir mi vocabulario →</a></p>
 </section></details>
-<details class="profile-disclosure"><summary><span class="profile-disclosure-title">Preferencias de repaso</span><span class="profile-disclosure-sub">Categorías de errores</span><span class="profile-disclosure-chevron" aria-hidden="true">⌄</span></summary><section class="panel" aria-labelledby="reviewPreferencesTitle"><p class="section-kicker">MI CUADERNO DE FALLOS</p><h2 id="reviewPreferencesTitle">Mis temas de repaso favoritos</h2><p class="muted">Configura todas las categorías de tus próximos exámenes de errores en una página independiente. Tus preferencias se guardan en tu cuenta.</p><p><a class="primary" href="categorias-repaso.html">Configurar mis categorías →</a></p><p><a class="back" href="practicar.html#cuaderno-fallos">Ir al cuaderno de fallos →</a></p></section></details>
-<details class="profile-disclosure"><summary><span class="profile-disclosure-title">Comunidad</span><span class="profile-disclosure-sub">Buscar y seguir compañeros</span><span class="profile-disclosure-chevron" aria-hidden="true">⌄</span></summary><section class="panel"><p class="section-kicker">COMUNIDAD EASY ENGLISH</p><h2>Encuentra compañeros</h2><p class="muted">Busca usuarios por su alias público, síguelos y gestiona tus seguidos.</p><a class="back" href="comunidad.html">Explorar comunidad →</a></section></details>
 </div>
-<div class="profile-tab-panel" id="profile-panel-resultados" role="tabpanel" aria-labelledby="profile-tab-resultados" hidden>
-<div class="profile-group-heading"><h2>Resultados</h2><p class="muted">Tu evolución y tus logros</p></div>
-<details class="profile-disclosure"><summary><span class="profile-disclosure-title">Actividad y aprendizaje</span><span class="profile-disclosure-sub">Lecturas, exámenes y actividades</span><span class="profile-disclosure-chevron" aria-hidden="true">⌄</span></summary><section class="panel ee-learning-overview" aria-labelledby="learningOverviewTitle"><span class="section-kicker">TODO TU APRENDIZAJE</span><h2 id="learningOverviewTitle">Mi progreso en un vistazo</h2><p class="muted">Lecturas, exámenes y actividades en un mismo lugar. Las notas originales se mantienen independientes.</p><div class="stats"><div class="stat"><strong id="learningReads">—</strong><span>Lecturas completadas</span></div><div class="stat"><strong id="learningExams">—</strong><span>Exámenes realizados</span></div><div class="stat"><strong id="learningActivities">—</strong><span>Actividades entregadas</span></div><div class="stat"><strong id="learningErrors">—</strong><span>Errores por repasar</span></div></div><p class="muted" id="learningStatus" role="status" aria-live="polite">Consultando tu progreso…</p><p><a class="back" href="practicar.html#cuaderno-fallos">✎ Repasar todos mis errores →</a> · <a class="back" href="actividades.html">Practicar actividades →</a></p><h3>Mis actividades recientes</h3><div id="learningActivityHistory" class="list"></div></section></details>
-<details class="profile-disclosure"><summary><span class="profile-disclosure-title">Actividad reciente</span><span class="profile-disclosure-sub">Resultados de 7 y 30 días</span><span class="profile-disclosure-chevron" aria-hidden="true">⌄</span></summary><section class="panel" id="recentStudyPanel" aria-labelledby="recentStudyTitle">
-<p class="section-kicker">MIS ESTADÍSTICAS RECIENTES</p><h2 id="recentStudyTitle">Cómo voy últimamente</h2>
-<p class="muted">Compara tu actividad reciente, sin mezclar notas de exámenes con unidades que marcas manualmente.</p>
-<div class="stats ee-recent-stats">
+<div class="profile-tab-panel" id="profile-panel-progreso" role="tabpanel" aria-labelledby="profile-tab-progreso" hidden>
+<div class="profile-group-heading"><h2>Mi progreso</h2><p class="muted">Resultados, evolución y logros</p></div>
+<div class="ee-home-stats" aria-label="Resumen de mi aprendizaje">
+<div class="ee-home-stat"><strong id="homeCoursePercent">—</strong><span>Curso B2</span></div>
+<div class="ee-home-stat"><strong id="homeReadingCount">—</strong><span>Lecturas</span></div>
+<div class="ee-home-stat"><strong id="homeExamCount">—</strong><span>Exámenes</span></div>
+<div class="ee-home-stat"><strong id="homeErrorCount">—</strong><span>Errores pendientes</span></div>
+</div>
+<details class="profile-disclosure"><summary><span class="profile-disclosure-title">Actividad y estadísticas</span><span class="profile-disclosure-sub">Totales, últimos 7 y 30 días</span><span class="profile-disclosure-chevron" aria-hidden="true">⌄</span></summary><section class="panel ee-learning-overview" aria-labelledby="learningOverviewTitle"><span class="section-kicker">TODO TU APRENDIZAJE</span><h2 id="learningOverviewTitle">Mi progreso en un vistazo</h2><p class="muted">Lecturas, exámenes y actividades en un mismo lugar.</p><div class="stats"><div class="stat"><strong id="learningReads">—</strong><span>Lecturas completadas</span></div><div class="stat"><strong id="learningExams">—</strong><span>Exámenes realizados</span></div><div class="stat"><strong id="learningActivities">—</strong><span>Actividades entregadas</span></div><div class="stat"><strong id="learningErrors">—</strong><span>Errores por repasar</span></div></div><p class="muted" id="learningStatus" role="status" aria-live="polite">Consultando tu progreso…</p><p><a class="back" href="practicar.html#cuaderno-fallos">✎ Repasar todos mis errores →</a> · <a class="back" href="actividades.html">Practicar actividades →</a></p>
+<hr style="border:0;border-top:1px solid #e3ebf6;margin:16px 0">
+<h3 id="recentStudyTitle" style="font-size:1rem;color:#1e426e;margin:0 0 8px">Cómo voy últimamente</h3>
+<p class="muted">Compara tu actividad reciente por periodos.</p>
+<div class="stats ee-recent-stats" id="recentStudyPanel">
 <div class="stat"><strong id="recentExam7">—</strong><span>Exámenes · 7 días</span></div>
 <div class="stat"><strong id="recentExam30">—</strong><span>Exámenes · 30 días</span></div>
 <div class="stat"><strong id="recentAverage30">—</strong><span>Nota media · 30 días</span></div>
 <div class="stat"><strong id="recentActivities30">—</strong><span>Actividades · 30 días</span></div>
 </div><p class="muted" id="recentStudyStatus" role="status" aria-live="polite">Consultando los resultados recientes…</p>
-</section></details>
+<hr style="border:0;border-top:1px solid #e3ebf6;margin:16px 0">
+<h3>Mis actividades recientes</h3><div id="learningActivityHistory" class="list"></div></section></details>
 <details class="profile-disclosure"><summary><span class="profile-disclosure-title">Historial de exámenes</span><span class="profile-disclosure-sub">Notas y resultados guardados</span><span class="profile-disclosure-chevron" aria-hidden="true">⌄</span></summary><section class="panel"><p class="section-kicker">Mis estadísticas</p><h2>Mis exámenes</h2><p class="muted">Resultados guardados en Supabase con tu cuenta.</p><div class="stats"><div class="stat"><strong id="examCount">0</strong><span>Exámenes realizados</span></div><div class="stat"><strong id="bestScore">—</strong><span>Mejor nota</span></div><div class="stat"><strong id="averageScore">—</strong><span>Nota media</span></div></div><div id="examHistory" class="list"></div><p><a class="back" href="practicar.html">Hacer un examen →</a></p></section></details>
-<details class="profile-disclosure"><summary><span class="profile-disclosure-title">Progreso del blog</span><span class="profile-disclosure-sub">Porcentaje de lecturas</span><span class="profile-disclosure-chevron" aria-hidden="true">⌄</span></summary><section class="panel" aria-labelledby="progressTitle"><p class="section-kicker">Mi evolución</p><h2 id="progressTitle">Progreso del blog</h2>
-<div class="stats"><div class="stat"><strong id="readStat">0</strong><span>Artículos leídos</span></div><div class="stat"><strong id="totalStat">0</strong><span>Artículos disponibles</span></div><div class="stat"><strong id="percentageStat">0%</strong><span>Progreso de lectura</span></div></div>
-<div class="meter" role="progressbar" aria-label="Progreso de lectura" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="readMeter"><span id="readBar"></span></div><p class="muted" id="readProgressText">Cargando artículos…</p>
-</section></details>
-<details class="profile-disclosure"><summary><span class="profile-disclosure-title">Mis logros</span><span class="profile-disclosure-sub">Insignias y constancia personal</span><span class="profile-disclosure-chevron" aria-hidden="true">⌄</span></summary><section class="panel" id="achievementPanel" aria-labelledby="achievementTitle">
-<p class="section-kicker">MI CONSTANCIA</p><h2 id="achievementTitle">Mis logros personales</h2>
-<p class="muted">Se desbloquean automáticamente con lecturas, exámenes, unidades estudiadas y días consecutivos. No son títulos ni certificaciones oficiales.</p>
-<p class="muted" id="achievementStatus" role="status" aria-live="polite">Calculando tus logros…</p>
-<div id="achievementList" class="ee-achievement-list"></div><p><a href="/constancia-b2.html" id="personalCertificate" class="primary" style="text-decoration:none" hidden>Ver mi constancia personal de estudio →</a></p>
-</section></details>
-</div>
-<div class="profile-tab-panel" id="profile-panel-seguimiento" role="tabpanel" aria-labelledby="profile-tab-seguimiento" hidden>
-<div class="profile-group-heading"><h2>Seguimiento</h2><p class="muted">Tu evolución semana a semana desde el registro</p></div>
-<section class="panel ee-followup-hero" aria-labelledby="followupTitle">
-<p class="section-kicker">TU HISTORIAL DE APRENDIZAJE</p><h2 id="followupTitle">Cada semana cuenta.</h2>
-<p class="muted">Un diagnóstico pedagógico por categorías, con tus preguntas pendientes, patrones de error, evolución y un plan de mejora de cuatro semanas.</p>
-<div class="ee-followup-principles"><div><strong>01 · Actividad</strong><span>Qué has estudiado y practicado.</span></div><div><strong>02 · Resultados</strong><span>Notas, aciertos y evolución real.</span></div><div><strong>03 · Dominio</strong><span>Fortalezas y aspectos que necesitan repaso.</span></div></div>
-</section>
 <section class="panel" aria-labelledby="followupWeekTitle">
 <div class="ee-followup-heading"><div><p class="section-kicker">INFORME SEMANAL</p><h2 id="followupWeekTitle">Tu semana de aprendizaje</h2></div><span class="ee-followup-period">De lunes a domingo</span></div>
 <p class="muted" id="followupStatus" role="status" aria-live="polite">Cargando tus informes semanales…</p>
@@ -278,9 +270,15 @@ permalink: /perfil.html
 <p class="muted">El historial se organizará por semanas consecutivas desde tu fecha de alta. Cada semana conservará el mismo resumen para que puedas detectar tendencias a lo largo de los meses.</p>
 <div class="ee-followup-history"><div><strong>Lo que mejora</strong><span>Comparación de resultados y constancia.</span></div><div><strong>Lo que ya dominas</strong><span>Temas que has consolidado con evidencias.</span></div><div><strong>Tu siguiente objetivo</strong><span>Una recomendación concreta para la semana siguiente.</span></div></div>
 </section>
+<details class="profile-disclosure"><summary><span class="profile-disclosure-title">Mis logros</span><span class="profile-disclosure-sub">Insignias y constancia personal</span><span class="profile-disclosure-chevron" aria-hidden="true">⌄</span></summary><section class="panel" id="achievementPanel" aria-labelledby="achievementTitle">
+<p class="section-kicker">MI CONSTANCIA</p><h2 id="achievementTitle">Mis logros personales</h2>
+<p class="muted">Se desbloquean automáticamente con lecturas, exámenes, unidades estudiadas y días consecutivos. No son títulos ni certificaciones oficiales.</p>
+<p class="muted" id="achievementStatus" role="status" aria-live="polite">Calculando tus logros…</p>
+<div id="achievementList" class="ee-achievement-list"></div><p><a href="/constancia-b2.html" id="personalCertificate" class="primary" style="text-decoration:none" hidden>Ver mi constancia personal de estudio →</a></p>
+</section></details>
 </div>
 <div class="profile-tab-panel" id="profile-panel-biblioteca" role="tabpanel" aria-labelledby="profile-tab-biblioteca" hidden>
-<div class="profile-group-heading"><h2>Biblioteca</h2><p class="muted">Tus recursos y lecturas</p></div>
+<div class="profile-group-heading"><h2>Biblioteca</h2><p class="muted">Tus favoritos y tus lecturas</p></div>
 <details class="profile-disclosure"><summary><span class="profile-disclosure-title">Mis favoritos</span><span class="profile-disclosure-sub">Artículos y unidades guardados</span><span class="profile-disclosure-chevron" aria-hidden="true">⌄</span></summary><section class="panel ee-favorites-panel" id="favoritesPanel" aria-labelledby="favoritesTitle">
 <p class="section-kicker">MI BIBLIOTECA PERSONAL</p><h2 id="favoritesTitle">Mis favoritos <span id="favoritesCount" class="ee-favorites-count">0</span></h2>
 <p class="muted">Las unidades y los artículos que guardes son privados y estarán disponibles al iniciar sesión desde cualquier dispositivo.</p>
@@ -289,6 +287,9 @@ permalink: /perfil.html
 </section></details>
 <section class="panel reading-library" aria-labelledby="articlesTitle">
 <p class="section-kicker">TU BIBLIOTECA PERSONAL</p><h2 id="articlesTitle">Leídos y pendientes</h2>
+<div class="stats" style="margin-bottom:12px"><div class="stat"><strong id="readStat">0</strong><span>Artículos leídos</span></div><div class="stat"><strong id="totalStat">0</strong><span>Artículos disponibles</span></div><div class="stat"><strong id="percentageStat">0%</strong><span>Progreso de lectura</span></div></div>
+<div class="meter" role="progressbar" aria-label="Progreso de lectura" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="readMeter"><span id="readBar"></span></div><p class="muted" id="readProgressText" style="margin-bottom:12px">Cargando artículos…</p>
+<h3 id="progressTitle" style="font-size:1rem;color:#1e426e;margin:12px 0 6px">Buscar artículos</h3>
 <p class="muted">Consulta qué has completado, encuentra tu próxima lectura y actualiza su estado cuando quieras.</p>
 <div class="reading-overview" aria-label="Progreso de mis artículos">
 <div class="reading-count read-count"><strong id="readArticlesCount">—</strong><span>✓ Leídos</span></div>
@@ -307,7 +308,7 @@ permalink: /perfil.html
 </section>
 </div>
 <div class="profile-tab-panel" id="profile-panel-cuenta" role="tabpanel" aria-labelledby="profile-tab-cuenta" hidden>
-<div class="profile-group-heading"><h2>Cuenta</h2><p class="muted">Tus datos y preferencias</p></div>
+<div class="profile-group-heading"><h2>Cuenta</h2><p class="muted">Tu perfil, tu comunidad y tus datos</p></div>
 <section class="panel" aria-labelledby="openaiProfileTitle">
  <p class="section-kicker">HERRAMIENTAS OPCIONALES</p>
  <h2 id="openaiProfileTitle">Clave temporal de OpenAI</h2>
@@ -320,15 +321,24 @@ permalink: /perfil.html
 <h2 id="nameTitle">Tu perfil</h2><label for="studentName">Tu nombre</label><div class="form-row"><input id="studentName" type="text" maxlength="50" autocomplete="nickname" placeholder="Escribe tu nombre"><button class="primary" id="saveName">Guardar nombre</button></div>
 <p class="muted" id="greeting" role="status">Introduce tu nombre para personalizar tu espacio.</p>
 <p class="muted">Tu nombre y tus lecturas se sincronizan automáticamente con tu cuenta de Supabase.</p>
+<hr style="border:0;border-top:1px solid #e3ebf6;margin:14px 0">
+<h3 style="font-size:1rem;color:#1e426e;margin:0 0 6px">Comunidad</h3>
+<p class="muted">Busca usuarios por su alias público, síguelos y gestiona tus seguidos.</p>
+<p><a class="back" href="comunidad.html">Explorar comunidad →</a></p>
 </section>
-<section class="panel"><h2>Gestionar mi perfil</h2><p class="muted">Si has iniciado sesión, se borrarán tu nombre y tus lecturas de Supabase; no se eliminarán las notas de tus exámenes. Sin sesión solo se borrarán los datos locales.</p><button class="secondary" id="resetProfile">Reiniciar mi perfil</button></section>
-<details class="profile-disclosure"><summary><span class="profile-disclosure-title">Datos y seguridad</span><span class="profile-disclosure-sub">Exportar, cerrar sesión o eliminar</span><span class="profile-disclosure-chevron" aria-hidden="true">⌄</span></summary><section class="panel account-danger" id="accountActions" hidden aria-labelledby="deleteAccountTitle"><span class="section-kicker">SEGURIDAD DE LA CUENTA</span><h2 id="deleteAccountTitle">Mis datos y seguridad</h2><p class="muted">Descarga una copia de tu historial de aprendizaje, cierra sesión o elimina tu cuenta y sus datos asociados.</p><div class="account-actions"><button class="secondary" type="button" id="exportAccountData">Descargar mis datos de aprendizaje (JSON)</button><button class="secondary" type="button" id="signout">↪ Cerrar sesión</button><button class="danger-button" type="button" id="showDeleteAccount">Eliminar mi cuenta</button></div><p id="exportAccountStatus" class="muted" role="status" aria-live="polite"></p><div id="deleteAccountPanel" hidden><p class="muted"><strong>Esta acción no se puede deshacer.</strong> Escribe ELIMINAR MI CUENTA para confirmarlo.</p><label for="deleteConfirm">Confirmación</label><input id="deleteConfirm" type="text" autocomplete="off" placeholder="ELIMINAR MI CUENTA"><div class="account-actions"><button class="danger-button" id="confirmDeleteAccount" type="button" disabled>Eliminar definitivamente</button><button class="secondary" id="cancelDeleteAccount" type="button">Cancelar</button></div><p class="muted" id="deleteAccountStatus" role="status"></p></div></section></details>
+<details class="profile-disclosure"><summary><span class="profile-disclosure-title">Datos y seguridad</span><span class="profile-disclosure-sub">Exportar, reiniciar, cerrar sesión o eliminar</span><span class="profile-disclosure-chevron" aria-hidden="true">⌄</span></summary><section class="panel account-danger" id="accountActions" hidden aria-labelledby="deleteAccountTitle"><span class="section-kicker">SEGURIDAD DE LA CUENTA</span><h2 id="deleteAccountTitle">Mis datos y seguridad</h2><p class="muted">Descarga una copia de tu historial de aprendizaje, cierra sesión o elimina tu cuenta y sus datos asociados.</p>
+<div style="padding:14px;background:#f8faff;border:1px solid #d9e4f4;border-radius:12px;margin-bottom:14px">
+<h3 style="font-size:.95rem;color:#1e426e;margin:0 0 6px">Reiniciar mi perfil</h3>
+<p class="muted" style="margin:0 0 10px">Si has iniciado sesión, se borrarán tu nombre y tus lecturas de Supabase; no se eliminarán las notas de tus exámenes. Sin sesión solo se borrarán los datos locales.</p>
+<button class="secondary" id="resetProfile">Reiniciar mi perfil</button>
+</div>
+<div class="account-actions"><button class="secondary" type="button" id="exportAccountData">Descargar mis datos de aprendizaje (JSON)</button><button class="secondary" type="button" id="signout">↪ Cerrar sesión</button><button class="danger-button" type="button" id="showDeleteAccount">Eliminar mi cuenta</button></div><p id="exportAccountStatus" class="muted" role="status" aria-live="polite"></p><div id="deleteAccountPanel" hidden><p class="muted"><strong>Esta acción no se puede deshacer.</strong> Escribe ELIMINAR MI CUENTA para confirmarlo.</p><label for="deleteConfirm">Confirmación</label><input id="deleteConfirm" type="text" autocomplete="off" placeholder="ELIMINAR MI CUENTA"><div class="account-actions"><button class="danger-button" id="confirmDeleteAccount" type="button" disabled>Eliminar definitivamente</button><button class="secondary" id="cancelDeleteAccount" type="button">Cancelar</button></div><p class="muted" id="deleteAccountStatus" role="status"></p></div></section></details>
 </div>
 </div>
 </main>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script src="supabase-config.js?v=20261106-cache-refresh-1"></script>
-<script src="/assets/bitacora.js?v=20261106-cache-refresh-1" defer></script><script src="/assets/perfil.js?v=20261106-cache-refresh-1"></script>
+<script src="/assets/bitacora.js?v=20261106-cache-refresh-1" defer></script><script src="/assets/perfil.js?v=20261106-perfil-unificar-1"></script>
 <script>
 (function(){
   const tabs=[...document.querySelectorAll('[data-profile-tab]')];
