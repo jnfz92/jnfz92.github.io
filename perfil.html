@@ -255,8 +255,9 @@ permalink: /perfil.html
 </section>
 <section class="panel" aria-labelledby="followupWeekTitle">
 <div class="ee-followup-heading"><div><p class="section-kicker">INFORME SEMANAL</p><h2 id="followupWeekTitle">Tu semana de aprendizaje</h2></div><span class="ee-followup-period">De lunes a domingo</span></div>
-<p class="muted" id="followupStatus" role="status" aria-live="polite">El seguimiento semanal se mostrará aquí cuando se conecte el registro histórico de actividad.</p>
-<div class="ee-followup-empty"><span aria-hidden="true">📊</span><strong>Tu primera comparativa estará aquí.</strong><p>Se mostrarán las horas o sesiones registradas, unidades trabajadas, lecturas, actividades, exámenes y cambios respecto a la semana anterior. No se inventarán datos de semanas sin actividad registrada.</p></div>
+<p class="muted" id="followupStatus" role="status" aria-live="polite">Cargando tus informes semanales…</p>
+<div id="followupSummary" class="ee-followup-total-grid"></div>
+<div id="followupReports" class="ee-followup-reports" aria-live="polite"></div>
 </section>
 <section class="panel" aria-labelledby="followupHistoryTitle">
 <p class="section-kicker">EVOLUCIÓN ACUMULADA</p><h2 id="followupHistoryTitle">Desde que te registraste</h2>
@@ -313,7 +314,7 @@ permalink: /perfil.html
 </main>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script src="supabase-config.js"></script>
-<script src="/assets/bitacora.js?v=20261104-vocab-history-3" defer></script><script src="/assets/perfil.js?v=20261104-password-recovery-1"></script>
+<script src="/assets/bitacora.js?v=20261104-vocab-history-3" defer></script><script src="/assets/perfil.js?v=20261106-weekly-followup-1"></script>
 <script>
 (function(){
   const tabs=[...document.querySelectorAll('[data-profile-tab]')];
