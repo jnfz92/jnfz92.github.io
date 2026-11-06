@@ -1221,7 +1221,9 @@ eeDb.auth.onAuthStateChange((event,session)=>{
     if((user?.id||null)!==(activeUser?.id||null))await changeUser(activeUser);
   },0);
 });
+const initialAuthRevision=authRevision;
 eeDb.auth.getSession().then(({data,error})=>{
+  if(authRevision!==initialAuthRevision)return;
   if(error){
     changeUser(null);
     authMessage('No se pudo recuperar la sesión guardada: '+readableAuthError(error),true);
