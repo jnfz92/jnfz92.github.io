@@ -70,6 +70,20 @@ permalink: /perfil.html
 .profile-list-pagination button:not(:disabled):hover{background:#eef5ff}
 @media(max-width:480px){.profile-list-pagination{gap:8px}.profile-list-pagination span{order:-1;flex-basis:100%;text-align:center}}
 </style>
+<style>
+.ee-followup-hero{background:linear-gradient(135deg,#f0f5ff,#fff);border:1px solid #dce7fa}
+.ee-followup-principles,.ee-followup-history{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:20px}
+.ee-followup-principles>div,.ee-followup-history>div{display:flex;flex-direction:column;gap:6px;padding:15px;border:1px solid #dce6f5;border-radius:14px;background:#fff}
+.ee-followup-principles strong,.ee-followup-history strong{color:#204b91;font-size:14px}
+.ee-followup-principles span,.ee-followup-history span{color:#62738d;font-size:13px;line-height:1.5}
+.ee-followup-heading{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.ee-followup-heading h2{margin:0}
+.ee-followup-period{padding:7px 11px;border-radius:99px;background:#edf3ff;color:#315b9e;font-size:12px;font-weight:800}
+.ee-followup-empty{margin-top:18px;padding:24px;border:1px dashed #c7d7ee;border-radius:16px;text-align:center;background:#f8faff}
+.ee-followup-empty>span{font-size:30px}.ee-followup-empty strong{display:block;margin:8px 0;color:#244b87}
+.ee-followup-empty p{max-width:650px;margin:0 auto;color:#61738e;font-size:14px;line-height:1.6}
+@media(max-width:650px){.ee-followup-principles,.ee-followup-history{grid-template-columns:1fr}.ee-followup-heading{align-items:flex-start}}
+</style>
 </head>
 <body class="ee-site ee-profile">
 {% include header.html %}<main class="container">
@@ -125,6 +139,7 @@ permalink: /perfil.html
 <button type="button" class="profile-tab is-active" role="tab" id="profile-tab-inicio" aria-controls="profile-panel-inicio" aria-selected="true" tabindex="0" data-profile-tab="inicio">🏠 Inicio</button>
 <button type="button" class="profile-tab" role="tab" id="profile-tab-estudiar" aria-controls="profile-panel-estudiar" aria-selected="false" tabindex="-1" data-profile-tab="estudiar">📚 Estudiar</button>
 <button type="button" class="profile-tab" role="tab" id="profile-tab-resultados" aria-controls="profile-panel-resultados" aria-selected="false" tabindex="-1" data-profile-tab="resultados">📊 Resultados</button>
+<button type="button" class="profile-tab" role="tab" id="profile-tab-seguimiento" aria-controls="profile-panel-seguimiento" aria-selected="false" tabindex="-1" data-profile-tab="seguimiento">📈 Seguimiento</button>
 <button type="button" class="profile-tab" role="tab" id="profile-tab-biblioteca" aria-controls="profile-panel-biblioteca" aria-selected="false" tabindex="-1" data-profile-tab="biblioteca">📖 Biblioteca</button>
 <button type="button" class="profile-tab" role="tab" id="profile-tab-cuenta" aria-controls="profile-panel-cuenta" aria-selected="false" tabindex="-1" data-profile-tab="cuenta">⚙️ Cuenta</button>
 </nav>
@@ -230,6 +245,24 @@ permalink: /perfil.html
 <p class="muted" id="achievementStatus" role="status" aria-live="polite">Calculando tus logros…</p>
 <div id="achievementList" class="ee-achievement-list"></div><p><a href="/constancia-b2.html" id="personalCertificate" class="primary" style="text-decoration:none" hidden>Ver mi constancia personal de estudio →</a></p>
 </section></details>
+</div>
+<div class="profile-tab-panel" id="profile-panel-seguimiento" role="tabpanel" aria-labelledby="profile-tab-seguimiento" hidden>
+<div class="profile-group-heading"><h2>Seguimiento</h2><p class="muted">Tu evolución semana a semana desde el registro</p></div>
+<section class="panel ee-followup-hero" aria-labelledby="followupTitle">
+<p class="section-kicker">TU HISTORIAL DE APRENDIZAJE</p><h2 id="followupTitle">Cada semana cuenta.</h2>
+<p class="muted">Un informe con el mismo formato cada semana para que puedas comparar tu actividad, tus resultados y tu evolución acumulada desde que te registraste.</p>
+<div class="ee-followup-principles"><div><strong>01 · Actividad</strong><span>Qué has estudiado y practicado.</span></div><div><strong>02 · Resultados</strong><span>Notas, aciertos y evolución real.</span></div><div><strong>03 · Dominio</strong><span>Fortalezas y aspectos que necesitan repaso.</span></div></div>
+</section>
+<section class="panel" aria-labelledby="followupWeekTitle">
+<div class="ee-followup-heading"><div><p class="section-kicker">INFORME SEMANAL</p><h2 id="followupWeekTitle">Tu semana de aprendizaje</h2></div><span class="ee-followup-period">De lunes a domingo</span></div>
+<p class="muted" id="followupStatus" role="status" aria-live="polite">El seguimiento semanal se mostrará aquí cuando se conecte el registro histórico de actividad.</p>
+<div class="ee-followup-empty"><span aria-hidden="true">📊</span><strong>Tu primera comparativa estará aquí.</strong><p>Se mostrarán las horas o sesiones registradas, unidades trabajadas, lecturas, actividades, exámenes y cambios respecto a la semana anterior. No se inventarán datos de semanas sin actividad registrada.</p></div>
+</section>
+<section class="panel" aria-labelledby="followupHistoryTitle">
+<p class="section-kicker">EVOLUCIÓN ACUMULADA</p><h2 id="followupHistoryTitle">Desde que te registraste</h2>
+<p class="muted">El historial se organizará por semanas consecutivas desde tu fecha de alta. Cada semana conservará el mismo resumen para que puedas detectar tendencias a lo largo de los meses.</p>
+<div class="ee-followup-history"><div><strong>Lo que mejora</strong><span>Comparación de resultados y constancia.</span></div><div><strong>Lo que ya dominas</strong><span>Temas que has consolidado con evidencias.</span></div><div><strong>Tu siguiente objetivo</strong><span>Una recomendación concreta para la semana siguiente.</span></div></div>
+</section>
 </div>
 <div class="profile-tab-panel" id="profile-panel-biblioteca" role="tabpanel" aria-labelledby="profile-tab-biblioteca" hidden>
 <div class="profile-group-heading"><h2>Biblioteca</h2><p class="muted">Tus recursos y lecturas</p></div>
