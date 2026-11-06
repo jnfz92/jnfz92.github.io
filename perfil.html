@@ -69,6 +69,20 @@ permalink: /perfil.html
 .profile-list-pagination button:disabled{opacity:.42;cursor:not-allowed}
 .profile-list-pagination button:not(:disabled):hover{background:#eef5ff}
 @media(max-width:480px){.profile-list-pagination{gap:8px}.profile-list-pagination span{order:-1;flex-basis:100%;text-align:center}}
+
+.ee-followup-diagnostic,.ee-followup-study-plan{margin:1.25rem 0;padding:1.1rem;border:1px solid var(--border,#d8dee8);border-radius:16px;background:var(--surface,#fff)}
+.ee-followup-diagnostic h3,.ee-followup-study-plan h3{margin:.35rem 0 .7rem}
+.ee-followup-category-list{display:grid;gap:.75rem;margin-top:1rem}
+.ee-followup-category{padding:.9rem;border:1px solid var(--border,#d8dee8);border-radius:12px}
+.ee-followup-category-top{display:flex;justify-content:space-between;gap:1rem;align-items:baseline;flex-wrap:wrap}
+.ee-followup-category-top span{font-size:.88rem;color:var(--muted,#687386)}
+.ee-followup-category p{margin:.45rem 0}
+.ee-followup-category details{margin-top:.55rem}
+.ee-followup-category summary{cursor:pointer;font-weight:600}
+.ee-followup-category ul{padding-left:1.25rem}
+.ee-followup-study-plan ol{padding-left:1.35rem;display:grid;gap:.8rem}
+.ee-followup-study-plan li p{margin:.25rem 0 0}
+.ee-followup-study-plan>p{line-height:1.6}
 </style>
 <style>
 .ee-followup-hero{background:linear-gradient(135deg,#f0f5ff,#fff);border:1px solid #dce7fa}
@@ -250,7 +264,7 @@ permalink: /perfil.html
 <div class="profile-group-heading"><h2>Seguimiento</h2><p class="muted">Tu evolución semana a semana desde el registro</p></div>
 <section class="panel ee-followup-hero" aria-labelledby="followupTitle">
 <p class="section-kicker">TU HISTORIAL DE APRENDIZAJE</p><h2 id="followupTitle">Cada semana cuenta.</h2>
-<p class="muted">Un informe con el mismo formato cada semana para que puedas comparar tu actividad, tus resultados y tu evolución acumulada desde que te registraste.</p>
+<p class="muted">Un diagnóstico pedagógico por categorías, con tus preguntas pendientes, patrones de error, evolución y un plan de mejora de cuatro semanas.</p>
 <div class="ee-followup-principles"><div><strong>01 · Actividad</strong><span>Qué has estudiado y practicado.</span></div><div><strong>02 · Resultados</strong><span>Notas, aciertos y evolución real.</span></div><div><strong>03 · Dominio</strong><span>Fortalezas y aspectos que necesitan repaso.</span></div></div>
 </section>
 <section class="panel" aria-labelledby="followupWeekTitle">
@@ -314,7 +328,7 @@ permalink: /perfil.html
 </main>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script src="supabase-config.js"></script>
-<script src="/assets/bitacora.js?v=20261104-vocab-history-3" defer></script><script src="/assets/perfil.js?v=20261106-weekly-followup-1"></script>
+<script src="/assets/bitacora.js?v=20261104-vocab-history-3" defer></script><script src="/assets/perfil.js?v=20261106-pedagogical-analysis-1"></script>
 <script>
 (function(){
   const tabs=[...document.querySelectorAll('[data-profile-tab]')];
