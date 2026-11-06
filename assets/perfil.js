@@ -415,9 +415,9 @@ async function renderDetailedLearningDiagnosis(owner,root,make){
   },
   'Verbos modales':{
    level:'Prioridad media',why:'Los modales expresan grados distintos de obligación, posibilidad y deducción. En B2 también debes reconocer sus formas perfectas.',
-   lesson:'Must/have to expresan obligación con matices; mustn't es prohibición y don't have to ausencia de obligación. Might/could expresan posibilidad; must + have + participle, deducción sobre el pasado.',
-   trap:'Confundir mustn't con don't have to y olvidar have + participio al deducir sobre el pasado.',
-   drill:'Reescribe situaciones usando must, might, can't, have to y should; explica el grado de certeza.',
+   lesson:'Must/have to expresan obligación con matices; mustn\'t es prohibición y don\'t have to ausencia de obligación. Might/could expresan posibilidad; must + have + participle, deducción sobre el pasado.',
+   trap:'Confundir mustn\'t con don\'t have to y olvidar have + participio al deducir sobre el pasado.',
+   drill:'Reescribe situaciones usando must, might, can\'t, have to y should; explica el grado de certeza.',
    target:'Diferenciar obligación, prohibición y ausencia de obligación en 9/10 casos.'
   }
  };
