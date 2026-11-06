@@ -20,8 +20,8 @@ const readable=e=>{const m=String(e?.message||'');
 };
 if(!db){status('No se pudo conectar. Actualiza la página.',true);return}
 async function authenticated(){
- const {data,error}=await db.auth.getUser();
- if(error||!data?.user)return false;
+ const {data,error}=await db.auth.getSession();
+ if(error||!data?.session?.user)return false;
  location.replace(destination);return true;
 }
 authenticated().catch(()=>{});
@@ -43,8 +43,8 @@ $('registerForm').addEventListener('submit',async e=>{
    options:{emailRedirectTo:location.origin+'/perfil.html'}
   });
   if(error)throw error;
-  if(data?.session){
-   if(!await authenticated())throw new Error('No se pudo confirmar la sesión.');
+  if(data?.session?.user){
+   location.replace(destination);
   }else{
    status('Solicitud recibida. Revisa tu correo para confirmar la cuenta. Después, inicia sesión.');
   }
