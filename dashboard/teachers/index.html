@@ -13,63 +13,98 @@ title: Panel del profesor
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="/assets/site.css?v=20261030-unified-blue-2">
 <link rel="stylesheet" href="/assets/navigation.css?v=20261030-menu-blue-3">
+<link rel="stylesheet" href="/assets/teachers-dashboard.css?v=20261106-3">
 <script src="/assets/navigation.js?v=20261030-menu-blue-4" defer></script>
-<link rel="stylesheet" href="/assets/teachers-dashboard.css?v=20261106-2">
 </head>
 <body class="ee-site">
 {% include header.html %}
-<main class="td-main">
-  <header class="td-hero">
-    <p class="td-eyebrow">PANEL DEL PROFESOR</p>
-    <h1>Tus alumnos y su progreso</h1>
-    <p>Solo ves el progreso de los alumnos asignados a ti en tus cursos.</p>
-  </header>
+<div class="td-app">
+  <aside class="td-side" aria-label="Navegación del panel">
+    <p class="td-side-title">Panel del profesor</p>
+    <nav class="td-nav">
+      <button type="button" class="td-nav-btn" data-section="resumen" aria-current="page">
+        <span aria-hidden="true">▦</span> Resumen
+      </button>
+      <button type="button" class="td-nav-btn" data-section="cursos">
+        <span aria-hidden="true">▤</span> Mis cursos
+      </button>
+      <button type="button" class="td-nav-btn" data-section="alumnos">
+        <span aria-hidden="true">◉</span> Alumnos
+      </button>
+    </nav>
+    <p class="td-side-foot"><a href="/">← Volver a la web</a></p>
+  </aside>
 
-  <section class="td-panel" id="notAllowed" hidden>
-    <h2>Sin acceso</h2>
-    <p>Esta página es solo para profesores. Si crees que es un error, pide al administrador que te asigne el rol de profesor.</p>
-  </section>
-
-  <div id="dashboard" hidden>
-    <p class="td-status" id="dashStatus" role="status" aria-live="polite" hidden></p>
-
-    <section class="td-cards" aria-label="Resumen">
-      <article class="td-card"><span>Alumnos asignados</span><strong id="statStudents">—</strong></article>
-      <article class="td-card"><span>Cursos que impartes</span><strong id="statCourses">—</strong></article>
-      <article class="td-card td-card-warn"><span>Sin actividad en 7 días</span><strong id="statInactive">—</strong></article>
-      <article class="td-card"><span>Nota media (exámenes)</span><strong id="statAverage">—</strong></article>
-    </section>
-
-    <section class="td-panel">
-      <h2>Mis cursos</h2>
-      <ul class="td-courses" id="coursesList"></ul>
-    </section>
-
-    <section class="td-panel">
-      <h2>Alumnos</h2>
-      <div class="td-table-wrap">
-        <table class="td-table">
-          <thead>
-            <tr>
-              <th scope="col">Alumno</th>
-              <th scope="col">Cursos</th>
-              <th scope="col">Lecturas</th>
-              <th scope="col">Exámenes</th>
-              <th scope="col">Nota media</th>
-              <th scope="col">Unidades completadas</th>
-              <th scope="col">Última actividad</th>
-            </tr>
-          </thead>
-          <tbody id="studentsBody"></tbody>
-        </table>
+  <div class="td-body">
+    <header class="td-top">
+      <div>
+        <p class="td-crumb">Panel del profesor</p>
+        <h1 id="pageTitle">Resumen</h1>
       </div>
-      <p class="td-empty" id="studentsEmpty" hidden>Aún no tienes alumnos asignados. El administrador o el superadmin te los asignará en tus cursos.</p>
+      <span class="td-user" id="userLabel"></span>
+    </header>
+
+    <section class="td-panel" id="notAllowed" hidden>
+      <h2>Sin acceso</h2>
+      <p>Esta página es solo para profesores. Si crees que es un error, pide al administrador que te asigne el rol de profesor.</p>
     </section>
+
+    <div id="dashboard" hidden>
+      <p class="td-status" id="dashStatus" role="status" aria-live="polite" hidden></p>
+
+      <section data-panel="resumen">
+        <div class="td-cards">
+          <article class="td-card"><span>Alumnos asignados</span><strong id="statStudents">—</strong></article>
+          <article class="td-card"><span>Cursos que impartes</span><strong id="statCourses">—</strong></article>
+          <article class="td-card td-card-warn"><span>Sin actividad en 7 días</span><strong id="statInactive">—</strong></article>
+          <article class="td-card"><span>Nota media de exámenes</span><strong id="statAverage">—</strong></article>
+        </div>
+        <div class="td-panel">
+          <div class="td-panel-head"><h2>Alumnos que necesitan atención</h2><button type="button" class="td-link" data-goto="alumnos">Ver todos →</button></div>
+          <ul class="td-list" id="attentionList"></ul>
+          <p class="td-empty" id="attentionEmpty" hidden>Todos tus alumnos han tenido actividad esta semana.</p>
+        </div>
+      </section>
+
+      <section data-panel="cursos" hidden>
+        <div class="td-panel">
+          <div class="td-panel-head"><h2>Mis cursos</h2></div>
+          <div class="td-course-grid" id="coursesGrid"></div>
+          <p class="td-empty" id="coursesEmpty" hidden>No impartes ningún curso todavía.</p>
+        </div>
+      </section>
+
+      <section data-panel="alumnos" hidden>
+        <div class="td-panel">
+          <div class="td-panel-head">
+            <h2>Alumnos</h2>
+            <input type="search" id="studentSearch" class="td-search" placeholder="Buscar por nombre o curso…" aria-label="Buscar alumno">
+          </div>
+          <div class="td-table-wrap">
+            <table class="td-table">
+              <thead>
+                <tr>
+                  <th scope="col">Alumno</th>
+                  <th scope="col">Cursos</th>
+                  <th scope="col">Lecturas</th>
+                  <th scope="col">Exámenes</th>
+                  <th scope="col">Nota media</th>
+                  <th scope="col">Unidades</th>
+                  <th scope="col">Última actividad</th>
+                </tr>
+              </thead>
+              <tbody id="studentsBody"></tbody>
+            </table>
+          </div>
+          <p class="td-empty" id="studentsEmpty" hidden>No hay alumnos que coincidan.</p>
+        </div>
+      </section>
+    </div>
   </div>
-</main>
+</div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script src="/supabase-config.js?v=20261106-1"></script>
-<script src="/assets/teachers-dashboard.js?v=20261106-2"></script>
+<script src="/assets/teachers-dashboard.js?v=20261106-3"></script>
 {% include footer.html %}
 </body>
 </html>

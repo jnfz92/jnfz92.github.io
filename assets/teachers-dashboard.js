@@ -1,22 +1,36 @@
-/* Panel del profesor: cursos asignados, alumnos y su progreso. Solo lectura.
+/* Panel del profesor: resumen, cursos y alumnos con su progreso. Solo lectura.
    La seguridad real la aplica RLS en Supabase; esta comprobación solo mejora la experiencia. */
 (()=>{'use strict';
 const $=id=>document.getElementById(id);
 const db=window.eeDb;
 const ALLOWED_ROLES=['profesor','admin','superadmin'];
 const DAY=86400000;
+const SECTIONS={resumen:'Resumen',cursos:'Mis cursos',alumnos:'Alumnos'};
+let students=[];
 
 function status(message,error=false){const el=$('dashStatus');el.textContent=message;el.hidden=!message;el.classList.toggle('is-error',error)}
 function node(tag,text,className){const n=document.createElement(tag);if(text!=null)n.textContent=text;if(className)n.className=className;return n}
 function formatDate(value){return value?new Date(value).toLocaleDateString('es-ES',{day:'2-digit',month:'short',year:'numeric'}):'—'}
 function ago(ms){const days=Math.floor(ms/DAY);return days<=0?'Hoy':days===1?'Ayer':'Hace '+days+' días'}
 
+function showSection(name){
+ if(!SECTIONS[name])name='resumen';
+ document.querySelectorAll('[data-panel]').forEach(s=>{s.hidden=s.dataset.panel!==name});
+ document.querySelectorAll('.td-nav-btn').forEach(b=>{const on=b.dataset.section===name;on?b.setAttribute('aria-current','page'):b.removeAttribute('aria-current')});
+ $('pageTitle').textContent=SECTIONS[name];
+}
+
 async function init(){
+ document.querySelectorAll('[data-section]').forEach(b=>b.addEventListener('click',()=>showSection(b.dataset.section)));
+ document.querySelectorAll('[data-goto]').forEach(b=>b.addEventListener('click',()=>showSection(b.dataset.goto)));
+ $('studentSearch').addEventListener('input',()=>renderStudents());
+ showSection('resumen');
  if(!db){status('No se pudo conectar. Recarga la página.',true);return}
  const {data:auth,error:authError}=await db.auth.getUser();
  if(authError&&authError.name!=='AuthSessionMissingError')throw authError;
  if(!auth?.user){location.replace('/login.html?next='+encodeURIComponent('/dashboard/teachers/'));return}
  const me=auth.user.id;
+ $('userLabel').textContent=auth.user.email||'';
  const {data:roles,error:rolesError}=await db.from('usuarios_roles').select('rol').eq('usuario_id',me);
  if(rolesError)throw rolesError;
  if(!(roles||[]).some(r=>ALLOWED_ROLES.includes(r.rol))){$('notAllowed').hidden=false;return}
@@ -48,8 +62,16 @@ async function load(me){
   studentCourses.get(a.alumno_id).add(courseNames.get(a.curso_id)||'Curso');
  }
  const ids=[...studentCourses.keys()];
- renderCourses(courseList);
- if(!ids.length){renderStudents([],{});$('statStudents').textContent='0';$('statCourses').textContent=String(courseList.length);$('statInactive').textContent='0';$('statAverage').textContent='—';status('');return}
+ const studentsByCourse=new Map();
+ for(const a of assignments.data||[]){if(!studentsByCourse.has(a.curso_id))studentsByCourse.set(a.curso_id,new Set());studentsByCourse.get(a.curso_id).add(a.alumno_id)}
+ renderCourses(courseList,studentsByCourse);
+ $('statCourses').textContent=String(courseList.length);
+ if(!ids.length){
+  students=[];
+  renderStudents();renderSummary();
+  status('');
+  return;
+ }
 
  const [names,lecturas,resultados,actividad,progreso]=await Promise.all([
   db.from('perfiles').select('usuario_id,nombre').in('usuario_id',ids),
@@ -67,51 +89,66 @@ async function load(me){
  for(const d of actividad.data||[]){const s=byId.get(d.usuario_id);if(!s)continue;s.last=Math.max(s.last,Date.parse(d.dia)||0)}
  for(const p of progreso.data||[]){const s=byId.get(p.usuario_id);if(s)s.units++}
 
- const students=[...byId.values()].sort((a,b)=>(!a.name)-(!b.name)||(a.name||'').localeCompare(b.name||'','es'));
- const now=Date.now();
- const inactive=students.filter(s=>!s.last||now-s.last>7*DAY).length;
- const scored=students.filter(s=>s.exams>0);
- const average=scored.length?scored.reduce((sum,s)=>sum+s.scoreSum/s.exams,0)/scored.length:null;
-
- $('statStudents').textContent=String(students.length);
- $('statCourses').textContent=String(courseList.length);
- $('statInactive').textContent=String(inactive);
- $('statAverage').textContent=average==null?'—':average.toFixed(1);
- renderStudents(students,{now});
+ students=[...byId.values()].sort((a,b)=>(!a.name)-(!b.name)||(a.name||'').localeCompare(b.name||'','es'));
+ renderSummary();
+ renderStudents();
  status('');
 }
 
-function renderCourses(courses){
- const list=$('coursesList');list.replaceChildren();
- if(!courses.length){list.append(node('li','No impartes ningún curso todavía.','td-muted'));return}
- for(const c of courses){
-  const li=node('li','',c.activo?'':'td-muted');
-  li.append(node('strong',c.nombre),node('span',c.activo?' · activo':' · inactivo','td-muted'));
+function renderSummary(){
+ const now=Date.now();
+ const inactive=students.filter(s=>!s.last||now-s.last>7*DAY);
+ const scored=students.filter(s=>s.exams>0);
+ const average=scored.length?scored.reduce((sum,s)=>sum+s.scoreSum/s.exams,0)/scored.length:null;
+ $('statStudents').textContent=String(students.length);
+ $('statInactive').textContent=String(inactive.length);
+ $('statAverage').textContent=average==null?'—':average.toFixed(1);
+
+ const list=$('attentionList');list.replaceChildren();
+ for(const s of inactive.slice(0,8)){
+  const li=node('li','','td-list-item');
+  li.append(node('strong',s.name||'Alumno sin nombre'),node('span',s.last?'Última actividad: '+ago(now-s.last).toLowerCase():'Sin actividad registrada','td-chip td-chip-warn'));
   list.append(li);
+ }
+ $('attentionEmpty').hidden=inactive.length>0;
+}
+
+function renderCourses(courses,studentsByCourse){
+ const grid=$('coursesGrid');grid.replaceChildren();
+ $('coursesEmpty').hidden=courses.length>0;
+ for(const c of courses){
+  const card=node('article','','td-course');
+  const count=(studentsByCourse.get(c.id)||new Set()).size;
+  card.append(node('h3',c.nombre),
+   node('span',c.activo?'Activo':'Inactivo',c.activo?'td-chip':'td-chip td-chip-muted'),
+   node('p',count+(count===1?' alumno asignado':' alumnos asignados'),'td-small td-muted'));
+  grid.append(card);
  }
 }
 
-function renderStudents(students,{now}){
+function renderStudents(){
+ const q=($('studentSearch').value||'').trim().toLowerCase();
+ const rows=students.filter(s=>!q||(s.name||'').toLowerCase().includes(q)||s.courses.some(c=>c.toLowerCase().includes(q)));
  const body=$('studentsBody');body.replaceChildren();
- $('studentsEmpty').hidden=students.length>0;
- for(const s of students){
+ $('studentsEmpty').hidden=rows.length>0;
+ const now=Date.now();
+ for(const s of rows){
   const tr=document.createElement('tr');
   const nameCell=node('td');
-  nameCell.append(node('strong',s.name||'Alumno sin nombre'));
-  nameCell.append(node('div',s.id.slice(0,8)+'…','td-muted td-small'));
-  tr.append(nameCell,
-   node('td',s.courses.join(', ')),
-   node('td',String(s.reads)),
-   node('td',String(s.exams)),
-   node('td',s.exams?(s.scoreSum/s.exams).toFixed(1):'—'),
-   node('td',String(s.units)));
+  nameCell.append(node('strong',s.name||'Alumno sin nombre'),node('div',s.id.slice(0,8)+'…','td-muted td-small'));
   const last=node('td');
   if(s.last){
    last.append(node('div',formatDate(s.last)));
    const days=now-s.last;
    last.append(node('div',ago(days),days>7*DAY?'td-chip td-chip-warn':'td-small td-muted'));
   }else last.append(node('span','Sin actividad','td-chip td-chip-warn'));
-  tr.append(last);
+  tr.append(nameCell,
+   node('td',s.courses.join(', ')),
+   node('td',String(s.reads)),
+   node('td',String(s.exams)),
+   node('td',s.exams?(s.scoreSum/s.exams).toFixed(1):'—'),
+   node('td',String(s.units)),
+   last);
   body.append(tr);
  }
 }
