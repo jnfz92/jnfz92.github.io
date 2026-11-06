@@ -278,9 +278,8 @@ async function loadWeeklyFollowup(owner){
  if(error){status.textContent='No se pudo cargar el seguimiento: '+error.message;return}
  if(!data?.length){status.textContent='Todavía no hay informes semanales guardados.';return}
  const make=(tag,txt,cls)=>{const n=document.createElement(tag);if(txt!==undefined)n.textContent=txt;if(cls)n.className=cls;return n};
- const totals={active_days:19,readings:20,units:2,exams:23,mock_tests:2,diagnostics:1};
- const top=make('div',undefined,'ee-followup-total-grid');
- [['19','Días activos'],['20','Lecturas'],['2','Unidades'],['23','Exámenes'],['2','Simulacros B2']].forEach(([v,l])=>{const item=make('div',undefined,'ee-followup-total');item.append(make('strong',v),make('span',l));summary.append(item)});
+ const totals=data.reduce((acc,row)=>{const r=row.informe||{};for(const k of ['active_days','readings','units','exams','mock_tests'])acc[k]=(acc[k]||0)+(Number(r[k])||0);return acc},{});
+ [['active_days','Días activos'],['readings','Lecturas'],['units','Unidades'],['exams','Exámenes'],['mock_tests','Simulacros B2']].forEach(([key,label])=>{const item=make('div',undefined,'ee-followup-total');item.append(make('strong',String(totals[key]||0)),make('span',label));summary.append(item)});
  status.textContent='Historial desde tu registro · 13 de octubre de 2026. Hay 3 semanas completas y una semana en curso (hasta el 6 de noviembre).';
  for(const row of data){
   const r=row.informe||{},card=make('article',undefined,'ee-followup-report');
