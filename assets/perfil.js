@@ -280,7 +280,7 @@ async function loadWeeklyFollowup(owner){
  const make=(tag,txt,cls)=>{const n=document.createElement(tag);if(txt!==undefined)n.textContent=txt;if(cls)n.className=cls;return n};
  const totals=data.reduce((acc,row)=>{const r=row.informe||{};for(const k of ['active_days','readings','units','exams','mock_tests'])acc[k]=(acc[k]||0)+(Number(r[k])||0);return acc},{});
  [['active_days','Días activos'],['readings','Lecturas'],['units','Unidades'],['exams','Exámenes'],['mock_tests','Simulacros B2']].forEach(([key,label])=>{const item=make('div',undefined,'ee-followup-total');item.append(make('strong',String(totals[key]||0)),make('span',label));summary.append(item)});
- status.textContent='Historial desde tu registro · 13 de octubre de 2026. Hay 3 semanas completas y una semana en curso (hasta el 6 de noviembre).';
+ status.textContent='Historial desde tu registro · 13 de octubre de 2026. Hay 2 semanas completas, una primera semana parcial y una semana en curso (hasta el 6 de noviembre).';
  for(const row of data){
   const r=row.informe||{},card=make('article',undefined,'ee-followup-report');
   const head=make('div',undefined,'ee-followup-report-head');
