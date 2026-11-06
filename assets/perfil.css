@@ -185,3 +185,64 @@ footer{background:#fffdfb}
 .ee-site.ee-profile #passwordRecoveryForm{display:flex;flex-direction:column;gap:10px;max-width:none}
 .ee-site.ee-profile #passwordRecoveryForm label{margin-top:8px}
 .ee-site.ee-profile #passwordRecoveryStatus{margin:14px 0 0;min-height:24px;overflow-wrap:anywhere}
+
+
+/* Informe del profesor: diagnóstico visual, lectura pedagógica y plan de intervención */
+.ee-site.ee-profile .ee-teacher-report{margin:22px 0 28px;padding:clamp(16px,2.5vw,28px);border:1px solid #dce6f4;border-radius:22px;background:linear-gradient(180deg,#f7faff 0,#fff 260px);box-shadow:0 12px 36px #1b477b0d;color:#203653}
+.ee-teacher-report>.section-kicker{letter-spacing:.12em;font-size:11px;font-weight:900;color:#4169a9}
+.ee-teacher-hero{display:flex;align-items:flex-start;justify-content:space-between;gap:18px;padding:22px;border-radius:18px;background:linear-gradient(125deg,#102e61,#2458a6 62%,#477cc4);color:#fff;box-shadow:0 12px 28px #1b477b20}
+.ee-teacher-eyebrow{font-size:10px;letter-spacing:.14em;font-weight:900;color:#c8dcff}
+.ee-teacher-hero h3{margin:8px 0;font-size:clamp(22px,3vw,30px);color:#fff}
+.ee-teacher-intro{max-width:720px;margin:0;color:#e3edff;line-height:1.65;font-size:14px}
+.ee-teacher-tag{white-space:nowrap;padding:8px 11px;border:1px solid #ffffff55;border-radius:99px;color:#fff;font-size:10px;font-weight:900;letter-spacing:.08em}
+.ee-teacher-kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:11px;margin:16px 0 20px}
+.ee-teacher-kpi{padding:15px;border:1px solid #e1e9f5;border-radius:15px;background:#fff;box-shadow:0 3px 12px #173c7108}
+.ee-teacher-kpi strong{display:block;font-size:clamp(24px,3vw,32px);line-height:1.15;color:#1c4b91;font-variant-numeric:tabular-nums}
+.ee-teacher-kpi span{display:block;margin-top:5px;color:#687b95;font-size:12px;line-height:1.35}
+.ee-teacher-observation{display:grid;grid-template-columns:170px 1fr;gap:14px;padding:17px 18px;margin:0 0 24px;border-left:4px solid #4d7fd0;border-radius:12px;background:#edf4ff}
+.ee-teacher-observation strong{color:#204d91}
+.ee-teacher-observation p{margin:0;color:#405875;font-size:13px;line-height:1.65}
+.ee-teacher-report>h4,.ee-teacher-plan h4{margin:22px 0 7px;color:#1c3e70;font-size:19px}
+.ee-teacher-muted{color:#687b93;font-size:13px;line-height:1.6}
+.ee-teacher-subjects{display:grid;gap:12px;margin:15px 0 24px}
+.ee-teacher-subject{overflow:hidden;border:1px solid #dfe7f2;border-radius:16px;background:#fff;box-shadow:0 3px 12px #173c7107}
+.ee-teacher-subject[open]{border-color:#b9cce8;box-shadow:0 7px 20px #173c710d}
+.ee-teacher-subject-head{display:grid;grid-template-columns:38px minmax(0,1fr) auto;align-items:center;gap:12px;padding:15px 17px;cursor:pointer;list-style:none}
+.ee-teacher-subject-head::-webkit-details-marker{display:none}
+.ee-teacher-rank{display:grid;place-items:center;width:36px;height:36px;border-radius:11px;background:#edf3fc;color:#3763a5;font-size:12px;font-weight:900}
+.ee-teacher-subject-name strong{display:block;color:#203f6d;font-size:15px}
+.ee-teacher-subject-name small{display:block;margin-top:3px;color:#7b8ba0;font-size:11px}
+.ee-teacher-count{padding:7px 10px;border-radius:99px;background:#fff1e9;color:#a45120;font-size:11px;font-weight:900;white-space:nowrap}
+.ee-teacher-bar{height:5px;margin:0 17px 14px;overflow:hidden;border-radius:9px;background:#edf1f7}
+.ee-teacher-bar span{display:block;height:100%;border-radius:9px;background:linear-gradient(90deg,#6a9be5,#315fa8)}
+.ee-teacher-subject-body{padding:0 17px 17px}
+.ee-teacher-explanation{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.ee-teacher-explanation>div{padding:13px;border:1px solid #e7edf5;border-radius:12px;background:#fbfcfe}
+.ee-teacher-explanation>div:first-child,.ee-teacher-explanation>div:nth-child(2){background:#f3f7ff;border-color:#e0e9f8}
+.ee-teacher-explanation strong{display:block;color:#31598f;font-size:12px}
+.ee-teacher-explanation p{margin:6px 0 0;color:#53677f;font-size:12px;line-height:1.6}
+.ee-teacher-evidence{margin:12px 0 0;color:#78889d;font-size:11px;line-height:1.5}
+.ee-teacher-examples{margin-top:10px;padding:11px 13px;border-radius:11px;background:#f8fafc}
+.ee-teacher-examples summary{cursor:pointer;color:#31598f;font-size:12px;font-weight:800}
+.ee-teacher-examples ul{padding-left:19px;color:#586b83;font-size:12px;line-height:1.6}
+.ee-teacher-plan{margin-top:25px;padding:20px;border:1px solid #dce7f6;border-radius:18px;background:linear-gradient(180deg,#f3f7ff,#fff)}
+.ee-teacher-plan>.section-kicker{font-size:10px;letter-spacing:.12em;font-weight:900;color:#4770ae}
+.ee-teacher-plan h4{margin-top:4px}
+.ee-teacher-weeks{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:15px}
+.ee-teacher-week{padding:16px;border:1px solid #e0e8f3;border-radius:14px;background:#fff}
+.ee-teacher-week-label{display:inline-block;padding:5px 8px;border-radius:99px;background:#eaf1fc;color:#3865a5;font-size:10px;font-weight:900}
+.ee-teacher-week h5{margin:9px 0 7px;color:#234779;font-size:15px}
+.ee-teacher-week p{font-size:12px;line-height:1.6}
+.ee-teacher-week-focus{color:#4b6380;font-weight:800}
+.ee-teacher-week-days{white-space:normal;color:#61738b}
+.ee-teacher-week>strong{display:block;margin-top:9px;padding-top:10px;border-top:1px solid #e8edf5;color:#28634e;font-size:11px;line-height:1.5}
+.ee-teacher-routine{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px;margin-top:17px}
+.ee-teacher-routine h5{grid-column:1/-1;margin:0;color:#244878;font-size:14px}
+.ee-teacher-routine>div{display:flex;flex-direction:column;gap:5px;padding:12px;border:1px solid #e1e9f4;border-radius:12px;background:#fff}
+.ee-teacher-routine>div strong{color:#2d5e9e;font-size:12px}
+.ee-teacher-routine>div b{color:#314d70;font-size:12px}
+.ee-teacher-routine>div span{color:#74849a;font-size:11px;line-height:1.5}
+.ee-teacher-footnote{margin:14px 0 0;padding:13px;border-radius:11px;background:#eaf4f0;color:#376451;font-size:12px;line-height:1.6}
+.ee-teacher-method{margin:15px 0 0;color:#8290a2;font-size:10px;line-height:1.6}
+@media(max-width:760px){.ee-teacher-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.ee-teacher-weeks{grid-template-columns:1fr}.ee-teacher-routine{grid-template-columns:repeat(2,minmax(0,1fr))}.ee-teacher-observation{grid-template-columns:1fr;gap:6px}}
+@media(max-width:520px){.ee-teacher-hero{display:block;padding:17px}.ee-teacher-tag{display:inline-block;margin-top:13px}.ee-teacher-subject-head{grid-template-columns:32px minmax(0,1fr);gap:9px;padding:13px}.ee-teacher-rank{width:31px;height:31px}.ee-teacher-count{grid-column:2;justify-self:start}.ee-teacher-explanation{grid-template-columns:1fr}.ee-teacher-subject-body{padding:0 12px 13px}.ee-teacher-plan{padding:14px}.ee-teacher-routine{grid-template-columns:1fr 1fr}}
