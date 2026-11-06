@@ -1,0 +1,73 @@
+---
+permalink: /dashboard/teachers/
+title: Panel del profesor
+---
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#1e5eff">
+<title>Panel del profesor · Easy English</title>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/assets/site.css?v=20261030-unified-blue-2">
+<link rel="stylesheet" href="/assets/teachers-dashboard.css?v=20261106-1">
+</head>
+<body class="ee-site">
+{% include header.html %}
+<main class="td-main">
+  <header class="td-hero">
+    <p class="td-eyebrow">PANEL DEL PROFESOR</p>
+    <h1>Tus alumnos y su progreso</h1>
+    <p>Solo ves el progreso de los alumnos asignados a ti en tus cursos.</p>
+  </header>
+
+  <section class="td-panel" id="notAllowed" hidden>
+    <h2>Sin acceso</h2>
+    <p>Esta página es solo para profesores. Si crees que es un error, pide al administrador que te asigne el rol de profesor.</p>
+  </section>
+
+  <div id="dashboard" hidden>
+    <p class="td-status" id="dashStatus" role="status" aria-live="polite" hidden></p>
+
+    <section class="td-cards" aria-label="Resumen">
+      <article class="td-card"><span>Alumnos asignados</span><strong id="statStudents">—</strong></article>
+      <article class="td-card"><span>Cursos que impartes</span><strong id="statCourses">—</strong></article>
+      <article class="td-card td-card-warn"><span>Sin actividad en 7 días</span><strong id="statInactive">—</strong></article>
+      <article class="td-card"><span>Nota media (exámenes)</span><strong id="statAverage">—</strong></article>
+    </section>
+
+    <section class="td-panel">
+      <h2>Mis cursos</h2>
+      <ul class="td-courses" id="coursesList"></ul>
+    </section>
+
+    <section class="td-panel">
+      <h2>Alumnos</h2>
+      <div class="td-table-wrap">
+        <table class="td-table">
+          <thead>
+            <tr>
+              <th scope="col">Alumno</th>
+              <th scope="col">Cursos</th>
+              <th scope="col">Lecturas</th>
+              <th scope="col">Exámenes</th>
+              <th scope="col">Nota media</th>
+              <th scope="col">Unidades completadas</th>
+              <th scope="col">Última actividad</th>
+            </tr>
+          </thead>
+          <tbody id="studentsBody"></tbody>
+        </table>
+      </div>
+      <p class="td-empty" id="studentsEmpty" hidden>Aún no tienes alumnos asignados. El administrador o el superadmin te los asignará en tus cursos.</p>
+    </section>
+  </div>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="/supabase-config.js?v=20261106-1"></script>
+<script src="/assets/teachers-dashboard.js?v=20261106-1"></script>
+{% include footer.html %}
+</body>
+</html>

@@ -26,7 +26,7 @@ self.addEventListener('fetch', event => {
     '/clave-openai.html','/login.html','/registro.html'
   ]);
   if (url.origin !== self.location.origin || url.pathname.startsWith('/api/') ||
-      url.pathname.startsWith('/auth/') || privateRoutes.has(url.pathname)) return;
+      url.pathname.startsWith('/auth/') || url.pathname.startsWith('/dashboard/') || privateRoutes.has(url.pathname)) return;
   if (request.mode === 'navigate') {
     event.respondWith(fetch(request).then(response => {
       if (response.ok && response.type === 'basic') {
