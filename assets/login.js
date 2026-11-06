@@ -31,8 +31,8 @@ $('forgotLink').addEventListener('click',()=>{resetMode(true);$('resetEmail').va
 $('backToLogin').addEventListener('click',()=>resetMode(false));
 if(!db){status('No se pudo conectar. Actualiza la página.',true);return}
 async function authenticated(){
- const {data,error}=await db.auth.getUser();
- if(error||!data?.user)return false;
+ const {data,error}=await db.auth.getSession();
+ if(error||!data?.session?.user)return false;
  location.replace(destination);return true;
 }
 authenticated().catch(()=>{});
