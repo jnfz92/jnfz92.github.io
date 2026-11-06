@@ -43,11 +43,12 @@ $('googleLogin').addEventListener('click',async()=>{
 $('loginForm').addEventListener('submit',async e=>{
  e.preventDefault();if(!e.currentTarget.reportValidity())return;
  const button=$('loginSubmit');button.disabled=true;status('Comprobando tus datos…');
- try{const {error}=await db.auth.signInWithPassword({
+ try{const {data,error}=await db.auth.signInWithPassword({
    email:$('loginEmail').value.trim().toLowerCase(),password:$('loginPassword').value
   });
   if(error)throw error;
-  if(!await authenticated())throw new Error('No se pudo confirmar la sesión.');
+  if(!data?.session?.user)throw new Error('El acceso no ha devuelto una sesión activa.');
+  location.replace(destination);
  }catch(error){status(readable(error),true)}
  finally{$('loginPassword').value='';button.disabled=false}
 });
