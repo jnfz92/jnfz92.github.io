@@ -792,7 +792,6 @@ function resetWeeklyGoal() {
  $('homeWeeklyGoal').textContent='Configurar mi objetivo semanal →';
 }
 async function loadWeeklyGoal(owner) {
- resetWeeklyGoal();
  $('weeklyGoalStatus').textContent='Consultando tu objetivo semanal…';
  const {data,error}=await eeDb.from('objetivos_semanales').select('tipo,cantidad').eq('usuario_id',owner).maybeSingle();
  if(!user||user.id!==owner)return;
@@ -813,7 +812,7 @@ async function loadWeeklyGoal(owner) {
  $('weeklyGoalLabel').textContent=data.tipo==='unidades'?'Unidades esta semana':data.tipo==='examenes'?'Exámenes esta semana':'Actividades esta semana';
  $('weeklyGoalBar').style.width=percentage+'%';
  $('weeklyGoalMeter').setAttribute('aria-valuenow',String(percentage));
- $('weeklyGoalStatus').textContent=count>=data.cantidad?'¡Objetivo semanal alcanzado!':'Te quedan '+(data.cantidad-count)+' para completar tu meta. Se reinicia cada lunes.';
+ $('weeklyGoalStatus').textContent=count>=data.cantidad?'¡Objetivo semanal alcanzado!':(data.cantidad-count===1?'Te queda 1 para completar tu meta.':'Te quedan '+(data.cantidad-count)+' para completar tu meta.')+' Se reinicia cada lunes.';
  $('homeWeeklyGoal').textContent='Objetivo semanal: '+count+' de '+data.cantidad+' →';
 }
 $('weeklyGoalForm').onsubmit=async event=>{
@@ -917,8 +916,9 @@ async function loadCourseProgress(userId) {
   ?done+' completadas · '+inProgress+' en curso · '+(units.length-done-inProgress)+' pendientes. No es una nota de examen.'
   :'Todavía no hay unidades publicadas.';
  const next=units.find(row=>started.has(row.slug))||units.find(row=>!completed.has(row.slug));
- $('homeNextTitle').textContent=next?(started.has(next.slug)?'En curso: unidad ':'Siguiente: unidad ')+String(next.orden).padStart(2,'0'):'¡Ruta B2 completada!';
- $('homeNextDescription').textContent=next?String(next.titulo||'Continúa donde lo dejaste.'):'Has marcado todas las unidades como estudiadas. Puedes repasarlas cuando quieras.';
+ const noUnits=!units.length;
+ $('homeNextTitle').textContent=noUnits?'Todavía no hay unidades':next?(started.has(next.slug)?'En curso: unidad ':'Siguiente: unidad ')+String(next.orden).padStart(2,'0'):'¡Ruta B2 completada!';
+ $('homeNextDescription').textContent=noUnits?'Cuando se publiquen unidades del curso, aquí verás por dónde continuar.':next?String(next.titulo||'Continúa donde lo dejaste.'):'Has marcado todas las unidades como estudiadas. Puedes repasarlas cuando quieras.';
  $('homeContinue').href=next?'/curso.html#unidad-'+String(next.orden).padStart(2,'0'):'/curso.html';
  $('homeContinue').textContent=next?'Continuar curso →':'Repasar unidades →';
  $('courseProfileContinue').href=next?'/curso.html#unidad-'+String(next.orden).padStart(2,'0'):'/curso.html';
