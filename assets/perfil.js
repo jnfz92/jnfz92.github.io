@@ -306,51 +306,181 @@ async function renderDetailedLearningDiagnosis(owner,root,make){
  if(!user||user.id!==owner)return;
  if(error){root.prepend(make('p','No se pudo cargar el análisis por categorías: '+error.message,'ee-followup-analysis'));return}
  const ids=[...new Set((failures||[]).map(x=>x.pregunta_id).filter(Boolean))];
- if(!ids.length)return;
+ if(!ids.length){
+  const empty=make('section',undefined,'ee-teacher-report');
+  empty.append(make('p','INFORME DEL PROFESOR · DIAGNÓSTICO INDIVIDUAL','section-kicker'));
+  empty.append(make('h3','Aún no hay errores registrados para evaluar'));
+  empty.append(make('p','Cuando completes ejercicios y se registren preguntas falladas, este informe identificará los contenidos que conviene reforzar.','ee-teacher-intro'));
+  root.prepend(empty);return;
+ }
  const {data:questions,qError}=await eeDb.from('preguntas')
   .select('id,enunciado,fuente_url').in('id',ids);
  if(!user||user.id!==owner)return;
  if(qError){root.prepend(make('p','No se pudieron consultar los temas de las preguntas: '+qError.message,'ee-followup-analysis'));return}
  const byId=new Map((questions||[]).map(q=>[q.id,q]));
  const groups=new Map();
+ let unclassified=0;
  for(const failure of failures||[]){
   const q=byId.get(failure.pregunta_id);if(!q)continue;
   const c=classifyLearningQuestion(q);
-  if(!groups.has(c.category))groups.set(c.category,{...c,questions:0,attempts:0,pending:0,examples:[]});
+  if(!groups.has(c.category))groups.set(c.category,{...c,questions:0,attempts:0,pending:0,examples:[],last:null});
   const g=groups.get(c.category);g.questions++;g.attempts+=Number(failure.veces_fallada)||1;
   if(!failure.dominada)g.pending++;
-  if(g.examples.length<3)g.examples.push(q.enunciado);
+  if(g.examples.length<4&&q.enunciado)g.examples.push(q.enunciado);
+  if(failure.ultimo_fallo&&(!g.last||failure.ultimo_fallo>g.last))g.last=failure.ultimo_fallo;
+  if(c.category==='Otras estructuras y vocabulario')unclassified++;
  }
  const ranked=[...groups.values()].sort((a,b)=>b.pending-a.pending||b.attempts-a.attempts);
- const panel=make('section',undefined,'ee-followup-diagnostic');
- panel.append(make('p','ANÁLISIS PEDAGÓGICO · BASADO EN TUS PREGUNTAS REGISTRADAS','section-kicker'));
- panel.append(make('h3','Qué necesitas reforzar'));
- panel.append(make('p','Se agrupan las preguntas de tu cuaderno de fallos por el tema de su artículo de referencia. “Preguntas” cuenta registros distintos; “fallos acumulados” suma las veces registradas. No se calcula un porcentaje de acierto por tema porque el historial de respuestas no conserva una clave de corrección comparable para todos los intentos.','ee-followup-analysis'));
- const totals=make('div',undefined,'ee-followup-metrics');
  const pending=(failures||[]).filter(x=>!x.dominada).length;
- [[String(failures.length),'Preguntas registradas'],[String(pending),'Pendientes de dominar'],[String((failures||[]).reduce((n,x)=>n+(Number(x.veces_fallada)||1),0)),'Fallos acumulados']].forEach(([v,l])=>{const m=make('div',undefined,'ee-followup-metric');m.append(make('strong',v),make('span',l));totals.append(m)});
- panel.append(totals);
- const list=make('div',undefined,'ee-followup-category-list');
- for(const g of ranked){
-  const item=make('article',undefined,'ee-followup-category');
-  const top=make('div',undefined,'ee-followup-category-top');
-  top.append(make('strong',g.category),make('span',g.pending+' pendientes · '+g.questions+' preguntas · '+g.attempts+' fallos acumulados'));
-  item.append(top,make('p',g.tip));
-  if(g.examples.length){const details=make('details');details.append(make('summary','Ver ejemplos de tus preguntas'));const ul=make('ul');g.examples.forEach(x=>ul.append(make('li',x)));details.append(ul);item.append(details)}
-  list.append(item);
+ const accumulated=(failures||[]).reduce((n,x)=>n+(Number(x.veces_fallada)||1),0);
+ const diagnosed=ranked.reduce((n,g)=>n+g.questions,0);
+ const pendingShare=g=>pending?Math.round(g.pending/pending*100):0;
+ const lessons={
+  'Tiempos de pasado y present perfect':{
+   level:'Prioridad alta',why:'Es el bloque con mayor volumen de preguntas pendientes. El reto no es memorizar una tabla: es elegir el tiempo según el orden de los acontecimientos, la duración y si el periodo sigue conectado con el presente.',
+   lesson:'Past simple presenta un hecho terminado; past continuous sitúa una acción en desarrollo; past perfect marca qué ocurrió antes de otro momento pasado. Present perfect conecta una experiencia o resultado con el presente y no suele acompañarse de un tiempo pasado terminado.',
+   trap:'Confundir una fecha terminada (yesterday, in 2022, last week) con un periodo que llega hasta ahora (since, for, so far). También olvidar el past perfect cuando hay dos momentos pasados.',
+   drill:'Escribe una línea temporal para cada frase, subraya el marcador temporal y explica por qué el otro tiempo no encaja.',
+   target:'Elegir el tiempo correcto y justificarlo en 8 de cada 10 frases nuevas.'
+  },
+  'Voz pasiva':{
+   level:'Prioridad alta',why:'Hay un bloque amplio de errores pendientes. La dificultad suele estar en conservar el tiempo verbal original mientras se cambia el foco de la oración al objeto que recibe la acción.',
+   lesson:'La estructura central es BE + past participle. El auxiliar BE lleva el tiempo: is made, was made, has been made, will be made. El complemento con by solo se añade si el agente aporta información.',
+   trap:'Usar el participio sin BE, conjugar el verbo principal en pasado simple después de BE o cambiar el tiempo al transformar la oración.',
+   drill:'Transforma 10 frases activas a pasiva y marca en color el tiempo de BE antes de escribir el participio.',
+   target:'Transformar correctamente 8/10 frases en al menos dos sesiones separadas.'
+  },
+  'Tiempos de presente':{
+   level:'Prioridad alta',why:'Necesitas afinar la diferencia entre rutina, situación temporal, experiencia y actividad que continúa. En B2 importa el significado, no solo reconocer el adverbio.',
+   lesson:'Present simple expresa hábitos y estados; present continuous, situaciones temporales o cambios; present perfect simple suele destacar resultado o experiencia; present perfect continuous, duración o actividad reciente.',
+   trap:'Usar continuous con verbos de estado como know, believe o belong; confundir how long con una acción terminada.',
+   drill:'Compara pares mínimos: I have worked / I have been working; I live / I am living. Explica qué cambia en el significado.',
+   target:'Explicar la diferencia de significado en 6 pares de frases.'
+  },
+  'Tiempos de presente y verbos estáticos':{
+   level:'Prioridad alta',why:'Los verbos estáticos exigen atender al significado: algunos verbos cambian de sentido y admiten continuous solo en uno de sus usos.',
+   lesson:'Know, believe, own y belong suelen describir estados. Think puede significar opinión (I think) o actividad mental temporal (I am thinking).',
+   trap:'Aplicar la regla de añadir -ing de forma mecánica sin comprobar si el verbo describe estado o acción.',
+   drill:'Clasifica 12 verbos en estado/acción y redacta dos frases con verbos que cambian de significado.',
+   target:'No usar continuous automáticamente; justificar el uso por el significado.'
+  },
+  'Formas de futuro':{
+   level:'Prioridad media-alta',why:'Las formas de futuro se eligen por intención comunicativa: decisión espontánea, plan previo, evidencia o calendario.',
+   lesson:'Will suele expresar decisión espontánea, promesa o predicción; going to, intención previa o evidencia; present continuous, acuerdo organizado; present simple, horarios.',
+   trap:'Elegir will para todos los futuros y no distinguir predicción basada en evidencia de opinión.',
+   drill:'Escribe 4 predicciones, 4 planes y 4 acuerdos; explica qué pista justifica cada forma.',
+   target:'Acertar 9/12 situaciones y explicar la intención.'
+  },
+  'Conectores de contraste':{
+   level:'Prioridad alta',why:'Este bloque afecta tanto a Use of English como a Writing: una idea puede ser correcta, pero la estructura posterior al conector puede hacer que la frase sea incorrecta.',
+   lesson:'Although/whereas/even though introducen una oración; despite/in spite of van seguidos de sustantivo, pronombre o -ing; however suele conectar dos oraciones y necesita puntuación adecuada.',
+   trap:'Escribir despite + sujeto + verbo sin una estructura que lo permita, o usar although + nombre sin convertirlo en oración.',
+   drill:'Transforma 10 pares de frases usando although, despite, however y whereas sin cambiar el sentido.',
+   target:'Hacer 8/10 transformaciones sin errores de estructura ni puntuación.'
+  },
+  'Gerundio e infinitivo':{
+   level:'Prioridad alta',why:'No basta con aprender que un verbo va seguido de -ing o to + infinitive: en algunos casos cambia el significado.',
+   lesson:'Enjoy, avoid y suggest suelen ir con -ing; decide, hope y plan con to-infinitive. Remember doing = recordar algo vivido; remember to do = acordarse de hacer algo. Stop doing = dejar una actividad; stop to do = detenerse para hacer otra.',
+   trap:'Traducir literalmente desde el español y olvidar patrones como look forward to + -ing, donde to es preposición.',
+   drill:'Crea una ficha verbo + patrón + ejemplo propio. Practica especialmente remember, forget, stop, try y used to/be used to.',
+   target:'Reconocer el patrón y el significado correcto en 8/10 frases.'
+  },
+  'Vocabulario en contexto':{
+   level:'Prioridad media-alta',why:'El vocabulario debe aprenderse por colocaciones y contexto, no como equivalencias aisladas. Esto es especialmente importante en cloze y reading.',
+   lesson:'Observa qué tipo de palabra falta, qué palabras suelen acompañarla y si el contexto exige un matiz positivo, negativo, formal o específico.',
+   trap:'Escoger una palabra porque su traducción parece correcta aunque no forme una colocación natural.',
+   drill:'Por cada palabra nueva, anota colocación, familia léxica y una frase propia; después tapa la palabra y recupérala por contexto.',
+   target:'Aprender 12 colocaciones y recuperarlas correctamente en frases nuevas.'
+  },
+  'Reading: skimming y scanning':{
+   level:'Prioridad media-alta',why:'La comprensión lectora requiere dos estrategias distintas: captar la idea global y localizar información concreta. Leer cada palabra puede hacerte perder tiempo.',
+   lesson:'Skimming: título, primera frase y organización para identificar tema e intención. Scanning: buscar nombres, fechas, cifras o sinónimos de la pregunta. Después confirma leyendo el contexto.',
+   trap:'Elegir una respuesta por coincidencia literal sin comprobar si responde a la pregunta completa.',
+   drill:'Haz dos lecturas cronometradas: resume cada párrafo en una línea y localiza después 5 datos específicos.',
+   target:'Justificar cada respuesta con una evidencia concreta del texto.'
+  },
+  'Phrasal verbs':{
+   level:'Prioridad media',why:'Los phrasal verbs suelen tener varios significados. Memorizar solo verbo + partícula no garantiza reconocerlos en contexto.',
+   lesson:'Aprende cada combinación dentro de una frase y clasifica si es separable, inseparable o intransitiva cuando corresponda.',
+   trap:'Traducir literalmente la partícula o colocar el objeto en una posición incorrecta.',
+   drill:'Crea tarjetas con significado contextual, ejemplo y una frase propia; contrasta carry on, put off y take up.',
+   target:'Recuperar 10 combinaciones en contexto y usarlas en 5 frases propias.'
+  },
+  'Condicionales':{
+   level:'Prioridad media',why:'La clave es relacionar el tiempo de la condición con el resultado, especialmente en third y mixed conditionals.',
+   lesson:'Second conditional: situación hipotética presente/futura. Third: pasado imposible de cambiar. Mixed: condición pasada con resultado presente, o viceversa.',
+   trap:'Mezclar tiempos sin identificar primero si hablamos de realidad, hipótesis presente o arrepentimiento pasado.',
+   drill:'Dibuja la línea temporal antes de completar 10 condicionales y explica qué parte es real o hipotética.',
+   target:'Distinguir los tres tipos y resolver 8/10 ejercicios.'
+  },
+  'Verbos modales':{
+   level:'Prioridad media',why:'Los modales expresan grados distintos de obligación, posibilidad y deducción. En B2 también debes reconocer sus formas perfectas.',
+   lesson:'Must/have to expresan obligación con matices; mustn't es prohibición y don't have to ausencia de obligación. Might/could expresan posibilidad; must + have + participle, deducción sobre el pasado.',
+   trap:'Confundir mustn't con don't have to y olvidar have + participio al deducir sobre el pasado.',
+   drill:'Reescribe situaciones usando must, might, can't, have to y should; explica el grado de certeza.',
+   target:'Diferenciar obligación, prohibición y ausencia de obligación en 9/10 casos.'
+  }
+ };
+ const panel=make('section',undefined,'ee-teacher-report');
+ panel.append(make('p','EASY ENGLISH · INFORME DE PROGRESO INDIVIDUAL','section-kicker'));
+ const hero=make('div',undefined,'ee-teacher-hero');
+ const heroText=make('div');heroText.append(make('span','EVALUACIÓN FORMATIVA · NIVEL OBJETIVO B2','ee-teacher-eyebrow'),make('h3','Tu diagnóstico de aprendizaje'),make('p','No vamos a medir solo si apruebas. Vamos a localizar qué estructuras te están frenando, por qué suelen fallar y qué debes demostrar para considerarlas dominadas.','ee-teacher-intro'));
+ const heroTag=make('span','PLAN DE RECUPERACIÓN','ee-teacher-tag');hero.append(heroText,heroTag);panel.append(hero);
+ const metrics=make('div',undefined,'ee-teacher-kpis');
+ [[String(failures.length),'preguntas registradas'],[String(pending),'pendientes de consolidar'],[String(accumulated),'fallos acumulados'],[String(ranked.length),'bloques detectados']].forEach(([v,l])=>{const m=make('div',undefined,'ee-teacher-kpi');m.append(make('strong',v),make('span',l));metrics.append(m)});
+ panel.append(metrics);
+ const interpretation=make('div',undefined,'ee-teacher-observation');
+ interpretation.append(make('strong','Lectura del profesor'),make('p',pending+' preguntas siguen marcadas como no dominadas. La prioridad es reducir esos errores con recuperación activa y práctica espaciada, no repetir tests sin analizar la causa. Los bloques se ordenan por preguntas pendientes, no por una supuesta nota de gramática.'));
+ panel.append(interpretation);
+ panel.append(make('h4','01 · Mapa de tus necesidades'),make('p','La barra indica el peso de cada bloque dentro de tus preguntas pendientes; no es un porcentaje de acierto ni una nota. Abre cada ficha para ver la explicación, el error típico y el ejercicio recomendado.','ee-teacher-muted'));
+ const list=make('div',undefined,'ee-teacher-subjects');
+ for(const [index,g] of ranked.entries()){
+  const info=lessons[g.category]||{
+   level:g.pending>=5?'Prioridad alta':'Prioridad media',
+   why:'Hay preguntas pendientes asociadas a este contenido. Conviene revisar la regla y comprobar que puedes aplicarla en un ejemplo distinto, sin memorizar la respuesta.',
+   lesson:g.tip,
+   trap:'Responder por intuición o traducción literal sin identificar primero la estructura que exige la frase.',
+   drill:'Revisa los ejemplos registrados, escribe la regla con tus palabras y resuelve 8 preguntas nuevas explicando cada elección.',
+   target:'Resolver 8/10 preguntas nuevas y repetir la prueba en otra sesión.'
+  };
+  const card=make('details',undefined,'ee-teacher-subject');
+  if(index<3)card.open=true;
+  const head=make('summary',undefined,'ee-teacher-subject-head');
+  const rank=make('span',String(index+1).padStart(2,'0'),'ee-teacher-rank');
+  const name=make('span',undefined,'ee-teacher-subject-name');name.append(make('strong',g.category),make('small',info.level+' · '+g.questions+' preguntas vinculadas'));
+  const count=make('span',g.pending+' pendientes','ee-teacher-count');
+  head.append(rank,name,count);card.append(head);
+  const bar=make('div',undefined,'ee-teacher-bar');const fill=make('span');fill.style.width=Math.min(100,pendingShare(g))+'%';bar.append(fill);card.append(bar);
+  const body=make('div',undefined,'ee-teacher-subject-body');
+  const columns=make('div',undefined,'ee-teacher-explanation');
+  [['Qué revela tu historial',info.why],['La regla que debes dominar',info.lesson],['Error que debes evitar',info.trap],['Cómo lo vamos a trabajar',info.drill],['Criterio para darlo por consolidado',info.target]].forEach(([label,txt])=>{const box=make('div');box.append(make('strong',label),make('p',txt));columns.append(box)});
+  body.append(columns);
+  const stats=make('p','Evidencia: '+g.questions+' preguntas distintas · '+g.attempts+' fallos acumulados · '+g.pending+' pendientes. Peso dentro de pendientes: '+pendingShare(g)+'%.','ee-teacher-evidence');body.append(stats);
+  if(g.examples.length){const details=make('details',undefined,'ee-teacher-examples');details.append(make('summary','Ver enunciados de tu historial'));const ul=make('ul');g.examples.forEach(x=>ul.append(make('li',x)));details.append(ul);body.append(details)}
+  card.append(body);list.append(card);
  }
  panel.append(list);
- const plan=make('div',undefined,'ee-followup-study-plan');
- plan.append(make('h3','Plan de mejora de 4 semanas'));
+ const plan=make('section',undefined,'ee-teacher-plan');
+ plan.append(make('p','02 · ITINERARIO DE INTERVENCIÓN','section-kicker'),make('h4','Plan de estudio de cuatro semanas'));
+ plan.append(make('p','Cinco sesiones semanales de 40 minutos. Cada semana tiene un objetivo observable y una pequeña prueba de salida. Si una prueba no alcanza el criterio, esa materia pasa a la siguiente semana como repaso prioritario.','ee-teacher-muted'));
  const weeks=[
-  ['Semana 1 · Estructuras verbales','Gerundio e infinitivo; patrones con remember, stop, used to y look forward to. Haz 15 ejercicios, escribe 8 frases propias y repite los fallos a las 24 h y a los 7 días.'],
-  ['Semana 2 · Conectores y precisión','Although, despite, however, whereas y nevertheless. Practica completar frases y transformar 10 pares de oraciones. Objetivo: justificar por qué cada conector admite esa estructura.'],
-  ['Semana 3 · Gramática de B2','Voz pasiva, verbos estáticos y contraste de tiempos pasados. Haz 3 bloques de 15 preguntas mezcladas y crea una frase propia por cada error.'],
-  ['Semana 4 · Reading y consolidación','Skimming frente a scanning, contables/incontables y revisión acumulativa. Haz 2 readings cronometrados y un mini-test mixto; vuelve a practicar todas las preguntas pendientes.']
+  ['Semana 1','Reparar la base verbal','Tiempos de pasado y present perfect; tiempos de presente; verbos estáticos.','Lunes: línea temporal de past simple/continuous/perfect. Martes: present perfect simple vs continuous. Miércoles: estados vs acciones. Jueves: 15 preguntas mezcladas y corrección razonada. Viernes: mini-test de 20 preguntas y registro de errores.','Criterio: 16/20 y explicación correcta de al menos 4 errores.'],
+  ['Semana 2','Construir frases con precisión','Voz pasiva; gerundio e infinitivo; patrones verbales.','Lunes: pasiva en presente y pasado. Martes: pasiva en perfect y future. Miércoles: verb + -ing / to-infinitive. Jueves: remember, stop, try, used to y be used to. Viernes: 15 transformaciones y 10 frases propias.','Criterio: 8/10 transformaciones y 8/10 patrones.'],
+  ['Semana 3','Mejorar cohesión y elección léxica','Conectores de contraste; preposiciones y colocaciones; formación de palabras; vocabulario en contexto.','Lunes: although / despite / however. Martes: preposiciones dependientes y collocations. Miércoles: prefijos, sufijos y categoría gramatical. Jueves: cloze contextual. Viernes: mini-writing de 140–190 palabras revisando conectores y vocabulario.','Criterio: 8/10 transformaciones y texto sin errores repetidos de conector.'],
+  ['Semana 4','Aplicar la gramática en tareas B2','Reading; phrasal verbs; condicionales; modales; estilo indirecto y repaso acumulativo.','Lunes: skimming/scanning con evidencia textual. Martes: phrasal verbs en contexto. Miércoles: second, third y mixed conditionals. Jueves: modales y reported speech. Viernes: simulacro mixto, análisis de errores y nuevo orden de prioridades.','Criterio: 80% en dos bloques separados; si no, repetir el bloque débil.']
  ];
- const ol=make('ol');weeks.forEach(([title,desc])=>{const li=make('li');li.append(make('strong',title),make('p',desc));ol.append(li)});plan.append(ol);
- plan.append(make('p','Rutina recomendada: 5 días por semana, 35–45 minutos al día: 10 min de repaso espaciado, 15–20 min de ejercicios focalizados y 10–15 min de producción propia (frases, mini-writing o speaking grabado). Cada domingo: mini-test de 20 preguntas y revisión de errores.','ee-followup-analysis'));
- panel.append(plan);root.prepend(panel);
+ const weekGrid=make('div',undefined,'ee-teacher-weeks');
+ weeks.forEach(([label,title,focus,days,target])=>{const w=make('article',undefined,'ee-teacher-week');w.append(make('span',label,'ee-teacher-week-label'),make('h5',title),make('p',focus,'ee-teacher-week-focus'),make('p',days,'ee-teacher-week-days'),make('strong',target));weekGrid.append(w)});
+ plan.append(weekGrid);
+ const routine=make('div',undefined,'ee-teacher-routine');
+ routine.append(make('h5','Estructura fija de cada sesión · 40 minutos'));
+ [['08 min','Recuperación activa','Intenta recordar la regla sin mirar apuntes.'],['17 min','Práctica focalizada','Resuelve ejercicios del tema de la semana y marca por qué descartas las otras opciones.'],['10 min','Producción','Escribe 4–5 frases propias o un párrafo breve usando la estructura.'],['05 min','Diario de errores','Anota error, causa, regla correcta y una frase nueva.']].forEach(([time,title,desc])=>{const step=make('div');step.append(make('strong',time),make('b',title),make('span',desc));routine.append(step)});
+ plan.append(routine);
+ const schedule=make('p','Repaso espaciado obligatorio: vuelve a intentar cada error al día siguiente, a los 3 días y a los 7 días. No marques una estructura como dominada por acertar una vez: debe salir bien en dos sesiones distintas y en frases que no hayas memorizado.','ee-teacher-footnote');
+ plan.append(schedule);panel.append(plan);
+ const note=make('p','Nota de rigor: las cifras describen el cuaderno de preguntas falladas y su estado de dominio. No equivalen a porcentajes de acierto por categoría. El sistema no conserva una clave de corrección comparable para todos los intentos; por eso este informe no inventa notas ni atribuye errores que no constan. '+(unclassified?'Hay '+unclassified+' registros que todavía requieren una clasificación temática más precisa.':''),'ee-teacher-method');
+ panel.append(note);
+ root.prepend(panel);
 }
 async function loadWeeklyFollowup(owner){
  const status=$('followupStatus'),root=$('followupReports'),summary=$('followupSummary');
