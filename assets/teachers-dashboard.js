@@ -26,19 +26,26 @@ async function init(){
 
 async function load(me){
  status('Cargando tu panel…');
- const [courses,assignments]=await Promise.all([
-  db.from('cursos_profesores').select('curso_id, cursos(id,nombre,activo)').eq('profesor_id',me),
-  db.from('asignaciones_alumno').select('curso_id, alumno_id, cursos(nombre)').eq('profesor_id',me)
+ // Consultas separadas, sin embeds: cursos_profesores y cursos tienen dos caminos de relación
+ // (FK directo y el que pasa por asignaciones_alumno) y PostgREST no sabe cuál usar.
+ const [teaching,assignments]=await Promise.all([
+  db.from('cursos_profesores').select('curso_id').eq('profesor_id',me),
+  db.from('asignaciones_alumno').select('curso_id, alumno_id').eq('profesor_id',me)
  ]);
- if(courses.error)throw courses.error;
+ if(teaching.error)throw teaching.error;
  if(assignments.error)throw assignments.error;
-
- const courseList=(courses.data||[]).map(r=>r.cursos).filter(Boolean);
+ const courseIds=[...new Set([...(teaching.data||[]).map(r=>r.curso_id),...(assignments.data||[]).map(r=>r.curso_id)])];
+ let courseList=[];
+ if(courseIds.length){
+  const {data,error}=await db.from('cursos').select('id,nombre,activo').in('id',courseIds).order('nombre');
+  if(error)throw error;
+  courseList=data||[];
+ }
  const courseNames=new Map(courseList.map(c=>[c.id,c.nombre]));
  const studentCourses=new Map();
  for(const a of assignments.data||[]){
   if(!studentCourses.has(a.alumno_id))studentCourses.set(a.alumno_id,new Set());
-  studentCourses.get(a.alumno_id).add(a.cursos?.nombre||courseNames.get(a.curso_id)||'Curso');
+  studentCourses.get(a.alumno_id).add(courseNames.get(a.curso_id)||'Curso');
  }
  const ids=[...studentCourses.keys()];
  renderCourses(courseList);
