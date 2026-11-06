@@ -267,6 +267,82 @@ function render(){
  updateSuggestedReading();
 }
 async function loadCloud(){if(!user)return;const activeId=user.id;const [p,l]=await Promise.all([eeDb.from('perfiles').select('nombre').eq('usuario_id',activeId).maybeSingle(),eeDb.from('lecturas').select('articulo_url,leido_en').eq('usuario_id',activeId)]);if(!user||user.id!==activeId)return;if(p.error)throw p.error;if(l.error)throw l.error;profile={name:p.data?.nombre||'',read:Object.fromEntries((l.data||[]).map(r=>[r.articulo_url,r.leido_en]))};cloudUserId=activeId;render();await Promise.all([results(),loadStreak(),loadLearningOverview(),loadActivityCalendar(activeId),loadWeeklyFollowup(activeId)])}
+function classifyLearningQuestion(q){
+ const url=String(q.fuente_url||'').toLowerCase(),text=String(q.enunciado||'').toLowerCase();
+ const slug=(url.match(/[?&]slug=([^&]+)/)?.[1]||url.split('/').pop()||'').replace(/\.html.*/,'');
+ const rules=[
+  [/gerund-infinitive|used-to-would|verb-pattern/,'Gerundio e infinitivo','stop doing / stop to do; remember doing / remember to do; be used to + -ing'],
+  [/linking-words-of-contrast|despite|contrast/,'Conectores de contraste','although + oración; despite + sustantivo o -ing; however conecta dos oraciones'],
+  [/stative-verbs/,'Verbos estáticos y tiempos','belong, know, believe y otros verbos que normalmente no van en continuous'],
+  [/voz-pasiva|passive/,'Voz pasiva','be + past participle; identificar el tiempo verbal y el agente'],
+  [/todos-los-tiempos-de-pasado|past-simple|past-continuous/,'Tiempos de pasado','past simple frente a past continuous y past perfect'],
+  [/skimming-scanning/,'Reading: skimming y scanning','skimming para idea general; scanning para localizar datos concretos'],
+  [/countable-uncountable/,'Contables e incontables','much/many, few/little y sustantivos no contables'],
+  [/phrasal-verbs/,'Phrasal verbs','aprender verbo + partícula dentro de una frase y por significado'],
+  [/conditional/,'Condicionales','estructura temporal de cada parte y third/mixed conditionals'],
+  [/preposition/,'Preposiciones y colocaciones','memorizar combinaciones completas, no traducir palabra por palabra'],
+  [/modal/,'Verbos modales','deducción, obligación, posibilidad y prohibición']
+ ];
+ const found=rules.find(([re])=>re.test(slug));
+ if(found)return {category:found[1],tip:found[2],slug};
+ if(/remember|stop|used to|look forward/.test(text))return {category:'Gerundio e infinitivo',tip:'Distingue el significado del verbo según vaya seguido de -ing o infinitivo',slug};
+ if(/although|despite|whereas|nevertheless|however/.test(text))return {category:'Conectores de contraste',tip:'Distingue conector + oración de conector + sustantivo/-ing',slug};
+ if(/must|should|might|could|can't|have to/.test(text))return {category:'Verbos modales',tip:'Revisa el grado de certeza, obligación o posibilidad',slug};
+ return {category:'Otras estructuras y vocabulario',tip:'Revisar el enunciado y su explicación individual',slug};
+}
+async function renderDetailedLearningDiagnosis(owner,root,make){
+ const {data:failures,error}=await eeDb.from('preguntas_falladas')
+  .select('pregunta_id,veces_fallada,dominada,ultimo_fallo')
+  .eq('usuario_id',owner);
+ if(!user||user.id!==owner)return;
+ if(error){root.prepend(make('p','No se pudo cargar el análisis por categorías: '+error.message,'ee-followup-analysis'));return}
+ const ids=[...new Set((failures||[]).map(x=>x.pregunta_id).filter(Boolean))];
+ if(!ids.length)return;
+ const {data:questions,qError}=await eeDb.from('preguntas')
+  .select('id,enunciado,fuente_url').in('id',ids);
+ if(!user||user.id!==owner)return;
+ if(qError){root.prepend(make('p','No se pudieron consultar los temas de las preguntas: '+qError.message,'ee-followup-analysis'));return}
+ const byId=new Map((questions||[]).map(q=>[q.id,q]));
+ const groups=new Map();
+ for(const failure of failures||[]){
+  const q=byId.get(failure.pregunta_id);if(!q)continue;
+  const c=classifyLearningQuestion(q);
+  if(!groups.has(c.category))groups.set(c.category,{...c,questions:0,attempts:0,pending:0,examples:[]});
+  const g=groups.get(c.category);g.questions++;g.attempts+=Number(failure.veces_fallada)||1;
+  if(!failure.dominada)g.pending++;
+  if(g.examples.length<3)g.examples.push(q.enunciado);
+ }
+ const ranked=[...groups.values()].sort((a,b)=>b.pending-a.pending||b.attempts-a.attempts);
+ const panel=make('section',undefined,'ee-followup-diagnostic');
+ panel.append(make('p','ANÁLISIS PEDAGÓGICO · BASADO EN TUS PREGUNTAS REGISTRADAS','section-kicker'));
+ panel.append(make('h3','Qué necesitas reforzar'));
+ panel.append(make('p','Se agrupan las preguntas de tu cuaderno de fallos por el tema de su artículo de referencia. “Preguntas” cuenta registros distintos; “fallos acumulados” suma las veces registradas. No se calcula un porcentaje de acierto por tema porque el historial de respuestas no conserva una clave de corrección comparable para todos los intentos.','ee-followup-analysis'));
+ const totals=make('div',undefined,'ee-followup-metrics');
+ const pending=(failures||[]).filter(x=>!x.dominada).length;
+ [[String(failures.length),'Preguntas registradas'],[String(pending),'Pendientes de dominar'],[String((failures||[]).reduce((n,x)=>n+(Number(x.veces_fallada)||1),0)),'Fallos acumulados']].forEach(([v,l])=>{const m=make('div',undefined,'ee-followup-metric');m.append(make('strong',v),make('span',l));totals.append(m)});
+ panel.append(totals);
+ const list=make('div',undefined,'ee-followup-category-list');
+ for(const g of ranked){
+  const item=make('article',undefined,'ee-followup-category');
+  const top=make('div',undefined,'ee-followup-category-top');
+  top.append(make('strong',g.category),make('span',g.pending+' pendientes · '+g.questions+' preguntas'));
+  item.append(top,make('p',g.tip));
+  if(g.examples.length){const details=make('details');details.append(make('summary','Ver ejemplos de tus preguntas'));const ul=make('ul');g.examples.forEach(x=>ul.append(make('li',x)));details.append(ul);item.append(details)}
+  list.append(item);
+ }
+ panel.append(list);
+ const plan=make('div',undefined,'ee-followup-study-plan');
+ plan.append(make('h3','Plan de mejora de 4 semanas'));
+ const weeks=[
+  ['Semana 1 · Estructuras verbales','Gerundio e infinitivo; patrones con remember, stop, used to y look forward to. Haz 15 ejercicios, escribe 8 frases propias y repite los fallos a las 24 h y a los 7 días.'],
+  ['Semana 2 · Conectores y precisión','Although, despite, however, whereas y nevertheless. Practica completar frases y transformar 10 pares de oraciones. Objetivo: justificar por qué cada conector admite esa estructura.'],
+  ['Semana 3 · Gramática de B2','Voz pasiva, verbos estáticos y contraste de tiempos pasados. Haz 3 bloques de 15 preguntas mezcladas y crea una frase propia por cada error.'],
+  ['Semana 4 · Reading y consolidación','Skimming frente a scanning, contables/incontables y revisión acumulativa. Haz 2 readings cronometrados y un mini-test mixto; vuelve a practicar todas las preguntas pendientes.']
+ ];
+ const ol=make('ol');weeks.forEach(([title,desc])=>{const li=make('li');li.append(make('strong',title),make('p',desc));ol.append(li)});plan.append(ol);
+ plan.append(make('p','Rutina recomendada: 5 días por semana, 35–45 minutos al día: 10 min de repaso espaciado, 15–20 min de ejercicios focalizados y 10–15 min de producción propia (frases, mini-writing o speaking grabado). Cada domingo: mini-test de 20 preguntas y revisión de errores.','ee-followup-analysis'));
+ panel.append(plan);root.prepend(panel);
+}
 async function loadWeeklyFollowup(owner){
  const status=$('followupStatus'),root=$('followupReports'),summary=$('followupSummary');
  if(!status||!root||!summary)return;
@@ -278,6 +354,8 @@ async function loadWeeklyFollowup(owner){
  if(error){status.textContent='No se pudo cargar el seguimiento: '+error.message;return}
  if(!data?.length){status.textContent='Todavía no hay informes semanales guardados.';return}
  const make=(tag,txt,cls)=>{const n=document.createElement(tag);if(txt!==undefined)n.textContent=txt;if(cls)n.className=cls;return n};
+ await renderDetailedLearningDiagnosis(owner,root,make);
+ if(!user||user.id!==owner)return;
  const totals=data.reduce((acc,row)=>{const r=row.informe||{};for(const k of ['active_days','readings','units','exams','mock_tests'])acc[k]=(acc[k]||0)+(Number(r[k])||0);return acc},{});
  [['active_days','Días activos'],['readings','Lecturas'],['units','Unidades'],['exams','Exámenes'],['mock_tests','Simulacros B2']].forEach(([key,label])=>{const item=make('div',undefined,'ee-followup-total');item.append(make('strong',String(totals[key]||0)),make('span',label));summary.append(item)});
  status.textContent='Historial desde tu registro · 13 de octubre de 2026. Hay 2 semanas completas, una primera semana parcial y una semana en curso (hasta el 6 de noviembre).';
