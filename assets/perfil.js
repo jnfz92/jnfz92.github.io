@@ -275,7 +275,16 @@ function classifyLearningQuestion(q){
   [/linking-words-of-contrast|despite|contrast/,'Conectores de contraste','although + oración; despite + sustantivo o -ing; however conecta dos oraciones'],
   [/stative-verbs/,'Verbos estáticos y tiempos','belong, know, believe y otros verbos que normalmente no van en continuous'],
   [/voz-pasiva|passive/,'Voz pasiva','be + past participle; identificar el tiempo verbal y el agente'],
-  [/todos-los-tiempos-de-pasado|past-simple|past-continuous/,'Tiempos de pasado','past simple frente a past continuous y past perfect'],
+  [/todos-los-tiempos-de-pasado|past-simple|past-continuous|pasados-vs-present-perfect/,'Tiempos de pasado y present perfect','past simple, past continuous, past perfect y contraste con present perfect'],
+  [/todos-los-tiempos-de-presente|present-perfect/,'Tiempos de presente','present simple/continuous y present perfect simple/continuous'],
+  [/todos-los-tiempos-de-futuro|future-going-to|future-forms/,'Formas de futuro','will, going to, present continuous y present simple para futuro'],
+  [/direct-reported-speech|reported-speech/,'Estilo indirecto','cambios de tiempo, pronombres, expresiones temporales y reported questions'],
+  [/formacion-adverbios|formacion-adjetivos|negative-prefixes/,'Formación de palabras','sufijos y prefijos; distinguir sustantivo, adjetivo y adverbio'],
+  [/protector-of-the-sea-vocabulary-tenses|environment-vocabulary/,'Vocabulario en contexto','colocaciones y elección léxica dentro de un texto'],
+  [/make-vs-do/,'Colocaciones make/do','aprender combinaciones frecuentes como make a decision y do homework'],
+  [/adverbs-of-frequency/,'Adverbios de frecuencia','posición del adverbio con verbos principales y auxiliares'],
+  [/conditionals/,'Condicionales','first, second, third y mixed conditionals; concordancia temporal'],
+  [/modal-/,'Verbos modales','obligación, deducción, posibilidad y prohibición'],
   [/skimming-scanning/,'Reading: skimming y scanning','skimming para idea general; scanning para localizar datos concretos'],
   [/countable-uncountable/,'Contables e incontables','much/many, few/little y sustantivos no contables'],
   [/phrasal-verbs/,'Phrasal verbs','aprender verbo + partícula dentro de una frase y por significado'],
@@ -325,7 +334,7 @@ async function renderDetailedLearningDiagnosis(owner,root,make){
  for(const g of ranked){
   const item=make('article',undefined,'ee-followup-category');
   const top=make('div',undefined,'ee-followup-category-top');
-  top.append(make('strong',g.category),make('span',g.pending+' pendientes · '+g.questions+' preguntas'));
+  top.append(make('strong',g.category),make('span',g.pending+' pendientes · '+g.questions+' preguntas · '+g.attempts+' fallos acumulados'));
   item.append(top,make('p',g.tip));
   if(g.examples.length){const details=make('details');details.append(make('summary','Ver ejemplos de tus preguntas'));const ul=make('ul');g.examples.forEach(x=>ul.append(make('li',x)));details.append(ul);item.append(details)}
   list.append(item);
