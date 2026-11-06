@@ -986,11 +986,15 @@ function readableAuthError(err){
   if(/rate limit|too many requests/i.test(m))return 'Demasiados intentos. Inténtalo más tarde.';
   return m;
 }
-async function verifiedUser(){
-  const {data,error}=await eeDb.auth.getUser();
-  if(error)throw error;
-  if(!data?.user)throw new Error('No se pudo verificar el token de sesión.');
-  if(user?.id!==data.user.id)await changeUser(data.user);
+async function verifiedUser(sessionUser){
+  let activeUser=sessionUser||null;
+  if(!activeUser){
+    const {data,error}=await eeDb.auth.getSession();
+    if(error)throw error;
+    activeUser=data?.session?.user||null;
+  }
+  if(!activeUser)throw new Error('Supabase no ha devuelto una sesión activa.');
+  if(user?.id!==activeUser.id)await changeUser(activeUser);
 }
 $('authForm').onsubmit=async e=>{
   e.preventDefault();
@@ -998,11 +1002,11 @@ $('authForm').onsubmit=async e=>{
   const button=$('loginSubmit');button.disabled=true;
   authMessage('Comprobando credenciales…');
   try{
-    const {error}=await eeDb.auth.signInWithPassword({
+    const {data,error}=await eeDb.auth.signInWithPassword({
       email:$('authEmail').value.trim().toLowerCase(),password:$('authPass').value
     });
     if(error)throw error;
-    await verifiedUser();
+    await verifiedUser(data?.session?.user);
     status('Sesión iniciada correctamente.');
   }catch(error){authMessage('No se pudo iniciar sesión: '+readableAuthError(error),true)}
   finally{$('authPass').value='';button.disabled=false}
@@ -1025,7 +1029,7 @@ $('registerForm').onsubmit=async e=>{
     });
     if(error)throw error;
     if(data?.session){
-      await verifiedUser();
+      await verifiedUser(data?.session?.user);
       status('Cuenta creada y sesión iniciada.');
     }else authMessage('Solicitud recibida. Si se requiere confirmación, revisa tu correo electrónico, incluido spam.');
   }catch(error){authMessage('No se pudo completar el registro: '+readableAuthError(error),true)}
@@ -1193,7 +1197,7 @@ $('resetProfile').onclick=async()=>{if(!confirm('¿Eliminar tu nombre y progreso
 eeDb.from('articulos').select('ruta,slug,titulo').order('titulo').then(({data,error})=>{if(error)throw error;articles=(data||[]).filter(a=>/^post\/[a-z0-9-]+\.html$/.test(a.ruta)).map(a=>({href:a.ruta,link:'leer.html?slug='+encodeURIComponent(a.slug),title:(a.titulo||a.slug).replace(/\s*[·|–-]\s*Easy English\s*$/i,''),slug:a.slug}));articlesLoaded=true;render()}).catch(e=>{$('readingPickStatus').textContent='No se pudo cargar el catálogo de artículos.';status('No se pudo cargar la biblioteca desde Supabase: '+e.message)});
 // Renovaciones de token, cierres de sesión y cambios entre pestañas.
 let authRevision=0;
-eeDb.auth.onAuthStateChange((event)=>{
+eeDb.auth.onAuthStateChange((event,session)=>{
   if(event==='PASSWORD_RECOVERY'){
     showRecovery();
     return;
@@ -1209,26 +1213,26 @@ eeDb.auth.onAuthStateChange((event)=>{
   }
   if(!['SIGNED_IN','SIGNED_OUT','TOKEN_REFRESHED','USER_UPDATED'].includes(event))return;
   const version=++authRevision;
-  // No llamar a getUser dentro del callback síncrono de Supabase Auth.
+  // Supabase entrega la sesión en el evento: usarla evita una segunda petición
+  // getUser() que podía fallar durante la transición y ocultar el panel privado.
   setTimeout(async()=>{
-    try{
-      const {data,error}=await eeDb.auth.getUser();
-      if(version!==authRevision)return;
-      if(error&&error.name!=='AuthSessionMissingError')throw error;
-      if((user?.id||null)!==(data?.user?.id||null))await changeUser(data?.user||null);
-    }catch(error){
-      if(version!==authRevision)return;
-      await changeUser(null);
-      authMessage('Tu sesión ha expirado o no se ha podido validar. Vuelve a entrar.',true);
-    }
+    if(version!==authRevision)return;
+    const activeUser=session?.user||null;
+    if((user?.id||null)!==(activeUser?.id||null))await changeUser(activeUser);
   },0);
 });
-eeDb.auth.getUser().then(({data,error})=>{
-  if(error&&error.name!=='AuthSessionMissingError'){
-    changeUser(null);authMessage('No se pudo comprobar la sesión: '+readableAuthError(error),true);return;
+eeDb.auth.getSession().then(({data,error})=>{
+  if(error){
+    changeUser(null);
+    authMessage('No se pudo recuperar la sesión guardada: '+readableAuthError(error),true);
+    return;
   }
-  changeUser(data?.user||null).then(()=>{
-    if(recoveryLink&&data?.user)showRecovery();
+  const activeUser=data?.session?.user||null;
+  changeUser(activeUser).then(()=>{
+    if(recoveryLink&&activeUser)showRecovery();
   });
-}).catch(error=>{changeUser(null);authMessage('No se pudo comprobar la sesión: '+readableAuthError(error),true)});
+}).catch(error=>{
+  changeUser(null);
+  authMessage('No se pudo recuperar la sesión guardada: '+readableAuthError(error),true);
+});
 })();
