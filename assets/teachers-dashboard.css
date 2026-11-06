@@ -1,25 +1,62 @@
-.td-main{max-width:1100px;margin:26px auto;padding:0 16px 60px;color:#1f2a44;font:16px/1.5 system-ui,sans-serif}
-.td-hero{padding:25px 30px;border-radius:24px;background:#163e8c;color:#fff}
-.td-hero h1{margin:4px 0;color:#fff;font-size:clamp(1.6rem,3vw,2.2rem)}
-.td-hero p{margin:4px 0}
-.td-eyebrow{font-size:12px;letter-spacing:.12em;opacity:.85;margin:0}
-.td-status{margin:18px 0;padding:10px 14px;border-radius:12px;background:#eef3ff;color:#254572}
+/* Panel de administración del profesor: barra lateral, cabecera, tarjetas y tablas. */
+.td-app{display:grid;grid-template-columns:232px minmax(0,1fr);min-height:calc(100vh - 160px);max-width:1280px;margin:22px auto 40px;background:#f3f5fa;border:1px solid #dde3ee;border-radius:20px;overflow:hidden;color:#1d2740;font:15px/1.5 Inter,system-ui,-apple-system,"Segoe UI",sans-serif}
+.td-side{background:#0f2a5c;color:#dbe6ff;display:flex;flex-direction:column;padding:20px 14px}
+.td-side-title{margin:0 8px 14px;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:#9fb6e6;font-weight:700}
+.td-nav{display:grid;gap:4px}
+.td-nav-btn{display:flex;align-items:center;gap:10px;width:100%;padding:10px 12px;border:0;border-radius:10px;background:transparent;color:#dbe6ff;font:inherit;font-weight:600;text-align:left;cursor:pointer}
+.td-nav-btn span{width:18px;text-align:center;opacity:.85}
+.td-nav-btn:hover{background:#17397a;color:#fff}
+.td-nav-btn[aria-current="page"]{background:#2f6bff;color:#fff}
+.td-nav-btn:focus-visible{outline:3px solid #9cb9ff;outline-offset:2px}
+.td-side-foot{margin:auto 8px 0;font-size:14px}
+.td-side-foot a{color:#9fb6e6;text-decoration:none}
+.td-side-foot a:hover{color:#fff}
+.td-body{padding:22px 26px 30px;min-width:0}
+.td-top{display:flex;align-items:flex-end;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-bottom:18px}
+.td-crumb{margin:0;color:#6b7896;font-size:13px}
+.td-top h1{margin:2px 0 0;font-size:26px;line-height:1.2;color:#0f2a5c}
+.td-user{padding:7px 12px;border-radius:999px;background:#fff;border:1px solid #dde3ee;color:#3a4a6b;font-size:14px;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.td-status{margin:0 0 14px;padding:10px 14px;border-radius:10px;background:#eaf1ff;color:#1f4fb8}
 .td-status.is-error{background:#fdecec;color:#8a1f1f}
-.td-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px;margin:18px 0}
-.td-card{background:#fff;border:1px solid #dde0e7;border-radius:18px;padding:16px}
-.td-card span{display:block;color:#5a6785;font-size:14px}
-.td-card strong{font-size:28px;color:#163e8c}
-.td-card-warn strong{color:#b45309}
-.td-panel{background:#fff;border:1px solid #dde0e7;border-radius:20px;padding:19px;margin-top:16px}
-.td-panel h2{font-size:19px;margin:0 0 12px}
-.td-courses{list-style:none;padding:0;margin:0;display:grid;gap:8px}
-.td-courses li{padding:10px 12px;border-radius:12px;background:#f3f5f8}
-.td-muted{color:#5a6785}
-.td-small{font-size:13px}
+.td-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-bottom:16px}
+.td-card{background:#fff;border:1px solid #dde3ee;border-radius:14px;padding:16px 18px;border-top:3px solid #2f6bff}
+.td-card span{display:block;color:#6b7896;font-size:13px;font-weight:600}
+.td-card strong{display:block;margin-top:4px;font-size:30px;color:#0f2a5c;line-height:1.1}
+.td-card-warn{border-top-color:#e08a00}
+.td-card-warn strong{color:#a85d00}
+.td-panel{background:#fff;border:1px solid #dde3ee;border-radius:14px;padding:18px 20px;margin-top:14px}
+.td-panel-head{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.td-panel h2{margin:0;font-size:17px;color:#0f2a5c}
+.td-link{border:0;background:none;color:#2f6bff;font:inherit;font-weight:600;cursor:pointer;padding:0}
+.td-list{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.td-list-item{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;padding:10px 12px;border-radius:10px;background:#f7f9fd;border:1px solid #e6ebf5}
+.td-course-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px}
+.td-course{border:1px solid #dde3ee;border-radius:12px;padding:16px;background:#fbfcff}
+.td-course h3{margin:0 0 8px;font-size:16px;color:#0f2a5c}
+.td-course p{margin:8px 0 0}
+.td-search{min-width:240px;padding:9px 12px;border:1px solid #c9d3e6;border-radius:10px;font:inherit;background:#fff}
+.td-search:focus-visible{outline:3px solid #9cb9ff;outline-offset:1px}
 .td-table-wrap{overflow-x:auto}
-.td-table{width:100%;border-collapse:collapse;font-size:15px}
-.td-table th,.td-table td{text-align:left;padding:10px 8px;border-bottom:1px solid #e6e9f0;vertical-align:top}
-.td-table th{color:#5a6785;font-size:13px;font-weight:700}
-.td-chip{display:inline-block;padding:2px 8px;border-radius:999px;background:#eef3ff;color:#254572;font-size:13px}
-.td-chip-warn{background:#fff4e5;color:#8a4b08}
-.td-empty{color:#5a6785;margin:14px 0 0}
+.td-table{width:100%;border-collapse:collapse;font-size:14px}
+.td-table th,.td-table td{text-align:left;padding:11px 10px;border-bottom:1px solid #e9edf5;vertical-align:top}
+.td-table thead th{color:#6b7896;font-size:12px;text-transform:uppercase;letter-spacing:.05em;background:#f7f9fd;border-bottom:1px solid #dde3ee}
+.td-table tbody tr:hover{background:#f9fbff}
+.td-chip{display:inline-block;padding:2px 9px;border-radius:999px;background:#eaf1ff;color:#1f4fb8;font-size:12px;font-weight:600}
+.td-chip-warn{background:#fff3e0;color:#8a4b00}
+.td-chip-muted{background:#eef1f6;color:#5a6785}
+.td-muted{color:#6b7896}
+.td-small{font-size:13px}
+.td-empty{color:#6b7896;margin:12px 0 0;text-align:center}
+
+@media (max-width:760px){
+ .td-app{grid-template-columns:1fr;margin:12px 8px 28px;border-radius:14px}
+ .td-side{padding:12px}
+ .td-side-title{display:none}
+ .td-nav{grid-template-columns:repeat(3,1fr);gap:6px}
+ .td-nav-btn{justify-content:center;padding:9px 6px;font-size:14px}
+ .td-nav-btn span{display:none}
+ .td-side-foot{display:none}
+ .td-body{padding:16px 14px 22px}
+ .td-top h1{font-size:22px}
+ .td-search{min-width:0;width:100%}
+}
