@@ -21,7 +21,7 @@ class ProfileAuthStatusTest(unittest.TestCase):
     def test_tab_layout_is_not_destroyed_by_client_script(self):
         html = (ROOT / "perfil.html").read_text(encoding="utf-8")
         source = (ROOT / "assets" / "perfil.js").read_text(encoding="utf-8")
-        for tab in ("inicio", "estudiar", "resultados", "biblioteca", "cuenta"):
+        for tab in ("inicio", "estudiar", "progreso", "biblioteca", "cuenta"):
             with self.subTest(tab=tab):
                 self.assertIn('id="profile-tab-' + tab + '"', html)
                 self.assertIn('id="profile-panel-' + tab + '"', html)
