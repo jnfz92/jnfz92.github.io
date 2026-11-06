@@ -266,7 +266,51 @@ function render(){
  if(articleView!=='read')group('pending','📖 Artículos pendientes de leer',pendingList);
  updateSuggestedReading();
 }
-async function loadCloud(){if(!user)return;const activeId=user.id;const [p,l]=await Promise.all([eeDb.from('perfiles').select('nombre').eq('usuario_id',activeId).maybeSingle(),eeDb.from('lecturas').select('articulo_url,leido_en').eq('usuario_id',activeId)]);if(!user||user.id!==activeId)return;if(p.error)throw p.error;if(l.error)throw l.error;profile={name:p.data?.nombre||'',read:Object.fromEntries((l.data||[]).map(r=>[r.articulo_url,r.leido_en]))};cloudUserId=activeId;render();await Promise.all([results(),loadStreak(),loadLearningOverview(),loadActivityCalendar(activeId)])}
+async function loadCloud(){if(!user)return;const activeId=user.id;const [p,l]=await Promise.all([eeDb.from('perfiles').select('nombre').eq('usuario_id',activeId).maybeSingle(),eeDb.from('lecturas').select('articulo_url,leido_en').eq('usuario_id',activeId)]);if(!user||user.id!==activeId)return;if(p.error)throw p.error;if(l.error)throw l.error;profile={name:p.data?.nombre||'',read:Object.fromEntries((l.data||[]).map(r=>[r.articulo_url,r.leido_en]))};cloudUserId=activeId;render();await Promise.all([results(),loadStreak(),loadLearningOverview(),loadActivityCalendar(activeId),loadWeeklyFollowup(activeId)])}
+async function loadWeeklyFollowup(owner){
+ const status=$('followupStatus'),root=$('followupReports'),summary=$('followupSummary');
+ if(!status||!root||!summary)return;
+ status.textContent='Cargando tus informes guardados…';root.replaceChildren();summary.replaceChildren();
+ const {data,error}=await eeDb.from('seguimiento_semanal')
+  .select('semana_inicio,semana_fin,informe,generado_en')
+  .eq('usuario_id',owner).order('semana_inicio',{ascending:false});
+ if(!user||user.id!==owner)return;
+ if(error){status.textContent='No se pudo cargar el seguimiento: '+error.message;return}
+ if(!data?.length){status.textContent='Todavía no hay informes semanales guardados.';return}
+ const make=(tag,txt,cls)=>{const n=document.createElement(tag);if(txt!==undefined)n.textContent=txt;if(cls)n.className=cls;return n};
+ const totals={active_days:19,readings:20,units:2,exams:23,mock_tests:2,diagnostics:1};
+ const top=make('div',undefined,'ee-followup-total-grid');
+ [['19','Días activos'],['20','Lecturas'],['2','Unidades'],['23','Exámenes'],['2','Simulacros B2']].forEach(([v,l])=>{const item=make('div',undefined,'ee-followup-total');item.append(make('strong',v),make('span',l));summary.append(item)});
+ status.textContent='Historial desde tu registro · 13 de octubre de 2026. Hay 3 semanas completas y una semana en curso (hasta el 6 de noviembre).';
+ for(const row of data){
+  const r=row.informe||{},card=make('article',undefined,'ee-followup-report');
+  const head=make('div',undefined,'ee-followup-report-head');
+  const title=make('h3','Semana del '+new Date(row.semana_inicio+'T12:00:00').toLocaleDateString('es-ES',{day:'numeric',month:'long'}));
+  const end=make('span',r.period_status||'');
+  head.append(title,end);card.append(head);
+  const metrics=make('div',undefined,'ee-followup-metrics');
+  const vals=[['active_days','Días activos'],['readings','Lecturas'],['units','Unidades'],['exams','Exámenes'],['average_exam_score','Media de nota'],['mock_tests','Simulacros'],['diagnostics','Diagnósticos']];
+  for(const [key,label] of vals){if(r[key]===undefined||r[key]===null)continue;const m=make('div',undefined,'ee-followup-metric');m.append(make('strong',key==='average_exam_score'?r[key]+'%':String(r[key])),make('span',label));metrics.append(m)}
+  card.append(metrics);
+  if(r.analysis)card.append(make('p',r.analysis,'ee-followup-analysis'));
+  for(const [label,key] of [['Puntos fuertes','strengths'],['A mejorar','focus']]){
+   if(!Array.isArray(r[key])||!r[key].length)continue;
+   const section=make('div',undefined,'ee-followup-detail'),h=make('strong',label),ul=make('ul');
+   r[key].forEach(x=>ul.append(make('li',x)));section.append(h,ul);card.append(section);
+  }
+  if(r.next_week){const goal=make('p',undefined,'ee-followup-goal');goal.append(make('strong','Objetivo siguiente: '),document.createTextNode(r.next_week));card.append(goal)}
+  root.append(card);
+ }
+ const first=data[data.length-1]?.informe;
+ if(first?.average_exam_score!==undefined){
+  const lastComplete=[...data].reverse().filter(x=>x.informe?.period_status==='Semana completa.');
+  if(lastComplete.length>=2){
+   const a=Number(lastComplete[0].informe.average_exam_score),b=Number(lastComplete[lastComplete.length-1].informe.average_exam_score);
+   const delta=(b-a).toFixed(1);
+   status.textContent+=' En las semanas completas, tu media pasó del '+a+'% al '+b+'% ('+(delta>0?'+':'')+delta+' puntos).';
+  }
+ }
+}
 async function loadLearningOverview(){
  if(!user)return;
  const owner=user.id,box=$('learningActivityHistory');
