@@ -9,16 +9,16 @@ const labels=row=>(row.tense_labels||'').split(';').map(x=>x.trim()).filter(Bool
 const unique=values=>[...new Set(values)].sort((a,b)=>a.localeCompare(b,'en'));
 const escapeText=value=>String(value??'');
 function addOptions(select,values,firstLabel){select.replaceChildren();const first=document.createElement('option');first.value='all';first.textContent=firstLabel;select.append(first);values.forEach(value=>{const option=document.createElement('option');option.value=value;option.textContent=value;select.append(option)})}
-function makeTag(text){const tag=document.createElement('span');tag.className='ee-phrase-tag';tag.textContent=text;return tag}
-function makeCard(row){
- const card=document.createElement('article');card.className='ee-phrase-card';
- const meta=document.createElement('div');meta.className='ee-phrase-meta';
- const number=document.createElement('span');number.className='ee-phrase-number';number.textContent='Frase #'+row.subtitle_number;
- const movie=document.createElement('span');movie.textContent=row.movie_title||row.movie_slug;meta.append(number,movie);
- const phrase=document.createElement('p');phrase.className='ee-phrase-text';phrase.textContent=row.phrase;
- const tags=document.createElement('div');tags.className='ee-phrase-tags';labels(row).forEach(label=>tags.append(makeTag(label)));
- const time=document.createElement('div');time.className='ee-phrase-time';time.textContent=row.timecode||'Marca de tiempo no disponible';
- card.append(meta,phrase,tags,time);return card;
+function makeRow(row){
+ const tr=document.createElement('tr');
+ const add=(value,cls)=>{const td=document.createElement('td');td.className=cls||'';td.textContent=value??'';tr.append(td)};
+ add(row.subtitle_number,'ee-table-number');
+ add(row.movie_title||row.movie_slug,'ee-table-movie');
+ add(row.phrase,'ee-table-phrase');
+ add(row.timecode||'—','ee-table-time');
+ const td=document.createElement('td');td.className='ee-table-tenses';
+ labels(row).forEach(label=>{const tag=document.createElement('span');tag.className='ee-phrase-tag';tag.textContent=label;td.append(tag)});
+ tr.append(td);return tr;
 }
 function applyFilters(){
  const query=els.search.value.trim().toLocaleLowerCase();
@@ -35,7 +35,12 @@ function applyFilters(){
 function render(){
  const total=filtered.length,pages=Math.max(1,Math.ceil(total/PAGE_SIZE));
  const start=(page-1)*PAGE_SIZE,visible=filtered.slice(start,start+PAGE_SIZE);
- els.grid.replaceChildren(...visible.map(makeCard));
+ const table=document.createElement('table');table.className='ee-phrases-table';
+ const thead=document.createElement('thead'),headRow=document.createElement('tr');
+ ['N.º','Película','Frase en inglés','Código de tiempo','Tiempo verbal'].forEach(label=>{const th=document.createElement('th');th.scope='col';th.textContent=label;headRow.append(th)});
+ thead.append(headRow);table.append(thead);
+ const tbody=document.createElement('tbody');visible.forEach(row=>tbody.append(makeRow(row)));table.append(tbody);
+ els.grid.replaceChildren(table);
  els.count.textContent=total.toLocaleString('es-ES')+' frase'+(total===1?'':'s')+' encontrada'+(total===1?'':'s');
  els.pagination.hidden=total===0;
  els.prev.disabled=page<=1;els.next.disabled=page>=pages;
