@@ -57,7 +57,8 @@ async function loadRows(){
   rows=all;
   const movies=[...new Map(rows.map(row=>[row.movie_slug,row.movie_title||row.movie_slug])).entries()].sort((a,b)=>a[1].localeCompare(b[1],'es'));
   const tenses=unique(rows.flatMap(labels));
-  addOptions(els.movie,movies.map(([slug,title])=>({slug,title})).map(x=>x.slug),'Todas las películas');
+  els.movie.replaceChildren();
+  const allMovies=document.createElement('option');allMovies.value='all';allMovies.textContent='Todas las películas';els.movie.append(allMovies);
   movies.forEach(([slug,title])=>{const option=document.createElement('option');option.value=slug;option.textContent=title;els.movie.append(option)});
   addOptions(els.tense,tenses,'Todos los tiempos verbales');
   els.phraseCount.textContent=rows.length.toLocaleString('es-ES');
