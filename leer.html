@@ -252,7 +252,7 @@ permalink: /leer.html
     if([...targetHead.querySelectorAll('link[rel="stylesheet"]')].some(l=>new URL(l.href,location.href).pathname===path.split('?')[0]))return;
     const link=document.createElement('link');link.rel='stylesheet';link.href=path;targetHead.append(link);
   }
-  stylesheet('/assets/article-unified.css?v=20261030-unified-blue-2');
+  stylesheet('/assets/article-unified.css?v=20261108-article-layout-fix-1');
   stylesheet('/assets/comentarios-articulos.css?v=20261030-unified-blue-2');
   stylesheet('/assets/navigation-optimized.css?v=20261101-menu-6');
 
