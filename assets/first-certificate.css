@@ -43,3 +43,57 @@
 .ee-first-note a{color:#1454ae;font-weight:850}
 @media(max-width:680px){.ee-site.ee-first-page .ee-first-main{padding:14px 16px 52px}.ee-first-hero{border-radius:22px}.ee-first-part-grid{grid-template-columns:1fr}.ee-first-hero::after{bottom:-32px;right:-10px;font-size:150px}.ee-first-jump{gap:7px}.ee-first-jump span{flex:1 1 auto;padding:9px}}
 @media(prefers-reduced-motion:reduce){.ee-first-paper{scroll-margin-top:0}}
+
+/* Recurso destacado: guía de vocabulario B2 First */
+.ee-first-vocabulary-resource{
+ display:grid;
+ grid-template-columns:minmax(0,1fr);
+ position:relative;
+ overflow:hidden;
+ isolation:isolate;
+ margin:0 0 34px;
+ padding:clamp(22px,4vw,34px);
+ border:1px solid #cbdcf6;
+ border-radius:20px;
+ background:linear-gradient(115deg,#fff 0%,#f1f6ff 100%);
+ box-shadow:0 8px 24px #143b790d;
+}
+.ee-first-vocabulary-resource::before{
+ content:"";
+ position:absolute;
+ z-index:-1;
+ inset:0 auto 0 0;
+ width:6px;
+ background:linear-gradient(180deg,#2e70d2,#163e8c);
+}
+.ee-first-vocabulary-resource-copy{max-width:790px;padding-left:5px}
+.ee-site.ee-first-page .ee-first-vocabulary-resource h2{
+ margin:8px 0 10px;
+ color:#103a81;
+ font-size:clamp(23px,3vw,31px);
+ line-height:1.2;
+ letter-spacing:-.035em;
+}
+.ee-first-vocabulary-resource p{
+ max-width:740px;
+ margin:0 0 19px;
+ color:#526b8d;
+ font-size:14px;
+ line-height:1.7;
+}
+.ee-first-vocabulary-resource .ee-first-part-link{
+ min-height:44px;
+ padding:11px 16px;
+ background:#174a9b;
+ border-color:#174a9b;
+ color:#fff;
+ box-shadow:0 3px 8px #174a9b20;
+}
+.ee-first-vocabulary-resource .ee-first-part-link:hover{
+ background:#103a81;
+ border-color:#103a81;
+}
+@media(max-width:680px){
+ .ee-first-vocabulary-resource{margin:0 0 27px;padding:21px 19px;border-radius:17px}
+ .ee-first-vocabulary-resource .ee-first-part-link{width:100%;text-align:center}
+}
