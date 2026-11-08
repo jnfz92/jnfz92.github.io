@@ -180,3 +180,43 @@ body.ee-unified-article .ee-next-lesson-actions a.ee-next-primary{background:#1e
  body.ee-unified-article main :is(h2,h3)[id]{scroll-margin-top:70px}
  body.ee-unified-article .ee-reading-top{bottom:max(14px,env(safe-area-inset-bottom));min-height:44px;display:inline-flex;align-items:center}
 }
+
+
+/* Ajuste de la plantilla para artículos que traen estilos globales históricos. */
+body.ee-unified-article{
+  box-sizing:border-box;
+  width:100%!important;
+  max-width:none!important;
+  margin:0!important;
+  padding:0!important;
+}
+body.ee-unified-article main > header{
+  box-sizing:border-box;
+  margin:0 0 24px!important;
+  padding:clamp(25px,4vw,42px)!important;
+  border:1px solid #dbe5f8!important;
+  border-radius:22px!important;
+  background:linear-gradient(125deg,#163e8c,#2859a8)!important;
+  color:#fff!important;
+  box-shadow:0 14px 34px #17223c18;
+}
+body.ee-unified-article main > header h1{color:#fff!important}
+body.ee-unified-article main > header .tag{
+  display:inline-block;
+  padding:6px 12px;
+  border-radius:999px;
+  background:#dbeafe!important;
+  color:#163e8c!important;
+  font-size:12px;
+  font-weight:800;
+  letter-spacing:.04em;
+}
+body.ee-unified-article main > article{
+  margin:0;
+}
+body.ee-unified-article main > article > p:first-child{
+  margin-top:0;
+}
+@media(max-width:640px){
+  body.ee-unified-article main > header{padding:22px 18px!important;border-radius:17px!important}
+}
