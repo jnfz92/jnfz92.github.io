@@ -75,7 +75,7 @@ permalink: /premium.html
   subscribe.disabled=!session||!cents;
   if(!session){status.textContent='Inicia sesión o crea una cuenta gratuita para contratar Premium.';subscribe.textContent='Iniciar sesión para continuar';subscribe.disabled=false}
   else{
-   const {data:subs}=await window.eeDb.from('suscripciones').select('estado,periodo_actual_fin,cancelar_al_finalizar,stripe_customer_id').eq('usuario_id',session.user.id).order('actualizado_en',{ascending:false}).limit(5);
+   const {data:subs}=await window.eeDb.from('suscripciones').select('estado,periodo_actual_fin,cancelar_al_finalizar,stripe_customer_id').eq('usuario_id',session.user.id).eq('plan','premium').order('actualizado_en',{ascending:false}).limit(5);
    const active=(subs||[]).find(s=>['active','trialing','past_due'].includes(s.estado));
    if(active){
     status.textContent=active.estado==='past_due'?'Tu suscripción necesita actualizar el método de pago.':active.cancelar_al_finalizar?'Tu suscripción está programada para finalizar al cierre del periodo.':'Tu suscripción Premium está activa.';
@@ -85,7 +85,7 @@ permalink: /premium.html
   }
  }catch(error){status.textContent=error.message||'No se pudo cargar la información de Premium.';subscribe.disabled=true}
  subscribe.addEventListener('click',async()=>{subscribe.disabled=true;status.textContent='Abriendo el pago seguro…';try{await invoke('crear-checkout',{kind:'subscription'})}catch(e){status.textContent=e.message;subscribe.disabled=false}});
- portal.addEventListener('click',async()=>{portal.disabled=true;status.textContent='Abriendo el portal de Stripe…';try{await invoke('portal-suscripcion',{})}catch(e){status.textContent=e.message;portal.disabled=false}});
+ portal.addEventListener('click',async()=>{portal.disabled=true;status.textContent='Abriendo el portal de Stripe…';try{await invoke('portal-suscripcion',{plan:'premium'})}catch(e){status.textContent=e.message;portal.disabled=false}});
 })();
 </script>
 {% include footer.html %}
