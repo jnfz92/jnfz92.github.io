@@ -1,0 +1,92 @@
+---
+permalink: /premium.html
+---
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#1e5eff"><meta name="robots" content="noindex,follow">
+<title>Easy English Premium</title>
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="stylesheet" href="/assets/site.css?v=20261030-unified-blue-2">
+<link rel="stylesheet" href="/assets/navigation.css?v=20261030-menu-blue-3">
+<script src="/assets/navigation.js?v=20261030-menu-blue-4" defer></script>
+<link rel="preconnect" href="https://wnluofonzteaqtlfshgy.supabase.co" crossorigin>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="/supabase-config.js" defer></script>
+<style>
+.ee-premium-wrap{max-width:850px;margin:42px auto;padding:0 18px 60px}
+.ee-premium-card{background:linear-gradient(145deg,#f1f6ff,#fff);border:1px solid #d7e4fa;border-radius:24px;padding:clamp(22px,5vw,42px);box-shadow:0 15px 45px #173c7b12}
+.ee-premium-kicker{display:inline-block;padding:7px 11px;border-radius:99px;background:#e4edff;color:#1749a8;font-size:12px;font-weight:800;letter-spacing:.05em}
+.ee-premium-card h1{color:#173c7b;font-size:clamp(30px,5vw,44px);margin:16px 0 10px}
+.ee-premium-card p{color:#526783;line-height:1.7}
+.ee-premium-features{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px;margin:22px 0}
+.ee-premium-feature{background:#fff;border:1px solid #dce6f5;border-radius:14px;padding:15px;color:#24456f;font-weight:700}
+.ee-premium-price{font-size:30px!important;font-weight:900;color:#163e8c!important;margin:18px 0}
+.ee-premium-button{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:12px 18px;border:0;border-radius:12px;background:#1e5eff;color:#fff;font:inherit;font-weight:800;text-decoration:none;cursor:pointer}
+.ee-premium-button.secondary{background:#fff;color:#1749a8;border:1px solid #b9cbea;margin-left:8px}
+.ee-premium-button:disabled{opacity:.55;cursor:wait}
+#premiumStatus{min-height:24px;color:#536782}
+@media(max-width:560px){.ee-premium-button{width:100%;margin:6px 0!important}}
+</style>
+</head>
+<body class="ee-site">
+{% include header.html %}
+<main class="ee-premium-wrap">
+<section class="ee-premium-card">
+<span class="ee-premium-kicker">✦ EASY ENGLISH PREMIUM</span>
+<h1>Tu inglés, sin límites.</h1>
+<p>Desbloquea todos los artículos premium de Easy English con una única suscripción mensual. Si lo prefieres, también puedes comprar artículos concretos desde su propia página.</p>
+<div class="ee-premium-features">
+<div class="ee-premium-feature">✓ Todos los artículos premium</div>
+<div class="ee-premium-feature">✓ Nuevos contenidos incluidos</div>
+<div class="ee-premium-feature">✓ Acceso desde tus dispositivos</div>
+</div>
+<p class="ee-premium-price" id="premiumPrice">Consultando precio…</p>
+<p id="premiumDescription">La suscripción se renueva mensualmente. Puedes gestionarla o cancelarla desde el portal de pagos.</p>
+<button class="ee-premium-button" id="subscribeButton" type="button" disabled>Activar suscripción mensual</button>
+<button class="ee-premium-button secondary" id="portalButton" type="button" hidden>Gestionar mi suscripción</button>
+<p id="premiumStatus" role="status" aria-live="polite">Comprobando tu cuenta…</p>
+</section>
+</main>
+<script>
+(async()=>{
+ const status=document.getElementById('premiumStatus');
+ const priceNode=document.getElementById('premiumPrice');
+ const subscribe=document.getElementById('subscribeButton');
+ const portal=document.getElementById('portalButton');
+ const money=cents=>new Intl.NumberFormat('es-ES',{style:'currency',currency:'EUR'}).format(cents/100);
+ const wait=()=>new Promise((resolve,reject)=>{let n=0;const t=()=>{if(window.eeDb){resolve();return}if(++n>80){reject(new Error('No se pudo cargar la conexión'));return}setTimeout(t,100)};t()});
+ async function invoke(name,body){
+  const {data:{session}}=await window.eeDb.auth.getSession();
+  if(!session){location.href='/login.html?next='+encodeURIComponent('/premium.html');return}
+  const response=await fetch('https://wnluofonzteaqtlfshgy.supabase.co/functions/v1/'+name,{method:'POST',headers:{apikey:'sb_publishable_Ef-AXAapcwaPExEFS6kmug_tKLaulM8',Authorization:'Bearer '+session.access_token,'Content-Type':'application/json'},body:JSON.stringify(body||{})});
+  const result=await response.json();
+  if(!response.ok||!result.url)throw new Error(result.error||'No se pudo completar la solicitud.');
+  location.assign(result.url);
+ }
+ try{
+  await wait();
+  const {data:{session},error}=await window.eeDb.auth.getSession();
+  if(error)throw error;
+  const {data:settings}=await window.eeDb.from('configuracion_pagos').select('suscripcion_mensual_cents').eq('id',true).maybeSingle();
+  const cents=settings?.suscripcion_mensual_cents;
+  priceNode.textContent=cents?money(cents)+' / mes':'Suscripción mensual próximamente';
+  subscribe.disabled=!session||!cents;
+  if(!session){status.textContent='Inicia sesión o crea una cuenta gratuita para contratar Premium.';subscribe.textContent='Iniciar sesión para continuar';subscribe.disabled=false}
+  else{
+   const {data:subs}=await window.eeDb.from('suscripciones').select('estado,periodo_actual_fin,cancelar_al_finalizar,stripe_customer_id').eq('usuario_id',session.user.id).order('actualizado_en',{ascending:false}).limit(5);
+   const active=(subs||[]).find(s=>['active','trialing','past_due'].includes(s.estado));
+   if(active){
+    status.textContent=active.estado==='past_due'?'Tu suscripción necesita actualizar el método de pago.':active.cancelar_al_finalizar?'Tu suscripción está programada para finalizar al cierre del periodo.':'Tu suscripción Premium está activa.';
+    subscribe.hidden=true;portal.hidden=false;
+   }else if(subs?.length){status.textContent='No tienes una suscripción activa. Puedes volver a contratarla cuando quieras.';portal.hidden=false;subscribe.disabled=!cents}
+   else{status.textContent='Tu cuenta todavía no tiene una suscripción Premium.';subscribe.disabled=!cents}
+  }
+ }catch(error){status.textContent=error.message||'No se pudo cargar la información de Premium.';subscribe.disabled=true}
+ subscribe.addEventListener('click',async()=>{subscribe.disabled=true;status.textContent='Abriendo el pago seguro…';try{await invoke('crear-checkout',{kind:'subscription'})}catch(e){status.textContent=e.message;subscribe.disabled=false}});
+ portal.addEventListener('click',async()=>{portal.disabled=true;status.textContent='Abriendo el portal de Stripe…';try{await invoke('portal-suscripcion',{})}catch(e){status.textContent=e.message;portal.disabled=false}});
+})();
+</script>
+{% include footer.html %}
+</body></html>
