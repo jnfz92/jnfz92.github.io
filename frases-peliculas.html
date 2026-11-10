@@ -27,6 +27,16 @@ permalink: /frases-peliculas.html
 .ee-movies .ee-movies-stat{background:#fff;border:1px solid #d9e4f5;border-radius:17px;padding:17px 19px;min-width:0}
 .ee-movies .ee-movies-stat strong{display:block;font-size:clamp(23px,3vw,31px);line-height:1.2;color:#173f86;font-variant-numeric:tabular-nums}
 .ee-movies .ee-movies-stat span{display:block;color:#60718b;font-size:12px;font-weight:700;margin-top:5px}
+.ee-movies .ee-category-panel{background:#fff;border:1px solid #d9e4f5;border-radius:20px;padding:20px;margin:20px 0 28px;box-shadow:0 8px 24px #173f8608}
+.ee-movies .ee-category-panel h2{margin:0 0 7px;color:#173f86;font-size:23px}
+.ee-movies .ee-category-intro{margin:0 0 15px;color:#60718b;font-size:13px;line-height:1.6}
+.ee-movies .ee-category-table-wrap{overflow-x:auto;border:1px solid #dbe5f3;border-radius:12px}
+.ee-movies .ee-category-table{width:100%;border-collapse:collapse;text-align:left;font-size:13px}
+.ee-movies .ee-category-table th{background:#edf4ff;color:#214d91;padding:11px 12px;white-space:nowrap}
+.ee-movies .ee-category-table td{padding:10px 12px;border-top:1px solid #e8eef6;color:#314968}
+.ee-movies .ee-category-table td:not(:first-child),.ee-movies .ee-category-table th:not(:first-child){text-align:right;font-variant-numeric:tabular-nums}
+.ee-movies .ee-category-table tbody tr:nth-child(even){background:#f8faff}
+.ee-movies .ee-category-total{font-weight:900;color:#173f86!important}
 .ee-movies .ee-movies-panel{background:#fff;border:1px solid #d9e4f5;border-radius:20px;padding:20px;margin:20px 0 18px;box-shadow:0 8px 24px #173f8608}
 .ee-movies .ee-movies-filters{display:grid;grid-template-columns:minmax(220px,2fr) repeat(2,minmax(170px,1fr));gap:12px;align-items:end}
 .ee-movies .ee-movies-field{display:grid;gap:6px;min-width:0}
@@ -75,6 +85,11 @@ permalink: /frases-peliculas.html
     <div class="ee-movies-stat"><strong id="movieCount">—</strong><span>Películas</span></div>
     <div class="ee-movies-stat"><strong id="tenseCount">—</strong><span>Categorías verbales</span></div>
   </section>
+  <section class="ee-category-panel" aria-labelledby="categoryStatsTitle">
+    <h2 id="categoryStatsTitle">Frases por categoría gramatical</h2>
+    <p class="ee-category-intro">Recuento de todo el catálogo, con el total general y el desglose de cada película. Una misma frase puede aparecer en más de una categoría si tiene varias etiquetas.</p>
+    <div id="movieCategoryStats" class="ee-category-table-wrap" aria-live="polite">Calculando categorías…</div>
+  </section>
   <section class="ee-movies-panel" aria-label="Filtros de frases">
     <div class="ee-movies-filters">
       <div class="ee-movies-field"><label for="phraseSearch">Buscar frase o palabra</label><input id="phraseSearch" type="search" placeholder="Ej.: have been, tomorrow, believe…" autocomplete="off"></div>
@@ -93,7 +108,7 @@ permalink: /frases-peliculas.html
   </nav>
   <aside class="ee-movies-note"><strong>Sobre las etiquetas:</strong> la clasificación verbal es automática y orientativa. Los subtítulos pueden ser fragmentos, contener varias intervenciones o depender del contexto; revisa la explicación antes de tomar la etiqueta como definitiva. Los subtítulos originales se conservan en inglés. Una traducción solo se muestra cuando está disponible en la base de datos.</aside>
 </main>
-<script src="/assets/frases-peliculas.js?v=20261110-war-worlds-2" defer></script>
+<script src="/assets/frases-peliculas.js?v=20261110-all-movies-stats-1" defer></script>
 {% include footer.html %}
 </body>
 </html>
