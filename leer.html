@@ -101,11 +101,44 @@ permalink: /leer.html
    const login=document.createElement('a');login.href='/login.html?next='+encodeURIComponent(location.pathname+location.search);login.textContent='Iniciar sesión para leer este artículo';
    status.after(login);return;
   }
-  const metaList=await loadJSON('articulos_catalogo?select=slug,titulo,descripcion,es_premium,precio_cents&slug=eq.'+encodeURIComponent(resolveSlug(slug))+'&limit=1');
+  const metaList=await loadJSON('articulos_catalogo?select=slug,titulo,descripcion,es_premium,precio_cents,categoria_slug&slug=eq.'+encodeURIComponent(resolveSlug(slug))+'&limit=1');
   if(!metaList.length)throw new Error('Artículo no encontrado');
   const metadata=metaList[0];
   const list=await loadJSON('articulos?select=html,titulo,descripcion&slug=eq.'+encodeURIComponent(resolveSlug(slug))+'&limit=1');
   if(!list.length||!list[0].html){
+   if(metadata.categoria_slug==='fce'){
+    const panel=document.createElement('section');
+    panel.className='ee-paywall ee-fce-paywall';
+    panel.style.cssText='margin:24px 0;padding:26px;border:1px solid #cbdaf4;border-radius:20px;background:linear-gradient(145deg,#f1f6ff,#fff);box-shadow:0 12px 35px #183c7a12';
+    const badge=document.createElement('span');badge.textContent='✦ CURSO FCE B2 · B2 FIRST';badge.style.cssText='display:inline-block;padding:7px 11px;border-radius:99px;background:#e4edff;color:#1749a8;font-size:12px;font-weight:800;letter-spacing:.04em';
+    const title=document.createElement('h2');title.textContent='Este material forma parte del Curso FCE B2';title.style.cssText='margin:14px 0 8px;color:#173c7b;font-size:clamp(22px,4vw,30px)';
+    const description=document.createElement('p');description.textContent='Accede a la preparación del Cambridge B2 First: Reading, Use of English, Writing, Listening, Speaking y vocabulario.';description.style.cssText='color:#536782;line-height:1.65';
+    const price=document.createElement('p');price.style.cssText='font-size:22px;font-weight:900;color:#163e8c;margin:18px 0';
+    const notice=document.createElement('p');notice.setAttribute('role','status');notice.style.cssText='color:#526783;font-size:14px;min-height:22px';
+    const button=document.createElement('button');button.type='button';button.style.cssText='display:block;width:100%;max-width:420px;padding:14px 18px;border:0;border-radius:12px;background:#1e5eff;color:white;font:inherit;font-weight:800;cursor:pointer';
+    try{
+     const plans=await loadJSON('configuracion_pagos?select=fce_mensual_cents,moneda&id=eq.true&limit=1');
+     const cents=plans[0]?.fce_mensual_cents;
+     price.textContent=cents?new Intl.NumberFormat('es-ES',{style:'currency',currency:'EUR'}).format(cents/100)+' / mes':'Suscripción próximamente';
+     button.textContent=session?.access_token?'Suscribirme al Curso FCE B2':'Iniciar sesión para continuar';
+     button.disabled=!cents;
+     button.addEventListener('click',async()=>{
+      if(!session?.access_token){location.href='/login.html?next='+encodeURIComponent(location.pathname+location.search);return}
+      button.disabled=true;notice.textContent='Abriendo el pago seguro…';
+      try{
+       const response=await fetch(endpoint+'functions/v1/crear-checkout',{method:'POST',headers:{apikey:key,Authorization:'Bearer '+session.access_token,'Content-Type':'application/json'},body:JSON.stringify({kind:'fce_subscription'})});
+       const result=await response.json();if(!response.ok||!result.url)throw new Error(result.error||'No se pudo iniciar el pago.');
+       location.assign(result.url);
+      }catch(error){notice.textContent=error.message||'No se pudo iniciar el pago.';button.disabled=false}
+     });
+    }catch(error){price.textContent='No se pudo consultar el precio mensual.';button.disabled=true}
+    panel.append(badge,title,description,price,button);
+    if(new URLSearchParams(location.search).get('subscription')==='success')notice.textContent='Estamos confirmando tu suscripción. Cuando Stripe la confirme, el contenido se desbloqueará automáticamente. Recarga en unos segundos.';
+    panel.append(notice);
+    status.textContent='Este contenido requiere una suscripción al Curso FCE B2.';
+    status.after(panel);
+    return;
+   }
    if(metadata.es_premium){
     const panel=document.createElement('section');
     panel.className='ee-paywall';
