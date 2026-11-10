@@ -44,6 +44,7 @@ $('registerForm').addEventListener('submit',async e=>{
   });
   if(error)throw error;
   if(data?.session?.user){
+   fetch('https://wnluofonzteaqtlfshgy.supabase.co/functions/v1/email-transaccional',{method:'POST',headers:{apikey:'sb_publishable_Ef-AXAapcwaPExEFS6kmug_tKLaulM8',Authorization:'Bearer '+data.session.access_token,'Content-Type':'application/json'},body:JSON.stringify({type:'welcome'})}).catch(()=>{});
    location.replace(destination);
   }else{
    status('Solicitud recibida. Revisa tu correo para confirmar la cuenta. Después, inicia sesión.');
