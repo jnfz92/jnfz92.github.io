@@ -101,6 +101,12 @@ async function loadRows(){
   const allMovies=document.createElement('option');allMovies.value='all';allMovies.textContent='Todas las películas';els.movie.append(allMovies);
   movies.forEach(([slug,title])=>{const option=document.createElement('option');option.value=slug;option.textContent=title;els.movie.append(option)});
   addOptions(els.tense,tenses,'Todos los tiempos verbales');
+  const requestedMovie=new URLSearchParams(window.location.search).get('movie');
+  if(requestedMovie&&movies.some(([slug])=>slug===requestedMovie)){
+   els.movie.value=requestedMovie;
+   els.categoryMovie.value=requestedMovie;
+   renderCategoryStats();
+  }
   els.phraseCount.textContent=rows.length.toLocaleString('es-ES');
   els.movieCount.textContent=movies.length.toLocaleString('es-ES');
   els.tenseCount.textContent=tenses.length.toLocaleString('es-ES');
