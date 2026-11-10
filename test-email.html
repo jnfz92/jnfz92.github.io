@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#1e5eff">
+<title>Prueba de correo · Easy English</title>
+<link rel="stylesheet" href="/assets/site.css?v=20261030-unified-blue-2">
+<style>
+body{font-family:Arial,sans-serif;background:#f4f7fc;color:#19345f;margin:0;padding:24px}
+main{max-width:560px;margin:7vh auto;background:#fff;border:1px solid #dce6f5;border-radius:18px;padding:28px;box-shadow:0 8px 30px #19345f12}
+h1{color:#1e5eff;margin-top:0}p{line-height:1.6}.preview{padding:18px;background:#f4f7ff;border:1px solid #dce6f5;border-radius:12px;margin:20px 0}
+button{background:#1e5eff;color:#fff;border:0;border-radius:10px;padding:13px 18px;font-weight:700;cursor:pointer;width:100%}
+button:disabled{opacity:.55;cursor:wait}#status{min-height:24px;margin-top:16px}a{color:#1e5eff}
+</style>
+</head>
+<body>
+<main>
+<p><strong>EASY ENGLISH · ADMINISTRACIÓN</strong></p>
+<h1>Prueba de envío de correo</h1>
+<p>Esta página envía un único mensaje de prueba a la dirección administradora de Easy English. Debes iniciar sesión con esa cuenta.</p>
+<div class="preview"><strong>Asunto:</strong> Prueba de Easy English<br><strong>Mensaje:</strong> Buenos días.</div>
+<button id="send" type="button" disabled>Comprobando sesión…</button>
+<p id="status" role="status" aria-live="polite"></p>
+<p><a href="/perfil.html">Volver a mi perfil</a></p>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="/supabase-config.js?v=20261106-cache-refresh-1"></script>
+<script>
+(async()=>{
+ const button=document.getElementById('send');
+ const status=document.getElementById('status');
+ const {data,error}=await window.eeDb.auth.getUser();
+ if(error||!data.user){
+   status.textContent='Inicia sesión primero en Easy English y vuelve a abrir esta página.';
+   button.textContent='Ir a iniciar sesión';
+   button.disabled=false;
+   button.onclick=()=>location.href='/perfil.html';
+   return;
+ }
+ if((data.user.email||'').toLowerCase()!=='juanfranciscofernandezherreros@gmail.com'){
+   status.textContent='Esta prueba está limitada a la cuenta administradora.';
+   button.textContent='Volver al perfil';
+   button.disabled=false;
+   button.onclick=()=>location.href='/perfil.html';
+   return;
+ }
+ button.textContent='Enviar email de prueba';
+ button.disabled=false;
+ button.addEventListener('click',async()=>{
+   button.disabled=true;
+   button.textContent='Enviando…';
+   status.textContent='Conectando con el servicio de correo…';
+   const {data:result,error:invokeError}=await window.eeDb.functions.invoke('email-transaccional',{body:{type:'test'}});
+   if(invokeError||!result?.sent){
+     status.textContent=result?.error||invokeError?.message||'No se pudo enviar el correo. Revisa la configuración e inténtalo de nuevo.';
+     button.textContent='Intentar de nuevo';
+     button.disabled=false;
+     return;
+   }
+   status.textContent='Resend ha aceptado el envío a '+result.recipient+'. Comprueba la bandeja de entrada y la carpeta de spam.';
+   button.textContent='Enviar otra prueba';
+   button.disabled=false;
+ });
+})();
+</script>
+</body>
+</html>
