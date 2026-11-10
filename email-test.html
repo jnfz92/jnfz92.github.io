@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Prueba de correo · Easy English</title>
+  <style>
+    *{box-sizing:border-box}body{font:16px/1.5 Arial,sans-serif;background:#f4f7fc;color:#19345f;margin:0;padding:8vh 18px}
+    main{max-width:540px;margin:auto;background:white;padding:32px;border-radius:16px;box-shadow:0 8px 30px #19345f12}
+    h1{margin-top:0}button{padding:13px 20px;background:#1e5eff;color:white;border:0;border-radius:8px;font-size:16px;cursor:pointer}
+    button:disabled{opacity:.55;cursor:wait}#status{margin-top:18px;overflow-wrap:anywhere}
+  </style>
+</head>
+<body>
+<main>
+  <h1>Prueba de correo</h1>
+  <p>Se enviará un único correo de prueba a <strong>juanfranciscofernandezherreros@gmail.com</strong>.</p>
+  <p>Contenido: “Buenos días.”</p>
+  <button id="send" type="button">Enviar correo de prueba</button>
+  <p id="status" role="status" aria-live="polite"></p>
+</main>
+<script>
+(() => {
+  const params = new URLSearchParams(location.search);
+  const key = params.get("key");
+  const button = document.getElementById("send");
+  const status = document.getElementById("status");
+  const endpoint = "https://wnluofonzteaqtlfshgy.supabase.co/functions/v1/email-transaccional";
+  if (!key) {
+    button.disabled = true;
+    status.textContent = "Enlace incompleto: falta la clave de prueba.";
+    return;
+  }
+  button.addEventListener("click", async () => {
+    button.disabled = true;
+    status.textContent = "Enviando correo…";
+    try {
+      const response = await fetch(endpoint + "?key=" + encodeURIComponent(key), {
+        method: "POST",
+        headers: {"Content-Type":"application/json"},
+        body: JSON.stringify({token:key})
+      });
+      const data = await response.json();
+      if (response.ok && data.sent) {
+        status.textContent = "Resend ha aceptado el correo. Revisa la bandeja de entrada y spam. ID: " + (data.provider_id || "aceptado");
+        button.textContent = "Prueba enviada";
+      } else {
+        status.textContent = data.error || ("Error al enviar (HTTP " + response.status + ").");
+        button.disabled = false;
+      }
+    } catch (error) {
+      status.textContent = "No se pudo conectar con el servicio. Comprueba tu conexión e inténtalo otra vez.";
+      button.disabled = false;
+    }
+  });
+})();
+</script>
+</body>
+</html>
