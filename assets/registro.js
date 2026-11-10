@@ -18,7 +18,11 @@ $('registerForm').addEventListener('submit',async e=>{
   if(error)throw error;
   const newUser=data?.user;let welcomeSent=false;
   if(newUser?.id && Array.isArray(newUser.identities) && newUser.identities.length>0){
-   try{const response=await fetch('https://wnluofonzteaqtlfshgy.supabase.co/functions/v1/email-transaccional',{method:'POST',headers:{apikey:'sb_publishable_Ef-AXAapcwaPExEFS6kmug_tKLaulM8','Content-Type':'application/json'},body:JSON.stringify({type:'welcome_signup',user_id:newUser.id})});const result=await response.json();welcomeSent=response.ok&&result?.sent===true;if(!welcomeSent)console.error('No se pudo enviar el email de bienvenida:',result?.error||response.status)}catch(sendError){console.error('Error enviando bienvenida:',sendError)}
+   try{
+    const response=await fetch('https://wnluofonzteaqtlfshgy.supabase.co/functions/v1/email-bienvenida',{method:'POST',headers:{apikey:'sb_publishable_Ef-AXAapcwaPExEFS6kmug_tKLaulM8','Content-Type':'application/json'},body:JSON.stringify({type:'welcome_signup',user_id:newUser.id})});
+    const result=await response.json();welcomeSent=response.ok&&result?.sent===true;
+    if(!welcomeSent)console.error('No se pudo enviar el email de bienvenida:',result?.error||response.status);
+   }catch(sendError){console.error('Error enviando bienvenida:',sendError)}
   }
   if(data?.session?.user){location.replace(destination)}else{status(welcomeSent?'Cuenta creada. Te hemos enviado el email de bienvenida y el enlace para confirmar tu cuenta. Revisa tu bandeja de entrada y spam.':'Cuenta creada. Revisa tu correo para confirmar la cuenta. El email de bienvenida no ha podido enviarse ahora.')}
  }catch(error){status(readable(error),true)}finally{$('registerPassword').value='';$('registerConfirmation').value='';button.disabled=false}
