@@ -25,25 +25,18 @@ permalink: /email-test.html
 </main>
 <script>
 (() => {
-  const params = new URLSearchParams(location.search);
-  const key = params.get("key");
   const button = document.getElementById("send");
   const status = document.getElementById("status");
   const endpoint = "https://wnluofonzteaqtlfshgy.supabase.co/functions/v1/email-transaccional";
-  if (!key) {
-    button.disabled = true;
-    status.textContent = "Enlace incompleto: falta la clave de prueba.";
-    return;
-  }
   button.addEventListener("click", async () => {
     button.disabled = true;
     button.textContent = "Enviando…";
     status.textContent = "Enviando un nuevo correo de prueba…";
     try {
-      const response = await fetch(endpoint + "?key=" + encodeURIComponent(key), {
+      const response = await fetch(endpoint, {
         method: "POST",
         headers: {"Content-Type":"application/json"},
-        body: JSON.stringify({token:key})
+        body: "{}"
       });
       const data = await response.json();
       if (response.ok && data.sent) {
