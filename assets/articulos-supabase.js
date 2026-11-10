@@ -17,10 +17,11 @@ function card(a,names){
  const tag=document.createElement('span');tag.className='tag';tag.textContent=isExam?'Examen':(names[item.dataset.cat]||defaultNames[item.dataset.cat]||'Lección');meta.append(tag);
  const lvl=document.createElement('span');lvl.className='tag';lvl.textContent=a.nivel||'Nivel por determinar';meta.append(lvl);
  if(a.fecha_publicacion){const t=document.createElement('time');t.dateTime=a.fecha_publicacion;t.textContent=new Date(a.fecha_publicacion+'T12:00:00').toLocaleDateString('es-ES',{day:'numeric',month:'short',year:'numeric'});meta.append(t)}
+ if(a.es_premium){const premium=document.createElement('span');premium.className='tag ee-premium-tag';premium.textContent='★ Premium · '+new Intl.NumberFormat('es-ES',{style:'currency',currency:'EUR'}).format((a.precio_cents||299)/100);meta.append(premium)}
  const h=document.createElement('h2');h.textContent=(a.titulo||a.slug).replace(/\s*[·|–-]\s*Easy English\s*$/i,'');
  const p=document.createElement('p');p.textContent=a.descripcion||'Lección de inglés con ejemplos y ejercicios.';
  const link=document.createElement('a');link.className=categoryPage?'button':'read';
- link.href='/leer.html?slug='+encodeURIComponent(a.slug);link.textContent=isExam?'Hacer examen clásico (sin guardar nota) →':'Leer artículo →';
+ link.href='/leer.html?slug='+encodeURIComponent(a.slug);link.textContent=isExam?'Hacer examen clásico (sin guardar nota) →':a.es_premium?'Leer artículo premium →':'Leer artículo →';
  item.append(meta,h,p,link);return item;
 }
 
@@ -63,7 +64,7 @@ function sortArticles(items,mode){
 
 async function load(){
  const categoriesPromise=home?Promise.resolve([]):apiFetch('categorias_blog?select=slug,nombre&order=orden.asc');
- const articles=await apiFetch('articulos?select=slug,titulo,descripcion,categoria_slug,nivel,fecha_publicacion&usuario_id=is.null&order=fecha_publicacion.desc.nullslast,titulo.asc&limit='+(home?25:1000));
+ const articles=await apiFetch('articulos_catalogo?select=slug,titulo,descripcion,categoria_slug,nivel,fecha_publicacion,es_premium,precio_cents&order=fecha_publicacion.desc.nullslast,titulo.asc&limit='+(home?25:1000));
  if(!Array.isArray(articles)||!articles.length)throw Error('Sin artículos en Supabase');
  let names={...defaultNames};
  try{const cats=await categoriesPromise;for(const cat of cats)names[cat.slug]=cat.nombre}catch(e){console.warn('Nombres de categorías de respaldo',e)}
