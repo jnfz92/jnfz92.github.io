@@ -75,7 +75,7 @@ permalink: /fce.html
   else{
    const {data:subs}=await window.eeDb.from('suscripciones').select('estado,periodo_actual_fin,cancelar_al_finalizar').eq('usuario_id',session.user.id).eq('plan','fce').order('actualizado_en',{ascending:false}).limit(5);
    const active=(subs||[]).find(s=>['active','trialing','past_due'].includes(s.estado)&&(!s.periodo_actual_fin||new Date(s.periodo_actual_fin)>new Date()));
-   if(active){status.textContent=active.cancelar_al_finalizar?'Tu acceso al curso está activo hasta el final del periodo.':'Tu suscripción al Curso FCE B2 está activa.';subscribe.hidden=true;portal.hidden=false}
+   if(active){status.textContent=active.estado==='past_due'?'Tu pago necesita actualizarse para recuperar el acceso al curso.':active.cancelar_al_finalizar?'Tu acceso al curso está activo hasta el final del periodo.':'Tu suscripción al Curso FCE B2 está activa.';subscribe.hidden=true;portal.hidden=false}
    else{status.textContent='Todavía no tienes una suscripción FCE B2 activa.';subscribe.disabled=!cents}
   }
  }catch(e){status.textContent=e.message||'No se pudo cargar el estado del curso.';subscribe.disabled=true}
