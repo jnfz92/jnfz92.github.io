@@ -30,7 +30,17 @@ permalink: /frases-peliculas.html
 .ee-movies .ee-category-panel{background:#fff;border:1px solid #d9e4f5;border-radius:20px;padding:20px;margin:20px 0 28px;box-shadow:0 8px 24px #173f8608}
 .ee-movies .ee-category-panel h2{margin:0 0 7px;color:#173f86;font-size:23px}
 .ee-movies .ee-category-intro{margin:0 0 15px;color:#60718b;font-size:13px;line-height:1.6}
-.ee-movies .ee-category-table-wrap{overflow-x:auto;border:1px solid #dbe5f3;border-radius:12px}
+.ee-movies .ee-category-controls{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;margin:14px 0 18px}
+.ee-movies .ee-category-controls label{font-size:12px;font-weight:850;color:#314968}
+.ee-movies .ee-category-controls select{min-height:42px;min-width:min(100%,280px);border:1px solid #b9c8dc;border-radius:10px;background:#fff;padding:9px 12px;color:#1f2a44;font:inherit}
+.ee-movies .ee-category-summary{font-size:12px;color:#60718b;font-weight:700}
+.ee-movies .ee-category-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px 24px}
+.ee-movies .ee-category-item{min-width:0}
+.ee-movies .ee-category-item-head{display:flex;justify-content:space-between;gap:10px;align-items:baseline;margin-bottom:6px;font-size:13px;color:#314968}
+.ee-movies .ee-category-item-head strong{color:#173f86;font-variant-numeric:tabular-nums;white-space:nowrap}
+.ee-movies .ee-category-track{height:8px;background:#edf2f9;border-radius:99px;overflow:hidden}
+.ee-movies .ee-category-bar{height:100%;background:#4d79bd;border-radius:99px}
+@media(max-width:620px){.ee-movies .ee-category-list{grid-template-columns:1fr}}
 .ee-movies .ee-category-table{width:100%;border-collapse:collapse;text-align:left;font-size:13px}
 .ee-movies .ee-category-table th{background:#edf4ff;color:#214d91;padding:11px 12px;white-space:nowrap}
 .ee-movies .ee-category-table td{padding:10px 12px;border-top:1px solid #e8eef6;color:#314968}
@@ -87,8 +97,14 @@ permalink: /frases-peliculas.html
   </section>
   <section class="ee-category-panel" aria-labelledby="categoryStatsTitle">
     <h2 id="categoryStatsTitle">Frases por categoría gramatical</h2>
-    <p class="ee-category-intro">Recuento de todo el catálogo, con el total general y el desglose de cada película. Una misma frase puede aparecer en más de una categoría si tiene varias etiquetas.</p>
-    <div id="movieCategoryStats" class="ee-category-table-wrap" aria-live="polite">Calculando categorías…</div>
+    <p class="ee-category-intro">Consulta el reparto general o elige una película. Así el resumen sigue siendo claro aunque el catálogo crezca.</p>
+    <div class="ee-category-controls">
+      <label for="categoryMovieSelect">Ver estadísticas de
+        <select id="categoryMovieSelect"><option value="all">Todas las películas</option></select>
+      </label>
+      <span id="categoryStatsSummary" class="ee-category-summary" aria-live="polite">Calculando…</span>
+    </div>
+    <div id="movieCategoryStats" class="ee-category-list" aria-live="polite">Calculando categorías…</div>
   </section>
   <section class="ee-movies-panel" aria-label="Filtros de frases">
     <div class="ee-movies-filters">
@@ -108,7 +124,7 @@ permalink: /frases-peliculas.html
   </nav>
   <aside class="ee-movies-note"><strong>Sobre las etiquetas:</strong> la clasificación verbal es automática y orientativa. Los subtítulos pueden ser fragmentos, contener varias intervenciones o depender del contexto; revisa la explicación antes de tomar la etiqueta como definitiva. Los subtítulos originales se conservan en inglés. Una traducción solo se muestra cuando está disponible en la base de datos.</aside>
 </main>
-<script src="/assets/frases-peliculas.js?v=20261110-all-movies-stats-1" defer></script>
+<script src="/assets/frases-peliculas.js?v=20261110-compact-category-stats-2" defer></script>
 {% include footer.html %}
 </body>
 </html>
