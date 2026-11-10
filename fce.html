@@ -1,0 +1,88 @@
+---
+permalink: /fce.html
+---
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#1e5eff">
+<meta name="description" content="Curso de preparación Cambridge B2 First (FCE): Reading, Use of English, Writing, Listening, Speaking y vocabulario por 4,99 euros al mes.">
+<title>Curso FCE B2 · Easy English</title>
+<link rel="canonical" href="https://jnfz92.github.io/fce.html">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="stylesheet" href="/assets/site.css?v=20261030-unified-blue-2">
+<link rel="stylesheet" href="/assets/navigation.css?v=20261030-menu-blue-3">
+<script src="/assets/navigation.js?v=20261030-menu-blue-4" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="/supabase-config.js" defer></script>
+<style>
+.ee-fce-wrap{max-width:1080px;margin:38px auto;padding:0 18px 64px}
+.ee-fce-hero{background:linear-gradient(140deg,#173d87,#1e5eff);color:#fff;border-radius:24px;padding:clamp(25px,5vw,48px);box-shadow:0 15px 40px #173c7b20}
+.ee-fce-kicker{font-size:11px;font-weight:900;letter-spacing:.14em;color:#d7e6ff}
+.ee-fce-hero h1{font-size:clamp(31px,5vw,48px);line-height:1.08;margin:15px 0;color:#fff}
+.ee-fce-hero p{max-width:760px;color:#e8f0ff;line-height:1.7}
+.ee-fce-price{font-size:28px!important;font-weight:900;color:#fff!important;margin:18px 0 8px}
+.ee-fce-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+.ee-fce-button{min-height:46px;padding:12px 18px;border:0;border-radius:11px;background:#fff;color:#1749a8;font:inherit;font-weight:850;cursor:pointer}
+.ee-fce-button.secondary{background:#ffffff18;color:#fff;border:1px solid #ffffff70}
+.ee-fce-button:disabled{opacity:.55;cursor:wait}
+#fceStatus{min-height:22px;color:#e8f0ff;font-size:14px}
+.ee-fce-catalog{margin-top:32px}
+.ee-fce-catalog h2{color:#173c7b}
+.ee-fce-catalog .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:16px}
+.ee-fce-catalog .card{background:#fff;border:1px solid #dce6f5;border-radius:15px;padding:18px;display:flex;flex-direction:column;gap:9px}
+.ee-fce-catalog .card h2{font-size:18px;margin:0}
+.ee-fce-catalog .card p{color:#536782;font-size:14px;line-height:1.5}
+.ee-fce-catalog .card .read{margin-top:auto}
+</style>
+</head>
+<body class="ee-site">
+{% include header.html %}
+<main class="ee-fce-wrap">
+<section class="ee-fce-hero">
+<span class="ee-fce-kicker">CAMBRIDGE ENGLISH · B2 FIRST</span>
+<h1>Prepárate para el B2 First, parte por parte.</h1>
+<p>Un espacio de estudio específico para el examen FCE: gramática y Use of English, Reading, Writing, Listening, Speaking y vocabulario de nivel B2.</p>
+<p class="ee-fce-price" id="fcePrice">Consultando precio…</p>
+<p>Suscripción mensual de 4,99 €. Se renueva cada mes y puedes gestionarla o cancelarla desde Stripe.</p>
+<div class="ee-fce-actions">
+<button class="ee-fce-button" id="fceSubscribe" type="button" disabled>Activar Curso FCE B2</button>
+<button class="ee-fce-button secondary" id="fcePortal" type="button" hidden>Gestionar suscripción</button>
+</div>
+<p id="fceStatus" role="status" aria-live="polite">Comprobando tu cuenta…</p>
+</section>
+<section class="ee-fce-catalog">
+<h2>Materiales incluidos en el curso</h2>
+<p>Los artículos están agrupados aquí aunque originalmente pertenecieran a Gramática, Vocabulario, Writing, Speaking o Listening.</p>
+<div class="grid"></div>
+</section>
+</main>
+<script>
+(async()=>{
+ const price=document.getElementById('fcePrice'),status=document.getElementById('fceStatus');
+ const subscribe=document.getElementById('fceSubscribe'),portal=document.getElementById('fcePortal');
+ const money=c=>new Intl.NumberFormat('es-ES',{style:'currency',currency:'EUR'}).format(c/100);
+ const wait=()=>new Promise((resolve,reject)=>{let n=0;const tick=()=>{if(window.eeDb){resolve();return}if(++n>80){reject(new Error('No se pudo cargar la conexión'));return}setTimeout(tick,100)};tick()});
+ async function invoke(name,body){const {data:{session}}=await window.eeDb.auth.getSession();if(!session){location.href='/login.html?next='+encodeURIComponent('/fce.html');return}
+  const response=await fetch('https://wnluofonzteaqtlfshgy.supabase.co/functions/v1/'+name,{method:'POST',headers:{apikey:'sb_publishable_Ef-AXAapcwaPExEFS6kmug_tKLaulM8',Authorization:'Bearer '+session.access_token,'Content-Type':'application/json'},body:JSON.stringify(body||{})});
+  const result=await response.json();if(!response.ok||!result.url)throw new Error(result.error||'No se pudo completar la solicitud.');location.assign(result.url)}
+ try{
+  await wait();
+  const {data:{session},error}=await window.eeDb.auth.getSession();if(error)throw error;
+  const {data:settings}=await window.eeDb.from('configuracion_pagos').select('fce_mensual_cents').eq('id',true).maybeSingle();
+  const cents=settings?.fce_mensual_cents;price.textContent=cents?money(cents)+' / mes':'Suscripción no disponible temporalmente';
+  if(!session){status.textContent='Inicia sesión o crea una cuenta para contratar el Curso FCE B2.';subscribe.textContent='Iniciar sesión';subscribe.disabled=!cents}
+  else{
+   const {data:subs}=await window.eeDb.from('suscripciones').select('estado,periodo_actual_fin,cancelar_al_finalizar').eq('usuario_id',session.user.id).eq('plan','fce').order('actualizado_en',{ascending:false}).limit(5);
+   const active=(subs||[]).find(s=>['active','trialing','past_due'].includes(s.estado)&&(!s.periodo_actual_fin||new Date(s.periodo_actual_fin)>new Date()));
+   if(active){status.textContent=active.cancelar_al_finalizar?'Tu acceso al curso está activo hasta el final del periodo.':'Tu suscripción al Curso FCE B2 está activa.';subscribe.hidden=true;portal.hidden=false}
+   else{status.textContent='Todavía no tienes una suscripción FCE B2 activa.';subscribe.disabled=!cents}
+  }
+ }catch(e){status.textContent=e.message||'No se pudo cargar el estado del curso.';subscribe.disabled=true}
+ subscribe.addEventListener('click',async()=>{subscribe.disabled=true;status.textContent='Abriendo el pago seguro…';try{await invoke('crear-checkout',{kind:'fce_subscription'})}catch(e){status.textContent=e.message;subscribe.disabled=false}});
+ portal.addEventListener('click',async()=>{portal.disabled=true;status.textContent='Abriendo el portal de Stripe…';try{await invoke('portal-suscripcion',{plan:'fce'})}catch(e){status.textContent=e.message;portal.disabled=false}});
+})();
+</script>
+<script src="/assets/articulos-supabase.js?v=20261110-fce-membership-1" defer></script>
+{% include footer.html %}
+</body></html>
