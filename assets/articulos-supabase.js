@@ -17,11 +17,11 @@ function card(a,names){
  const tag=document.createElement('span');tag.className='tag';tag.textContent=isExam?'Examen':(names[item.dataset.cat]||defaultNames[item.dataset.cat]||'Lección');meta.append(tag);
  const lvl=document.createElement('span');lvl.className='tag';lvl.textContent=a.nivel||'Nivel por determinar';meta.append(lvl);
  if(a.fecha_publicacion){const t=document.createElement('time');t.dateTime=a.fecha_publicacion;t.textContent=new Date(a.fecha_publicacion+'T12:00:00').toLocaleDateString('es-ES',{day:'numeric',month:'short',year:'numeric'});meta.append(t)}
- if(a.es_premium){const premium=document.createElement('span');premium.className='tag ee-premium-tag';premium.textContent='★ Premium · '+new Intl.NumberFormat('es-ES',{style:'currency',currency:'EUR'}).format((a.precio_cents||299)/100);meta.append(premium)}
+ if(a.es_premium){const premium=document.createElement('span');premium.className='tag ee-premium-tag';premium.textContent=a.categoria_slug==='fce'?'Incluido en Curso FCE B2':'★ Premium · '+new Intl.NumberFormat('es-ES',{style:'currency',currency:'EUR'}).format((a.precio_cents||299)/100);meta.append(premium)}
  const h=document.createElement('h2');h.textContent=(a.titulo||a.slug).replace(/\s*[·|–-]\s*Easy English\s*$/i,'');
  const p=document.createElement('p');p.textContent=a.descripcion||'Lección de inglés con ejemplos y ejercicios.';
  const link=document.createElement('a');link.className=categoryPage?'button':'read';
- link.href='/leer.html?slug='+encodeURIComponent(a.slug);link.textContent=isExam?'Hacer examen clásico (sin guardar nota) →':a.es_premium?'Leer artículo premium →':'Leer artículo →';
+ link.href='/leer.html?slug='+encodeURIComponent(a.slug);link.textContent=isExam?'Hacer examen clásico (sin guardar nota) →':a.categoria_slug==='fce'?'Leer con suscripción FCE →':a.es_premium?'Leer artículo premium →':'Leer artículo →';
  item.append(meta,h,p,link);return item;
 }
 
