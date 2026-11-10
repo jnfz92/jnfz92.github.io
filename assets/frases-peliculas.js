@@ -7,7 +7,8 @@ const els={search:$('phraseSearch'),movie:$('movieFilter'),tense:$('tenseFilter'
 let rows=[],filtered=[],page=1;
 const normalizeCategory=value=>{
  const clean=value.trim();
- if(/^(fragment\\s*\\/\\s*other|fragmento\\s*\\/)/i.test(clean))return 'Fragment / Other';
+ const folded=clean.toLocaleLowerCase();
+ if(folded.startsWith('fragment / other')||folded.startsWith('fragmento /'))return 'Fragment / Other';
  if(/^modal verbs?$/i.test(clean))return 'Modal Verbs';
  return clean;
 };
