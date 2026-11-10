@@ -4,12 +4,12 @@ const API='https://wnluofonzteaqtlfshgy.supabase.co/rest/v1/';
 const KEY='sb_publishable_Ef-AXAapcwaPExEFS6kmug_tKLaulM8';
 const categoryPage=location.pathname.includes('/category/');
 const page=location.pathname.split('/').pop();
-const group={'grammar.html':'grammar','lessons.html':'lesson','speaking.html':'speaking','tv-movies.html':'listening','vocabulary.html':'vocabulary'}[page];
+const group={'fce.html':'fce','grammar.html':'grammar','lessons.html':'lesson','speaking.html':'speaking','tv-movies.html':'listening','vocabulary.html':'vocabulary'}[page];
 const home=document.body.classList.contains('ee-home');
 const library=document.body.classList.contains('ee-library')&&!categoryPage;
 const grid=document.querySelector(library?'.blog .grid':home?'main .grid':'main .grid');
 if(!grid || !(home||library||group))return;
-const defaultNames={grammar:'Gramática',vocabulary:'Vocabulario',speaking:'Speaking',writing:'Writing',listening:'Listening',lesson:'Lecciones y lectura',exam:'Exámenes'};
+const defaultNames={fce:'Curso FCE B2',grammar:'Gramática',vocabulary:'Vocabulario',speaking:'Speaking',writing:'Writing',listening:'Listening',lesson:'Lecciones y lectura',exam:'Exámenes'};
 const apiFetch=async path=>{const res=await fetch(API+path,{cache:'default',headers:{apikey:KEY,Accept:'application/json'}});if(!res.ok)throw Error('Supabase: '+res.status);return res.json()};
 function card(a,names){
  const item=document.createElement('article');item.className='card';const isExam=/^examen-ingles-b1-b2-/.test(a.slug);item.dataset.cat=isExam?'exam':(a.categoria_slug||'lesson');item.dataset.level=a.nivel||'';
@@ -25,7 +25,7 @@ function card(a,names){
  item.append(meta,h,p,link);return item;
 }
 
-const categoryOrder=['lesson','grammar','vocabulary','speaking','writing','listening','exam'];
+const categoryOrder=['fce','lesson','grammar','vocabulary','speaking','writing','listening','exam'];
 const curriculum=[
  'leccion-1-saludos','leccion-2-to-be','leccion-3-preguntas','dictionary-word-reference-study','skimming-scanning-reading','protector-of-the-sea-vocabulary-tenses','indice-de-dificultad',
  'estructura-oracion-ingles','imperativo-ingles','preguntas-which-whose-how','respuestas-cortas-ingles','have-vs-have-got-ingles','countable-uncountable-nouns','ortografia-formas-verbales-ingles','50-verbos-irregulares-en-ingles',
