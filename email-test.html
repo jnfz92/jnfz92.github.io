@@ -18,7 +18,7 @@ permalink: /email-test.html
 <body>
 <main>
   <h1>Prueba de correo</h1>
-  <p>Se enviará un único correo de prueba a <strong>juanfranciscofernandezherreros@gmail.com</strong>.</p>
+  <p>Se enviará un nuevo correo de prueba a <strong>juanfranciscofernandezherreros@gmail.com</strong> cada vez que pulses el botón.</p>
   <p>Contenido: “Buenos días.”</p>
   <button id="send" type="button">Enviar correo de prueba</button>
   <p id="status" role="status" aria-live="polite"></p>
@@ -37,7 +37,8 @@ permalink: /email-test.html
   }
   button.addEventListener("click", async () => {
     button.disabled = true;
-    status.textContent = "Enviando correo…";
+    button.textContent = "Enviando…";
+    status.textContent = "Enviando un nuevo correo de prueba…";
     try {
       const response = await fetch(endpoint + "?key=" + encodeURIComponent(key), {
         method: "POST",
@@ -46,14 +47,16 @@ permalink: /email-test.html
       });
       const data = await response.json();
       if (response.ok && data.sent) {
-        status.textContent = "Resend ha aceptado el correo. Revisa la bandeja de entrada y spam. ID: " + (data.provider_id || "aceptado");
-        button.textContent = "Prueba enviada";
+        status.textContent = "Resend ha aceptado el envío. Revisa la bandeja de entrada y spam. ID: " + (data.provider_id || "aceptado");
+        button.textContent = "Enviar otra prueba";
       } else {
         status.textContent = data.error || ("Error al enviar (HTTP " + response.status + ").");
-        button.disabled = false;
+        button.textContent = "Intentar de nuevo";
       }
     } catch (error) {
       status.textContent = "No se pudo conectar con el servicio. Comprueba tu conexión e inténtalo otra vez.";
+      button.textContent = "Intentar de nuevo";
+    } finally {
       button.disabled = false;
     }
   });
