@@ -8,7 +8,7 @@ const readable=e=>{const m=String(e?.message||'');if(/rate limit|too many reques
 if(!db){status('No se pudo conectar. Actualiza la página.',true);return}
 async function authenticated(){const {data,error}=await db.auth.getSession();if(error||!data?.session?.user)return false;location.replace(destination);return true}
 authenticated().catch(()=>{});
-$('googleRegister').addEventListener('click',async()=>{const {error}=await db.auth.signInWithOAuth({provider:'google',options:{redirectTo:location.origin+destination}});if(error)status(readable(error),true)});
+$('googleRegister').addEventListener('click',async()=>{const {error}=await db.auth.signInWithOAuth({provider:'google',options:{redirectTo:location.origin+'/login.html?next='+encodeURIComponent(destination)}});if(error)status(readable(error),true)});
 $('registerForm').addEventListener('submit',async e=>{
  e.preventDefault();if(!e.currentTarget.reportValidity())return;
  const password=$('registerPassword').value;if(password!==$('registerConfirmation').value){status('Las contraseñas no coinciden.',true);$('registerConfirmation').focus();return}
