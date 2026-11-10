@@ -3,11 +3,42 @@ const API='https://wnluofonzteaqtlfshgy.supabase.co/rest/v1/';
 const KEY='sb_publishable_Ef-AXAapcwaPExEFS6kmug_tKLaulM8';
 const PAGE_SIZE=36;
 const $=id=>document.getElementById(id);
-const els={search:$('phraseSearch'),movie:$('movieFilter'),tense:$('tenseFilter'),reset:$('resetMovieFilters'),count:$('phraseResults'),grid:$('moviePhrasesGrid'),status:$('moviePhrasesStatus'),pagination:$('moviePhrasesPagination'),prev:$('previousPhrases'),next:$('nextPhrases'),pageLabel:$('phrasePageLabel'),phraseCount:$('moviePhraseCount'),movieCount:$('movieCount'),tenseCount:$('tenseCount')};
+const els={search:$('phraseSearch'),movie:$('movieFilter'),tense:$('tenseFilter'),reset:$('resetMovieFilters'),count:$('phraseResults'),grid:$('moviePhrasesGrid'),status:$('moviePhrasesStatus'),pagination:$('moviePhrasesPagination'),prev:$('previousPhrases'),next:$('nextPhrases'),pageLabel:$('phrasePageLabel'),categoryStats:$('movieCategoryStats'),phraseCount:$('moviePhraseCount'),movieCount:$('movieCount'),tenseCount:$('tenseCount')};
 let rows=[],filtered=[],page=1;
-const labels=row=>(row.tense_labels||'').split(';').map(x=>x.trim()).filter(Boolean);
+const normalizeCategory=value=>{
+ const clean=value.trim();
+ if(/^(fragment\\s*\\/\\s*other|fragmento\\s*\\/)/i.test(clean))return 'Fragment / Other';
+ if(/^modal verbs?$/i.test(clean))return 'Modal Verbs';
+ return clean;
+};
+const labels=row=>[...new Set((row.tense_labels||'').split(/[;,]/).map(normalizeCategory).filter(Boolean))];
 const unique=values=>[...new Set(values)].sort((a,b)=>a.localeCompare(b,'en'));
 function addOptions(select,values,firstLabel){select.replaceChildren();const first=document.createElement('option');first.value='all';first.textContent=firstLabel;select.append(first);values.forEach(value=>{const option=document.createElement('option');option.value=value;option.textContent=value;select.append(option)})}
+function renderCategoryStats(movies){
+ const totals=new Map(),byMovie=new Map();
+ rows.forEach(row=>{
+  const movie=row.movie_slug;
+  labels(row).forEach(category=>{
+   totals.set(category,(totals.get(category)||0)+1);
+   if(!byMovie.has(category))byMovie.set(category,new Map());
+   const counts=byMovie.get(category);counts.set(movie,(counts.get(movie)||0)+1);
+  });
+ });
+ const categories=[...totals.keys()].sort((a,b)=>totals.get(b)-totals.get(a)||a.localeCompare(b,'en'));
+ const table=document.createElement('table');table.className='ee-category-table';
+ const thead=document.createElement('thead'),head=document.createElement('tr');
+ ['Categoría','Total',...movies.map(movie=>movie[1])].forEach((label,index)=>{const th=document.createElement('th');th.scope='col';th.textContent=label;head.append(th)});
+ thead.append(head);table.append(thead);
+ const tbody=document.createElement('tbody');
+ categories.forEach(category=>{
+  const tr=document.createElement('tr');
+  const name=document.createElement('td');name.textContent=category;tr.append(name);
+  const total=document.createElement('td');total.className='ee-category-total';total.textContent=totals.get(category).toLocaleString('es-ES');tr.append(total);
+  movies.forEach(([slug])=>{const td=document.createElement('td');td.textContent=(byMovie.get(category)?.get(slug)||0).toLocaleString('es-ES');tr.append(td)});
+  tbody.append(tr);
+ });
+ table.append(tbody);els.categoryStats.replaceChildren(table);
+}
 function makeRow(row){
  const tr=document.createElement('tr');
  const add=(value,cls)=>{const td=document.createElement('td');td.className=cls||'';td.textContent=value??'';tr.append(td)};
@@ -64,6 +95,7 @@ async function loadRows(){
   rows=all;
   const movies=[...new Map(rows.map(row=>[row.movie_slug,row.movie_title||row.movie_slug])).entries()].sort((a,b)=>a[1].localeCompare(b[1],'es'));
   const tenses=unique(rows.flatMap(labels));
+  renderCategoryStats(movies);
   els.movie.replaceChildren();
   const allMovies=document.createElement('option');allMovies.value='all';allMovies.textContent='Todas las películas';els.movie.append(allMovies);
   movies.forEach(([slug,title])=>{const option=document.createElement('option');option.value=slug;option.textContent=title;els.movie.append(option)});
@@ -78,7 +110,7 @@ async function loadRows(){
   console.error('Error al cargar frases de películas:',error);
   els.status.hidden=false;els.status.textContent='No se ha podido cargar la biblioteca. Comprueba la conexión con Supabase e inténtalo de nuevo.';
   els.count.textContent='No se pudo consultar el catálogo';
-  els.phraseCount.textContent='—';els.movieCount.textContent='—';els.tenseCount.textContent='—';
+  els.phraseCount.textContent='—';els.movieCount.textContent='—';els.tenseCount.textContent='—';if(els.categoryStats)els.categoryStats.textContent='No se ha podido calcular el recuento.';
  }
 }
 els.search.addEventListener('input',applyFilters);
