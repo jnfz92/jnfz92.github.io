@@ -101,8 +101,55 @@ permalink: /leer.html
    const login=document.createElement('a');login.href='/login.html?next='+encodeURIComponent(location.pathname+location.search);login.textContent='Iniciar sesión para leer este artículo';
    status.after(login);return;
   }
+  const metaList=await loadJSON('articulos_catalogo?select=slug,titulo,descripcion,es_premium,precio_cents&slug=eq.'+encodeURIComponent(resolveSlug(slug))+'&limit=1');
+  if(!metaList.length)throw new Error('Artículo no encontrado');
+  const metadata=metaList[0];
   const list=await loadJSON('articulos?select=html,titulo,descripcion&slug=eq.'+encodeURIComponent(resolveSlug(slug))+'&limit=1');
-  if(!list.length||!list[0].html)throw new Error('Artículo no encontrado');
+  if(!list.length||!list[0].html){
+   if(metadata.es_premium){
+    const panel=document.createElement('section');
+    panel.className='ee-paywall';
+    panel.style.cssText='margin:24px 0;padding:26px;border:1px solid #cbdaf4;border-radius:20px;background:linear-gradient(145deg,#f1f6ff,#fff);box-shadow:0 12px 35px #183c7a12';
+    const badge=document.createElement('span');badge.textContent='✦ EASY ENGLISH PREMIUM';badge.style.cssText='display:inline-block;padding:7px 11px;border-radius:99px;background:#e4edff;color:#1749a8;font-size:12px;font-weight:800;letter-spacing:.04em';
+    const title=document.createElement('h2');title.textContent='Este artículo es exclusivo para miembros Premium';title.style.cssText='margin:14px 0 8px;color:#173c7b;font-size:clamp(22px,4vw,30px)';
+    const description=document.createElement('p');description.textContent=metadata.descripcion||'Desbloquea esta guía completa y sigue aprendiendo con Easy English.';description.style.cssText='color:#536782;line-height:1.65';
+    const price=document.createElement('p');price.textContent='Compra este artículo por '+new Intl.NumberFormat('es-ES',{style:'currency',currency:'EUR'}).format((metadata.precio_cents||299)/100);price.style.cssText='font-size:19px;font-weight:800;color:#163e8c;margin:18px 0';
+    const notice=document.createElement('p');notice.setAttribute('role','status');notice.style.cssText='color:#526783;font-size:14px;min-height:22px';
+    async function startCheckout(kind,button){
+     if(!session?.access_token){location.href='/login.html?next='+encodeURIComponent(location.pathname+location.search);return}
+     button.disabled=true;button.style.opacity='.65';notice.textContent='Conectando con Stripe…';
+     try{
+      const response=await fetch(endpoint+'functions/v1/crear-checkout',{method:'POST',headers:{apikey:key,Authorization:'Bearer '+session.access_token,'Content-Type':'application/json'},body:JSON.stringify({kind,slug:metadata.slug})});
+      const result=await response.json();
+      if(!response.ok||!result.url)throw new Error(result.error||'No se pudo iniciar el pago.');
+      location.assign(result.url);
+     }catch(error){notice.textContent=error.message||'No se pudo iniciar el pago.';button.disabled=false;button.style.opacity='1'}
+    }
+    const buy=document.createElement('button');buy.type='button';buy.textContent=session?.access_token?'Comprar artículo y desbloquear':'Inicia sesión para comprar';buy.style.cssText='display:block;width:100%;max-width:420px;padding:14px 18px;border:0;border-radius:12px;background:#1e5eff;color:white;font:inherit;font-weight:800;cursor:pointer';
+    buy.addEventListener('click',()=>startCheckout('article',buy));
+    panel.append(badge,title,description,price,buy);
+    try{
+     const plans=await loadJSON('configuracion_pagos?select=suscripcion_mensual_cents,moneda&id=eq.true&limit=1');
+     const monthly=plans[0]?.suscripcion_mensual_cents;
+     if(monthly){
+      const separator=document.createElement('div');separator.style.cssText='height:1px;background:#dce6f5;margin:22px 0';
+      const subTitle=document.createElement('h3');subTitle.textContent='¿Prefieres acceso ilimitado?';subTitle.style.cssText='margin:0 0 7px;color:#173c7b';
+      const subPrice=document.createElement('p');subPrice.textContent='Suscripción mensual: '+new Intl.NumberFormat('es-ES',{style:'currency',currency:'EUR'}).format(monthly/100);subPrice.style.cssText='margin:0 0 12px;color:#536782';
+      const subscribe=document.createElement('button');subscribe.type='button';subscribe.textContent='Suscribirme y acceder a todos los artículos';subscribe.style.cssText='display:block;width:100%;max-width:420px;padding:13px 18px;border:1px solid #b9cbea;border-radius:12px;background:white;color:#1749a8;font:inherit;font-weight:800;cursor:pointer';
+      subscribe.addEventListener('click',()=>startCheckout('subscription',subscribe));
+      panel.append(separator,subTitle,subPrice,subscribe);
+     }else{
+      const pending=document.createElement('p');pending.textContent='La suscripción mensual estará disponible próximamente.';pending.style.cssText='margin-top:18px;color:#66758d;font-size:14px';panel.append(pending);
+     }
+    }catch(e){console.warn('No se pudo consultar el precio de suscripción',e)}
+    if(new URLSearchParams(location.search).get('pago')==='success')notice.textContent='Estamos confirmando tu pago. Cuando Stripe lo confirme, el artículo se desbloqueará automáticamente. Recarga en unos segundos.';
+    panel.append(notice);
+    status.textContent='Este contenido requiere acceso Premium.';
+    status.after(panel);
+    return;
+   }
+   throw new Error('Artículo no encontrado');
+  }
   const article=list[0];
   const doc=new DOMParser().parseFromString(article.html,'text/html');
   // Unificar los colores de las hojas históricas del artículo sin modificar su contenido
