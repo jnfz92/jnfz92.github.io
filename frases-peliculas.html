@@ -7,10 +7,10 @@ permalink: /frases-peliculas.html
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#112f68">
-<meta name="description" content="Estudia inglés con frases de películas clasificadas por tiempos verbales. Busca expresiones y filtra por estructura gramatical.">
+<meta name="description" content="Estudia inglés con diálogos originales de películas, traducciones y explicaciones de tiempos verbales en español.">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Frases de películas por tiempos verbales · Easy English">
-<meta property="og:description" content="Un catálogo interactivo de frases de cine para estudiar gramática inglesa en contexto.">
+<meta property="og:description" content="Diálogos de cine con tiempos verbales y explicaciones gramaticales en contexto.">
 <meta property="og:url" content="https://jnfz92.github.io/frases-peliculas.html">
 <title>Frases de películas por tiempos verbales · Easy English</title>
 <link rel="canonical" href="https://jnfz92.github.io/frases-peliculas.html">
@@ -36,24 +36,19 @@ permalink: /frases-peliculas.html
 .ee-movies .ee-movies-filter-actions{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:13px}
 .ee-movies .ee-movies-reset{border:1px solid #b9c8dc;border-radius:10px;background:#f6f9ff;color:#214d91;padding:9px 13px;min-height:40px;font:inherit;font-weight:800;cursor:pointer}
 .ee-movies .ee-movies-results{font-size:13px;color:#5c6f8c;font-weight:700;margin:0}
-.ee-movies .ee-movies-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin:18px 0}
-.ee-movies .ee-phrase-card{min-width:0;background:#fff;border:1px solid #dbe5f3;border-radius:17px;padding:19px;display:flex;flex-direction:column;gap:12px}
-.ee-movies .ee-phrase-meta{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;color:#667a98;font-size:11px;font-weight:800}
-.ee-movies .ee-phrase-number{background:#edf4ff;border:1px solid #d5e5fb;border-radius:7px;padding:5px 8px;color:#2457a5}
-.ee-movies .ee-phrase-text{margin:0;color:#182d4c;font-size:19px;font-weight:700;line-height:1.5;overflow-wrap:anywhere}
-.ee-movies .ee-phrase-tags{display:flex;flex-wrap:wrap;gap:6px}
-.ee-movies .ee-phrase-tag{display:inline-flex;align-items:center;border:1px solid #d4e1f3;background:#f1f6ff;color:#31578d;border-radius:999px;padding:5px 9px;font-size:11px;font-weight:800}
-.ee-movies .ee-phrase-time{border-top:1px solid #edf1f7;padding-top:10px;color:#71819a;font-size:11px;font-variant-numeric:tabular-nums}
 .ee-movies .ee-movies-grid{display:block;overflow-x:auto;margin:18px 0;border:1px solid #dbe5f3;border-radius:14px;background:#fff}
-.ee-movies .ee-phrases-table{width:100%;border-collapse:collapse;min-width:850px;text-align:left}
+.ee-movies .ee-phrases-table{width:100%;border-collapse:collapse;min-width:1120px;text-align:left}
 .ee-movies .ee-phrases-table th{position:sticky;top:0;background:#edf4ff;color:#214d91;font-size:12px;font-weight:900;padding:13px 12px;border-bottom:2px solid #d3e1f3;white-space:nowrap}
 .ee-movies .ee-phrases-table td{padding:12px;border-bottom:1px solid #e8eef6;vertical-align:top;color:#263b59;font-size:13px;line-height:1.55}
 .ee-movies .ee-phrases-table tbody tr:nth-child(even){background:#f8faff}
 .ee-movies .ee-phrases-table tbody tr:hover{background:#eff5ff}
 .ee-movies .ee-table-number,.ee-movies .ee-table-time{white-space:nowrap;font-variant-numeric:tabular-nums;color:#60718b!important}
-.ee-movies .ee-table-phrase{min-width:300px;font-size:14px!important;font-weight:650;color:#182d4c!important}
-.ee-movies .ee-table-tenses{min-width:180px}
+.ee-movies .ee-table-phrase{min-width:260px;font-size:14px!important;font-weight:650;color:#182d4c!important}
+.ee-movies .ee-table-translation{min-width:210px;color:#405979!important}
+.ee-movies .ee-table-note{min-width:260px;color:#526987!important}
+.ee-movies .ee-table-tenses{min-width:160px}
 .ee-movies .ee-table-tenses .ee-phrase-tag{display:inline-flex;margin:2px}
+.ee-movies .ee-phrase-tag{display:inline-flex;align-items:center;border:1px solid #d4e1f3;background:#f1f6ff;color:#31578d;border-radius:999px;padding:5px 9px;font-size:11px;font-weight:800}
 .ee-movies .ee-movies-pagination{display:flex;justify-content:center;align-items:center;gap:12px;flex-wrap:wrap;margin:22px 0 42px}
 .ee-movies .ee-movies-pagination button{border:1px solid #b9c8dc;border-radius:10px;background:#fff;color:#214d91;padding:9px 14px;min-height:40px;font:inherit;font-weight:800;cursor:pointer}
 .ee-movies .ee-movies-pagination button:disabled{opacity:.45;cursor:not-allowed}
@@ -62,7 +57,7 @@ permalink: /frases-peliculas.html
 .ee-movies .ee-movies-note{border-left:3px solid #527dbd;background:#edf4ff;border-radius:0 12px 12px 0;padding:14px 16px;color:#465d7e;font-size:13px;line-height:1.65;margin:22px 0 38px}
 .ee-movies .ee-movies-note strong{color:#214d91}
 @media(max-width:760px){.ee-movies .ee-movies-filters{grid-template-columns:1fr 1fr}.ee-movies .ee-movies-field:first-child{grid-column:1/-1}}
-@media(max-width:580px){.ee-movies .ee-movies-stats{grid-template-columns:1fr 1fr}.ee-movies .ee-movies-stats .ee-movies-stat:last-child{grid-column:1/-1}.ee-movies .ee-movies-filters,.ee-movies .ee-movies-grid{grid-template-columns:1fr}.ee-movies .ee-movies-panel{padding:15px}.ee-movies .ee-phrase-text{font-size:17px}}
+@media(max-width:580px){.ee-movies .ee-movies-stats{grid-template-columns:1fr 1fr}.ee-movies .ee-movies-stats .ee-movies-stat:last-child{grid-column:1/-1}.ee-movies .ee-movies-filters{grid-template-columns:1fr}.ee-movies .ee-movies-panel{padding:15px}}
 @media(prefers-reduced-motion:reduce){.ee-movies *{scroll-behavior:auto!important;transition:none!important}}
 </style>
 </head>
@@ -73,7 +68,7 @@ permalink: /frases-peliculas.html
   <section class="ee-movies-hero">
     <span class="ee-movies-kicker">✦ English through movies</span>
     <h1>Aprende gramática inglesa con frases de películas.</h1>
-    <p>Explora diálogos reales, consulta el tiempo verbal de cada frase y encuentra ejemplos concretos de cómo se utiliza el inglés en contexto. Busca palabras, filtra por estructura y estudia a tu ritmo.</p>
+    <p>Estudia diálogos originales en inglés con su contexto, código de tiempo, clasificación verbal y una explicación gramatical en español. Cuando la base de datos incluye traducción, también podrás consultarla.</p>
   </section>
   <section class="ee-movies-stats" aria-label="Estadísticas del catálogo">
     <div class="ee-movies-stat"><strong id="moviePhraseCount">—</strong><span>Frases disponibles</span></div>
@@ -96,9 +91,9 @@ permalink: /frases-peliculas.html
   <nav id="moviePhrasesPagination" class="ee-movies-pagination" aria-label="Paginación de frases" hidden>
     <button id="previousPhrases" type="button">← Anterior</button><span id="phrasePageLabel" class="ee-movies-page-label"></span><button id="nextPhrases" type="button">Siguiente →</button>
   </nav>
-  <aside class="ee-movies-note"><strong>Nota gramatical:</strong> las etiquetas reflejan la clasificación de trabajo del archivo de subtítulos. Algunas intervenciones son fragmentos de diálogo y pueden contener más de una construcción verbal; conviene interpretarlas dentro de su contexto.</aside>
+  <aside class="ee-movies-note"><strong>Sobre las etiquetas:</strong> la clasificación verbal es automática y orientativa. Los subtítulos pueden ser fragmentos, contener varias intervenciones o depender del contexto; revisa la explicación antes de tomar la etiqueta como definitiva. Los subtítulos originales se conservan en inglés. Una traducción solo se muestra cuando está disponible en la base de datos.</aside>
 </main>
-<script src="/assets/frases-peliculas.js?v=20261108-1" defer></script>
+<script src="/assets/frases-peliculas.js?v=20261110-war-worlds-2" defer></script>
 {% include footer.html %}
 </body>
 </html>
