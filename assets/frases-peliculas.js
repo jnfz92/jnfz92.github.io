@@ -7,7 +7,6 @@ const els={search:$('phraseSearch'),movie:$('movieFilter'),tense:$('tenseFilter'
 let rows=[],filtered=[],page=1;
 const labels=row=>(row.tense_labels||'').split(';').map(x=>x.trim()).filter(Boolean);
 const unique=values=>[...new Set(values)].sort((a,b)=>a.localeCompare(b,'en'));
-const escapeText=value=>String(value??'');
 function addOptions(select,values,firstLabel){select.replaceChildren();const first=document.createElement('option');first.value='all';first.textContent=firstLabel;select.append(first);values.forEach(value=>{const option=document.createElement('option');option.value=value;option.textContent=value;select.append(option)})}
 function makeRow(row){
  const tr=document.createElement('tr');
@@ -15,10 +14,13 @@ function makeRow(row){
  add(row.subtitle_number,'ee-table-number');
  add(row.movie_title||row.movie_slug,'ee-table-movie');
  add(row.phrase,'ee-table-phrase');
+ add(row.translation_es||'No disponible en esta ficha','ee-table-translation');
  add(row.timecode||'—','ee-table-time');
  const td=document.createElement('td');td.className='ee-table-tenses';
  labels(row).forEach(label=>{const tag=document.createElement('span');tag.className='ee-phrase-tag';tag.textContent=label;td.append(tag)});
- tr.append(td);return tr;
+ tr.append(td);
+ add(row.learning_note_es||'No hay explicación gramatical disponible para esta frase.','ee-table-note');
+ return tr;
 }
 function applyFilters(){
  const query=els.search.value.trim().toLocaleLowerCase();
@@ -27,7 +29,7 @@ function applyFilters(){
   if(movie!=='all'&&row.movie_slug!==movie)return false;
   const rowLabels=labels(row);
   if(tense!=='all'&&!rowLabels.includes(tense))return false;
-  if(query&&![(row.phrase||''),(row.movie_title||''),(row.tense_labels||'')].join(' ').toLocaleLowerCase().includes(query))return false;
+  if(query&&![(row.phrase||''),(row.translation_es||''),(row.learning_note_es||''),(row.movie_title||''),(row.tense_labels||'')].join(' ').toLocaleLowerCase().includes(query))return false;
   return true;
  });
  page=1;render();
@@ -37,7 +39,7 @@ function render(){
  const start=(page-1)*PAGE_SIZE,visible=filtered.slice(start,start+PAGE_SIZE);
  const table=document.createElement('table');table.className='ee-phrases-table';
  const thead=document.createElement('thead'),headRow=document.createElement('tr');
- ['N.º','Película','Frase en inglés','Código de tiempo','Tiempo verbal'].forEach(label=>{const th=document.createElement('th');th.scope='col';th.textContent=label;headRow.append(th)});
+ ['N.º','Película','Frase original en inglés','Traducción al español','Código de tiempo','Tiempo / construcción verbal','Explicación gramatical'].forEach(label=>{const th=document.createElement('th');th.scope='col';th.textContent=label;headRow.append(th)});
  thead.append(headRow);table.append(thead);
  const tbody=document.createElement('tbody');visible.forEach(row=>tbody.append(makeRow(row)));table.append(tbody);
  els.grid.replaceChildren(table);
@@ -53,7 +55,7 @@ async function loadRows(){
   const all=[];let from=0,batchSize=1000;
   while(true){
    const to=from+batchSize-1;
-   const url=API+'movie_subtitle_phrases?select=id,movie_slug,movie_title,subtitle_number,timecode,phrase,tense_labels,notes&order=movie_title.asc,subtitle_number.asc';
+   const url=API+'movie_subtitle_phrases?select=id,movie_slug,movie_title,subtitle_number,timecode,phrase,tense_labels,notes,translation_es,learning_note_es&order=movie_title.asc,subtitle_number.asc';
    const response=await fetch(url,{headers:{apikey:KEY,Authorization:'Bearer '+KEY,Accept:'application/json','Range':from+'-'+to,'Range-Unit':'items'},cache:'no-store'});
    if(!response.ok)throw new Error('Supabase respondió con HTTP '+response.status);
    const batch=await response.json();if(!Array.isArray(batch))throw new Error('La respuesta de Supabase no tiene el formato esperado');
