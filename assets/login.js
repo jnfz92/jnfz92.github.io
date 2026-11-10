@@ -27,13 +27,24 @@ function resetMode(on){
  $('formSubtitle').textContent=on?'Te enviaremos un enlace para elegir una contraseña nueva.':'Inicia sesión para continuar aprendiendo.';
  status('');
 }
+async function sendWelcomeIfNew(user){
+ if(!user?.id)return;
+ try{
+  const response=await fetch('https://wnluofonzteaqtlfshgy.supabase.co/functions/v1/email-bienvenida',{
+   method:'POST',
+   headers:{apikey:'sb_publishable_Ef-AXAapcwaPExEFS6kmug_tKLaulM8','Content-Type':'application/json'},
+   body:JSON.stringify({type:'welcome_signup',user_id:user.id})
+  });
+  if(!response.ok){const result=await response.json().catch(()=>({}));console.info('Email de bienvenida no enviado:',result.error||response.status)}
+ }catch(error){console.info('No se pudo solicitar el email de bienvenida.',error)}
+}
 $('forgotLink').addEventListener('click',()=>{resetMode(true);$('resetEmail').value=$('loginEmail').value});
 $('backToLogin').addEventListener('click',()=>resetMode(false));
 if(!db){status('No se pudo conectar. Actualiza la página.',true);return}
 async function authenticated(){
  const {data,error}=await db.auth.getSession();
  if(error||!data?.session?.user)return false;
- fetch('https://wnluofonzteaqtlfshgy.supabase.co/functions/v1/email-transaccional',{method:'POST',headers:{apikey:'sb_publishable_Ef-AXAapcwaPExEFS6kmug_tKLaulM8',Authorization:'Bearer '+data.session.access_token,'Content-Type':'application/json'},body:JSON.stringify({type:'welcome'})}).catch(()=>{});
+ await sendWelcomeIfNew(data.session.user);
  location.replace(destination);return true;
 }
 authenticated().catch(()=>{});
@@ -44,12 +55,13 @@ $('googleLogin').addEventListener('click',async()=>{
 $('loginForm').addEventListener('submit',async e=>{
  e.preventDefault();if(!e.currentTarget.reportValidity())return;
  const button=$('loginSubmit');button.disabled=true;status('Comprobando tus datos…');
- try{const {data,error}=await db.auth.signInWithPassword({
+ try{
+  const {data,error}=await db.auth.signInWithPassword({
    email:$('loginEmail').value.trim().toLowerCase(),password:$('loginPassword').value
   });
   if(error)throw error;
   if(!data?.session?.user)throw new Error('El acceso no ha devuelto una sesión activa.');
-  fetch('https://wnluofonzteaqtlfshgy.supabase.co/functions/v1/email-transaccional',{method:'POST',headers:{apikey:'sb_publishable_Ef-AXAapcwaPExEFS6kmug_tKLaulM8',Authorization:'Bearer '+data.session.access_token,'Content-Type':'application/json'},body:JSON.stringify({type:'welcome'})}).catch(()=>{});
+  await sendWelcomeIfNew(data.session.user);
   location.replace(destination);
  }catch(error){status(readable(error),true)}
  finally{$('loginPassword').value='';button.disabled=false}
@@ -57,7 +69,8 @@ $('loginForm').addEventListener('submit',async e=>{
 $('resetForm').addEventListener('submit',async e=>{
  e.preventDefault();if(!e.currentTarget.reportValidity())return;
  const button=$('resetSubmit');button.disabled=true;status('Enviando enlace…');
- try{const {error}=await db.auth.resetPasswordForEmail($('resetEmail').value.trim().toLowerCase(),{
+ try{
+  const {error}=await db.auth.resetPasswordForEmail($('resetEmail').value.trim().toLowerCase(),{
    redirectTo:location.origin+'/perfil.html'
   });
   if(error)throw error;
