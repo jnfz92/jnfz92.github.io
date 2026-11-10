@@ -58,6 +58,13 @@ shared_pages += [root / "_layouts/default.html"]
 for path in shared_pages:
     source = path.read_text(encoding="utf-8")
     name = str(path.relative_to(root))
+    # Las páginas de prueba de correo son utilidades independientes y no usan la cabecera pública.
+    if name in ("email-test.html", "test-email.html"):
+        check('name="robots" content="noindex' in source,
+              f"La utilidad privada debe quedar fuera del índice: {name}")
+        check("email-transaccional" in source,
+              f"Falta conectar la utilidad con el servicio de correo: {name}")
+        continue
     # Acceso y registro tienen páginas independientes, sin cabecera pública.
     if name in ("login.html", "registro.html"):
         form = 'id="loginForm"' if name == "login.html" else 'id="registerForm"'
@@ -70,7 +77,9 @@ for path in shared_pages:
         continue
     check(source.count("{% include header.html %}") == 1,
           f"Cabecera compartida ausente o duplicada: {name}")
-    check("navigation.css" in source and "navigation.js" in source,
+    check("navigation.css" in source and
+          ("navigation.js" in source or "navigation-optimized.js" in source or
+           "navigation-optimized.js" in header),
           f"Faltan estilos o JS de navegación: {name}")
     check('class="ee-site' in source,
           f"Falta el diseño base ee-site: {name}")
