@@ -33,6 +33,7 @@ if(!db){status('No se pudo conectar. Actualiza la página.',true);return}
 async function authenticated(){
  const {data,error}=await db.auth.getSession();
  if(error||!data?.session?.user)return false;
+ fetch('https://wnluofonzteaqtlfshgy.supabase.co/functions/v1/email-transaccional',{method:'POST',headers:{apikey:'sb_publishable_Ef-AXAapcwaPExEFS6kmug_tKLaulM8',Authorization:'Bearer '+data.session.access_token,'Content-Type':'application/json'},body:JSON.stringify({type:'welcome'})}).catch(()=>{});
  location.replace(destination);return true;
 }
 authenticated().catch(()=>{});
@@ -48,6 +49,7 @@ $('loginForm').addEventListener('submit',async e=>{
   });
   if(error)throw error;
   if(!data?.session?.user)throw new Error('El acceso no ha devuelto una sesión activa.');
+  fetch('https://wnluofonzteaqtlfshgy.supabase.co/functions/v1/email-transaccional',{method:'POST',headers:{apikey:'sb_publishable_Ef-AXAapcwaPExEFS6kmug_tKLaulM8',Authorization:'Bearer '+data.session.access_token,'Content-Type':'application/json'},body:JSON.stringify({type:'welcome'})}).catch(()=>{});
   location.replace(destination);
  }catch(error){status(readable(error),true)}
  finally{$('loginPassword').value='';button.disabled=false}
