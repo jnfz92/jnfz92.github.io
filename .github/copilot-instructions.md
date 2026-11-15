@@ -2,7 +2,7 @@
 
 Aplica estas reglas a cualquier cambio de HTML, CSS o JavaScript de páginas de este repositorio.
 
-1. **Lee `AGENTS.md` antes de editar.** Su sección «Regla obligatoria de diseño para TODAS las páginas» es la fuente de verdad.
+1. **Lee `CLAUDE.md` antes de editar.** Su sección «Regla obligatoria de diseño para TODAS las páginas» es la fuente de verdad.
 2. Las páginas generales de Jekyll/GitHub Pages deben incluir `<body class="ee-site ...">`, `{% include header.html %}`, `<main class="container">`, `/assets/site.css`, `/assets/navigation.css` y `/assets/navigation.js`; usar favicon y metadatos de Easy English.
 3. Copia **el sistema visual**, no el código completo, de `index.html`, `articulos.html` y `writings.html`: clases `hero`, `eyebrow`, `ee-section-heading`, `grid`, `card`, `tag`, `ee-path`, `quick-links`; tokens `--ee-*` del CSS global.
 4. No inventes diseños aislados, hojas base competidoras ni formularios sin estilos compartidos. CSS puntual en archivo `assets/<pagina>.css` bajo una clase específica de página; evita `style=""` para la maquetación.

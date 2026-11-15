@@ -54,7 +54,7 @@ En `english-apk` la versión Cordova 1.1.2 alinea la barra inferior del curso si
 
 `index.html`, `articulos.html`, `category/*.html` y `examenes.html` mantienen tarjetas de respaldo si la consulta a Supabase falla. En el uso normal, JavaScript genera el catálogo desde Supabase. No eliminar los respaldos sin sustituirlos por una alternativa accesible. La antigua URL `downloads.html` redirige al catálogo de artículos.
 
-`public.paginas_blog` guarda copias de ocho páginas principales: mantenerlas sincronizadas cuando cambie el HTML de GitHub. Las páginas se publican desde GitHub, no directamente desde esa tabla.
+`public.paginas_blog` es una tabla legacy: sus ocho registros son punteros mínimos a GitHub Pages y no hay que sincronizar HTML en ella (ver `docs/mantenimiento-paginas.md`). Las páginas se publican desde GitHub.
 
 ## Lectura aleatoria pendiente en el perfil
 
