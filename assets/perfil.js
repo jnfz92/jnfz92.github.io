@@ -708,6 +708,30 @@ async function loadLearningStrengths(scores,owner){
  const cssId='skill-profile-styles';
  if(!document.getElementById(cssId)){const css=profileNode('style');css.id=cssId;css.textContent='.skill-trend-chart{height:135px;display:flex;align-items:end;gap:7px;border-bottom:1px solid #ccdcfa;padding:7px 0}.skill-trend-bar{flex:1;min-width:8px;border-radius:5px 5px 0 0;background:#2a6fe0}.skill-trend,.skill-objective{background:#eef4ff;border-radius:15px;padding:17px;margin:16px 0}.skill-objective a{color:#1e5eff;font-weight:800;text-decoration:underline}.skill-row{margin:13px 0}.skill-head{display:flex;justify-content:space-between;gap:10px;font-size:14px}.skill-track{height:10px;background:#e8f0ff;border-radius:20px;overflow:hidden;margin-top:6px}.skill-fill{height:100%;border-radius:20px}';document.head.append(css)}
 }
+async function loadTaskExams(owner){
+ const root=$('taskExamList'),message=$('taskExamStatus');
+ if(!root||!message||!user||user.id!==owner)return;
+ root.replaceChildren();message.textContent='Cargando tus exámenes…';
+ const {data,error}=await eeDb.from('examenes')
+  .select('id,titulo,fecha,nivel,descripcion')
+  .eq('usuario_id',owner).eq('publicado',true)
+  .order('fecha',{ascending:false,nullsFirst:false});
+ if(!user||user.id!==owner)return;
+ if(error){message.textContent='No se pudieron cargar tus exámenes: '+error.message;return}
+ for(const exam of data||[]){
+  const item=document.createElement('div');item.className='item';
+  const info=document.createElement('div'),title=document.createElement('strong'),detail=document.createElement('small');
+  title.textContent=exam.titulo||'Examen '+exam.id;
+  const date=exam.fecha?new Date(exam.fecha+'T12:00:00').toLocaleDateString('es-ES'):'Sin fecha';
+  detail.textContent=(exam.nivel||'')+' · '+date;
+  info.append(title,detail);
+  const link=document.createElement('a');link.className='primary';link.href='practicar.html?examen='+encodeURIComponent(exam.id);link.textContent='Realizar examen →';
+  item.append(info,link);root.append(item);
+ }
+ message.textContent=(data||[]).length
+  ?(data.length+' exámenes disponibles en tu perfil.')
+  :'Todavía no tienes exámenes generados por tareas.';
+}
 async function results(){
  const box=$('examHistory');box.replaceChildren();
  if(!user){$('examCount').textContent='—';$('bestScore').textContent='—';$('averageScore').textContent='—';return}
@@ -931,6 +955,7 @@ async function changeUser(next){
  savedFavorites=new Set();favoritesReady=false;
  achievementProgress={reads:null,course:null,exams:null,streak:null};renderAchievements();
  $('favoritesCount').textContent='0';$('favoritesList').replaceChildren();
+ $('taskExamList')?.replaceChildren();$('taskExamStatus')?.replaceChildren();
  $('favoritesStatus').textContent='Consultando tus recursos guardados…';
  $('learningStatus').textContent='Consultando tu progreso…';$('learningActivityHistory').replaceChildren();
  $('learningReads').textContent='—';$('learningExams').textContent='—';$('learningActivities').textContent='—';$('learningErrors').textContent='—';
@@ -956,6 +981,7 @@ async function changeUser(next){
    profile={name:'',read:{}};
    render();
    const courseUserId=user.id;
+   void loadTaskExams(courseUserId);
    void loadSavedResources(courseUserId).catch(e=>{if(user?.id===courseUserId)$('favoritesStatus').textContent='No se pudieron cargar los favoritos: '+e.message});
    void loadWeeklyGoal(courseUserId).catch(e=>{if(user?.id===courseUserId)$('weeklyGoalStatus').textContent='No se pudo cargar el objetivo: '+e.message});
    void loadCourseProgress(courseUserId).catch(e=>{
