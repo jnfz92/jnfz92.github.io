@@ -63,41 +63,24 @@ permalink: /examenes.html
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script><script src="supabase-config.js"></script>
 <script>
 (async function(){
- const grid=document.getElementById('catalogGrid'), status=document.getElementById('catalogStatus'), facts=document.querySelector('.catalog-facts');
- const notice=document.getElementById('examSessionNotice'), description=document.getElementById('examSessionDescription');
- let revision=0;
- function note(t){status.textContent=t;status.hidden=!t}
- function guest(message){
-  notice.hidden=false;
-  description.textContent=message||'Inicia sesión para acceder a la biblioteca, realizar los exámenes y guardar tus resultados.';
-  note('');
- }
- async function load(){
-  const ticket=++revision;
-  grid.replaceChildren();notice.hidden=true;note('Comprobando tu sesión…');
-  try{
-   const a=await eeDb.auth.getUser();
-   if(ticket!==revision)return;
-   if(a.error&&a.error.name!=='AuthSessionMissingError')throw a.error;
-   const user=a.data?.user;
-   if(!user){guest();return}
-   const r=await eeDb.from('examenes').select('id,titulo,fecha,nivel,descripcion').eq('publicado',true).order('fecha',{ascending:false});
-   if(ticket!==revision)return;
-   if(r.error)throw r.error;
-   (r.data||[]).forEach(e=>{const a=document.createElement('a');a.className='catalog-card';a.href='practicar.html?examen='+encodeURIComponent(e.id);
-   const tag=document.createElement('span');tag.className='catalog-tag';tag.textContent='INGLÉS '+(e.nivel||'');a.append(tag);
-   const h=document.createElement('h3');h.textContent=e.titulo||'Examen '+e.id;a.append(h);
-   const p=document.createElement('p');p.textContent=e.descripcion||'20 preguntas, corrección y resultados privados';a.append(p);
-   const go=document.createElement('span');go.className='catalog-go';go.textContent='Empezar examen protegido →';a.append(go);grid.append(a)});
-   if(facts)facts.textContent=(r.data||[]).length+' EXÁMENES DISPONIBLES · CORRECCIÓN EXPLICADA';
-   note((r.data||[]).length ? (r.data||[]).length+' exámenes disponibles para tu cuenta' : 'Todavía no hay exámenes publicados.');
-  }catch(err){
-   if(ticket!==revision)return;
-   note('No hemos podido comprobar tu sesión o cargar los exámenes. Actualiza la página para volver a intentarlo.');
+ const status=document.getElementById('catalogStatus');
+ const grid=document.getElementById('catalogGrid');
+ if(grid)grid.replaceChildren();
+ try{
+  const {data,error}=await eeDb.auth.getUser();
+  if(error)throw error;
+  if(!data?.user){
+   status.textContent='Inicia sesión para consultar tus exámenes en tu perfil.';
+   return;
   }
+  status.textContent='Los exámenes generados automáticamente ya no aparecen en la biblioteca general. Puedes encontrarlos en tu perfil, dentro de la pestaña «Progreso».';
+  const link=document.createElement('a');
+  link.className='cta';link.href='/perfil.html#profile-panel-progreso';
+  link.textContent='Ver mis exámenes en mi perfil →';
+  status.insertAdjacentElement('afterend',link);
+ }catch(error){
+  status.textContent='No se pudo comprobar tu sesión. Actualiza la página para volver a intentarlo.';
  }
- await load();
- eeDb.auth.onAuthStateChange(()=>{setTimeout(load,0)});
 })();
 </script>
 {% include footer.html %}
