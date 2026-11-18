@@ -106,7 +106,7 @@ permalink: /leer.html
   const metadata=metaList[0];
   const list=await loadJSON('articulos?select=html,titulo,descripcion&slug=eq.'+encodeURIComponent(resolveSlug(slug))+'&limit=1');
   if(!list.length||!list[0].html){
-   if(metadata.categoria_slug==='fce'){
+   if(false && metadata.categoria_slug==='fce'){
     const panel=document.createElement('section');
     panel.className='ee-paywall ee-fce-paywall';
     panel.style.cssText='margin:24px 0;padding:26px;border:1px solid #cbdaf4;border-radius:20px;background:linear-gradient(145deg,#f1f6ff,#fff);box-shadow:0 12px 35px #183c7a12';
@@ -139,7 +139,7 @@ permalink: /leer.html
     status.after(panel);
     return;
    }
-   if(metadata.es_premium){
+   if(false && metadata.es_premium){
     const panel=document.createElement('section');
     panel.className='ee-paywall';
     panel.style.cssText='margin:24px 0;padding:26px;border:1px solid #cbdaf4;border-radius:20px;background:linear-gradient(145deg,#f1f6ff,#fff);box-shadow:0 12px 35px #183c7a12';
