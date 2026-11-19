@@ -367,6 +367,50 @@ permalink: /leer.html
     nav.querySelector('.ee-more > summary')?.classList.add('ee-more-current');
   }
   loader.replaceWith(document.importNode(articleLoadedMain,true));
+  // Favoritos sincronizados con la cuenta de Supabase.
+  const liveArticleMain=document.querySelector('body > main:not(.loader)');
+  if(liveArticleMain){
+    const favoriteBar=document.createElement('div');
+    favoriteBar.className='ee-article-favorite-bar';
+    favoriteBar.style.cssText='display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:18px 0 24px;padding:13px 16px;border:1px solid #d6e3f6;border-radius:14px;background:#f5f8ff';
+    const favoriteButton=document.createElement('button');
+    favoriteButton.type='button';
+    favoriteButton.style.cssText='border:0;border-radius:10px;background:#1e5eff;color:#fff;padding:11px 16px;font:inherit;font-weight:800;cursor:pointer';
+    const favoriteStatus=document.createElement('span');
+    favoriteStatus.setAttribute('role','status');
+    favoriteStatus.style.cssText='font-size:13px;color:#536782';
+    favoriteBar.append(favoriteButton,favoriteStatus);
+    liveArticleMain.prepend(favoriteBar);
+    if(!session?.user){
+      favoriteButton.textContent='☆ Guardar en favoritos';
+      favoriteButton.addEventListener('click',()=>location.href='/login.html?next='+encodeURIComponent(location.pathname+location.search));
+      favoriteStatus.textContent='Inicia sesión para sincronizar tus artículos guardados.';
+    }else{
+      let isFavorite=false;
+      const refreshFavorite=async()=>{
+        favoriteButton.disabled=true;
+        const {data,error}=await client.from('favoritos_articulos').select('articulo_slug').eq('articulo_slug',resolveSlug(slug)).maybeSingle();
+        if(error){favoriteStatus.textContent='No se pudo comprobar el favorito.';favoriteButton.disabled=false;return}
+        isFavorite=!!data;
+        favoriteButton.textContent=isFavorite?'★ Guardado · Quitar de favoritos':'☆ Guardar en favoritos';
+        favoriteButton.setAttribute('aria-pressed',String(isFavorite));
+        favoriteButton.disabled=false;
+      };
+      favoriteButton.addEventListener('click',async()=>{
+        favoriteButton.disabled=true;favoriteStatus.textContent='Guardando…';
+        const result=isFavorite
+          ?await client.from('favoritos_articulos').delete().eq('articulo_slug',resolveSlug(slug))
+          :await client.from('favoritos_articulos').insert({usuario_id:session.user.id,articulo_slug:resolveSlug(slug)});
+        if(result.error){favoriteStatus.textContent='No se pudo actualizar. Inténtalo de nuevo.';favoriteButton.disabled=false;return}
+        isFavorite=!isFavorite;
+        favoriteButton.textContent=isFavorite?'★ Guardado · Quitar de favoritos':'☆ Guardar en favoritos';
+        favoriteButton.setAttribute('aria-pressed',String(isFavorite));
+        favoriteStatus.textContent=isFavorite?'Artículo guardado en tus favoritos.':'Artículo quitado de tus favoritos.';
+        favoriteButton.disabled=false;
+      });
+      refreshFavorite();
+    }
+  }
   // Imágenes fuera de la zona inicial: carga diferida para ahorrar transferencia.
   document.querySelectorAll('main img').forEach((img,index)=>{
     img.decoding='async';
