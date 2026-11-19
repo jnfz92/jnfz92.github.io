@@ -115,3 +115,24 @@ body.ee-site{background:#f7faff;color:#1f2a44}
   scroll-behavior:auto!important;transition-duration:0s!important;animation-duration:0s!important
  }
 }
+
+
+/* 2026-11: full-width article layouts across all lessons */
+.ee-site .article{
+  width:100%;
+  max-width:none;
+}
+.ee-site .article .columns,
+.ee-site .article .column,
+.ee-site .article .two-columns,
+.ee-site .article .three-columns,
+.ee-site .article .content-columns,
+.ee-site .article .table-wrap,
+.ee-site .article .table-responsive{
+  width:100%;
+  max-width:none;
+}
+.ee-site .article table{
+  width:100%;
+  max-width:none;
+}
