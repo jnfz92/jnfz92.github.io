@@ -13,7 +13,7 @@ Característica: Exámenes personalizados y datos privados
     Cuando entrega un repaso de errores
     Entonces la calificación histórica permanece intacta
 
-  @pendiente-sesion
+  @cucumber-aislado
   Escenario: El PDF del informe contiene gráficos y explicaciones legibles
     Dado que el alumno ha completado un examen en una cuenta de pruebas
     Cuando exporta el informe a PDF
