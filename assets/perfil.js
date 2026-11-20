@@ -75,7 +75,7 @@ dashboardStatus.id='dashboardStatus';dashboardStatus.className='muted';dashboard
 $('privateDashboard').prepend(dashboardStatus);
 $('accountActions').querySelector('.section-kicker').textContent='SEGURIDAD DE LA CUENTA';
 const accountActions=$('accountActions').querySelector('.account-actions');
-accountActions.prepend($('signout'));
+// El botón de cierre permanece en la cabecera principal del perfil.
 // Mantener pestañas, secciones y desplegables del HTML.
 function localSave(){try{localStorage.setItem(key,JSON.stringify(profile))}catch{status('No se pudieron guardar los cambios en este navegador.')}}
 // El artículo recomendado depende únicamente de las lecturas confirmadas en Supabase.
