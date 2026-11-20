@@ -157,7 +157,7 @@ $('submitAnswers').disabled=true;$('submitAnswers').textContent='Checking your a
 const payload=questions.map(q=>({question_id:q.id,option:answers[q.id]}));
 const {data,error}=await window.eeDb.rpc('submit_listening_attempt',{p_exercise_slug:slug,p_answers:payload});
 if(error){$('submitAnswers').disabled=false;$('submitAnswers').textContent='Submit my answers';$('accessStatus').textContent=error.message;return}
-submitted=true;$('results').hidden=false;
+submitted=true;$('historyList').insertAdjacentHTML('afterbegin','<p>'+new Date().toLocaleString()+' · <strong>'+data.score+'/'+data.total+'</strong> ('+data.percentage+'%)</p>');$('results').hidden=false;
 $('results').innerHTML='<div class="ll-score">Your score: '+data.score+' / '+data.total+' ('+data.percentage+'%)</div><p>Your attempt has been saved to your learning history.</p>'+data.feedback.map((f,i)=>{const q=questions.find(x=>x.id===f.question_id);return '<div class="ll-feedback"><strong>'+(i+1)+'. '+(f.is_correct?'Correct ✓':'Not quite. Correct answer: '+f.correct_option)+ '</strong><p>'+escapeHtml(f.explanation)+'</p></div>'}).join('');
 $('submitAnswers').textContent='Answers submitted';
 questions.forEach(q=>{document.querySelectorAll('input[name="q_'+q.id+'"]').forEach(el=>el.disabled=true)});
