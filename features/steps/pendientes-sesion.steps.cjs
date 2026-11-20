@@ -399,3 +399,58 @@ Then('los gráficos coinciden con sus resultados reales',async function(){
   assert.equal(await this.page.locator('#learningStrengths .skill-trend-bar').count(),2);
   assert.match(await this.page.locator('#learningStrengths').innerText(),/17 respuestas correctas de 20/);
 });
+
+
+Given('que el alumno ha completado un examen en una cuenta de pruebas',async function(){
+  const config=String.raw`window.__examCalls=[];
+  window.eeDb={
+    auth:{getUser:async()=>({data:{user:{id:'user-exam-cucumber'}},error:null}),onAuthStateChange:()=>({data:{subscription:{unsubscribe(){}}}})},
+    from(table){
+      const query={filters:[],select(){return query},eq(field,value){query.filters.push([field,value]);return query},order(){return query},limit(){return query},
+        rows(){let rows=[];if(table==='examenes')rows=[{id:31,titulo:'Examen PDF de prueba',fecha:'2026-11-20',nivel:'B2',publicado:true,lectura:null}];if(table==='preguntas')rows=[
+          {id:301,examen_id:31,orden:1,enunciado:'Choose the correct answer',opciones:['First option','Second option'],fuente_url:'tenses-present'},
+          {id:302,examen_id:31,orden:2,enunciado:'Choose another answer',opciones:['Third option','Fourth option'],fuente_url:'conditionals'}
+        ];return rows.filter(row=>query.filters.every(([field,value])=>row[field]===value))},
+        then(resolve,reject){const data=query.rows();return Promise.resolve({data,error:null}).then(resolve,reject)},
+        maybeSingle:async()=>({data:query.rows()[0]||null,error:null})
+      };return query
+    },
+    rpc:async(name,args)=>{
+      window.__examCalls.push({name,args});
+      if(name==='entregar_examen_idempotente')return {data:{resultado_id:'resultado-cucumber-pdf'},error:null};
+      if(name==='ver_correccion')return {data:[
+        {pregunta_id:301,respuesta_correcta:0,explicacion:'La primera opción es correcta.'},
+        {pregunta_id:302,respuesta_correcta:1,explicacion:'La cuarta opción es correcta.'}
+      ],error:null};
+      return {data:null,error:{message:'RPC inesperada: '+name}};
+    }
+  };`;
+  await this.page.route('**/supabase.min.js*',route=>route.fulfill({status:200,contentType:'application/javascript',body:''}));
+  await this.page.route('**/supabase-config.js*',route=>route.fulfill({status:200,contentType:'application/javascript',body:config}));
+  await this.page.goto(BASE+'/examenes.html');
+  await this.page.locator('#examPicker').waitFor({state:'visible'});
+  await this.page.locator('#examlist option').filter({hasText:'Examen PDF de prueba'}).waitFor();
+  await this.page.locator('#examlist').selectOption('31');
+  await this.page.locator('#load').click();
+  await this.page.locator('#exam input[name="question-301"][value="0"]').waitFor();
+  await this.page.locator('#exam input[name="question-301"][value="0"]').check();
+  await this.page.locator('#exam input[name="question-302"][value="1"]').check();
+  await this.page.locator('#exam button[type="submit"]').click();
+  await this.page.locator('.exam-report-pdf-button').waitFor({state:'visible'});
+});
+When('exporta el informe a PDF',async function(){
+  this.pdfPopup=this.page.waitForEvent('popup');
+  await this.page.locator('.exam-report-pdf-button').click();
+  this.pdfPage=await this.pdfPopup;
+  await this.pdfPage.waitForFunction(()=>document.body?.textContent.includes('Tu informe personalizado'));
+});
+Then('el PDF contiene resultados y no crea páginas vacías',async function(){
+  const body=await this.pdfPage.locator('body').innerText();
+  assert.match(body,/Tu informe personalizado/);
+  assert.match(body,/100,0%|100\\.0%|Nota: 10,0/);
+  assert.match(body,/La primera opción es correcta/);
+  assert.match(body,/La cuarta opción es correcta/);
+  assert.ok(await this.pdfPage.locator('.exam-report-chart').count()>0);
+  assert.equal(await this.pdfPage.locator('.exam-report-error').filter({hasText:''}).count(),0);
+  assert.equal(await this.pdfPage.locator('button,a').count(),0);
+});
