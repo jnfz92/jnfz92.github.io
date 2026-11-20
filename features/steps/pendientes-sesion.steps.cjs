@@ -400,7 +400,7 @@ When('consulta su perfil',async function(){
 });
 Then('los gráficos coinciden con sus resultados reales',async function(){
   assert.equal(await this.page.locator('#examCount').innerText(),'2');
-  assert.equal(await this.page.locator('#bestScore').innerText(),'90%');
+  assert.equal(await this.page.locator('#bestScore').innerText(),'90.0%');
   assert.equal(await this.page.locator('#averageScore').innerText(),'85.0%');
   assert.equal(await this.page.locator('#learningActivities').innerText(),'1');
   assert.equal(await this.page.locator('#learningStrengths .skill-trend-bar').count(),2);
