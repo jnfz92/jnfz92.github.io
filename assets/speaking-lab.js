@@ -1,44 +1,32 @@
 (()=>{'use strict';
-const $=id=>document.getElementById(id);
-const prompts={
-A1:{conversation:['What is your name and where do you live?','Describe your family.','What food do you like?'],pronunciation:['My name is Alex and I live in Spain.','I would like a cup of tea, please.'],cambridge:['Introduce yourself and talk about your daily routine.']},
-A2:{conversation:['Tell me about your last holiday.','Describe your favourite place in your town.'],pronunciation:['Yesterday I visited my grandparents.','Could you tell me where the station is?'],cambridge:['Describe what you like to do at weekends.']},
-B1:{conversation:['Tell me about your typical weekend.','What are the advantages of learning English?','Describe a memorable trip.'],pronunciation:['I have been learning English for three years.','If I had more time, I would travel abroad.'],cambridge:['Describe a photo of people studying together. What might they be feeling?']},
-B2:{conversation:['Should teenagers spend less time on social media? Explain your opinion.','Discuss the advantages and disadvantages of remote work.'],pronunciation:['Although the weather was terrible, we thoroughly enjoyed the journey.','I would rather work collaboratively than independently.'],cambridge:['Compare studying online and in a classroom. Which is more effective and why?']},
-C1:{conversation:['To what extent does technology influence our personal relationships?','How can cities balance economic growth and sustainability?'],pronunciation:['The thoroughly thought-provoking theory challenged conventional wisdom.'],cambridge:['Evaluate the long-term consequences of artificial intelligence in education.']}
-};
-let index=0,recorder=null,stream=null,chunks=[],url=null,started=0,timer=null;
-function prompt(){const pool=prompts[$('speakingLevel').value][$('speakingMode').value];$('speakingPrompt').textContent=pool[index%pool.length]}
-function status(message){$('speakingStatus').textContent=message}
-function revoke(){if(url){URL.revokeObjectURL(url);url=null}const audio=$('recordingPlayback');audio.pause();audio.removeAttribute('src');audio.load();audio.hidden=true;$('downloadAudio').hidden=true;$('discardRecording').disabled=true}
-function clock(){const seconds=Math.floor((Date.now()-started)/1000);$('speakingTimer').textContent=String(Math.floor(seconds/60)).padStart(2,'0')+':'+String(seconds%60).padStart(2,'0')}
-function stopTracks(){if(stream){stream.getTracks().forEach(t=>t.stop());stream=null}if(timer){clearInterval(timer);timer=null}}
-$('speakingLevel').addEventListener('change',()=>{index=0;prompt()});
-$('speakingMode').addEventListener('change',()=>{index=0;prompt()});
-$('nextPrompt').addEventListener('click',()=>{index++;prompt()});
-$('startRecording').addEventListener('click',async()=>{
- if(!navigator.mediaDevices?.getUserMedia||typeof MediaRecorder==='undefined'){status('Este navegador no permite grabar audio. Usa HTTPS y un navegador compatible.');return}
- $('startRecording').disabled=true;revoke();chunks=[];
- try{
-  stream=await navigator.mediaDevices.getUserMedia({audio:true});
-  recorder=new MediaRecorder(stream);
-  recorder.addEventListener('dataavailable',event=>{if(event.data?.size)chunks.push(event.data)});
-  recorder.addEventListener('stop',()=>{
-   stopTracks();$('stopRecording').disabled=true;$('startRecording').disabled=false;
-   if(!chunks.length){status('No se obtuvo audio. Inténtalo de nuevo.');return}
-   const type=recorder.mimeType||'audio/webm';
-   const blob=new Blob(chunks,{type});url=URL.createObjectURL(blob);
-   const audio=$('recordingPlayback');audio.src=url;audio.hidden=false;
-   const a=$('downloadAudio');a.href=url;a.download='easy-english-speaking.'+(type.includes('mp4')?'m4a':type.includes('ogg')?'ogg':'webm');a.hidden=false;
-   $('discardRecording').disabled=false;status('Grabación lista. Escúchala o descárgala.');
-  },{once:true});
-  recorder.addEventListener('error',()=>{stopTracks();$('startRecording').disabled=false;$('stopRecording').disabled=true;status('No se pudo completar la grabación.');});
-  recorder.start();started=Date.now();$('speakingTimer').textContent='00:00';timer=setInterval(clock,500);
-  $('stopRecording').disabled=false;status('Grabando… Habla con naturalidad.');
- }catch(error){stopTracks();$('startRecording').disabled=false;$('stopRecording').disabled=true;status(error?.name==='NotAllowedError'?'No se concedió permiso para usar el micrófono. Revisa los permisos del navegador.':'No se pudo iniciar la grabación: '+(error.message||'error desconocido'))}
-});
-$('stopRecording').addEventListener('click',()=>{if(recorder?.state==='recording'){recorder.stop();$('stopRecording').disabled=true;clock()}});
-$('discardRecording').addEventListener('click',()=>{revoke();$('speakingTimer').textContent='00:00';status('Grabación descartada. Puedes volver a empezar.')});
-window.addEventListener('pagehide',()=>{if(recorder?.state==='recording')recorder.stop();stopTracks();if(url)URL.revokeObjectURL(url)});
-prompt();
+const $=id=>document.getElementById(id),db=window.eeDb;
+const PARTS=['part1','part2','part3','part4'];
+const TITLES={part1:'Part 1 · Interview',part2:'Part 2 · Long turn',part3:'Part 3 · Collaborative task',part4:'Part 4 · Discussion'};
+const LIMITS={part1:4,part2:1,part3:4,part4:3};
+let mode='full',partIndex=0,counts={},conversation=[],busy=false,startedAt=0,recognition=null;
+const voiceSupported=!!(window.SpeechRecognition||window.webkitSpeechRecognition);
+function status(s){$('speakingStatus').textContent=s}
+function show(id,on=true){$(id).hidden=!on}
+function currentPart(){return mode==='full'?PARTS[partIndex]:mode==='random'?modePart:mode}
+let modePart='part1';
+function updateProgress(){const p=currentPart();$('partLabel').textContent=TITLES[p];$('partProgress').textContent=mode==='full'?'Parte '+(partIndex+1)+' de 4': 'Práctica individual';$('turnProgress').textContent=(counts[p]||0)+' / '+LIMITS[p]+' intervenciones';}
+function renderMessage(role,text){const el=document.createElement('article');el.className='chat-message '+(role==='assistant'?'examiner':'candidate');const who=document.createElement('strong');who.textContent=role==='assistant'?'Interlocutor':'Tú';const p=document.createElement('p');p.textContent=text;el.append(who,p);$('conversation').append(el);$('conversation').scrollTop=$('conversation').scrollHeight}
+function say(text){if(!('speechSynthesis'in window))return;window.speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.lang='en-GB';u.rate=.94;const voices=speechSynthesis.getVoices();const v=voices.find(x=>x.lang==='en-GB')||voices.find(x=>x.lang.startsWith('en'));if(v)u.voice=v;speechSynthesis.speak(u)}
+function setBusy(v){busy=v;['sendAnswer','voiceAnswer','startExam','finishExam'].forEach(id=>$(id).disabled=v);$('answerText').disabled=v}
+function payload(){return {level:'B2',part:currentPart(),topic:$('topic').value||'random topics',transcript:conversation.slice(-18)}}
+async function aiTurn(){setBusy(true);status('El interlocutor está preparando la siguiente intervención…');try{const r=await window.eeAI.speaking(db,'speaking_turn',payload());conversation.push({role:'assistant',text:r.reply});renderMessage('assistant',r.reply);if(r.stage_note)$('coachNote').textContent=r.stage_note;say(r.reply);status('Tu turno. Responde en inglés.');updateProgress()}catch(e){status(e.message||'No se pudo conectar con OpenAI.')}finally{setBusy(false)}}
+async function start(){if(!db){status('No se ha conectado la cuenta. Recarga la página.');return}const a=await window.eeAI.availability(db);if(!a.ready){status(a.reason||'Guarda tu clave OpenAI en Mi perfil.');return}if(!$('dataConsent').checked){status('Antes de empezar, autoriza el envío de tu transcripción a OpenAI.');return}
+ mode=$('examMode').value;modePart=mode==='random'?PARTS[Math.floor(Math.random()*4)]:mode==='full'?'part1':mode;partIndex=0;counts={};conversation=[];startedAt=Date.now();$('conversation').replaceChildren();show('setupPanel',false);show('sessionPanel');show('feedbackPanel',false);show('historyPanel',false);$('coachNote').textContent='';updateProgress();await aiTurn();}
+async function submitAnswer(text){text=(text||'').trim();if(!text||busy)return;if(text.length>1800){status('La respuesta es demasiado larga. Resume tu intervención.');return}conversation.push({role:'user',text});renderMessage('user',text);$('answerText').value='';const p=currentPart();counts[p]=(counts[p]||0)+1;
+ if(counts[p]>=LIMITS[p]){
+  if(mode==='full'&&partIndex<3){partIndex++;updateProgress();conversation.push({role:'assistant',text:'Let’s move on to the next part of the exam.'});renderMessage('assistant','Let’s move on to the next part of the exam.');await aiTurn();return}
+  await finish(true);return;
+ }
+ await aiTurn();}
+async function finish(auto=false){if(busy)return;setBusy(true);status('Evaluando tu speaking…');window.speechSynthesis?.cancel();try{const feedback=await window.eeAI.speaking(db,'speaking_feedback',{level:'B2',topic:$('topic').value||'mixed FCE topics',transcript:conversation});renderFeedback(feedback);const {data:{user}}=await db.auth.getUser();if(user){const {error}=await db.from('speaking_attempts').insert({user_id:user.id,mode,topic:$('topic').value||'random',transcript:conversation,feedback,duration_seconds:Math.max(0,Math.round((Date.now()-startedAt)/1000))});if(error)console.warn('No se pudo guardar el historial',error)}show('sessionPanel',false);show('feedbackPanel');await loadHistory();status(auto?'Examen terminado.':'Evaluación completada.');}catch(e){status(e.message||'No se pudo evaluar la sesión.');$('finishExam').disabled=false}finally{setBusy(false)}}
+function renderFeedback(f){const root=$('feedbackContent');root.replaceChildren();const h=document.createElement('h3');h.textContent='Resultado orientativo · '+(f.estimated_level||'B2');root.append(h);const summary=document.createElement('p');summary.textContent=f.summary||'';root.append(summary);const names={grammar_vocabulary:'Grammar & Vocabulary',discourse_management:'Discourse Management',pronunciation:'Pronunciation',interactive_communication:'Interactive Communication',global_achievement:'Global Achievement'};const scores=f.scores||{};Object.entries(names).forEach(([k,label])=>{const row=document.createElement('div');row.className='score-row';const name=document.createElement('strong');name.textContent=label;const value=document.createElement('span');value.textContent=scores[k]===null||scores[k]===undefined?'No evaluable con transcripción':scores[k]+'/5';row.append(name,value);root.append(row)});[['Puntos fuertes',f.strengths],['A mejorar',f.improvements]].forEach(([label,items])=>{if(!Array.isArray(items)||!items.length)return;const title=document.createElement('h4');title.textContent=label;root.append(title);const ul=document.createElement('ul');items.forEach(t=>{const li=document.createElement('li');li.textContent=t;ul.append(li)});root.append(ul)});if(f.corrections?.length){const title=document.createElement('h4');title.textContent='Correcciones útiles';root.append(title);f.corrections.forEach(c=>{const p=document.createElement('p');p.textContent='“'+c.original+'” → “'+c.suggestion+'”. '+c.reason;root.append(p)})}const tip=document.createElement('p');tip.className='coach-tip';tip.textContent='Próximo paso: '+(f.practice_tip||'Practica una respuesta más desarrollada.');root.append(tip);if(scores.pronunciation===null){const note=document.createElement('p');note.className='small-note';note.textContent='La pronunciación no se puntúa porque el sistema evalúa la transcripción, no el audio. Para esa parte, escucha tu grabación y revisa ritmo, sonidos y entonación.';root.append(note)}}
+async function loadHistory(){if(!db)return;const {data:{user}}=await db.auth.getUser();if(!user)return;const {data,error}=await db.from('speaking_attempts').select('id,mode,topic,feedback,duration_seconds,created_at').eq('user_id',user.id).order('created_at',{ascending:false}).limit(8);if(error)return;const root=$('historyList');root.replaceChildren();(data||[]).forEach(a=>{const item=document.createElement('li');const d=new Date(a.created_at).toLocaleDateString('es-ES',{day:'2-digit',month:'short'});item.textContent=d+' · '+(a.mode==='full'?'Examen completo':a.mode==='random'?'Parte aleatoria':a.mode.toUpperCase())+' · '+(a.feedback?.estimated_level||'Evaluado')+' · '+Math.round((a.duration_seconds||0)/60)+' min';root.append(item)});show('historyPanel',!!data?.length)}
+function voice(){const C=window.SpeechRecognition||window.webkitSpeechRecognition;if(!C){status('El reconocimiento de voz no está disponible en este navegador. Puedes escribir tu respuesta.');return}if(!window.eeAI||busy)return;recognition=new C();recognition.lang='en-GB';recognition.interimResults=true;recognition.continuous=false;let final='';$('voiceAnswer').disabled=true;status('Escuchando… habla en inglés.');recognition.onresult=e=>{let interim='';for(let i=e.resultIndex;i<e.results.length;i++){const t=e.results[i][0].transcript;if(e.results[i].isFinal)final+=t+' ';else interim+=t}$('answerText').value=(final+interim).trim()};recognition.onerror=e=>status(e.error==='not-allowed'?'Permite el micrófono para usar voz.':'No se pudo reconocer la voz. Puedes escribir tu respuesta.');recognition.onend=()=>{$('voiceAnswer').disabled=false;const t=final.trim()||$('answerText').value.trim();if(t)submitAnswer(t);else status('No se detectó una respuesta. Inténtalo otra vez o escribe tu respuesta.')};recognition.start()}
+$('startExam').addEventListener('click',start);$('sendAnswer').addEventListener('click',()=>submitAnswer($('answerText').value));$('answerText').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();submitAnswer($('answerText').value)}});$('voiceAnswer').addEventListener('click',voice);$('finishExam').addEventListener('click',()=>finish(false));$('newExam').addEventListener('click',()=>{show('feedbackPanel',false);show('setupPanel');status('Listo para una nueva sesión.')});$('openProfileKey').addEventListener('click',()=>location.href='/clave-openai.html');$('historyToggle').addEventListener('click',()=>{show('historyPanel');loadHistory()});
+(async()=>{if(!db){status('No se ha conectado Supabase.');return}const a=await window.eeAI.availability(db);$('keyStatus').textContent=a.ready?'Clave OpenAI configurada. Ya puedes practicar.':'Necesitas guardar tu clave OpenAI en tu perfil para iniciar el laboratorio.';$('startExam').disabled=!a.ready;await loadHistory();if(!voiceSupported)$('voiceAnswer').hidden=true})();
 })();
