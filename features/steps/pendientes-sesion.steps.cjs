@@ -258,3 +258,53 @@ Then('únicamente el destinatario autorizado puede leerlo',async function(){
   await this.page.waitForFunction(()=>document.querySelector('#msgStatus')?.textContent.length>0);
   assert.equal(await this.page.locator('#thread').innerText().then(t=>t.includes('Mensaje privado de Cucumber')),false);
 });
+
+
+Given('que el alumno tiene actividades de selección y respuesta abierta',async function(){
+  const config=String.raw`window.__activityCalls=[];
+  window.eeDb={
+    auth:{getUser:async()=>({data:{user:{id:'user-activity-cucumber'}},error:null}),onAuthStateChange:()=>({data:{subscription:{unsubscribe(){}}}})},
+    from(table){
+      const query={select(){return query},eq(){return query},order(){return query},limit(){return query},then(resolve,reject){
+        let data=[];
+        if(table==='actividades')data=[{id:91,slug:'cucumber-modalidades',titulo:'Actividad de prueba',descripcion:'Selección y respuesta abierta',destreza:'grammar',unidad_id:null,orden:1}];
+        if(table==='actividad_preguntas')data=[
+          {id:201,orden:1,tipo:'seleccion',enunciado:'Choose the correct answer',configuracion:{opciones:['wrong','right']}},
+          {id:202,orden:2,tipo:'texto_corto',enunciado:'Write a short answer',configuracion:{}}
+        ];
+        return Promise.resolve({data,error:null}).then(resolve,reject)
+      }};
+      return query
+    },
+    rpc:async(name,args)=>{
+      window.__activityCalls.push({name,args});
+      if(name==='entregar_actividad')return {data:{aciertos:1,evaluables:1,pendientes_revision:1,detalle:{
+        '201':{estado:'correcta',solucion:1,explicacion:'Respuesta correcta'},
+        '202':{estado:'revision',solucion:null,explicacion:'Pendiente de revisión'}
+      }},error:null};
+      return {data:null,error:{message:'RPC inesperada: '+name}}
+    }
+  };`;
+  await this.page.route('**/supabase.min.js*',route=>route.fulfill({status:200,contentType:'application/javascript',body:''}));
+  await this.page.route('**/supabase-config.js*',route=>route.fulfill({status:200,contentType:'application/javascript',body:config}));
+  await this.page.goto(BASE+'/actividades.html');
+  await this.page.getByRole('button',{name:'Empezar →'}).waitFor();
+});
+When('completa y entrega ambas modalidades',async function(){
+  await this.page.getByRole('button',{name:'Empezar →'}).click();
+  await this.page.locator('#activity-q-201 input[name="act-201"][value="1"]').check();
+  await this.page.locator('#activity-q-202 input[name="act-202"]').fill('A clear open answer');
+  await this.page.locator('#activitySubmit').click();
+  await this.page.locator('#activitySummary').waitFor({state:'visible'});
+});
+Then('las respuestas se corrigen y se guarda el progreso',async function(){
+  await this.page.waitForFunction(()=>document.querySelector('#activitySessionStatus')?.textContent.includes('Intento registrado'));
+  const call=await this.page.evaluate(()=>window.__activityCalls.find(x=>x.name==='entregar_actividad'));
+  assert.ok(call);
+  assert.equal(call.args.p_actividad_id,91);
+  assert.equal(call.args.p_respuestas['201'],1);
+  assert.equal(call.args.p_respuestas['202'],'A clear open answer');
+  assert.ok(call.args.p_intento_id);
+  assert.match(await this.page.locator('#activitySummary').innerText(),/1 de 1 autocorregibles correctas/);
+  assert.match(await this.page.locator('#activitySummary').innerText(),/pendiente\(s\) de revisión/);
+});
