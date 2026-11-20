@@ -404,7 +404,7 @@ Then('los gráficos coinciden con sus resultados reales',async function(){
   assert.equal(await this.page.locator('#examCount').innerText(),'2');
   assert.equal(await this.page.locator('#bestScore').innerText(),'90.0%');
   assert.equal(await this.page.locator('#averageScore').innerText(),'85.0%');
-  assert.equal(await this.page.locator('#learningActivities').innerText(),'1');
+  assert.equal(await this.page.locator('#learningActivities').textContent(),'1');
   assert.equal(await this.page.locator('#learningStrengths .skill-trend-bar').count(),2);
   assert.match(await this.page.locator('#learningStrengths').innerText(),/17 respuestas correctas de 20/);
 });
