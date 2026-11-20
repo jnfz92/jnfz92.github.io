@@ -72,3 +72,13 @@ Fuente única de instrucciones del proyecto. `AGENTS.md` y `.github/copilot-inst
 5. Si no ha sido posible realizar una comprobación visual real, indicarlo explícitamente: **no declarar que está visualmente validado**.
 
 Esta regla aplica a páginas de GitHub Pages y, de forma equivalente, a documentos HTML completos guardados en `public.articulos` que se muestran mediante `leer.html`. Los artículos deben respetar la misma identidad sin introducir un segundo header ni romper el lector. Los artículos antiguos en verde se recolorean a azul en `leer.html`; los nuevos deben escribirse ya con los tokens azules.
+
+
+## Skill obligatoria: Supabase como fuente de verdad
+
+Cuando una tarea implique importar, restaurar, modificar, consultar o mostrar contenido que pertenece a Supabase, **lee y aplica la skill `supabase-source-of-truth` antes de actuar**. Está instalada para ambos agentes en:
+
+- Claude Code: `.claude/skills/supabase-source-of-truth/SKILL.md`
+- OpenAI Codex: `.agents/skills/supabase-source-of-truth/SKILL.md`
+
+La skill exige operar realmente sobre Supabase (no sustituirlo por archivos locales de GitHub), comprobar los registros antes y después, conectar el frontend a la base de datos, preservar el comportamiento y diseño existentes y distinguir entre commit, despliegue y verificación en producción. Estas reglas complementan las instrucciones específicas de este proyecto; si hay una regla de proyecto más restrictiva, prevalece la más restrictiva.
