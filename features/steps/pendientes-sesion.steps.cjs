@@ -56,7 +56,8 @@ window.eeDb={
 };`;
 
 Given('que hay un examen publicado y el usuario de pruebas tiene sesión',async function(){
-  await this.page.setContent('<!doctype html><html lang="es"><body><button id="mockStart">Empezar</button><p id="mockDraftStatus"></p><p id="mockTimer"></p><form id="mockForm" hidden><div id="mockQuestions"></div><button type="submit">Entregar</button></form><button id="mockSaveRetry" hidden>Reintentar guardado</button><button id="mockDiscard" hidden>Descartar</button><div id="mockResult"></div><div id="mockHistory"></div></body></html>');
+  await this.page.route('**/aula-b2.html*',route=>route.fulfill({status:200,contentType:'text/html',body:'<!doctype html><html lang="es"><body><button id="mockStart">Empezar</button><p id="mockDraftStatus"></p><p id="mockTimer"></p><form id="mockForm" hidden><div id="mockQuestions"></div><button type="submit">Entregar</button></form><button id="mockSaveRetry" hidden>Reintentar guardado</button><button id="mockDiscard" hidden>Descartar</button><div id="mockResult"></div><div id="mockHistory"></div></body></html>'}));
+  await this.page.goto(BASE+'/aula-b2.html');
   await this.page.evaluate(()=>{
     window.__aulaWrites=[];window.__aulaRows=[];
     const rows=window.__aulaRows;
