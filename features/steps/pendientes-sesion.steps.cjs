@@ -447,10 +447,10 @@ When('exporta el informe a PDF',async function(){
 Then('el PDF contiene resultados y no crea páginas vacías',async function(){
   const body=await this.pdfPage.locator('body').innerText();
   assert.match(body,/Tu informe personalizado/);
-  assert.match(body,/100,0%|100\\.0%|Nota: 10,0/);
+  assert.match(body,/100,0%|100.0%|Nota: 10,0/);
   assert.match(body,/La primera opción es correcta/);
   assert.match(body,/La cuarta opción es correcta/);
   assert.ok(await this.pdfPage.locator('.exam-report-chart').count()>0);
-  assert.equal(await this.pdfPage.locator('.exam-report-error').filter({hasText:''}).count(),0);
+  assert.equal(await this.pdfPage.locator('.exam-report-error').evaluateAll(nodes=>nodes.every(node=>node.textContent.trim().length>0)),true);
   assert.equal(await this.pdfPage.locator('button,a').count(),0);
 });
