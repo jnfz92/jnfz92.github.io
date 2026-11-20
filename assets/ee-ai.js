@@ -1,48 +1,33 @@
-/* Easy English · Solo habilita IA para una sesión autenticada con clave temporal. */
+/* Easy English · BYOK persistente: la clave nunca se guarda en el navegador. */
 (()=>{'use strict';
- const STORAGE_KEY='easyenglish:openai:temporary:v1';
- const PROJECT='https://wnluofonzteaqtlfshgy.supabase.co';
- function keyFor(userId){
-   if(!userId)return null;
-   try{
-     const record=JSON.parse(sessionStorage.getItem(STORAGE_KEY)||'null');
-     if(!record||typeof record.apiKey!=='string'||record.userId!==userId||
-        !Number.isFinite(record.expiresAt)||record.expiresAt<=Date.now()||
-        record.expiresAt>Date.now()+1800000+10000){
-       if(record)sessionStorage.removeItem(STORAGE_KEY);
-       return null;
-     }
-     return record.apiKey;
-   }catch{return null}
+ const PROJECT='https://wnluofonzteaqtlfshgy.supabase.co',configuredUsers=new Set();
+ async function request(db,action,payload={}){
+  if(!db)throw Error('No se ha conectado tu cuenta de Easy English.');
+  const {data:{user},error:userError}=await db.auth.getUser();if(userError||!user)throw Error('Inicia sesión antes de utilizar la IA.');
+  const {data:{session},error:sessionError}=await db.auth.getSession();
+  if(sessionError||!session?.access_token||session.user.id!==user.id)throw Error('No se pudo validar tu sesión.');
+  const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),45000);
+  try{
+   const response=await fetch(PROJECT+'/functions/v1/easy-english-ai',{method:'POST',signal:controller.signal,cache:'no-store',
+    headers:{'Content-Type':'application/json','apikey':'sb_publishable_Ef-AXAapcwaPExEFS6kmug_tKLaulM8','Authorization':'Bearer '+session.access_token},
+    body:JSON.stringify({action,...payload})});
+   let result;try{result=await response.json()}catch{throw Error('No se recibió una respuesta válida del servidor.')}
+   if(!response.ok)throw Error(result.error||'No se pudo completar la operación de IA.');return result;
+  }catch(err){if(err.name==='AbortError')throw Error('La solicitud ha tardado demasiado. Puedes reintentarlo.');throw err}
+  finally{clearTimeout(timer)}
  }
  async function availability(db){
-   if(!db)return {ready:false,reason:'No se ha conectado la cuenta.'};
-   const {data,error}=await db.auth.getUser();
-   const user=error?null:data?.user;
-   if(!user)return {ready:false,reason:'Debes iniciar sesión.',user:null};
-   return {ready:!!keyFor(user.id),reason:'Configura tu clave temporal de OpenAI.',user};
+  try{const result=await request(db,'key_status'),{data:{user}}=await db.auth.getUser();
+   if(user&&result.configured)configuredUsers.add(user.id);else if(user)configuredUsers.delete(user.id);
+   return {ready:!!result.configured,user};
+  }catch(error){return {ready:false,reason:error.message,user:null}}
  }
+ async function saveKey(db,apiKey){const result=await request(db,'key_save',{apiKey});const {data:{user}}=await db.auth.getUser();if(user)configuredUsers.add(user.id);return result}
+ async function deleteKey(db){const result=await request(db,'key_delete');const {data:{user}}=await db.auth.getUser();if(user)configuredUsers.delete(user.id);return result}
  async function run(db,action,payload){
-   if(!['writing','plan'].includes(action))throw Error('Función de IA desconocida.');
-   const {data:{user},error}=await db.auth.getUser();
-   if(error||!user)throw Error('Inicia sesión antes de utilizar la IA.');
-   const key=keyFor(user.id);
-   if(!key)throw Error('La clave de OpenAI no está guardada o ha caducado. Configúrala en tu perfil.');
-   const {data:{session},error:sessionError}=await db.auth.getSession();
-   if(sessionError||!session?.access_token||session.user.id!==user.id)throw Error('No se pudo validar tu sesión.');
-   const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),45000);
-   try{
-     const response=await fetch(PROJECT+'/functions/v1/easy-english-ai',{
-       method:'POST',signal:controller.signal,cache:'no-store',
-       headers:{'Content-Type':'application/json','apikey':'sb_publishable_Ef-AXAapcwaPExEFS6kmug_tKLaulM8','Authorization':'Bearer '+session.access_token},
-       body:JSON.stringify({action,apiKey:key,consent:true,...payload})
-     });
-     let result;try{result=await response.json()}catch{throw Error('No se recibió una respuesta válida del servidor.')}
-     if(!response.ok)throw Error(result.error||'No se pudo completar la solicitud de IA.');
-     if(!result.result||typeof result.result!=='object')throw Error('La respuesta de OpenAI no es válida.');
-     return result.result;
-   }catch(err){if(err.name==='AbortError')throw Error('La solicitud ha tardado demasiado. Puedes reintentarlo.');throw err}
-   finally{clearTimeout(timer)}
+  if(!['writing','plan'].includes(action))throw Error('Función de IA desconocida.');
+  const state=await availability(db);if(!state.ready)throw Error(state.reason||'Guarda tu clave OpenAI en tu cuenta antes de utilizar la IA.');
+  return (await request(db,action,{consent:true,...payload})).result;
  }
- window.eeAI={keyFor,availability,run};
+ window.eeAI={keyFor:userId=>configuredUsers.has(userId),availability,saveKey,deleteKey,run};
 })();
