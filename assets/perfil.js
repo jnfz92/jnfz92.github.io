@@ -262,8 +262,8 @@ function render(){
   }
   root.append(box);
  }
- if(articleView!=='pending')group('read','✓ Artículos leídos',doneList);
  if(articleView!=='read')group('pending','📖 Artículos pendientes de leer',pendingList);
+ if(articleView!=='pending')group('read','✓ Artículos leídos',doneList);
  updateSuggestedReading();
 }
 async function loadCloud(){if(!user)return;const activeId=user.id;const [p,l]=await Promise.all([eeDb.from('perfiles').select('nombre').eq('usuario_id',activeId).maybeSingle(),eeDb.from('lecturas').select('articulo_url,leido_en').eq('usuario_id',activeId)]);if(!user||user.id!==activeId)return;if(p.error)throw p.error;if(l.error)throw l.error;profile={name:p.data?.nombre||'',read:Object.fromEntries((l.data||[]).map(r=>[r.articulo_url,r.leido_en]))};cloudUserId=activeId;render();await Promise.all([results(),loadStreak(),loadLearningOverview(),loadActivityCalendar(activeId),loadWeeklyFollowup(activeId)])}
