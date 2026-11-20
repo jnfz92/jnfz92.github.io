@@ -98,6 +98,12 @@ permalink: /listening-lab.html
 <div id="results" hidden aria-live="polite"></div>
 </section>
 
+<section class="ll-panel" id="attemptHistory">
+<h2>Your recent results</h2>
+<p class="ll-muted">Your last listening attempts are saved to your account.</p>
+<div id="historyList" class="ll-muted">Loading your results…</div>
+</section>
+
 <section class="ll-panel">
 <h2>Speaking practice</h2>
 <p class="ll-muted">Answer in English. Try to speak for 20–30 seconds for each question. You can record yourself using your phone or computer.</p>
@@ -138,6 +144,8 @@ if(exError)throw exError;exercise=ex;
 const {data:qs,error:qError}=await window.eeDb.from('listening_questions').select('id,question_number,prompt,options').eq('exercise_id',exercise.id).order('question_number');
 if(qError)throw qError;
 questions=qs||[];
+const {data:attempts,error:attemptError}=await window.eeDb.from('listening_attempts').select('score,total_questions,completed_at').eq('exercise_id',exercise.id).order('completed_at',{ascending:false}).limit(5);
+if(!attemptError && attempts && attempts.length){$('historyList').innerHTML=attempts.map(a=>'<p>'+new Date(a.completed_at).toLocaleString()+' · <strong>'+a.score+'/'+a.total_questions+'</strong> ('+Math.round(a.score/a.total_questions*100)+'%)</p>').join('')}else{$('historyList').textContent='No attempts yet. Complete this activity to see your first result here.'}
 if(!questions.length)throw new Error('No questions are available for this activity yet.');
 $('exerciseTitle').textContent=exercise.title;$('exerciseDescription').textContent=exercise.description;$('transcript').textContent=exercise.transcript;renderQuestions();renderSpeaking(exercise.speaking_questions||[]);
 $('labContent').hidden=false;sayStatus('You have access to the FCE Listening Lab. Your progress will be saved when you submit your answers.');
