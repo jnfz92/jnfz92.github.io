@@ -48,7 +48,7 @@ Característica: Exámenes personalizados y datos privados
     Cuando supera una tanda de repaso
     Entonces las preguntas acertadas dejan de estar pendientes
 
-  @pendiente-sesion
+  @cucumber-aislado
   Escenario: Los mensajes se muestran solo a sus destinatarios
     Dado que hay dos usuarios de pruebas
     Cuando uno crea un mensaje privado
