@@ -169,7 +169,95 @@ No todas las familias tienen todas las categorías. Lo importante es conocer las
 5. **Escribir mal la palabra.** Recuerda cambios como *easy → easily* y *happy → happiness*.
 6. **No leer el texto entero.** Algunas respuestas dependen del sentido general, no solo de las dos palabras cercanas al hueco.
 
-## 8. Practica: mini ejercicio de Word Formation
+## 8. Reglas generales y excepciones que debes conocer
+
+En Word Formation hay patrones muy frecuentes, pero **ningún sufijo funciona con todas las palabras**. Aprende las reglas como pistas y memoriza las excepciones habituales.
+
+### Regla 1. Identifica la categoría gramatical antes de transformar
+
+- Delante de un sustantivo suele aparecer un adjetivo: *a **useful** tool*.
+- Después de un verbo, si explicas cómo se hace algo, suele ir un adverbio: *She spoke **confidently***.
+- Después de un artículo o determinante puede aparecer un sustantivo: *the **decision***.
+- Después de una preposición, si necesitas un verbo, normalmente se usa la forma en **-ing**: *interested in **learning***.
+
+**Excepción importante:** la estructura manda. Un verbo puede ir seguido de un adjetivo si funciona como verbo de enlace: *The idea sounds **interesting***.
+
+### Regla 2. Los sufijos dan pistas, pero no son intercambiables
+
+| Función habitual | Terminaciones frecuentes | Ejemplos |
+|---|---|---|
+| Sustantivo | -tion, -sion, -ment, -ness, -ity | inform → information; happy → happiness |
+| Adjetivo | -ful, -less, -ous, -ive, -able, -al | care → careful; attract → attractive |
+| Adverbio | -ly, -ily | quiet → quietly; easy → easily |
+| Persona | -er, -or, -ist | teach → teacher; art → artist |
+
+**Excepciones y advertencias:**
+- No todos los adjetivos terminan en **-ly**: *friendly, lovely, lonely* son adjetivos, no adverbios.
+- No todos los adverbios terminan en **-ly**: *fast, hard, late* pueden funcionar como adverbios.
+- **-ful** y **-less** suelen expresar ideas opuestas (*careful/careless*), pero no puedes añadirlos libremente a cualquier raíz.
+- Una misma terminación puede formar palabras distintas; comprueba siempre que la palabra exista y encaje en el contexto.
+
+### Regla 3. Prefijos negativos: elige la forma que corresponde a cada palabra
+
+Los prefijos más frecuentes son **un-**, **in-**, **im-**, **il-**, **ir-**, **dis-** y **mis-**.
+
+| Patrón frecuente | Ejemplo |
+|---|---|
+| im- delante de muchas palabras que empiezan por p, b o m | possible → impossible; patient → impatient |
+| il- delante de l | legal → illegal |
+| ir- delante de r | regular → irregular |
+| in- en otras palabras | correct → incorrect |
+| un- | fair → unfair; happy → unhappy |
+| dis- | agree → disagree |
+| mis- (idea de error) | understand → misunderstand |
+
+**Excepción:** no es una regla mecánica basada solo en la primera letra. Por ejemplo, *unhappy* es correcto, no *inhappy*; *dishonest* es correcto, no *unhonest*. Aprende el prefijo junto con cada palabra.
+
+### Regla 4. Cambios ortográficos al añadir sufijos
+
+- **Consonante + y:** a menudo la *y* cambia a *i*: *happy → happiness*, *easy → easily*.  
+  **Excepción:** normalmente se conserva la *y* antes de **-ing**: *studying*.
+- **-e final:** suele desaparecer ante algunos sufijos que empiezan por vocal: *create → creative*, *use → usable*.  
+  **Excepción:** se conserva cuando es necesaria para mantener la pronunciación o en ciertas formaciones: *changeable*.
+- **Duplicación de consonante:** algunas palabras duplican la consonante final: *regret → regrettable*.  
+  **Excepción:** no se duplica siempre; depende de la terminación, el acento y la forma de la palabra: *benefit → beneficial*.
+
+### Regla 5. El inglés británico tiene variantes ortográficas propias
+
+En inglés británico son habituales formas como **travelling**, **cancelled**, **modelling** y **jewellery**. En inglés estadounidense suelen verse **traveling**, **canceled**, **modeling** y **jewelry**.
+
+En un examen Cambridge, mantén una ortografía coherente y comprueba la forma aceptada. No confundas una variante británica correcta con un error.
+
+### Regla 6. Algunas familias cambian de forma: no basta con añadir un sufijo
+
+Hay transformaciones que debes aprender como vocabulario:
+
+| Base | Forma derivada | Cambio |
+|---|---|---|
+| strong | strength | cambio interno |
+| long | length | cambio interno |
+| wide | width | cambio interno |
+| choose | choice | cambio interno |
+| succeed | success | cambio de forma y categoría |
+| pronounce | pronunciation | cambio ortográfico |
+| explain | explanation | cambio ortográfico |
+
+**Trampa típica:** *pronunciation* no se escribe **pronounciation**. La familia de palabras no siempre conserva exactamente la misma raíz escrita.
+
+### Regla 7. El significado puede exigir una forma positiva o negativa
+
+No elijas el prefijo solo porque la frase parezca negativa. Lee el sentido completo:
+
+- *It was **inaccurate*** = no era exacto.
+- *The instructions were **unclear*** = no eran claras.
+- *He was **careless*** = no tuvo cuidado.
+- *The plan was **unsuccessful*** = no tuvo éxito.
+
+Algunas raíces admiten más de una formación, pero no siempre con el mismo significado: *invaluable* significa “muy valioso”, no “sin valor”.
+
+**Método de examen:** (1) decide la categoría gramatical; (2) identifica si el sentido es positivo, negativo o de persona; (3) elige una familia de palabras real; (4) revisa cambios ortográficos, número y significado. Las reglas reducen las opciones, pero el contexto decide la respuesta.
+
+## 9. Practica: mini ejercicio de Word Formation
 
 Completa cada frase con una palabra formada a partir de la palabra en mayúsculas. Escribe tus respuestas antes de mirar las soluciones.
 
