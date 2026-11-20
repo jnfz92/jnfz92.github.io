@@ -17,41 +17,26 @@ After({tags:'@cucumber-aislado'},async function(){
 
 Given('que dispongo de una dirección de pruebas no usada',async function(){
   this.testEmail='cucumber-'+Date.now()+'@example.invalid';
-  this.authCalls=[];
-  await this.page.route('**/auth/v1/**',async route=>{
-    const req=route.request();
-    if(req.method()!=='POST')return route.continue();
-    const pathname=new URL(req.url()).pathname;
-    let body={};
-    try{body=req.postDataJSON()}catch{}
-    this.authCalls.push({pathname,body});
-    if(pathname.endsWith('/signup')){
-      return route.fulfill({status:200,contentType:'application/json',body:JSON.stringify({
-        user:{id:'c9b3a40d-7907-4d4f-9d9c-5b6fa09415b6',email:body.email,aud:'authenticated'},session:null
-      })});
-    }
-    return route.fulfill({status:400,contentType:'application/json',body:JSON.stringify({msg:'Blocked in isolated Cucumber test'})});
-  });
-  await this.page.goto(BASE+'/perfil.html');
+  await this.page.route('**/supabase.min.js*',route=>route.fulfill({status:200,contentType:'application/javascript',body:''}));
+  await this.page.route('**/supabase-config.js*',route=>route.fulfill({status:200,contentType:'application/javascript',body:`window.eeDb={auth:{getSession:async()=>({data:{session:null},error:null}),signUp:async({email,password})=>{window.__signup={email,password};return {data:{user:{id:'c9b3a40d-7907-4d4f-9d9c-5b6fa09415b6',email},session:null},error:null}}}};`}));
+  await this.page.route('**/functions/v1/email-bienvenida',route=>route.fulfill({status:200,contentType:'application/json',body:JSON.stringify({sent:true})}));
+  await this.page.goto(BASE+'/registro.html');
 });
 When('completo el registro',async function(){
   await this.page.locator('#registerEmail').fill(this.testEmail);
-  await this.page.locator('#registerPass').fill('Cucumber-Test-123!');
-  await this.page.locator('#registerConfirm').fill('Cucumber-Test-123!');
-  await this.page.locator('#register').click();
+  await this.page.locator('#registerPassword').fill('Cucumber-Test-123!');
+  await this.page.locator('#registerConfirmation').fill('Cucumber-Test-123!');
+  await this.page.locator('#registerSubmit').click();
 });
 Then('recibo confirmación y no se exponen credenciales',async function(){
-  await this.page.locator('#accountStatus').waitFor({state:'visible'});
-  await this.page.waitForFunction(()=>/confirmación|revisa tu correo/i.test(document.querySelector('#accountStatus')?.textContent||''));
-  const signup=this.authCalls.filter(x=>x.pathname.endsWith('/signup'));
-  assert.equal(signup.length,1);
-  assert.equal(signup[0].body.email,this.testEmail);
-  assert.equal(signup[0].body.password,'Cucumber-Test-123!');
-  await this.page.locator('#registerPass').waitFor();
-  assert.equal(await this.page.locator('#registerPass').inputValue(),'');
-  assert.equal(await this.page.locator('#registerConfirm').inputValue(),'');
+  await this.page.locator('#loginStatus').waitFor({state:'visible'});
+  await this.page.waitForFunction(()=>/email de bienvenida|confirmar tu cuenta/i.test(document.querySelector('#loginStatus')?.textContent||''));
+  const signup=await this.page.evaluate(()=>window.__signup);
+  assert.equal(signup.email,this.testEmail);
+  assert.equal(signup.password,'Cucumber-Test-123!');
+  assert.equal(await this.page.locator('#registerPassword').inputValue(),'');
+  assert.equal(await this.page.locator('#registerConfirmation').inputValue(),'');
   assert.equal((await this.page.locator('body').innerText()).includes('Cucumber-Test-123!'),false);
-  assert.equal(await this.page.locator('#privateDashboard').isHidden(),true);
 });
 
 const aulaFakeConfig = String.raw`window.__aulaWrites=[];window.__aulaRows={};
@@ -74,7 +59,7 @@ Given('que hay un examen publicado y el usuario de pruebas tiene sesión',async 
   await this.page.route('**/supabase.min.js',route=>route.fulfill({status:200,contentType:'application/javascript',body:''}));
   await this.page.route('**/supabase-config.js',route=>route.fulfill({status:200,contentType:'application/javascript',body:aulaFakeConfig}));
   await this.page.goto(BASE+'/aula-b2.html');
-  await this.page.locator('#aulaStatus').waitFor();
+  await this.page.locator('#aulaStatus').waitFor({state:'attached'});
   await this.page.waitForFunction(()=>/Tu aula está conectada/.test(document.querySelector('#aulaStatus')?.textContent||''));
 });
 When('entrega sus respuestas y reintenta por un error de conexión',async function(){
