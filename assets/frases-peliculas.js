@@ -3,7 +3,7 @@ const API='https://wnluofonzteaqtlfshgy.supabase.co/rest/v1/';
 const KEY='sb_publishable_Ef-AXAapcwaPExEFS6kmug_tKLaulM8';
 const PAGE_SIZE=36;
 const $=id=>document.getElementById(id);
-const els={phrasalStats:$('phrasalVerbStats'),phrasalSummary:$('phrasalVerbSummary'),search:$('phraseSearch'),movie:$('movieFilter'),tense:$('tenseFilter'),reset:$('resetMovieFilters'),count:$('phraseResults'),grid:$('moviePhrasesGrid'),status:$('moviePhrasesStatus'),pagination:$('moviePhrasesPagination'),prev:$('previousPhrases'),next:$('nextPhrases'),pageLabel:$('phrasePageLabel'),categoryStats:$('movieCategoryStats'),categoryMovie:$('categoryMovieSelect'),categorySummary:$('categoryStatsSummary'),phraseCount:$('moviePhraseCount'),movieCount:$('movieCount'),tenseCount:$('tenseCount')};
+const els={search:$('phraseSearch'),movie:$('movieFilter'),tense:$('tenseFilter'),reset:$('resetMovieFilters'),count:$('phraseResults'),grid:$('moviePhrasesGrid'),status:$('moviePhrasesStatus'),pagination:$('moviePhrasesPagination'),prev:$('previousPhrases'),next:$('nextPhrases'),pageLabel:$('phrasePageLabel'),categoryStats:$('movieCategoryStats'),categoryMovie:$('categoryMovieSelect'),categorySummary:$('categoryStatsSummary'),phraseCount:$('moviePhraseCount'),movieCount:$('movieCount'),tenseCount:$('tenseCount')};
 let rows=[],filtered=[],page=1;
 const normalizeCategory=value=>{
  const clean=value.trim();
@@ -36,88 +36,6 @@ function renderCategoryStats(){
  });
  els.categoryStats.replaceChildren(fragment);
  if(!categories.length)els.categoryStats.textContent='No hay categorías disponibles para esta selección.';
- renderPhrasalStats();
-}
-function subtitleCategory(phrase){
- const p=phrase.toLocaleLowerCase();
- if(/\b(can|could|may|might|must|shall|should|will|would|have to|has to|had better)\b/.test(p))return 'Modal Verbs';
- if(/\b(am|is|are)\s+\w+ing\b/.test(p))return 'Present Continuous';
- if(/\b(was|were)\s+\w+ing\b/.test(p))return 'Past Continuous';
- if(/\b(have|has)\s+\w+(ed|en)\b/.test(p))return 'Present Perfect';
- if(/\b(did|was|were|had)\b/.test(p)||/\b\w+ed\b/.test(p))return 'Past Simple';
- if(/^(please\s+)?(come|go|look|stop|move|help|run|wait|hold|take|give|keep|don't|do not|let's|lets|shut|get|turn|follow|stay|watch|listen|leave|bring|save|pick|climb|attack|prepare|protect|retrieve)\b/.test(p))return 'Imperatives';
- if(/\b(i|you|we|they|he|she|it)\s+(am|is|are|do|does|have|has|know|think|want|like|love|need|see|feel|go|got|can|will)\b/.test(p))return 'Present Simple';
- return 'Fragment / Other';
-}
-function parseIceAgeSubtitles(source){
- const seen=new Set(),parsed=[];
- source.replace(/\r/g,'').split(/\n\s*\n/).forEach(block=>{
-  const lines=block.trim().split('\n');
-  if(lines.length<3||!/^\d+$/.test(lines[0].trim())||!lines[1].includes('-->'))return;
-  const number=Number(lines[0].trim()),phrase=lines.slice(2).join(' ').trim();
-  if(number===9999||seen.has(number)||!phrase)return;
-  seen.add(number);
-  parsed.push({id:'ice-age-'+number,movie_slug:'ice-age-2002',movie_title:'Ice Age (2002)',subtitle_number:number,timecode:lines[1].trim(),phrase,tense_labels:subtitleCategory(phrase),notes:'',translation_es:null,learning_note_es:null});
- });
- return parsed;
-}
-const phrasalVerbDefinitions=[
- {verb:'come on',translation:'¡Vamos! / Venga',pattern:/\bcome(?:s|came|coming)?\s+on\b/gi},
- {verb:'look out',translation:'¡Cuidado! / Vigilar',pattern:/\blook(?:s|ed|ing)?\s+out\b/gi},
- {verb:'take care of',translation:'cuidar de / encargarse de',pattern:/\btake(?:s|n|ing)?\s+care\s+of\b/gi},
- {verb:'go ahead',translation:'adelante / proceder',pattern:/\bgo(?:es|ing|ne)?\s+ahead\b/gi},
- {verb:'get away',translation:'alejarse / escapar',pattern:/\bget(?:s|ting|got|gotten)?\s+away\b/gi},
- {verb:'get down',translation:'bajar(se)',pattern:/\bget(?:s|ting|got|gotten)?\s+down\b/gi},
- {verb:'get off',translation:'bajarse / quitarse de encima',pattern:/\bget(?:s|ting|got|gotten)?\s+off\b/gi},
- {verb:'shut up',translation:'callarse',pattern:/\bshut(?:s|ting)?\s+up\b/gi},
- {verb:'wipe out',translation:'aniquilar / eliminar; quedar agotado',pattern:/\bwipe(?:s|d|ing)?\s+out\b/gi},
- {verb:'keep up',translation:'mantener el ritmo / seguir el paso',pattern:/\bkeep(?:s|t|ing)?\s+up\b/gi},
- {verb:'come back',translation:'volver / regresar',pattern:/\bcome(?:s|came|coming)?\s+back\b/gi},
- {verb:'get inside',translation:'entrar',pattern:/\bget(?:s|ting|got|gotten)?\s+inside\b/gi},
- {verb:'dig in',translation:'empezar a comer / servirse',pattern:/\bdig(?:s|ging)?\s+in\b/gi},
- {verb:'jump up',translation:'saltar / subirse',pattern:/\bjump(?:s|ed|ing)?\s+up\b/gi},
- {verb:'show up',translation:'aparecer / presentarse',pattern:/\bshow(?:s|ed|ing)?\s+up\b/gi},
- {verb:'pick up',translation:'recoger / ir a buscar',pattern:/\bpick(?:s|ed|ing)?\s+up\b/gi},
- {verb:'stick together',translation:'mantenerse unidos',pattern:/\bstick(?:s|ing)?\s+together\b/gi},
- {verb:'go on',translation:'continuar / seguir; pasar (algo)',pattern:/\bgo(?:es|ing|ne)?\s+on\b/gi},
- {verb:'fall in',translation:'caer dentro',pattern:/\bfall(?:s|ing|fell|fallen)?\s+in\b/gi}
-];
-function phrasalMatches(phrase){
- const matches=[];
- phrasalVerbDefinitions.forEach(def=>{
-  const found=phrase.match(def.pattern);
-  if(found&&found.length)matches.push({...def,count:found.length});
- });
- return matches;
-}
-function renderPhrasalStats(){
- const selected=els.categoryMovie.value;
- const selectedRows=selected==='all'?rows:rows.filter(row=>row.movie_slug===selected);
- const totals=new Map();let occurrences=0,lines=0;
- selectedRows.forEach(row=>{
-  const matches=phrasalMatches(row.phrase||'');
-  if(matches.length)lines++;
-  matches.forEach(match=>{
-   occurrences+=match.count;
-   const current=totals.get(match.verb)||{translation:match.translation,count:0};
-   current.count+=match.count;totals.set(match.verb,current);
-  });
- });
- const sorted=[...totals.entries()].sort((a,b)=>b[1].count-a[1].count||a[0].localeCompare(b[0]));
- els.phrasalSummary.textContent=occurrences.toLocaleString('es-ES')+' apariciones · '+lines.toLocaleString('es-ES')+' subtítulos · '+sorted.length+' expresiones';
- const fragment=document.createDocumentFragment();
- sorted.forEach(([verb,data])=>{
-  const item=document.createElement('div');item.className='ee-category-item';
-  const head=document.createElement('div');head.className='ee-category-item-head';
-  const name=document.createElement('span');name.textContent=verb+' — '+data.translation;
-  const value=document.createElement('strong');value.textContent=data.count.toLocaleString('es-ES')+'×';
-  head.append(name,value);
-  const track=document.createElement('div');track.className='ee-category-track';
-  const bar=document.createElement('div');bar.className='ee-category-bar';bar.style.width=(data.count/(sorted[0]?.[1].count||1)*100)+'%';
-  track.append(bar);item.append(head,track);fragment.append(item);
- });
- els.phrasalStats.replaceChildren(fragment);
- if(!sorted.length)els.phrasalStats.textContent='No se han encontrado phrasal verbs en esta selección.';
 }
 function makeRow(row){
  const tr=document.createElement('tr');
@@ -126,11 +44,6 @@ function makeRow(row){
  add(row.movie_title||row.movie_slug,'ee-table-movie');
  add(row.phrase,'ee-table-phrase');
  add(row.translation_es||'No disponible en esta ficha','ee-table-translation');
- const phrasalTd=document.createElement('td');phrasalTd.className='ee-table-phrasal';
- const detected=phrasalMatches(row.phrase||'');
- if(detected.length)detected.forEach(match=>{const tag=document.createElement('span');tag.className='ee-phrase-tag';tag.textContent=match.verb+' — '+match.translation;phrasalTd.append(tag)});
- else phrasalTd.textContent='—';
- tr.append(phrasalTd);
  add(row.timecode||'—','ee-table-time');
  const td=document.createElement('td');td.className='ee-table-tenses';
  labels(row).forEach(label=>{const tag=document.createElement('span');tag.className='ee-phrase-tag';tag.textContent=label;td.append(tag)});
@@ -155,7 +68,7 @@ function render(){
  const start=(page-1)*PAGE_SIZE,visible=filtered.slice(start,start+PAGE_SIZE);
  const table=document.createElement('table');table.className='ee-phrases-table';
  const thead=document.createElement('thead'),headRow=document.createElement('tr');
- ['N.º','Película','Frase original en inglés','Traducción al español','Phrasal verbs (traducción)','Código de tiempo','Tiempo / construcción verbal','Explicación gramatical'].forEach(label=>{const th=document.createElement('th');th.scope='col';th.textContent=label;headRow.append(th)});
+ ['N.º','Película','Frase original en inglés','Traducción al español','Código de tiempo','Tiempo / construcción verbal','Explicación gramatical'].forEach(label=>{const th=document.createElement('th');th.scope='col';th.textContent=label;headRow.append(th)});
  thead.append(headRow);table.append(thead);
  const tbody=document.createElement('tbody');visible.forEach(row=>tbody.append(makeRow(row)));table.append(tbody);
  els.grid.replaceChildren(table);
@@ -177,11 +90,6 @@ async function loadRows(){
    const batch=await response.json();if(!Array.isArray(batch))throw new Error('La respuesta de Supabase no tiene el formato esperado');
    all.push(...batch);if(batch.length<batchSize)break;from+=batchSize;
   }
-  try{
-   const subtitleResponse=await fetch('/assets/ice-age-subtitles.srt?v=20261120-1',{cache:'no-store'});
-   if(subtitleResponse.ok)all.push(...parseIceAgeSubtitles(await subtitleResponse.text()));
-   else console.warn('No se pudo cargar el archivo SRT de Ice Age:',subtitleResponse.status);
-  }catch(subtitleError){console.warn('No se pudieron incorporar los subtítulos de Ice Age:',subtitleError)}
   rows=all;
   const movies=[...new Map(rows.map(row=>[row.movie_slug,row.movie_title||row.movie_slug])).entries()].sort((a,b)=>a[1].localeCompare(b[1],'es'));
   const tenses=unique(rows.flatMap(labels));
@@ -194,11 +102,9 @@ async function loadRows(){
   movies.forEach(([slug,title])=>{const option=document.createElement('option');option.value=slug;option.textContent=title;els.movie.append(option)});
   addOptions(els.tense,tenses,'Todos los tiempos verbales');
   const requestedMovie=new URLSearchParams(window.location.search).get('movie');
-  const defaultMovie='ice-age-2002';
-  const initialMovie=requestedMovie||(movies.some(([slug])=>slug===defaultMovie)?defaultMovie:'');
-  if(initialMovie&&movies.some(([slug])=>slug===initialMovie)){
-   els.movie.value=initialMovie;
-   els.categoryMovie.value=initialMovie;
+  if(requestedMovie&&movies.some(([slug])=>slug===requestedMovie)){
+   els.movie.value=requestedMovie;
+   els.categoryMovie.value=requestedMovie;
    renderCategoryStats();
   }
   els.phraseCount.textContent=rows.length.toLocaleString('es-ES');
