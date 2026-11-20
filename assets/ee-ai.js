@@ -1,14 +1,14 @@
 /* Easy English · BYOK persistente: la clave nunca se guarda en el navegador. */
 (()=>{'use strict';
  const PROJECT='https://wnluofonzteaqtlfshgy.supabase.co',configuredUsers=new Set();
- async function request(db,action,payload={}){
+ async function request(db,action,payload={},functionName='easy-english-ai'){
   if(!db)throw Error('No se ha conectado tu cuenta de Easy English.');
   const {data:{user},error:userError}=await db.auth.getUser();if(userError||!user)throw Error('Inicia sesión antes de utilizar la IA.');
   const {data:{session},error:sessionError}=await db.auth.getSession();
   if(sessionError||!session?.access_token||session.user.id!==user.id)throw Error('No se pudo validar tu sesión.');
   const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),45000);
   try{
-   const response=await fetch(PROJECT+'/functions/v1/easy-english-ai',{method:'POST',signal:controller.signal,cache:'no-store',
+   const response=await fetch(PROJECT+'/functions/v1/'+functionName,{method:'POST',signal:controller.signal,cache:'no-store',
     headers:{'Content-Type':'application/json','apikey':'sb_publishable_Ef-AXAapcwaPExEFS6kmug_tKLaulM8','Authorization':'Bearer '+session.access_token},
     body:JSON.stringify({action,...payload})});
    let result;try{result=await response.json()}catch{throw Error('No se recibió una respuesta válida del servidor.')}
@@ -29,5 +29,5 @@
   const state=await availability(db);if(!state.ready)throw Error(state.reason||'Guarda tu clave OpenAI en tu cuenta antes de utilizar la IA.');
   return (await request(db,action,{consent:true,...payload})).result;
  }
- async function speaking(db,action,payload){if(!['speaking_turn','speaking_feedback'].includes(action))throw Error('Acción de speaking desconocida.');const state=await availability(db);if(!state.ready)throw Error(state.reason||'Guarda tu clave OpenAI en tu perfil.');return (await request(db,action,{consent:true,...payload})).result;}\n window.eeAI={keyFor:userId=>configuredUsers.has(userId),availability,saveKey,deleteKey,run,speaking};
+ async function speaking(db,action,payload){if(!['speaking_turn','speaking_feedback'].includes(action))throw Error('Acción de speaking desconocida.');const state=await availability(db);if(!state.ready)throw Error(state.reason||'Guarda tu clave OpenAI en tu perfil.');return (await request(db,action,{consent:true,...payload},'speaking-lab-ai')).result;}\n window.eeAI={keyFor:userId=>configuredUsers.has(userId),availability,saveKey,deleteKey,run,speaking};
 })();
