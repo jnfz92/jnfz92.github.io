@@ -11,20 +11,20 @@ const escapeText=value=>String(value??'');
 function addOptions(select,values,firstLabel){select.replaceChildren();const first=document.createElement('option');first.value='all';first.textContent=firstLabel;select.append(first);values.forEach(value=>{const option=document.createElement('option');option.value=value;option.textContent=value;select.append(option)})}
 function subtitleCategory(phrase){
  const p=phrase.toLocaleLowerCase();
- if(/\\b(can|could|may|might|must|shall|should|will|would|have to|has to|had better)\\b/.test(p))return 'Modal Verbs';
- if(/\\b(am|is|are)\\s+\\w+ing\\b/.test(p))return 'Present Continuous';
- if(/\\b(was|were)\\s+\\w+ing\\b/.test(p))return 'Past Continuous';
- if(/\\b(have|has)\\s+\\w+(ed|en)\\b/.test(p))return 'Present Perfect';
- if(/\\b(did|was|were|had)\\b/.test(p)||/\\b\\w+ed\\b/.test(p))return 'Past Simple';
- if(/^(please\\s+)?(come|go|look|stop|move|help|run|wait|hold|take|give|keep|don't|do not|let's|lets|shut|get|turn|follow|stay|watch|listen|leave|bring|save|pick|climb|attack|prepare|protect|retrieve)\\b/.test(p))return 'Imperatives';
- if(/\\b(i|you|we|they|he|she|it)\\s+(am|is|are|do|does|have|has|know|think|want|like|love|need|see|feel|go|got|can|will)\\b/.test(p))return 'Present Simple';
+ if(/\b(can|could|may|might|must|shall|should|will|would|have to|has to|had better)\b/.test(p))return 'Modal Verbs';
+ if(/\b(am|is|are)\s+\w+ing\b/.test(p))return 'Present Continuous';
+ if(/\b(was|were)\s+\w+ing\b/.test(p))return 'Past Continuous';
+ if(/\b(have|has)\s+\w+(ed|en)\b/.test(p))return 'Present Perfect';
+ if(/\b(did|was|were|had)\b/.test(p)||/\b\w+ed\b/.test(p))return 'Past Simple';
+ if(/^(please\s+)?(come|go|look|stop|move|help|run|wait|hold|take|give|keep|don't|do not|let's|lets|shut|get|turn|follow|stay|watch|listen|leave|bring|save|pick|climb|attack|prepare|protect|retrieve)\b/.test(p))return 'Imperatives';
+ if(/\b(i|you|we|they|he|she|it)\s+(am|is|are|do|does|have|has|know|think|want|like|love|need|see|feel|go|got|can|will)\b/.test(p))return 'Present Simple';
  return 'Fragment / Other';
 }
 function parseIceAgeSubtitles(source){
  const parsed=[];
- source.replace(/\\r/g,'').split(/\\n\\s*\\n/).forEach(block=>{
-  const lines=block.trim().split('\\n');
-  if(lines.length<3||!/^\\d+$/.test(lines[0].trim())||!lines[1].includes('-->'))return;
+ source.replace(/\r/g,'').split(/\n\s*\n/).forEach(block=>{
+  const lines=block.trim().split('\n');
+  if(lines.length<3||!(/^\d+$/.test(lines[0].trim()))||!lines[1].includes('-->'))return;
   const number=Number(lines[0].trim()),phrase=lines.slice(2).join(' ').trim();
   if(!phrase)return;
   parsed.push({id:'ice-age-'+number,movie_slug:'ice-age-2002',movie_title:'Ice Age (2002)',subtitle_number:number,timecode:lines[1].trim(),phrase,tense_labels:subtitleCategory(phrase),notes:''});
