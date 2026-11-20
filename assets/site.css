@@ -136,3 +136,66 @@ body.ee-site{background:#f7faff;color:#1f2a44}
   width:100%;
   max-width:none;
 }
+
+
+/* Tablas globales: diseño uniforme, legible y adaptable en toda la web. */
+.ee-site table{
+  width:100%;
+  border-collapse:separate;
+  border-spacing:0;
+  table-layout:auto;
+  margin:24px 0 30px;
+  background:#fff;
+  border:1px solid #d9e3f2;
+  border-radius:14px;
+  overflow:hidden;
+  font-size:14px;
+  line-height:1.55;
+}
+.ee-site thead th{
+  background:#173b73;
+  color:#fff;
+  font-size:12px;
+  font-weight:800;
+  letter-spacing:.025em;
+  text-align:left;
+  vertical-align:middle;
+  padding:14px 16px;
+  border:0;
+  border-bottom:1px solid #173b73;
+  white-space:normal;
+}
+.ee-site tbody td{
+  color:#263b59;
+  background:#fff;
+  padding:13px 16px;
+  border:0;
+  border-bottom:1px solid #e6edf6;
+  vertical-align:top;
+  overflow-wrap:anywhere;
+}
+.ee-site tbody tr:nth-child(even) td{background:#f4f7fc}
+.ee-site tbody tr:hover td{background:#eaf1fc}
+.ee-site tbody tr:last-child td{border-bottom:0}
+.ee-site table caption{
+  caption-side:top;
+  text-align:left;
+  color:#536585;
+  font-weight:700;
+  padding:0 0 10px;
+}
+.ee-site table td strong{color:#174a91}
+.ee-site table td code{overflow-wrap:anywhere}
+@media(max-width:650px){
+  .ee-site table{
+    display:block;
+    width:100%;
+    max-width:100%;
+    overflow-x:auto;
+    -webkit-overflow-scrolling:touch;
+    border-radius:11px;
+    font-size:13px;
+  }
+  .ee-site table thead,.ee-site table tbody{width:max-content;min-width:100%}
+  .ee-site table th,.ee-site table td{padding:11px 12px}
+}
