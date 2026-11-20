@@ -24,13 +24,13 @@ Característica: Exámenes personalizados y datos privados
     Cuando completo el registro
     Entonces recibo confirmación y no se exponen credenciales
 
-  @pendiente-sesion
+  @cucumber-aislado
   Escenario: Inicio y cierre de sesión restringen los datos personales
     Dado que existe un usuario de pruebas
     Cuando inicia sesión y después la cierra
     Entonces desaparecen las estadísticas privadas
 
-  @pendiente-sesion
+  @cucumber-aislado
   Escenario: El perfil muestra progreso, objetivos y actividad coherentes
     Dado que el alumno tiene exámenes y actividad guardados
     Cuando consulta su perfil
