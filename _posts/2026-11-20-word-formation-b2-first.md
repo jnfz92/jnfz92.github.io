@@ -3,6 +3,7 @@ title: "Word Formation B2 First: guía completa para dominar la Parte 3"
 description: "Aprende a transformar palabras con prefijos, sufijos y cambios internos. Método paso a paso, tablas de word families, errores frecuentes y práctica con soluciones."
 category: "Use of English"
 subcategory: "Part 3 · Word Formation"
+permalink: /articles/use-of-english/word-formation-b2-first/
 tags:
   - B2 First
   - FCE
