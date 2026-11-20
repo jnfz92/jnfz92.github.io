@@ -150,8 +150,13 @@ function render(){
  const doneList=filtered.filter(a=>profile.read[a.href]).sort((a,b)=>
   new Date(profile.read[b.href]).getTime()-new Date(profile.read[a.href]).getTime());
  const pendingList=filtered.filter(a=>!profile.read[a.href]);
- const shown=pendingList.length;
- $('articleBrowseCount').textContent='Mostrando '+shown+' artículos pendientes'+(term?' que coinciden con la búsqueda':'')+'.';
+ const entries=articleView==='read'?doneList:pendingList;
+ const label=articleView==='read'?'leídos':'pendientes';
+ $('articlesTitle').textContent=articleView==='read'?'Artículos leídos':'Artículos pendientes de leer';
+ $('pendingArticlesTab').setAttribute('aria-selected',String(articleView==='pending'));
+ $('readArticlesTab').setAttribute('aria-selected',String(articleView==='read'));
+ $('articleList').setAttribute('aria-labelledby',articleView==='read'?'readArticlesTab':'pendingArticlesTab');
+ $('articleBrowseCount').textContent='Mostrando '+entries.length+' artículos '+label+(term?' que coinciden con la búsqueda':'')+'.';
  function group(type,title,entries){
   const box=document.createElement('section');box.className='reading-group '+type+'-group';
   const head=document.createElement('div');head.className='reading-group-header';
@@ -260,7 +265,7 @@ function render(){
   }
   root.append(box);
  }
- group('pending','📖 Artículos pendientes de leer',pendingList);
+ group(articleView==='read'?'read':'pending',articleView==='read'?'✓ Artículos leídos':'📖 Artículos pendientes de leer',entries);
  updateSuggestedReading();
 }
 async function loadCloud(){if(!user)return;const activeId=user.id;const [p,l]=await Promise.all([eeDb.from('perfiles').select('nombre').eq('usuario_id',activeId).maybeSingle(),eeDb.from('lecturas').select('articulo_url,leido_en').eq('usuario_id',activeId)]);if(!user||user.id!==activeId)return;if(p.error)throw p.error;if(l.error)throw l.error;profile={name:p.data?.nombre||'',read:Object.fromEntries((l.data||[]).map(r=>[r.articulo_url,r.leido_en]))};cloudUserId=activeId;render();await Promise.all([results(),loadStreak(),loadLearningOverview(),loadActivityCalendar(activeId),loadWeeklyFollowup(activeId)])}
@@ -1198,6 +1203,8 @@ $('confirmDeleteAccount').onclick=async()=>{if(!user||$('deleteConfirm').value.t
 $('saveName').onclick=async()=>{const name=$('studentName').value.trim().slice(0,50);try{if(user){const {error}=await eeDb.from('perfiles').upsert({usuario_id:user.id,nombre:name,actualizado_en:new Date().toISOString()});if(error)throw error}else{profile.name=name;localSave()}profile.name=name;render();status(user?'Nombre guardado en Supabase.':'Nombre guardado en este navegador.')}catch(e){status('Error al guardar: '+e.message)}};
 $('studentName').onkeydown=e=>{if(e.key==='Enter')$('saveName').click()};
 $('articleSearch').oninput=()=>{readingPages.read=1;readingPages.pending=1;render();};
+$('pendingArticlesTab').onclick=()=>{articleView='pending';readingPages.pending=1;render()};
+$('readArticlesTab').onclick=()=>{articleView='read';readingPages.read=1;render()};
 
 $('readingPickAnother').onclick=()=>updateSuggestedReading(true);
 $('readingPickMark').onclick=async()=>{
