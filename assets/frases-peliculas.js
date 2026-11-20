@@ -155,7 +155,7 @@ function render(){
  const start=(page-1)*PAGE_SIZE,visible=filtered.slice(start,start+PAGE_SIZE);
  const table=document.createElement('table');table.className='ee-phrases-table';
  const thead=document.createElement('thead'),headRow=document.createElement('tr');
- ['N.º','Película','Frase original en inglés','Traducción al español','Traducción al español','Phrasal verbs (traducción)','Código de tiempo','Tiempo / construcción verbal','Explicación gramatical'].forEach(label=>{const th=document.createElement('th');th.scope='col';th.textContent=label;headRow.append(th)});
+ ['N.º','Película','Frase original en inglés','Traducción al español','Phrasal verbs (traducción)','Código de tiempo','Tiempo / construcción verbal','Explicación gramatical'].forEach(label=>{const th=document.createElement('th');th.scope='col';th.textContent=label;headRow.append(th)});
  thead.append(headRow);table.append(thead);
  const tbody=document.createElement('tbody');visible.forEach(row=>tbody.append(makeRow(row)));table.append(tbody);
  els.grid.replaceChildren(table);
