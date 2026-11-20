@@ -313,8 +313,12 @@ permalink: /perfil.html
 <label for="articleSearch">Buscar artículos por título</label>
 <input id="articleSearch" type="search" placeholder="Buscar artículos…" autocomplete="off">
 </div>
+<div class="reading-view-controls" role="tablist" aria-label="Secciones de artículos">
+<button class="reading-view-button" id="pendingArticlesTab" type="button" role="tab" aria-selected="true" aria-controls="articleList">Artículos pendientes</button>
+<button class="reading-view-button" id="readArticlesTab" type="button" role="tab" aria-selected="false" aria-controls="articleList">Artículos leídos</button>
+</div>
 <p id="articleBrowseCount" class="muted" role="status"></p>
-<div id="articleList" class="reading-groups" aria-live="polite"></div>
+<div id="articleList" class="reading-groups" role="tabpanel" aria-live="polite" aria-labelledby="pendingArticlesTab"></div>
 </section>
 </div>
 <div class="profile-tab-panel" id="profile-panel-cuenta" role="tabpanel" aria-labelledby="profile-tab-cuenta" hidden>
