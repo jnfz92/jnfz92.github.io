@@ -106,6 +106,13 @@ permalink: /leer.html
   const metadata=metaList[0];
   const list=await loadJSON('articulos?select=html,titulo,descripcion&slug=eq.'+encodeURIComponent(resolveSlug(slug))+'&limit=1');
   if(!list.length||!list[0].html){
+   status.textContent='Este artículo es privado y solo puede leerlo su propietario. Inicia sesión con la cuenta propietaria para acceder.';
+   const ownerLogin=document.createElement('a');
+   ownerLogin.href='/login.html?next='+encodeURIComponent(location.pathname+location.search);
+   ownerLogin.textContent=session?.user?'Volver a iniciar sesión':'Iniciar sesión';
+   ownerLogin.style.cssText='display:inline-block;margin-top:10px;color:#1e5eff;font-weight:700';
+   status.after(ownerLogin);
+   return;
    if(false && metadata.categoria_slug==='fce'){
     const panel=document.createElement('section');
     panel.className='ee-paywall ee-fce-paywall';
