@@ -16,7 +16,7 @@
    if(!user){activeUser=null;form.hidden=true;sessionStatus.textContent='Inicia sesión en Easy English para gestionar tu clave.';status.textContent='Inicia sesión para continuar.';return}
    activeUser=user.id;form.hidden=false;sessionStatus.textContent='Cuenta activa · Tu clave se guarda cifrada en el servidor y solo pertenece a esta cuenta.';
    const state=await ai.availability(db);
-   status.textContent=state.ready?'✓ Tienes una clave OpenAI guardada de forma permanente para esta cuenta. Puedes sustituirla o eliminarla cuando quieras.':'Todavía no tienes una clave OpenAI guardada.';
+   status.textContent=state.reason?'No se pudo comprobar el estado de tu clave: '+state.reason:(state.ready?'✓ Tienes una clave OpenAI guardada de forma permanente para esta cuenta. Puedes sustituirla o eliminarla cuando quieras.':'Todavía no tienes una clave OpenAI guardada.');
    remove.disabled=!state.ready||busy;
   }catch(error){status.textContent=error.message||'No se pudo consultar el estado de la clave.'}
  }
