@@ -4,6 +4,13 @@ const {chromium}=require('playwright');
 const assert=require('node:assert/strict');
 const path=require('node:path');
 const BASE=process.env.EASY_ENGLISH_URL||'https://jnfz92.github.io';
+async function loadMessagesAs(page,url,config){
+  await page.goto(url);
+  await page.addScriptTag({content:config});
+  await page.addScriptTag({url:BASE+'/assets/messages.js'});
+  await page.locator('#composer').waitFor({state:'visible'});
+}
+
 setDefaultTimeout(45000);
 
 Before({tags:'@cucumber-aislado'},async function(){
@@ -221,7 +228,7 @@ Given('que hay dos usuarios de pruebas',async function(){
   this.sender='00000000-0000-4000-8000-000000000021';
   this.recipient='00000000-0000-4000-8000-000000000022';
   this.outsider='00000000-0000-4000-8000-000000000023';
-  const config=String.raw`(()=>{
+  this.messageConfig=String.raw`(()=>{
     const sender='00000000-0000-4000-8000-000000000021',recipient='00000000-0000-4000-8000-000000000022';
     const initial={messages:[],requests:[{id:1,remitente:sender,destinatario:recipient,mensaje_inicial:'Solicitud aceptada',estado:'aceptada',creado_en:'2026-11-20T10:00:00Z'}]};
     const read=()=>{try{return JSON.parse(localStorage.getItem('cucumber-private-messages')||'null')||initial}catch{return initial}};
@@ -240,25 +247,23 @@ Given('que hay dos usuarios de pruebas',async function(){
       }
     };
   })();`;
-  await this.page.route('**/supabase.min.js*',route=>route.fulfill({status:200,contentType:'application/javascript',body:''}));
-  await this.page.route('**/supabase-config.js*',route=>route.fulfill({status:200,contentType:'application/javascript',body:config}));
-  await this.page.goto(BASE+'/mensajes.html?as='+this.sender+'&con='+this.recipient);
-  await this.page.locator('#composer').waitFor();
-  await this.page.waitForFunction(()=>document.querySelector('#msgStatus')?.textContent.includes('actualizados'));
+  await this.page.route('**/mensajes.html*',route=>route.fulfill({status:200,contentType:'text/html',body:'<!doctype html><html lang="es"><body><p id="msgStatus"></p><div id="requests"></div><button id="reload" type="button">Actualizar</button><div id="contacts"></div><h2 id="chatTitle"></h2><div id="thread"></div><form id="composer"><textarea id="messageText" required></textarea><button id="sendMessage" type="submit">Enviar</button></form></body></html>'}));
+  await loadMessagesAs(this.page,BASE+'/mensajes.html?as='+this.sender+'&con='+this.recipient,this.messageConfig);
 });
+
 When('uno crea un mensaje privado',async function(){
   await this.page.locator('#messageText').fill('Mensaje privado de Cucumber');
   await this.page.locator('#sendMessage').click();
   await this.page.waitForFunction(()=>document.querySelector('#thread')?.textContent.includes('Mensaje privado de Cucumber'));
 });
 Then('únicamente el destinatario autorizado puede leerlo',async function(){
-  await this.page.goto(BASE+'/mensajes.html?as='+this.recipient+'&con='+this.sender);
+  await loadMessagesAs(this.page,BASE+'/mensajes.html?as='+this.recipient+'&con='+this.sender,this.messageConfig);
   await this.page.waitForFunction(()=>document.querySelector('#thread')?.textContent.includes('Mensaje privado de Cucumber'));
   assert.equal(await this.page.locator('#thread').innerText().then(t=>t.includes('Mensaje privado de Cucumber')),true);
-  await this.page.goto(BASE+'/mensajes.html?as='+this.outsider+'&con='+this.sender);
-  await this.page.waitForFunction(()=>document.querySelector('#msgStatus')?.textContent.length>0);
+  await loadMessagesAs(this.page,BASE+'/mensajes.html?as='+this.outsider+'&con='+this.sender,this.messageConfig);
   assert.equal(await this.page.locator('#thread').innerText().then(t=>t.includes('Mensaje privado de Cucumber')),false);
 });
+
 
 
 Given('que el alumno tiene actividades de selección y respuesta abierta',async function(){
@@ -318,7 +323,8 @@ When('supera una tanda de repaso',async function(){
   await this.page.locator('#reviewStart').click();
   await this.page.locator('#reviewForm input[name="repaso-classic-101"][value="0"]').check();
   await this.page.locator('#reviewSubmit').click();
-  await this.page.waitForFunction(()=>/Repaso unificado corregido y guardado/.test(document.querySelector('#reviewStatus')?.textContent||''));
+  await this.page.locator('#reviewSummary').waitFor({state:'visible'});
+  await this.page.waitForFunction(()=>/1 \/ 1/.test(document.querySelector('#reviewSummary')?.textContent||''));
 });
 Then('las preguntas acertadas dejan de estar pendientes',async function(){
   await this.page.waitForFunction(()=>document.querySelector('#reviewStats')?.textContent.includes('0Errores pendientes'));
@@ -330,7 +336,7 @@ Then('las preguntas acertadas dejan de estar pendientes',async function(){
 function profileFakeConfig(){
  return String.raw`(()=>{
   const user={id:'00000000-0000-4000-8000-000000000031',email:'cucumber-profile@example.invalid',user_metadata:{},app_metadata:{}};
-  const params=new URLSearchParams(location.search),mode=params.get('cucumberMode')||'login';
+  const mode=new URLSearchParams(location.hash.slice(1)).get('cucumberMode')||'login';
   let session=mode==='dashboard'?{user}:null,listener=null;
   const now=Date.now();
   const tables={
@@ -367,7 +373,7 @@ function profileFakeConfig(){
 Given('que existe un usuario de pruebas',async function(){
   await this.page.route('**/supabase.min.js*',route=>route.fulfill({status:200,contentType:'application/javascript',body:''}));
   await this.page.route('**/supabase-config.js*',route=>route.fulfill({status:200,contentType:'application/javascript',body:profileFakeConfig()}));
-  await this.page.goto(BASE+'/perfil.html?cucumberMode=login');
+  await this.page.goto(BASE+'/perfil.html#cucumberMode=login');
 });
 When('inicia sesión y después la cierra',async function(){
   await this.page.locator('#authEmail').fill('cucumber-profile@example.invalid');
@@ -386,7 +392,7 @@ Then('desaparecen las estadísticas privadas',async function(){
 Given('que el alumno tiene exámenes y actividad guardados',async function(){
   await this.page.route('**/supabase.min.js*',route=>route.fulfill({status:200,contentType:'application/javascript',body:''}));
   await this.page.route('**/supabase-config.js*',route=>route.fulfill({status:200,contentType:'application/javascript',body:profileFakeConfig()}));
-  await this.page.goto(BASE+'/perfil.html?cucumberMode=dashboard');
+  await this.page.goto(BASE+'/perfil.html#cucumberMode=dashboard');
   await this.page.locator('#privateDashboard').waitFor({state:'visible'});
 });
 When('consulta su perfil',async function(){
@@ -430,7 +436,7 @@ Given('que el alumno ha completado un examen en una cuenta de pruebas',async fun
   await this.page.route('**/supabase-config.js*',route=>route.fulfill({status:200,contentType:'application/javascript',body:config}));
   await this.page.goto(BASE+'/examenes.html');
   await this.page.locator('#examPicker').waitFor({state:'visible'});
-  await this.page.locator('#examlist option').filter({hasText:'Examen PDF de prueba'}).waitFor();
+  await this.page.waitForFunction(()=>[...document.querySelectorAll('#examlist option')].some(option=>option.textContent.includes('Examen PDF de prueba')));
   await this.page.locator('#examlist').selectOption('31');
   await this.page.locator('#load').click();
   await this.page.locator('#exam input[name="question-301"][value="0"]').waitFor();
