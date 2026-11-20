@@ -7,9 +7,9 @@ La tabla tiene RLS activado y no concede permisos a anon ni authenticated. Solo 
 CONFIGURACIÓN OBLIGATORIA ANTES DEL DESPLIEGUE
 
 1. Genera una clave maestra aleatoria de 32 bytes con: openssl rand -base64 32
-2. Guarda el resultado directamente en Supabase Dashboard > Edge Functions > Secrets con el nombre OPENAI_KEYS_ENCRYPTION_KEY. No la añadas al repositorio, frontend, SQL, tickets ni conversaciones.
+2. Opcional: guarda el resultado directamente en Supabase Dashboard > Edge Functions > Secrets con el nombre OPENAI_KEYS_ENCRYPTION_KEY. Si no se configura, las funciones derivan una clave AES-256-GCM del secreto SUPABASE_SERVICE_ROLE_KEY, que ya existe en el servidor. Nunca se expone al navegador.
 3. Conserva una copia de recuperación en un gestor de secretos. Si se pierde o se rota sin volver a cifrar todas las filas, las claves OpenAI almacenadas no podrán descifrarse.
-4. La Edge Function también necesita SUPABASE_SERVICE_ROLE_KEY disponible en el entorno de Edge Functions.
+4. La Edge Function necesita SUPABASE_SERVICE_ROLE_KEY disponible en el entorno de Edge Functions. Si se utiliza la derivación de respaldo, no rotes ese secreto mientras existan claves cifradas con él: se perdería la capacidad de descifrarlas.
 
 DESPLIEGUE ORDENADO
 
