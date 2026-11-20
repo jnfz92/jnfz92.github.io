@@ -25,9 +25,9 @@
  async function saveKey(db,apiKey){const result=await request(db,'key_save',{apiKey});const {data:{user}}=await db.auth.getUser();if(user)configuredUsers.add(user.id);return result}
  async function deleteKey(db){const result=await request(db,'key_delete');const {data:{user}}=await db.auth.getUser();if(user)configuredUsers.delete(user.id);return result}
  async function run(db,action,payload){
-  if(!['writing','plan'].includes(action))throw Error('Función de IA desconocida.');
+  if(!['writing','plan','speaking_turn','speaking_feedback'].includes(action))throw Error('Función de IA desconocida.');
   const state=await availability(db);if(!state.ready)throw Error(state.reason||'Guarda tu clave OpenAI en tu cuenta antes de utilizar la IA.');
   return (await request(db,action,{consent:true,...payload})).result;
  }
- window.eeAI={keyFor:userId=>configuredUsers.has(userId),availability,saveKey,deleteKey,run};
+ async function speaking(db,action,payload){if(!['speaking_turn','speaking_feedback'].includes(action))throw Error('Acción de speaking desconocida.');const state=await availability(db);if(!state.ready)throw Error(state.reason||'Guarda tu clave OpenAI en tu perfil.');return (await request(db,action,{consent:true,...payload})).result;}\n window.eeAI={keyFor:userId=>configuredUsers.has(userId),availability,saveKey,deleteKey,run,speaking};
 })();
