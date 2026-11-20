@@ -70,7 +70,9 @@ permalink: /examenes.html
   const {data,error}=await eeDb.auth.getUser();
   if(error)throw error;
   if(!data?.user){
-   status.textContent='Inicia sesión para consultar tus exámenes en tu perfil.';
+   status.textContent='Accede a tu cuenta para entrar en la biblioteca de exámenes.';
+   const notice=document.getElementById('examSessionNotice');
+   if(notice)notice.hidden=false;
    return;
   }
   status.textContent='Sesión verificada. Abriendo la biblioteca de exámenes…';
