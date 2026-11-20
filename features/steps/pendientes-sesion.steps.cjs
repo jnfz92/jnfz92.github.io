@@ -337,7 +337,7 @@ function profileFakeConfig(){
  return String.raw`(()=>{
   const user={id:'00000000-0000-4000-8000-000000000031',email:'cucumber-profile@example.invalid',user_metadata:{},app_metadata:{}};
   const mode=new URLSearchParams(location.hash.slice(1)).get('cucumberMode')||'login';
-  let session=mode==='dashboard'?{user}:null,listener=null;
+  let session=mode==='dashboard'?{user}:(()=>{try{return JSON.parse(localStorage.getItem('cucumber-profile-session')||'null')}catch{return null}})(),listener=null;
   const now=Date.now();
   const tables={
     resultados:[
@@ -353,8 +353,8 @@ function profileFakeConfig(){
       getSession:async()=>({data:{session},error:null}),
       getUser:async()=>({data:{user:session?.user||null},error:null}),
       onAuthStateChange:cb=>{listener=cb;return {data:{subscription:{unsubscribe(){listener=null}}}}},
-      signInWithPassword:async({email,password})=>{if(email!==user.email||password!=='Cucumber-Login-123!')return {data:{user:null},error:{message:'Invalid login credentials'}};session={user};listener?.('SIGNED_IN',session);return {data:{user,session},error:null}},
-      signOut:async()=>{session=null;listener?.('SIGNED_OUT',null);return {error:null}}
+      signInWithPassword:async({email,password})=>{if(email!==user.email||password!=='Cucumber-Login-123!')return {data:{user:null},error:{message:'Invalid login credentials'}};session={user};localStorage.setItem('cucumber-profile-session',JSON.stringify(session));listener?.('SIGNED_IN',session);return {data:{user,session},error:null}},
+      signOut:async()=>{session=null;localStorage.removeItem('cucumber-profile-session');listener?.('SIGNED_OUT',null);return {error:null}}
     },
     from(table){
       const query={filters:[],select(){return query},eq(field,value){query.filters.push([field,value]);return query},gte(field,value){query.filters.push([field,value]);return query},in(field,values){query.filters.push([field,values]);return query},order(){return query},limit(){return query},range(){return query},
@@ -373,14 +373,14 @@ function profileFakeConfig(){
 Given('que existe un usuario de pruebas',async function(){
   await this.page.route('**/supabase.min.js*',route=>route.fulfill({status:200,contentType:'application/javascript',body:''}));
   await this.page.route('**/supabase-config.js*',route=>route.fulfill({status:200,contentType:'application/javascript',body:profileFakeConfig()}));
-  await this.page.goto(BASE+'/perfil.html#cucumberMode=login');
-  const diagnostic=await this.page.evaluate(()=>({url:location.href,title:document.title,authCount:document.querySelectorAll('#authEmail').length,body:document.body?.innerText.slice(0,350)}));
-  assert.equal(diagnostic.authCount,1,'No se cargó el formulario de perfil: '+JSON.stringify(diagnostic));
+  await this.page.route('**/functions/v1/email-bienvenida',route=>route.fulfill({status:200,contentType:'application/json',body:JSON.stringify({sent:true})}));
+  await this.page.goto(BASE+'/login.html?next=%2Fperfil.html');
 });
 When('inicia sesión y después la cierra',async function(){
-  await this.page.locator('#authEmail').fill('cucumber-profile@example.invalid');
-  await this.page.locator('#authPass').fill('Cucumber-Login-123!');
+  await this.page.locator('#loginEmail').fill('cucumber-profile@example.invalid');
+  await this.page.locator('#loginPassword').fill('Cucumber-Login-123!');
   await this.page.locator('#loginSubmit').click();
+  await this.page.waitForURL('**/perfil.html');
   await this.page.locator('#privateDashboard').waitFor({state:'visible'});
   await this.page.locator('#signout').click();
   await this.page.waitForFunction(()=>document.querySelector('#privateDashboard')?.hidden===true);
