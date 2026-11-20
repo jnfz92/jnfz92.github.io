@@ -464,6 +464,6 @@ Then('el PDF contiene resultados y no crea páginas vacías',async function(){
   const pdfBuffer=await this.pdfPage.pdf({format:'A4',printBackground:true});
   const pdfSource=pdfBuffer.toString('latin1');
   assert.ok(pdfSource.startsWith('%PDF-'),'La exportación no ha generado un PDF válido.');
-  const pageCount=(pdfSource.match(/\\/Type\\s*\\/Page\\b/g)||[]).length;
+  const pageCount=(pdfSource.match(/\/Type\s*\/Page\b/g)||[]).length;
   assert.ok(pageCount>=1&&pageCount<=2,'El informe ha generado un número inesperado de páginas: '+pageCount);
 });
