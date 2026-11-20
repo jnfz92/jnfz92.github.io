@@ -214,3 +214,47 @@ Then('la calificación histórica permanece intacta',async function(){
   assert.equal(calls.filter(x=>x.rpc==='entregar_repaso_fallos').length,1);
   assert.equal(calls.some(x=>x.table==='resultados'&&['insert','upsert','update','delete'].includes(x.method)),false);
 });
+
+
+Given('que hay dos usuarios de pruebas',async function(){
+  this.sender='00000000-0000-4000-8000-000000000021';
+  this.recipient='00000000-0000-4000-8000-000000000022';
+  this.outsider='00000000-0000-4000-8000-000000000023';
+  const config=String.raw`(()=>{
+    const sender='00000000-0000-4000-8000-000000000021',recipient='00000000-0000-4000-8000-000000000022';
+    const initial={messages:[],requests:[{id:1,remitente:sender,destinatario:recipient,mensaje_inicial:'Solicitud aceptada',estado:'aceptada',creado_en:'2026-11-20T10:00:00Z'}]};
+    const read=()=>{try{return JSON.parse(localStorage.getItem('cucumber-private-messages')||'null')||initial}catch{return initial}};
+    const save=data=>localStorage.setItem('cucumber-private-messages',JSON.stringify(data));
+    const me=new URLSearchParams(location.search).get('as')||sender;
+    window.eeDb={auth:{getUser:async()=>({data:{user:{id:me}},error:null})},
+      from(table){
+        const query={ids:[],select(){return query},order(){return query},limit(){return query},in(_field,ids){query.ids=ids;return query},
+          then(resolve,reject){const data=read();let rows=[];
+            if(table==='mensajes_privados')rows=data.messages.filter(x=>x.remitente===me||x.destinatario===me);
+            if(table==='solicitudes_mensaje')rows=data.requests.filter(x=>x.remitente===me||x.destinatario===me);
+            if(table==='perfiles_publicos')rows=[{usuario_id:sender,alias:'emisor'},{usuario_id:recipient,alias:'destinatario'}].filter(x=>query.ids.includes(x.usuario_id));
+            return Promise.resolve({data:rows,error:null}).then(resolve,reject)},
+          insert:async payload=>{const data=read();data.messages.push({...payload,id:data.messages.length+1,creado_en:new Date().toISOString()});save(data);return {data:payload,error:null}}
+        };return query
+      }
+    };
+  })();`;
+  await this.page.route('**/supabase.min.js*',route=>route.fulfill({status:200,contentType:'application/javascript',body:''}));
+  await this.page.route('**/supabase-config.js*',route=>route.fulfill({status:200,contentType:'application/javascript',body:config}));
+  await this.page.goto(BASE+'/mensajes.html?as='+this.sender+'&con='+this.recipient);
+  await this.page.locator('#composer').waitFor();
+  await this.page.waitForFunction(()=>document.querySelector('#msgStatus')?.textContent.includes('actualizados'));
+});
+When('uno crea un mensaje privado',async function(){
+  await this.page.locator('#messageText').fill('Mensaje privado de Cucumber');
+  await this.page.locator('#sendMessage').click();
+  await this.page.waitForFunction(()=>document.querySelector('#thread')?.textContent.includes('Mensaje privado de Cucumber'));
+});
+Then('únicamente el destinatario autorizado puede leerlo',async function(){
+  await this.page.goto(BASE+'/mensajes.html?as='+this.recipient+'&con='+this.sender);
+  await this.page.waitForFunction(()=>document.querySelector('#thread')?.textContent.includes('Mensaje privado de Cucumber'));
+  assert.equal(await this.page.locator('#thread').innerText().then(t=>t.includes('Mensaje privado de Cucumber')),true);
+  await this.page.goto(BASE+'/mensajes.html?as='+this.outsider+'&con='+this.sender);
+  await this.page.waitForFunction(()=>document.querySelector('#msgStatus')?.textContent.length>0);
+  assert.equal(await this.page.locator('#thread').innerText().then(t=>t.includes('Mensaje privado de Cucumber')),false);
+});
