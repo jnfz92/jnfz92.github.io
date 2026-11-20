@@ -8,7 +8,7 @@ permalink: /perfil.html
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="Tu perfil y progreso de lectura en Easy English.">
 <title>Mi perfil · Easy English</title>
-<link rel="stylesheet" href="/assets/bitacora.css?v=20261103-1"><link rel="stylesheet" href="/assets/perfil.css?v=20261106-cache-refresh-1">
+<link rel="stylesheet" href="/assets/bitacora.css?v=20261103-1"><link rel="stylesheet" href="/assets/perfil.css?v=20261120-organized-1">
 <link rel="stylesheet" href="assets/site.css?v=20261030-unified-blue-2"><script src="assets/site.js?v=20261013" defer></script><link rel="stylesheet" href="/assets/navigation.css?v=20261030-menu-blue-3"><script src="/assets/navigation.js?v=20261030-menu-blue-4" defer></script><link rel="stylesheet" href="/assets/perfil-reading.css?v=20261030-unified-blue-2"><link rel="stylesheet" href="/assets/perfil-dashboard.css?v=20261101-achievements-1"><link rel="preconnect" href="https://wnluofonzteaqtlfshgy.supabase.co" crossorigin>
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <style>
@@ -258,13 +258,6 @@ permalink: /perfil.html
 </div><p class="muted" id="recentStudyStatus" role="status" aria-live="polite">Consultando los resultados recientes…</p>
 <hr style="border:0;border-top:1px solid #e3ebf6;margin:16px 0">
 <h3>Mis actividades recientes</h3><div id="learningActivityHistory" class="list"></div></section></details>
-<section class="panel" id="taskExamsPanel" aria-labelledby="taskExamsTitle">
-<p class="section-kicker">EXÁMENES GENERADOS POR TAREAS</p><h2 id="taskExamsTitle">Mis exámenes disponibles</h2>
-<p class="muted">Los exámenes automáticos se guardan en tu perfil y solo están disponibles para tu cuenta.</p>
-<p class="muted" id="taskExamStatus" role="status" aria-live="polite">Cargando tus exámenes…</p>
-<div id="taskExamList" class="list"></div>
-</section>
-<details class="profile-disclosure"><summary><span class="profile-disclosure-title">Historial de exámenes</span><span class="profile-disclosure-sub">Notas y resultados guardados</span><span class="profile-disclosure-chevron" aria-hidden="true">⌄</span></summary><section class="panel"><p class="section-kicker">Mis estadísticas</p><h2>Mis exámenes</h2><p class="muted">Resultados guardados en Supabase con tu cuenta.</p><div class="stats"><div class="stat"><strong id="examCount">0</strong><span>Exámenes realizados</span></div><div class="stat"><strong id="bestScore">—</strong><span>Mejor nota</span></div><div class="stat"><strong id="averageScore">—</strong><span>Nota media</span></div></div><div id="examHistory" class="list"></div><p><a class="back" href="practicar.html">Hacer un examen →</a></p></section></details>
 <section class="panel" aria-labelledby="followupWeekTitle">
 <div class="ee-followup-heading"><div><p class="section-kicker">INFORME SEMANAL</p><h2 id="followupWeekTitle">Tu semana de aprendizaje</h2></div><span class="ee-followup-period">De lunes a domingo</span></div>
 <p class="muted" id="followupStatus" role="status" aria-live="polite">Cargando tus informes semanales…</p>
@@ -276,6 +269,13 @@ permalink: /perfil.html
 <p class="muted">El historial se organizará por semanas consecutivas desde tu fecha de alta. Cada semana conservará el mismo resumen para que puedas detectar tendencias a lo largo de los meses.</p>
 <div class="ee-followup-history"><div><strong>Lo que mejora</strong><span>Comparación de resultados y constancia.</span></div><div><strong>Lo que ya dominas</strong><span>Temas que has consolidado con evidencias.</span></div><div><strong>Tu siguiente objetivo</strong><span>Una recomendación concreta para la semana siguiente.</span></div></div>
 </section>
+<section class="panel" id="taskExamsPanel" aria-labelledby="taskExamsTitle">
+<p class="section-kicker">EXÁMENES GENERADOS POR TAREAS</p><h2 id="taskExamsTitle">Mis exámenes disponibles</h2>
+<p class="muted">Los exámenes automáticos se guardan en tu perfil y solo están disponibles para tu cuenta.</p>
+<p class="muted" id="taskExamStatus" role="status" aria-live="polite">Cargando tus exámenes…</p>
+<div id="taskExamList" class="list"></div>
+</section>
+<details class="profile-disclosure"><summary><span class="profile-disclosure-title">Historial de exámenes</span><span class="profile-disclosure-sub">Notas y resultados guardados</span><span class="profile-disclosure-chevron" aria-hidden="true">⌄</span></summary><section class="panel"><p class="section-kicker">Mis estadísticas</p><h2>Mis exámenes</h2><p class="muted">Resultados guardados en Supabase con tu cuenta.</p><div class="stats"><div class="stat"><strong id="examCount">0</strong><span>Exámenes realizados</span></div><div class="stat"><strong id="bestScore">—</strong><span>Mejor nota</span></div><div class="stat"><strong id="averageScore">—</strong><span>Nota media</span></div></div><div id="examHistory" class="list"></div><p><a class="back" href="practicar.html">Hacer un examen →</a></p></section></details>
 <details class="profile-disclosure"><summary><span class="profile-disclosure-title">Mis logros</span><span class="profile-disclosure-sub">Insignias y constancia personal</span><span class="profile-disclosure-chevron" aria-hidden="true">⌄</span></summary><section class="panel" id="achievementPanel" aria-labelledby="achievementTitle">
 <p class="section-kicker">MI CONSTANCIA</p><h2 id="achievementTitle">Mis logros personales</h2>
 <p class="muted">Se desbloquean automáticamente con lecturas, exámenes, unidades estudiadas y días consecutivos. No son títulos ni certificaciones oficiales.</p>
@@ -315,6 +315,15 @@ permalink: /perfil.html
 </div>
 <div class="profile-tab-panel" id="profile-panel-cuenta" role="tabpanel" aria-labelledby="profile-tab-cuenta" hidden>
 <div class="profile-group-heading"><h2>Cuenta</h2><p class="muted">Tu perfil, tu comunidad y tus datos</p></div>
+<section class="panel" aria-labelledby="nameTitle">
+<h2 id="nameTitle">Tu perfil</h2><label for="studentName">Tu nombre</label><div class="form-row"><input id="studentName" type="text" maxlength="50" autocomplete="nickname" placeholder="Escribe tu nombre"><button class="primary" id="saveName">Guardar nombre</button></div>
+<p class="muted" id="greeting" role="status">Introduce tu nombre para personalizar tu espacio.</p>
+<p class="muted">Tu nombre y tus lecturas se sincronizan automáticamente con tu cuenta de Supabase.</p>
+<hr style="border:0;border-top:1px solid #e3ebf6;margin:14px 0">
+<h3 style="font-size:1rem;color:#1e426e;margin:0 0 6px">Comunidad</h3>
+<p class="muted">Busca usuarios por su alias público, síguelos y gestiona tus seguidos.</p>
+<p><a class="back" href="comunidad.html">Explorar comunidad →</a></p>
+</section>
 <section class="panel" aria-labelledby="openaiProfileTitle">
  <p class="section-kicker">HERRAMIENTAS OPCIONALES</p>
  <h2 id="openaiProfileTitle">Clave personal de OpenAI</h2>
@@ -332,15 +341,6 @@ permalink: /perfil.html
  <p class="muted">Tu clave permanecerá guardada hasta que la sustituyas o elimines. Nunca se vuelve a mostrar completa. Tu consumo se factura en tu propia cuenta de OpenAI. Puedes obtener o revocar tu clave en <a href="https://platform.openai.com/api-keys" target="_blank" rel="noopener noreferrer">OpenAI API Keys</a>.</p>
  <p class="muted">Con tu clave personal guardada podrás corregir Writing con IA y crear un plan personalizado B2. Las herramientas solicitan consentimiento antes de enviar datos a OpenAI.</p>
  <div class="form-row"><a class="primary" href="/aula-b2.html#plan">📅 Crear mi planificación B2 con IA →</a><a class="primary" href="/writings.html#editor">✍️ Corregir Writing con IA →</a></div>
-</section>
-<section class="panel" aria-labelledby="nameTitle">
-<h2 id="nameTitle">Tu perfil</h2><label for="studentName">Tu nombre</label><div class="form-row"><input id="studentName" type="text" maxlength="50" autocomplete="nickname" placeholder="Escribe tu nombre"><button class="primary" id="saveName">Guardar nombre</button></div>
-<p class="muted" id="greeting" role="status">Introduce tu nombre para personalizar tu espacio.</p>
-<p class="muted">Tu nombre y tus lecturas se sincronizan automáticamente con tu cuenta de Supabase.</p>
-<hr style="border:0;border-top:1px solid #e3ebf6;margin:14px 0">
-<h3 style="font-size:1rem;color:#1e426e;margin:0 0 6px">Comunidad</h3>
-<p class="muted">Busca usuarios por su alias público, síguelos y gestiona tus seguidos.</p>
-<p><a class="back" href="comunidad.html">Explorar comunidad →</a></p>
 </section>
 <details class="profile-disclosure"><summary><span class="profile-disclosure-title">Datos y seguridad</span><span class="profile-disclosure-sub">Exportar, reiniciar, cerrar sesión o eliminar</span><span class="profile-disclosure-chevron" aria-hidden="true">⌄</span></summary><section class="panel account-danger" id="accountActions" hidden aria-labelledby="deleteAccountTitle"><span class="section-kicker">SEGURIDAD DE LA CUENTA</span><h2 id="deleteAccountTitle">Mis datos y seguridad</h2><p class="muted">Descarga una copia de tu historial de aprendizaje, cierra sesión o elimina tu cuenta y sus datos asociados.</p>
 <div style="padding:14px;background:#f8faff;border:1px solid #d9e4f4;border-radius:12px;margin-bottom:14px">
