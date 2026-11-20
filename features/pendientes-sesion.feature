@@ -18,7 +18,7 @@ Característica: Exámenes personalizados y datos privados
     Dado que el alumno ha completado un examen en una cuenta de pruebas
     Cuando exporta el informe a PDF
     Entonces el PDF contiene resultados y no crea páginas vacías
-  @pendiente-sesion
+  @cucumber-aislado
   Escenario: Registro de una cuenta de pruebas y confirmación de correo
     Dado que dispongo de una dirección de pruebas no usada
     Cuando completo el registro
@@ -36,7 +36,7 @@ Característica: Exámenes personalizados y datos privados
     Cuando consulta su perfil
     Entonces los gráficos coinciden con sus resultados reales
 
-  @pendiente-sesion
+  @cucumber-aislado
   Escenario: El examen diario se entrega una sola vez
     Dado que hay un examen publicado y el usuario de pruebas tiene sesión
     Cuando entrega sus respuestas y reintenta por un error de conexión
@@ -60,13 +60,13 @@ Característica: Exámenes personalizados y datos privados
     Cuando completa y entrega ambas modalidades
     Entonces las respuestas se corrigen y se guarda el progreso
 
-  @pendiente-sesion
+  @cucumber-aislado
   Escenario: Un alumno puede editar y borrar sus comentarios
     Dado que el alumno ha publicado un comentario de pruebas
     Cuando solicita eliminarlo
     Entonces el comentario se oculta sin eliminar las respuestas ajenas
 
-  @pendiente-sesion
+  @cucumber-aislado
   Escenario: Las sugerencias no permiten votos duplicados
     Dado que el alumno ha votado una sugerencia
     Cuando modifica su voto
