@@ -193,6 +193,15 @@ El asesor identifica 10 tablas sin políticas: `private.actividad_soluciones`, `
 
 El asesor identifica cuatro: `enviar_sugerencia`, `listar_comentarios_articulo`, `listar_sugerencias`, `votar_sugerencia`. Puede ser intencional, pero requiere revisar el cuerpo, validación de parámetros, abuso automatizado, identidad declarada por el cliente y límites de frecuencia.
 
+#### Revisión de las cuatro RPC anónimas
+
+Las cuatro tienen `SET search_path TO ''`, lo que es una buena mitigación contra secuestro de `search_path`. La revisión preliminar de cuerpos detecta:
+
+- `enviar_sugerencia`: inserta sugerencias anónimas y valida longitudes (título 5–100; descripción 10–1000). Revisar rate limiting y spam.
+- `listar_comentarios_articulo`: devuelve comentarios no ocultos y limita a 500; la exposición parece funcionalmente pública. Verificar sanitización en el cliente al renderizar contenido.
+- `listar_sugerencias`: recibe `p_votante_id` desde el cliente y lo usa para calcular `mi_voto`. No debe considerarse identidad autenticada.
+- `votar_sugerencia`: recibe `p_votante_id` desde el cliente y hace upsert de voto. Un identificador UUID aportado por el navegador es suplantable; si se pretende que el voto sea resistente a manipulación, migrar a identidad autenticada o a un token firmado/servidor con límites y controles antiabuso. No se cambió la función.
+
 ### RPC SECURITY DEFINER ejecutables por authenticated
 
 El asesor informa de 29 funciones. No implica automáticamente una vulnerabilidad: estas funciones pueden necesitar privilegios elevados. Cada una debe verificarse en cuanto a `auth.uid()`, autorización de recurso, `search_path` fijo, validación de entradas y grants de ejecución.
