@@ -3,7 +3,7 @@ const API='https://wnluofonzteaqtlfshgy.supabase.co/rest/v1/';
 const KEY='sb_publishable_Ef-AXAapcwaPExEFS6kmug_tKLaulM8';
 const PAGE_SIZE=36;
 const $=id=>document.getElementById(id);
-const els={search:$('phraseSearch'),movie:$('movieFilter'),tense:$('tenseFilter'),reset:$('resetMovieFilters'),count:$('phraseResults'),grid:$('moviePhrasesGrid'),status:$('moviePhrasesStatus'),pagination:$('moviePhrasesPagination'),prev:$('previousPhrases'),next:$('nextPhrases'),pageLabel:$('phrasePageLabel'),categoryStats:$('movieCategoryStats'),categoryMovie:$('categoryMovieSelect'),categorySummary:$('categoryStatsSummary'),phraseCount:$('moviePhraseCount'),movieCount:$('movieCount'),tenseCount:$('tenseCount')};
+const els={phrasalStats:$('phrasalVerbStats'),phrasalSummary:$('phrasalVerbSummary'),search:$('phraseSearch'),movie:$('movieFilter'),tense:$('tenseFilter'),reset:$('resetMovieFilters'),count:$('phraseResults'),grid:$('moviePhrasesGrid'),status:$('moviePhrasesStatus'),pagination:$('moviePhrasesPagination'),prev:$('previousPhrases'),next:$('nextPhrases'),pageLabel:$('phrasePageLabel'),categoryStats:$('movieCategoryStats'),categoryMovie:$('categoryMovieSelect'),categorySummary:$('categoryStatsSummary'),phraseCount:$('moviePhraseCount'),movieCount:$('movieCount'),tenseCount:$('tenseCount')};
 let rows=[],filtered=[],page=1;
 const normalizeCategory=value=>{
  const clean=value.trim();
@@ -36,6 +36,7 @@ function renderCategoryStats(){
  });
  els.categoryStats.replaceChildren(fragment);
  if(!categories.length)els.categoryStats.textContent='No hay categorías disponibles para esta selección.';
+ renderPhrasalStats();
 }
 function subtitleCategory(phrase){
  const p=phrase.toLocaleLowerCase();
@@ -60,6 +61,64 @@ function parseIceAgeSubtitles(source){
  });
  return parsed;
 }
+const phrasalVerbDefinitions=[
+ {verb:'come on',translation:'¡Vamos! / Venga',pattern:/\bcome(?:s|came|coming)?\s+on\b/gi},
+ {verb:'look out',translation:'¡Cuidado! / Vigilar',pattern:/\blook(?:s|ed|ing)?\s+out\b/gi},
+ {verb:'take care of',translation:'cuidar de / encargarse de',pattern:/\btake(?:s|n|ing)?\s+care\s+of\b/gi},
+ {verb:'go ahead',translation:'adelante / proceder',pattern:/\bgo(?:es|ing|ne)?\s+ahead\b/gi},
+ {verb:'get away',translation:'alejarse / escapar',pattern:/\bget(?:s|ting|got|gotten)?\s+away\b/gi},
+ {verb:'get down',translation:'bajar(se)',pattern:/\bget(?:s|ting|got|gotten)?\s+down\b/gi},
+ {verb:'get off',translation:'bajarse / quitarse de encima',pattern:/\bget(?:s|ting|got|gotten)?\s+off\b/gi},
+ {verb:'shut up',translation:'callarse',pattern:/\bshut(?:s|ting)?\s+up\b/gi},
+ {verb:'wipe out',translation:'aniquilar / eliminar; quedar agotado',pattern:/\bwipe(?:s|d|ing)?\s+out\b/gi},
+ {verb:'keep up',translation:'mantener el ritmo / seguir el paso',pattern:/\bkeep(?:s|t|ing)?\s+up\b/gi},
+ {verb:'come back',translation:'volver / regresar',pattern:/\bcome(?:s|came|coming)?\s+back\b/gi},
+ {verb:'get inside',translation:'entrar',pattern:/\bget(?:s|ting|got|gotten)?\s+inside\b/gi},
+ {verb:'dig in',translation:'empezar a comer / servirse',pattern:/\bdig(?:s|ging)?\s+in\b/gi},
+ {verb:'jump up',translation:'saltar / subirse',pattern:/\bjump(?:s|ed|ing)?\s+up\b/gi},
+ {verb:'show up',translation:'aparecer / presentarse',pattern:/\bshow(?:s|ed|ing)?\s+up\b/gi},
+ {verb:'pick up',translation:'recoger / ir a buscar',pattern:/\bpick(?:s|ed|ing)?\s+up\b/gi},
+ {verb:'stick together',translation:'mantenerse unidos',pattern:/\bstick(?:s|ing)?\s+together\b/gi},
+ {verb:'go on',translation:'continuar / seguir; pasar (algo)',pattern:/\bgo(?:es|ing|ne)?\s+on\b/gi},
+ {verb:'fall in',translation:'caer dentro',pattern:/\bfall(?:s|ing|fell|fallen)?\s+in\b/gi}
+];
+function phrasalMatches(phrase){
+ const matches=[];
+ phrasalVerbDefinitions.forEach(def=>{
+  const found=phrase.match(def.pattern);
+  if(found&&found.length)matches.push({...def,count:found.length});
+ });
+ return matches;
+}
+function renderPhrasalStats(){
+ const selected=els.categoryMovie.value;
+ const selectedRows=selected==='all'?rows:rows.filter(row=>row.movie_slug===selected);
+ const totals=new Map();let occurrences=0,lines=0;
+ selectedRows.forEach(row=>{
+  const matches=phrasalMatches(row.phrase||'');
+  if(matches.length)lines++;
+  matches.forEach(match=>{
+   occurrences+=match.count;
+   const current=totals.get(match.verb)||{translation:match.translation,count:0};
+   current.count+=match.count;totals.set(match.verb,current);
+  });
+ });
+ const sorted=[...totals.entries()].sort((a,b)=>b[1].count-a[1].count||a[0].localeCompare(b[0]));
+ els.phrasalSummary.textContent=occurrences.toLocaleString('es-ES')+' apariciones · '+lines.toLocaleString('es-ES')+' subtítulos · '+sorted.length+' expresiones';
+ const fragment=document.createDocumentFragment();
+ sorted.forEach(([verb,data])=>{
+  const item=document.createElement('div');item.className='ee-category-item';
+  const head=document.createElement('div');head.className='ee-category-item-head';
+  const name=document.createElement('span');name.textContent=verb+' — '+data.translation;
+  const value=document.createElement('strong');value.textContent=data.count.toLocaleString('es-ES')+'×';
+  head.append(name,value);
+  const track=document.createElement('div');track.className='ee-category-track';
+  const bar=document.createElement('div');bar.className='ee-category-bar';bar.style.width=(data.count/(sorted[0]?.[1].count||1)*100)+'%';
+  track.append(bar);item.append(head,track);fragment.append(item);
+ });
+ els.phrasalStats.replaceChildren(fragment);
+ if(!sorted.length)els.phrasalStats.textContent='No se han encontrado phrasal verbs en esta selección.';
+}
 function makeRow(row){
  const tr=document.createElement('tr');
  const add=(value,cls)=>{const td=document.createElement('td');td.className=cls||'';td.textContent=value??'';tr.append(td)};
@@ -67,6 +126,11 @@ function makeRow(row){
  add(row.movie_title||row.movie_slug,'ee-table-movie');
  add(row.phrase,'ee-table-phrase');
  add(row.translation_es||'No disponible en esta ficha','ee-table-translation');
+ const phrasalTd=document.createElement('td');phrasalTd.className='ee-table-phrasal';
+ const detected=phrasalMatches(row.phrase||'');
+ if(detected.length)detected.forEach(match=>{const tag=document.createElement('span');tag.className='ee-phrase-tag';tag.textContent=match.verb+' — '+match.translation;phrasalTd.append(tag)});
+ else phrasalTd.textContent='—';
+ tr.append(phrasalTd);
  add(row.timecode||'—','ee-table-time');
  const td=document.createElement('td');td.className='ee-table-tenses';
  labels(row).forEach(label=>{const tag=document.createElement('span');tag.className='ee-phrase-tag';tag.textContent=label;td.append(tag)});
@@ -91,7 +155,7 @@ function render(){
  const start=(page-1)*PAGE_SIZE,visible=filtered.slice(start,start+PAGE_SIZE);
  const table=document.createElement('table');table.className='ee-phrases-table';
  const thead=document.createElement('thead'),headRow=document.createElement('tr');
- ['N.º','Película','Frase original en inglés','Traducción al español','Código de tiempo','Tiempo / construcción verbal','Explicación gramatical'].forEach(label=>{const th=document.createElement('th');th.scope='col';th.textContent=label;headRow.append(th)});
+ ['N.º','Película','Frase original en inglés','Traducción al español','Traducción al español','Phrasal verbs (traducción)','Código de tiempo','Tiempo / construcción verbal','Explicación gramatical'].forEach(label=>{const th=document.createElement('th');th.scope='col';th.textContent=label;headRow.append(th)});
  thead.append(headRow);table.append(thead);
  const tbody=document.createElement('tbody');visible.forEach(row=>tbody.append(makeRow(row)));table.append(tbody);
  els.grid.replaceChildren(table);
