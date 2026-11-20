@@ -2,7 +2,7 @@
 (()=>{
 'use strict';
 const $=id=>document.getElementById(id), key='easyEnglish.blogProfile.v1';
-let user=null,articles=[],articleView='all',loading=false,articlesLoaded=false,cloudUserId=null,suggestedHref=null;
+let user=null,articles=[],articleView='pending',loading=false,articlesLoaded=false,cloudUserId=null,suggestedHref=null;
 let savedFavorites=new Set(),favoritesReady=false;
 let achievementProgress={reads:null,course:null,exams:null,streak:null};
 const READING_PAGE_SIZE=10;
@@ -137,8 +137,6 @@ function render(){
  const pendingLabel=$('pendingReadHelp');
  if(pendingLabel)pendingLabel.textContent=ready&&partlyRead?
    partlyRead+' '+(partlyRead===1?'guía pendiente incluye':'guías pendientes incluyen')+' lecturas de capítulos anteriores a la unificación. No se marcarán como completadas hasta que leas la guía actual.':'';
- for(const [id,view] of [['showAllArticles','all'],['onlyPending','pending'],['onlyRead','read']])
-  $(id).setAttribute('aria-pressed',String(articleView===view));
  const root=$('articleList');root.replaceChildren();
  if(!ready){
   $('articleBrowseCount').textContent='Cargando tu biblioteca…';
@@ -152,8 +150,8 @@ function render(){
  const doneList=filtered.filter(a=>profile.read[a.href]).sort((a,b)=>
   new Date(profile.read[b.href]).getTime()-new Date(profile.read[a.href]).getTime());
  const pendingList=filtered.filter(a=>!profile.read[a.href]);
- const shown=articleView==='read'?doneList.length:articleView==='pending'?pendingList.length:filtered.length;
- $('articleBrowseCount').textContent='Mostrando '+shown+' de '+total+' artículos'+(term?' que coinciden con la búsqueda':'')+'.';
+ const shown=pendingList.length;
+ $('articleBrowseCount').textContent='Mostrando '+shown+' artículos pendientes'+(term?' que coinciden con la búsqueda':'')+'.';
  function group(type,title,entries){
   const box=document.createElement('section');box.className='reading-group '+type+'-group';
   const head=document.createElement('div');head.className='reading-group-header';
@@ -262,8 +260,7 @@ function render(){
   }
   root.append(box);
  }
- if(articleView!=='read')group('pending','📖 Artículos pendientes de leer',pendingList);
- if(articleView!=='pending')group('read','✓ Artículos leídos',doneList);
+ group('pending','📖 Artículos pendientes de leer',pendingList);
  updateSuggestedReading();
 }
 async function loadCloud(){if(!user)return;const activeId=user.id;const [p,l]=await Promise.all([eeDb.from('perfiles').select('nombre').eq('usuario_id',activeId).maybeSingle(),eeDb.from('lecturas').select('articulo_url,leido_en').eq('usuario_id',activeId)]);if(!user||user.id!==activeId)return;if(p.error)throw p.error;if(l.error)throw l.error;profile={name:p.data?.nombre||'',read:Object.fromEntries((l.data||[]).map(r=>[r.articulo_url,r.leido_en]))};cloudUserId=activeId;render();await Promise.all([results(),loadStreak(),loadLearningOverview(),loadActivityCalendar(activeId),loadWeeklyFollowup(activeId)])}
@@ -1201,8 +1198,7 @@ $('confirmDeleteAccount').onclick=async()=>{if(!user||$('deleteConfirm').value.t
 $('saveName').onclick=async()=>{const name=$('studentName').value.trim().slice(0,50);try{if(user){const {error}=await eeDb.from('perfiles').upsert({usuario_id:user.id,nombre:name,actualizado_en:new Date().toISOString()});if(error)throw error}else{profile.name=name;localSave()}profile.name=name;render();status(user?'Nombre guardado en Supabase.':'Nombre guardado en este navegador.')}catch(e){status('Error al guardar: '+e.message)}};
 $('studentName').onkeydown=e=>{if(e.key==='Enter')$('saveName').click()};
 $('articleSearch').oninput=()=>{readingPages.read=1;readingPages.pending=1;render();};
-for(const [id,view] of [['showAllArticles','all'],['onlyPending','pending'],['onlyRead','read']])
- $(id).onclick=()=>{articleView=view;render()};
+
 $('readingPickAnother').onclick=()=>updateSuggestedReading(true);
 $('readingPickMark').onclick=async()=>{
  if(!user||!suggestedHref||loading)return;
