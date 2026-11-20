@@ -53,7 +53,7 @@
  button.onclick=async()=>{
    if(busy)return;
    await refresh();
-   if(!user||!ai.keyFor(user.id)||!consent.checked){status.textContent='Inicia sesión, configura la clave y acepta el envío de tu texto.';return}
+   if(!user||!hasKey||!consent.checked){status.textContent='Inicia sesión, configura la clave y acepta el envío de tu texto.';return}
    const text=$('wtexto').value.trim();
    if(text.length<20){status.textContent='Escribe al menos 20 caracteres para corregir el writing.';return}
    if(text.length>12000){status.textContent='El texto supera 12.000 caracteres.';return}
