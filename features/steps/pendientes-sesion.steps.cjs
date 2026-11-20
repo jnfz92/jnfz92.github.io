@@ -374,6 +374,8 @@ Given('que existe un usuario de pruebas',async function(){
   await this.page.route('**/supabase.min.js*',route=>route.fulfill({status:200,contentType:'application/javascript',body:''}));
   await this.page.route('**/supabase-config.js*',route=>route.fulfill({status:200,contentType:'application/javascript',body:profileFakeConfig()}));
   await this.page.goto(BASE+'/perfil.html#cucumberMode=login');
+  const diagnostic=await this.page.evaluate(()=>({url:location.href,title:document.title,authCount:document.querySelectorAll('#authEmail').length,body:document.body?.innerText.slice(0,350)}));
+  assert.equal(diagnostic.authCount,1,'No se cargó el formulario de perfil: '+JSON.stringify(diagnostic));
 });
 When('inicia sesión y después la cierra',async function(){
   await this.page.locator('#authEmail').fill('cucumber-profile@example.invalid');
