@@ -24,8 +24,22 @@
   return new Promise((resolve,reject)=>{
    const existing=document.querySelector('script[data-aula-supabase-sdk]');
    if(existing){
-    existing.addEventListener('load',()=>resolve(window.supabase),{once:true});
-    existing.addEventListener('error',()=>reject(new Error('No se pudo cargar la autenticación')),{once:true});
+    let settled=false;
+    const finish=(error)=>{
+     if(settled)return;
+     settled=true;
+     existing.removeEventListener('load',onLoad);
+     existing.removeEventListener('error',onError);
+     if(error)reject(error);
+     else if(window.supabase?.createClient)resolve(window.supabase);
+     else reject(new Error('SDK no disponible'));
+    };
+    const onLoad=()=>finish();
+    const onError=()=>finish(new Error('No se pudo cargar la autenticación'));
+    existing.addEventListener('load',onLoad,{once:true});
+    existing.addEventListener('error',onError,{once:true});
+    // El script puede haber terminado entre la comprobación inicial y estos listeners.
+    if(window.supabase?.createClient)finish();
     return;
    }
    const script=document.createElement('script');
