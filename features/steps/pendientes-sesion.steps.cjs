@@ -164,16 +164,16 @@ window.eeDb={
   onAuthStateChange:()=>({data:{subscription:{unsubscribe(){}}}})
  },
  from(table){
-  const rows=table==='preguntas_falladas'?[
+  const rows=table==='preguntas_falladas'?(window.__pendingRows||(window.__pendingRows=[
    {pregunta_id:101,veces_fallada:2,ultimo_fallo:'2026-11-19T10:00:00Z',proximo_repaso:null,preguntas:{id:101,orden:1,enunciado:'Choose the correct verb tense',opciones:['has gone','went'],fuente_url:'tenses-present',examen_id:2,examenes:{titulo:'Grammar test',lectura:null}}},
    {pregunta_id:102,veces_fallada:1,ultimo_fallo:'2026-11-19T09:00:00Z',proximo_repaso:null,preguntas:{id:102,orden:1,enunciado:'Choose the correct environment word',opciones:['pollution','chair'],fuente_url:'environment-vocabulary',examen_id:3,examenes:{titulo:'Vocabulary test',lectura:null}}}
-  ]:[];
+  ])):[];
   const query={select(){return query},eq(){return query},order(){return query},limit(){return query},in(){return query},then(resolve,reject){return Promise.resolve({data:rows,error:null}).then(resolve,reject)},maybeSingle:async()=>({data:rows[0]||null,error:null}),insert:async payload=>{window.__repasoCalls.push({table,method:'insert',payload});return {data:payload,error:null}},upsert:async payload=>{window.__repasoCalls.push({table,method:'upsert',payload});return {data:payload,error:null}},delete(){return query}};
   return query;
  },
  rpc:async(name,args)=>{
   window.__repasoCalls.push({rpc:name,args});
-  if(name==='entregar_repaso_fallos')return {data:{total:1,aciertos:1,correcciones:{'101':{correcta:true,respuesta_correcta:0,explicacion:'Respuesta correcta'}}},error:null};
+  if(name==='entregar_repaso_fallos'){window.__pendingRows=[];return {data:{total:1,aciertos:1,correcciones:{'101':{correcta:true,respuesta_correcta:0,explicacion:'Respuesta correcta'}}},error:null};}
   return {data:null,error:{message:'RPC inesperada: '+name}};
  }
 };`;
@@ -307,4 +307,20 @@ Then('las respuestas se corrigen y se guarda el progreso',async function(){
   assert.ok(call.args.p_intento_id);
   assert.match(await this.page.locator('#activitySummary').innerText(),/1 de 1 autocorregibles correctas/);
   assert.match(await this.page.locator('#activitySummary').innerText(),/pendiente\(s\) de revisión/);
+});
+
+
+Given('que el alumno tiene preguntas falladas',async function(){
+  await openRepasoIsolated(this.page);
+});
+When('supera una tanda de repaso',async function(){
+  await this.page.locator('#reviewStart').click();
+  await this.page.locator('#reviewForm input[name="repaso-classic-101"][value="0"]').check();
+  await this.page.locator('#reviewSubmit').click();
+  await this.page.waitForFunction(()=>/Repaso unificado corregido y guardado/.test(document.querySelector('#reviewStatus')?.textContent||''));
+});
+Then('las preguntas acertadas dejan de estar pendientes',async function(){
+  await this.page.waitForFunction(()=>document.querySelector('#reviewStats')?.textContent.includes('0Errores pendientes'));
+  assert.equal(await this.page.locator('#reviewStats .review-stat strong').first().innerText(),'0');
+  assert.match(await this.page.locator('#reviewStatus').innerText(),/No tienes errores pendientes/);
 });
