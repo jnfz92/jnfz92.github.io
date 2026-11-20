@@ -16,6 +16,10 @@ permalink: /perfil.html
 .profile-workspace-header{margin:22px 0 14px}
 .profile-workspace-header h2{margin:.25rem 0 .35rem;font-size:clamp(1.35rem,2.5vw,1.75rem)}
 .profile-workspace-header p{margin:.25rem 0}
+.profile-account-toolbar{display:flex;justify-content:flex-end;margin:0 0 10px}
+.profile-signout{appearance:none;border:1px solid #c8d7ed;border-radius:10px;padding:9px 14px;background:#fff;color:#31547f;font:inherit;font-size:.92rem;font-weight:700;cursor:pointer}
+.profile-signout:hover{background:#f3f7ff;border-color:#9eb8df}
+.profile-signout:focus-visible{outline:3px solid #3474ed;outline-offset:2px}
 .profile-tabs{display:flex;flex-wrap:wrap;gap:9px;padding:9px;margin:0 0 20px;background:#edf3ff;border:1px solid #d6e3ff;border-radius:18px}
 .profile-tab{appearance:none;border:1px solid transparent;border-radius:12px;padding:12px 17px;background:transparent;color:#254572;font:inherit;font-weight:700;cursor:pointer;flex:1 1 130px;min-height:46px;white-space:nowrap}
 .profile-tab:hover{background:#fff;color:#1749c7}
@@ -26,7 +30,7 @@ permalink: /perfil.html
 .profile-group-heading h2{font-size:1.4rem;margin:0 0 3px}
 .profile-group-heading p{margin:0}
 .profile-tab-panel > .panel{margin-bottom:18px}
-@media(max-width:650px){.profile-tabs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;padding:7px}.profile-tab{padding:11px 7px;min-width:0;flex:unset;font-size:.92rem}.profile-tab:last-child{grid-column:1/-1}.profile-workspace-header{margin-top:18px}}
+@media(max-width:650px){.profile-tabs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;padding:7px}.profile-tab{padding:11px 7px;min-width:0;flex:unset;font-size:.92rem}.profile-tab:last-child{grid-column:1/-1}.profile-workspace-header{margin-top:18px}.profile-account-toolbar{margin-bottom:8px}.profile-signout{width:100%}}
 
 /* Diseño compacto: los detalles menos usados se despliegan al pulsarlos */
 .ee-site.ee-profile main{padding-top:20px}
@@ -156,6 +160,7 @@ permalink: /perfil.html
 </form>
 <p id="passwordRecoveryStatus" class="muted" role="status" aria-live="polite"></p>
 </section><div id="privateDashboard" hidden>
+<div class="profile-account-toolbar"><button class="profile-signout" type="button" id="signout">↪ Cerrar sesión</button></div>
 <nav class="profile-tabs" aria-label="Apartados de mi perfil" role="tablist">
 <button type="button" class="profile-tab is-active" role="tab" id="profile-tab-inicio" aria-controls="profile-panel-inicio" aria-selected="true" tabindex="0" data-profile-tab="inicio">🏠 Inicio</button>
 <button type="button" class="profile-tab" role="tab" id="profile-tab-estudiar" aria-controls="profile-panel-estudiar" aria-selected="false" tabindex="-1" data-profile-tab="estudiar">📚 Estudiar</button>
@@ -342,13 +347,13 @@ permalink: /perfil.html
  <p class="muted">Con tu clave personal guardada podrás corregir Writing con IA y crear un plan personalizado B2. Las herramientas solicitan consentimiento antes de enviar datos a OpenAI.</p>
  <div class="form-row"><a class="primary" href="/aula-b2.html#plan">📅 Crear mi planificación B2 con IA →</a><a class="primary" href="/writings.html#editor">✍️ Corregir Writing con IA →</a></div>
 </section>
-<details class="profile-disclosure"><summary><span class="profile-disclosure-title">Datos y seguridad</span><span class="profile-disclosure-sub">Exportar, reiniciar, cerrar sesión o eliminar</span><span class="profile-disclosure-chevron" aria-hidden="true">⌄</span></summary><section class="panel account-danger" id="accountActions" hidden aria-labelledby="deleteAccountTitle"><span class="section-kicker">SEGURIDAD DE LA CUENTA</span><h2 id="deleteAccountTitle">Mis datos y seguridad</h2><p class="muted">Descarga una copia de tu historial de aprendizaje, cierra sesión o elimina tu cuenta y sus datos asociados.</p>
+<details class="profile-disclosure"><summary><span class="profile-disclosure-title">Datos y seguridad</span><span class="profile-disclosure-sub">Exportar, reiniciar, cerrar sesión o eliminar</span><span class="profile-disclosure-chevron" aria-hidden="true">⌄</span></summary><section class="panel account-danger" id="accountActions" hidden aria-labelledby="deleteAccountTitle"><span class="section-kicker">SEGURIDAD DE LA CUENTA</span><h2 id="deleteAccountTitle">Mis datos y seguridad</h2><p class="muted">Descarga una copia de tu historial de aprendizaje, reinicia tu perfil o elimina tu cuenta y sus datos asociados.</p>
 <div style="padding:14px;background:#f8faff;border:1px solid #d9e4f4;border-radius:12px;margin-bottom:14px">
 <h3 style="font-size:.95rem;color:#1e426e;margin:0 0 6px">Reiniciar mi perfil</h3>
 <p class="muted" style="margin:0 0 10px">Si has iniciado sesión, se borrarán tu nombre y tus lecturas de Supabase; no se eliminarán las notas de tus exámenes. Sin sesión solo se borrarán los datos locales.</p>
 <button class="secondary" id="resetProfile">Reiniciar mi perfil</button>
 </div>
-<div class="account-actions"><button class="secondary" type="button" id="exportAccountData">Descargar mis datos de aprendizaje (JSON)</button><button class="secondary" type="button" id="signout">↪ Cerrar sesión</button><button class="danger-button" type="button" id="showDeleteAccount">Eliminar mi cuenta</button></div><p id="exportAccountStatus" class="muted" role="status" aria-live="polite"></p><div id="deleteAccountPanel" hidden><p class="muted"><strong>Esta acción no se puede deshacer.</strong> Escribe ELIMINAR MI CUENTA para confirmarlo.</p><label for="deleteConfirm">Confirmación</label><input id="deleteConfirm" type="text" autocomplete="off" placeholder="ELIMINAR MI CUENTA"><div class="account-actions"><button class="danger-button" id="confirmDeleteAccount" type="button" disabled>Eliminar definitivamente</button><button class="secondary" id="cancelDeleteAccount" type="button">Cancelar</button></div><p class="muted" id="deleteAccountStatus" role="status"></p></div></section></details>
+<div class="account-actions"><button class="secondary" type="button" id="exportAccountData">Descargar mis datos de aprendizaje (JSON)</button><button class="danger-button" type="button" id="showDeleteAccount">Eliminar mi cuenta</button></div><p id="exportAccountStatus" class="muted" role="status" aria-live="polite"></p><div id="deleteAccountPanel" hidden><p class="muted"><strong>Esta acción no se puede deshacer.</strong> Escribe ELIMINAR MI CUENTA para confirmarlo.</p><label for="deleteConfirm">Confirmación</label><input id="deleteConfirm" type="text" autocomplete="off" placeholder="ELIMINAR MI CUENTA"><div class="account-actions"><button class="danger-button" id="confirmDeleteAccount" type="button" disabled>Eliminar definitivamente</button><button class="secondary" id="cancelDeleteAccount" type="button">Cancelar</button></div><p class="muted" id="deleteAccountStatus" role="status"></p></div></section></details>
 </div>
 </div>
 </main>
