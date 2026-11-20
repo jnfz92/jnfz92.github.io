@@ -29,5 +29,6 @@
   const state=await availability(db);if(!state.ready)throw Error(state.reason||'Guarda tu clave OpenAI en tu cuenta antes de utilizar la IA.');
   return (await request(db,action,{consent:true,...payload})).result;
  }
- async function speaking(db,action,payload){if(!['speaking_turn','speaking_feedback'].includes(action))throw Error('Acción de speaking desconocida.');const state=await availability(db);if(!state.ready)throw Error(state.reason||'Guarda tu clave OpenAI en tu perfil.');return (await request(db,action,{consent:true,...payload},'speaking-lab-ai')).result;}\n window.eeAI={keyFor:userId=>configuredUsers.has(userId),availability,saveKey,deleteKey,run,speaking};
+ async function speaking(db,action,payload){if(!['speaking_turn','speaking_feedback'].includes(action))throw Error('Acción de speaking desconocida.');const state=await availability(db);if(!state.ready)throw Error(state.reason||'Guarda tu clave OpenAI en tu perfil.');return (await request(db,action,{consent:true,...payload},'speaking-lab-ai')).result;}
+ window.eeAI={keyFor:userId=>configuredUsers.has(userId),availability,saveKey,deleteKey,run,speaking};
 })();
