@@ -5,15 +5,15 @@
  const db=window.eeDb,ai=window.eeAI,status=$('writingAiStatus'),access=$('writingAiAccess'),
        result=$('writingAiResult'),consent=$('writingAiConsent'),setup=$('writingAiSetup');
  const el=(tag,value,cls)=>{const n=document.createElement(tag);if(value!==undefined)n.textContent=String(value);if(cls)n.className=cls;return n};
- let user=null,busy=false;
+ let user=null,busy=false,hasKey=false;
  function clear(){result.replaceChildren();status.textContent=''}
- function ready(){button.disabled=busy||!user||!ai?.keyFor(user.id)||!consent.checked}
+ function ready(){button.disabled=busy||!user||!hasKey||!consent.checked}
  async function refresh(){
    if(!db||!ai){access.textContent='El corrector no se encuentra disponible en este momento.';button.disabled=true;return}
-   try{const {data,error}=await db.auth.getUser();user=error?null:data?.user;
+   try{const {data,error}=await db.auth.getUser();user=error?null:data?.user;hasKey=false;if(user){const keyState=await ai.availability(db);hasKey=!!keyState.ready&&keyState.user?.id===user.id;}
      if(!user){access.textContent='Para usar IA, primero inicia sesión en Easy English.';setup.href='/login.html?next=%2Fwritings.html%23editor';setup.textContent='Iniciar sesión';}
-     else if(!ai.keyFor(user.id)){access.textContent='Necesitas guardar una clave temporal de OpenAI (caduca en 30 minutos).';setup.href='/clave-openai.html?next=%2Fwritings.html%23editor';setup.textContent='🔑 Configurar clave de OpenAI';}
-     else{access.textContent='✓ Clave temporal disponible. Selecciona la casilla de consentimiento para habilitar la corrección.';setup.href='/clave-openai.html?next=%2Fwritings.html%23editor';setup.textContent='Administrar clave temporal';}
+     else if(!hasKey){access.textContent='Necesitas guardar tu clave personal de OpenAI en tu cuenta.';setup.href='/clave-openai.html?next=%2Fwritings.html%23editor';setup.textContent='🔑 Configurar clave de OpenAI';}
+     else{access.textContent='✓ Clave personal disponible. Selecciona la casilla de consentimiento para habilitar la corrección.';setup.href='/clave-openai.html?next=%2Fwritings.html%23editor';setup.textContent='Administrar mi clave OpenAI';}
    }catch{user=null;access.textContent='No se pudo verificar tu cuenta.'}
    ready();
  }
@@ -53,7 +53,7 @@
  button.onclick=async()=>{
    if(busy)return;
    await refresh();
-   if(!user||!ai.keyFor(user.id)||!consent.checked){status.textContent='Inicia sesión, configura la clave y acepta el envío de tu texto.';return}
+   if(!user||!hasKey||!consent.checked){status.textContent='Inicia sesión, configura la clave y acepta el envío de tu texto.';return}
    const text=$('wtexto').value.trim();
    if(text.length<20){status.textContent='Escribe al menos 20 caracteres para corregir el writing.';return}
    if(text.length>12000){status.textContent='El texto supera 12.000 caracteres.';return}

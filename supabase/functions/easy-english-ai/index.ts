@@ -7,6 +7,40 @@ function extract(response:any):string{
   return (response.output||[]).flatMap((o:any)=>o.content||[]).filter((c:any)=>c.type==="output_text").map((c:any)=>c.text||"").join("\n").trim();
 }
 const str=(v:unknown,max=200)=>typeof v==="string"?v.slice(0,max):"";
+function bytesToBase64(bytes:Uint8Array):string{let binary="";for(const byte of bytes)binary+=String.fromCharCode(byte);return btoa(binary)}
+function base64ToBytes(value:string):Uint8Array{return Uint8Array.from(atob(value),(c)=>c.charCodeAt(0))}
+async function encryptionKey():Promise<CryptoKey>{
+ const encoded=Deno.env.get("OPENAI_KEYS_ENCRYPTION_KEY")?.trim();if(!encoded)throw new Error("OPENAI_KEYS_ENCRYPTION_KEY missing");
+ const raw=base64ToBytes(encoded);if(raw.length!==32)throw new Error("OPENAI_KEYS_ENCRYPTION_KEY must be 32 bytes");
+ return await crypto.subtle.importKey("raw",raw,{name:"AES-GCM"},false,["encrypt","decrypt"]);
+}
+async function encryptKey(value:string){
+ const key=await encryptionKey(),iv=crypto.getRandomValues(new Uint8Array(12));
+ const encrypted=await crypto.subtle.encrypt({name:"AES-GCM",iv},key,new TextEncoder().encode(value));
+ return {ciphertext:bytesToBase64(new Uint8Array(encrypted)),iv:bytesToBase64(iv)};
+}
+async function decryptKey(ciphertext:string,ivValue:string){
+ const key=await encryptionKey(),plain=await crypto.subtle.decrypt({name:"AES-GCM",iv:base64ToBytes(ivValue)},key,base64ToBytes(ciphertext));
+ return new TextDecoder().decode(plain);
+}
+function adminClient(){
+ const secret=Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");if(!secret)throw new Error("SUPABASE_SERVICE_ROLE_KEY missing");
+ return createClient(Deno.env.get("SUPABASE_URL")||"",secret,{auth:{persistSession:false,autoRefreshToken:false}});
+}
+async function getSavedKey(userId:string){
+ const {data,error}=await adminClient().from("openai_user_keys").select("ciphertext,iv").eq("user_id",userId).maybeSingle();
+ if(error)throw new Error("Could not read encrypted OpenAI key");return data;
+}
+async function validateOpenAIKey(key:string):Promise<boolean>{
+ const controller=new AbortController(),timeout=setTimeout(()=>controller.abort(),15000);
+ try{
+  const response=await fetch("https://api.openai.com/v1/models",{headers:{"Authorization":"Bearer "+key},signal:controller.signal});
+  if(response.status===401||response.status===403)return false;
+  if(response.status===429)throw new Error("OpenAI rate limited key validation");
+  if(!response.ok)throw new Error("OpenAI key validation failed");return true;
+ }finally{clearTimeout(timeout)}
+}
+
 Deno.serve(async (request:Request)=>{
   if(request.method==="OPTIONS")return new Response(null,{status:204,headers:cors});
   if(request.method!=="POST")return json({error:"Método no permitido."},405);
@@ -20,9 +54,29 @@ Deno.serve(async (request:Request)=>{
     const raw=await request.text();
     if(raw.length>35000)return json({error:"Solicitud demasiado grande."},413);
     const body=JSON.parse(raw);
-    const key=str(body.apiKey,300);
-    if(!/^sk-[A-Za-z0-9_-]{9,}$/.test(key))return json({error:"Configura primero una clave temporal de OpenAI."},403);
+    const action=str(body.action,30);
+    if(action==="key_status")return json({configured:!!(await getSavedKey(user.id))});
+    if(action==="key_delete"){
+      const {error}=await adminClient().from("openai_user_keys").delete().eq("user_id",user.id);
+      if(error)return json({error:"No se pudo eliminar tu clave guardada."},500);
+      return json({deleted:true});
+    }
+    if(action==="key_save"){
+      const supplied=str(body.apiKey,300).trim();
+      if(!/^sk-[A-Za-z0-9_-]{9,}$/.test(supplied))return json({error:"La clave no tiene un formato válido de OpenAI."},400);
+      if(!(await validateOpenAIKey(supplied)))return json({error:"OpenAI ha rechazado la clave. Comprueba que sea válida y esté activa."},400);
+      const encrypted=await encryptKey(supplied);
+      const {error}=await adminClient().from("openai_user_keys").upsert({user_id:user.id,ciphertext:encrypted.ciphertext,iv:encrypted.iv,updated_at:new Date().toISOString()},{onConflict:"user_id"});
+      if(error)return json({error:"No se pudo guardar tu clave cifrada."},500);
+      return json({saved:true});
+    }
+    if(!["writing","plan"].includes(action))return json({error:"Función de IA no reconocida."},400);
     if(body.consent!==true)return json({error:"Debes autorizar el envío de tus datos a OpenAI."},400);
+    const saved=await getSavedKey(user.id);
+    if(!saved)return json({error:"Todavía no tienes una clave OpenAI guardada en tu cuenta."},403);
+    let key:string;
+    try{key=await decryptKey(saved.ciphertext,saved.iv)}
+    catch{return json({error:"No se pudo descifrar tu clave. Revisa la configuración del servidor."},503)}
     let instructions="",payload="",limit=1600;
     if(body.action==="writing"){
       const text=str(body.writing?.text,12000).trim();
@@ -67,6 +121,8 @@ Deno.serve(async (request:Request)=>{
     return json({result});
   }catch(error){
     if(error instanceof SyntaxError)return json({error:"Datos de solicitud incorrectos."},400);
-    return json({error:"No se pudo realizar la corrección o el plan. Comprueba tu conexión e inténtalo de nuevo."},503);
+    const message=error instanceof Error?error.message:"";
+    if(message.includes("OPENAI_KEYS_ENCRYPTION_KEY")||message.includes("SUPABASE_SERVICE_ROLE_KEY"))return json({error:"La configuración segura de OpenAI todavía no está completa en el servidor."},503);
+    return json({error:"No se pudo realizar la operación de IA. Comprueba tu conexión e inténtalo de nuevo."},503);
   }
 });

@@ -1,96 +1,40 @@
-/* Clave OpenAI temporal: exclusivamente en sessionStorage, separada del perfil y de Supabase. */
+/* Easy English · Gestiona la clave OpenAI cifrada en el servidor. */
 (()=>{
  'use strict';
- const db=window.eeDb;
- const form=document.getElementById('openaiKeyForm');
- if(!db||!form)return;
- const input=document.getElementById('openaiApiKey');
- const status=document.getElementById('openaiKeyStatus');
- const sessionStatus=document.getElementById('openaiSessionStatus');
- const remove=document.getElementById('openaiDeleteKey');
- const STORAGE_KEY='easyenglish:openai:temporary:v1';
- const back=document.getElementById('openaiReturnLink');
- const next=new URLSearchParams(location.search).get('next');
+ const db=window.eeDb,ai=window.eeAI,form=document.getElementById('openaiKeyForm');if(!db||!ai||!form)return;
+ const input=document.getElementById('openaiApiKey'),status=document.getElementById('openaiKeyStatus'),sessionStatus=document.getElementById('openaiSessionStatus'),remove=document.getElementById('openaiDeleteKey'),save=form.querySelector('[type="submit"]');
+ const back=document.getElementById('openaiReturnLink'),next=new URLSearchParams(location.search).get('next');
  if(back&&next&&next.startsWith('/')&&!next.startsWith('//')&&!next.includes('\\')){
-   const url=new URL(next,location.origin);
-   if(url.origin===location.origin&&['/writings.html','/aula-b2.html','/perfil.html'].includes(url.pathname)){
-     back.href=url.pathname+url.search+url.hash;
-     back.textContent='← Volver a '+(url.pathname==='/writings.html'?'Writing':url.pathname==='/aula-b2.html'?'Mi aula B2':'Mi perfil');
-   }
+  const url=new URL(next,location.origin);
+  if(url.origin===location.origin&&['/writings.html','/aula-b2.html','/perfil.html'].includes(url.pathname)){back.href=url.pathname+url.search+url.hash;back.textContent='← Volver a '+(url.pathname==='/writings.html'?'Writing':url.pathname==='/aula-b2.html'?'Mi aula B2':'Mi perfil')}
  }
- const LIFETIME=30*60*1000;
- let activeUser=null;
- function clear(){try{sessionStorage.removeItem(STORAGE_KEY)}catch(e){}input.value=''}
- function getRecord(){
-  let raw;
-  try{raw=sessionStorage.getItem(STORAGE_KEY)}catch(e){return null}
-  if(!raw)return null;
+ let activeUser=null,busy=false;
+ function setBusy(value){busy=value;save.disabled=value;remove.disabled=value}
+ async function refresh(){
   try{
-   const value=JSON.parse(raw);
-   if(!value||!value.apiKey||!value.userId||!value.expiresAt||
-       value.expiresAt<=Date.now()||value.expiresAt>Date.now()+LIFETIME+10000){
-    clear();return null;
-   }
-   if(activeUser&&value.userId!==activeUser){clear();return null}
-   return value;
-  }catch(e){clear();return null}
+   const {data,error}=await db.auth.getUser(),user=error?null:data?.user;
+   if(!user){activeUser=null;form.hidden=true;sessionStatus.textContent='Inicia sesión en Easy English para gestionar tu clave.';status.textContent='Inicia sesión para continuar.';return}
+   activeUser=user.id;form.hidden=false;sessionStatus.textContent='Cuenta activa · Tu clave se guarda cifrada en el servidor y solo pertenece a esta cuenta.';
+   const state=await ai.availability(db);
+   status.textContent=state.ready?'✓ Tienes una clave OpenAI guardada de forma permanente para esta cuenta. Puedes sustituirla o eliminarla cuando quieras.':'Todavía no tienes una clave OpenAI guardada.';
+   remove.disabled=!state.ready||busy;
+  }catch(error){status.textContent=error.message||'No se pudo consultar el estado de la clave.'}
  }
- function render(){
-  const record=getRecord();
-  status.textContent=record
-   ?'✓ Hay una clave guardada temporalmente para esta cuenta. Caduca a las '+new Intl.DateTimeFormat('es-ES',{hour:'2-digit',minute:'2-digit'}).format(new Date(record.expiresAt))+'.'
-   :'No hay ninguna clave guardada en esta sesión.';
-  remove.disabled=!record;
- }
- async function checkSession(){
-  let user=null;
-  try{
-   const {data,error}=await db.auth.getUser();
-   if(!error)user=data.user||null;
-  }catch(e){}
-  if(!user){
-   clear();activeUser=null;form.hidden=true;
-   sessionStatus.textContent='Inicia sesión en Easy English para gestionar esta opción.';
-   status.replaceChildren();
-   const link=document.createElement('a');
-   link.href='/perfil.html';
-   link.textContent='Ir a iniciar sesión →';
-   status.append(link);
-   return;
-  }
-  activeUser=user.id;
-  const record=getRecord();
-  form.hidden=false;
-  sessionStatus.textContent='Cuenta activa · Clave exclusiva de esta sesión del navegador';
-  if(record&&record.userId!==activeUser)clear();
-  render();
- }
- form.addEventListener('submit',e=>{
-  e.preventDefault();
-  if(!activeUser){status.textContent='Inicia sesión antes de guardar una clave.';return}
-  const key=input.value.trim();
-  if(!/^sk-[A-Za-z0-9_-]{9,}$/.test(key)){
-   status.textContent='La clave no parece tener un formato válido de OpenAI. Compruébala.';
-   return;
-  }
-  try{
-   sessionStorage.setItem(STORAGE_KEY,JSON.stringify({apiKey:key,userId:activeUser,expiresAt:Date.now()+LIFETIME}));
-   input.value='';
-   render();
-  }catch(e){
-   input.value='';
-   status.textContent='El navegador no permite guardar esta clave en la sesión. No se ha conservado.';
-  }
+ form.addEventListener('submit',async event=>{
+  event.preventDefault();if(busy||!activeUser)return;const key=input.value.trim();
+  if(!/^sk-[A-Za-z0-9_-]{9,}$/.test(key)){status.textContent='La clave no parece tener un formato válido de OpenAI.';return}
+  setBusy(true);status.textContent='Validando y guardando tu clave cifrada…';
+  try{await ai.saveKey(db,key);input.value='';status.textContent='✓ Clave validada y guardada. Permanecerá en tu cuenta hasta que la sustituyas o elimines.'}
+  catch(error){input.value='';status.textContent=error.message||'No se pudo guardar la clave.'}
+  finally{setBusy(false);await refresh()}
  });
- remove.addEventListener('click',()=>{
-  clear();
-  render();
-  input.focus();
+ remove.addEventListener('click',async()=>{
+  if(busy||!activeUser)return;if(!confirm('¿Eliminar definitivamente tu clave OpenAI guardada?'))return;
+  setBusy(true);status.textContent='Eliminando tu clave…';
+  try{await ai.deleteKey(db);input.value='';status.textContent='Tu clave OpenAI se ha eliminado.'}
+  catch(error){status.textContent=error.message||'No se pudo eliminar la clave.'}
+  finally{setBusy(false);await refresh()}
  });
- db.auth.onAuthStateChange(event=>{
-  if(event==='SIGNED_OUT'){clear();activeUser=null;form.hidden=true;sessionStatus.textContent='Sesión cerrada.';status.textContent='Se ha borrado la clave temporal.'}
-  if(event==='SIGNED_IN'||event==='USER_UPDATED')Promise.resolve().then(checkSession);
- });
- document.addEventListener('visibilitychange',()=>{if(!document.hidden&&activeUser)render()});
- void checkSession();
+ db.auth.onAuthStateChange(event=>{if(event==='SIGNED_IN'||event==='SIGNED_OUT'||event==='USER_UPDATED')Promise.resolve().then(refresh)});
+ void refresh();
 })();

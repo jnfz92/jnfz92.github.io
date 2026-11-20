@@ -14,9 +14,10 @@
  let busy=false,available=false,lastPlan=null;
  async function refresh(){
   if(!A.user){access.textContent='Inicia sesión para crear un plan con IA.';available=false;go.disabled=true;return}
-  available=!!ai.keyFor(A.user.id);
-  access.textContent=available?'✓ Clave de OpenAI disponible. Autoriza el uso del resumen de aprendizaje para continuar.':'Primero guarda una clave temporal de OpenAI en tu cuenta.';
-  keyLink.textContent=available?'Administrar clave temporal':'🔑 Configurar clave OpenAI';
+  const keyState=await ai.availability(db);
+  available=!!keyState.ready&&keyState.user?.id===A.user.id;
+  access.textContent=available?'✓ Clave de OpenAI disponible. Autoriza el uso del resumen de aprendizaje para continuar.':'Primero guarda tu clave personal de OpenAI en tu cuenta.';
+  keyLink.textContent=available?'Administrar mi clave OpenAI':'🔑 Configurar clave OpenAI';
   go.disabled=busy||!available||!consent.checked||!A.units.length||currentStep!==3;
   if(!available){output.replaceChildren();remove.hidden=true}
  }
