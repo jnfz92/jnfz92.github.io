@@ -42,7 +42,7 @@ Característica: Exámenes personalizados y datos privados
     Cuando entrega sus respuestas y reintenta por un error de conexión
     Entonces la nota se guarda sin duplicar el intento
 
-  @pendiente-sesion
+  @cucumber-aislado
   Escenario: Los errores corregidos dejan de estar pendientes
     Dado que el alumno tiene preguntas falladas
     Cuando supera una tanda de repaso
