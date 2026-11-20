@@ -334,11 +334,11 @@ function profileFakeConfig(){
   const now=Date.now();
   const tables={
     resultados:[
-      {id:1,examen_id:11,aciertos:8,total:10,nota:80,fecha:new Date(now-86400000).toISOString(),respuestas:{}},
-      {id:2,examen_id:11,aciertos:9,total:10,nota:90,fecha:new Date(now-3600000).toISOString(),respuestas:{}}
+      {id:1,usuario_id:user.id,examen_id:11,aciertos:8,total:10,nota:80,fecha:new Date(now-86400000).toISOString(),respuestas:{}},
+      {id:2,usuario_id:user.id,examen_id:11,aciertos:9,total:10,nota:90,fecha:new Date(now-3600000).toISOString(),respuestas:{}}
     ],
     examenes:[{id:11,titulo:'Examen de prueba',fecha:new Date(now).toISOString()}],
-    actividad_intentos:[{id:1,actividad_id:21,aciertos:3,evaluables:3,pendientes_revision:0,fecha:new Date(now-1800000).toISOString()}],
+    actividad_intentos:[{id:1,usuario_id:user.id,actividad_id:21,aciertos:3,evaluables:3,pendientes_revision:0,fecha:new Date(now-1800000).toISOString()}],
     actividades:[{id:21,titulo:'Actividad de prueba',slug:'actividad-prueba'}]
   };
   window.eeDb={
