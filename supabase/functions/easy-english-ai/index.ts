@@ -10,8 +10,18 @@ const str=(v:unknown,max=200)=>typeof v==="string"?v.slice(0,max):"";
 function bytesToBase64(bytes:Uint8Array):string{let binary="";for(const byte of bytes)binary+=String.fromCharCode(byte);return btoa(binary)}
 function base64ToBytes(value:string):Uint8Array{return Uint8Array.from(atob(value),(c)=>c.charCodeAt(0))}
 async function encryptionKey():Promise<CryptoKey>{
- const encoded=Deno.env.get("OPENAI_KEYS_ENCRYPTION_KEY")?.trim();if(!encoded)throw new Error("OPENAI_KEYS_ENCRYPTION_KEY missing");
- const raw=base64ToBytes(encoded);if(raw.length!==32)throw new Error("OPENAI_KEYS_ENCRYPTION_KEY must be 32 bytes");
+ const encoded=Deno.env.get("OPENAI_KEYS_ENCRYPTION_KEY")?.trim();
+ let raw:Uint8Array;
+ if(encoded){
+  raw=base64ToBytes(encoded);
+  if(raw.length!==32)throw new Error("OPENAI_KEYS_ENCRYPTION_KEY must be 32 bytes");
+ }else{
+  // Fallback determinista: usa el secreto privado de Supabase, nunca expuesto al navegador.
+  // Mantener estable SUPABASE_SERVICE_ROLE_KEY mientras existan claves cifradas con este fallback.
+  const master=Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")?.trim();
+  if(!master)throw new Error("No server-side encryption master is configured");
+  raw=new Uint8Array(await crypto.subtle.digest("SHA-256",new TextEncoder().encode("easy-english-openai-user-keys-v1:"+master)));
+ }
  return await crypto.subtle.importKey("raw",raw,{name:"AES-GCM"},false,["encrypt","decrypt"]);
 }
 async function encryptKey(value:string){
