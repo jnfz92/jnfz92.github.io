@@ -13,7 +13,7 @@ CONFIGURACIÓN OBLIGATORIA ANTES DEL DESPLIEGUE
 
 DESPLIEGUE ORDENADO
 
-1. Aplicar supabase/migrations/20261120_openai_user_keys.sql.
+1. Aplicar supabase/migrations/20261120091815_openai_user_keys.sql.
 2. Añadir OPENAI_KEYS_ENCRYPTION_KEY a los secretos de Edge Functions.
 3. Desplegar supabase/functions/easy-english-ai.
 4. Publicar el frontend actualizado.
