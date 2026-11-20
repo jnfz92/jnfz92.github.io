@@ -58,13 +58,8 @@ permalink: /listening-lab.html
 </section>
 
 <section id="accessPanel" class="ll-panel">
-<h2>Your learning session</h2>
-<p id="accessStatus" class="ll-status">Checking your account and course access…</p>
-<div id="accessGate" class="ll-gate" hidden>
-<p>This Listening Lab activity is included in the FCE B2 course. Sign in and activate your subscription to unlock it.</p>
-<a class="ll-button" href="/fce.html">View the FCE course</a>
-<a href="/login.html?next=%2Flistening-lab.html" style="margin-left:12px;font-weight:800">Sign in</a>
-</div>
+<h2>Open practice for everyone</h2>
+<p id="accessStatus" class="ll-status">Loading the listening activity…</p>
 </section>
 
 <div id="labContent" hidden>
@@ -100,7 +95,7 @@ permalink: /listening-lab.html
 
 <section class="ll-panel" id="attemptHistory">
 <h2>Your recent results</h2>
-<p class="ll-muted">Your last listening attempts are saved to your account.</p>
+<p class="ll-muted">Sign in to keep a personal history of your scores. You can complete the activity without an account.</p>
 <div id="historyList" class="ll-muted">Loading your results…</div>
 </section>
 
@@ -133,23 +128,21 @@ function updateProgress(){questions.forEach(q=>{const chosen=document.querySelec
 function renderSpeaking(list){$('speakingQuestions').innerHTML=list.map(q=>'<li>'+escapeHtml(q)+'</li>').join('')}
 async function init(){
 try{
-let session=null;const {data,error}=await window.eeDb.auth.getSession();if(error)throw error;session=data.session;
-if(!session){sayStatus('Please sign in to check your FCE course access.');$('accessGate').hidden=false;return}
-const {data:subs,error:subError}=await window.eeDb.from('suscripciones').select('estado,periodo_actual_fin').eq('usuario_id',session.user.id).eq('plan','fce').order('actualizado_en',{ascending:false}).limit(5);
-if(subError)throw subError;
-const active=(subs||[]).some(s=>['active','trialing','past_due'].includes(s.estado)&&(!s.periodo_actual_fin||new Date(s.periodo_actual_fin)>new Date()));
-if(!active){sayStatus('Your FCE subscription is not active.');$('accessGate').hidden=false;return}
+const {data:authData}=await window.eeDb.auth.getSession();
+const session=authData?.session||null;
 const {data:ex,error:exError}=await window.eeDb.from('listening_exercises').select('id,slug,title,description,transcript,speaking_questions,duration_seconds,level,accent').eq('slug',slug).eq('is_published',true).single();
 if(exError)throw exError;exercise=ex;
 const {data:qs,error:qError}=await window.eeDb.from('listening_questions').select('id,question_number,prompt,options').eq('exercise_id',exercise.id).order('question_number');
 if(qError)throw qError;
 questions=qs||[];
-const {data:attempts,error:attemptError}=await window.eeDb.from('listening_attempts').select('score,total_questions,completed_at').eq('exercise_id',exercise.id).order('completed_at',{ascending:false}).limit(5);
-if(!attemptError && attempts && attempts.length){$('historyList').innerHTML=attempts.map(a=>'<p>'+new Date(a.completed_at).toLocaleString()+' · <strong>'+a.score+'/'+a.total_questions+'</strong> ('+Math.round(a.score/a.total_questions*100)+'%)</p>').join('')}else{$('historyList').textContent='No attempts yet. Complete this activity to see your first result here.'}
+if(session){
+ const {data:attempts,error:attemptError}=await window.eeDb.from('listening_attempts').select('score,total_questions,completed_at').eq('exercise_id',exercise.id).eq('user_id',session.user.id).order('completed_at',{ascending:false}).limit(5);
+ if(!attemptError && attempts && attempts.length){$('historyList').innerHTML=attempts.map(a=>'<p>'+new Date(a.completed_at).toLocaleString()+' · <strong>'+a.score+'/'+a.total_questions+'</strong> ('+Math.round(a.score/a.total_questions*100)+'%)</p>').join('')}else{$('historyList').textContent='No saved attempts yet. Complete this activity to see your first result here.'}
+}else{$('historyList').textContent='You can practise without signing in. Sign in if you want your results saved to a personal history.'}
 if(!questions.length)throw new Error('No questions are available for this activity yet.');
 $('exerciseTitle').textContent=exercise.title;$('exerciseDescription').textContent=exercise.description;$('transcript').textContent=exercise.transcript;renderQuestions();renderSpeaking(exercise.speaking_questions||[]);
-$('labContent').hidden=false;sayStatus('You have access to the FCE Listening Lab. Your progress will be saved when you submit your answers.');
-}catch(e){sayStatus(e.message||'We could not load this listening activity. Please try again later.');$('accessGate').hidden=false}
+$('labContent').hidden=false;sayStatus('This activity is open to everyone. '+(session?'Your results will be saved to your account.':'Your score will be shown when you finish; sign in to save a personal history.'));
+}catch(e){sayStatus(e.message||'We could not load this listening activity. Please try again later.')}
 }
 $('listeningForm').addEventListener('submit',async event=>{
 event.preventDefault();if(submitted)return;updateProgress();if(Object.keys(answers).length!==questions.length)return;
@@ -157,8 +150,8 @@ $('submitAnswers').disabled=true;$('submitAnswers').textContent='Checking your a
 const payload=questions.map(q=>({question_id:q.id,option:answers[q.id]}));
 const {data,error}=await window.eeDb.rpc('submit_listening_attempt',{p_exercise_slug:slug,p_answers:payload});
 if(error){$('submitAnswers').disabled=false;$('submitAnswers').textContent='Submit my answers';$('accessStatus').textContent=error.message;return}
-submitted=true;$('historyList').insertAdjacentHTML('afterbegin','<p>'+new Date().toLocaleString()+' · <strong>'+data.score+'/'+data.total+'</strong> ('+data.percentage+'%)</p>');$('results').hidden=false;
-$('results').innerHTML='<div class="ll-score">Your score: '+data.score+' / '+data.total+' ('+data.percentage+'%)</div><p>Your attempt has been saved to your learning history.</p>'+data.feedback.map((f,i)=>{const q=questions.find(x=>x.id===f.question_id);return '<div class="ll-feedback"><strong>'+(i+1)+'. '+(f.is_correct?'Correct ✓':'Not quite. Correct answer: '+f.correct_option)+ '</strong><p>'+escapeHtml(f.explanation)+'</p></div>'}).join('');
+submitted=true;if(data.saved){$('historyList').insertAdjacentHTML('afterbegin','<p>'+new Date().toLocaleString()+' · <strong>'+data.score+'/'+data.total+'</strong> ('+data.percentage+'%)</p>')}$('results').hidden=false;
+$('results').innerHTML='<div class="ll-score">Your score: '+data.score+' / '+data.total+' ('+data.percentage+'%)</div><p>'+(data.saved?'Your attempt has been saved to your learning history.':'Your result is ready. Sign in if you want to save your progress.')+'</p>'+data.feedback.map((f,i)=>{const q=questions.find(x=>x.id===f.question_id);return '<div class="ll-feedback"><strong>'+(i+1)+'. '+(f.is_correct?'Correct ✓':'Not quite. Correct answer: '+f.correct_option)+ '</strong><p>'+escapeHtml(f.explanation)+'</p></div>'}).join('');
 $('submitAnswers').textContent='Answers submitted';
 questions.forEach(q=>{document.querySelectorAll('input[name="q_'+q.id+'"]').forEach(el=>el.disabled=true)});
 });
