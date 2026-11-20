@@ -324,3 +324,78 @@ Then('las preguntas acertadas dejan de estar pendientes',async function(){
   assert.equal(await this.page.locator('#reviewStats .review-stat strong').first().innerText(),'0');
   assert.match(await this.page.locator('#reviewStatus').innerText(),/No tienes errores pendientes/);
 });
+
+
+function profileFakeConfig(){
+ return String.raw`(()=>{
+  const user={id:'00000000-0000-4000-8000-000000000031',email:'cucumber-profile@example.invalid',user_metadata:{},app_metadata:{}};
+  const params=new URLSearchParams(location.search),mode=params.get('cucumberMode')||'login';
+  let session=mode==='dashboard'?{user}:null,listener=null;
+  const now=Date.now();
+  const tables={
+    resultados:[
+      {id:1,examen_id:11,aciertos:8,total:10,nota:80,fecha:new Date(now-86400000).toISOString(),respuestas:{}},
+      {id:2,examen_id:11,aciertos:9,total:10,nota:90,fecha:new Date(now-3600000).toISOString(),respuestas:{}}
+    ],
+    examenes:[{id:11,titulo:'Examen de prueba',fecha:new Date(now).toISOString()}],
+    actividad_intentos:[{id:1,actividad_id:21,aciertos:3,evaluables:3,pendientes_revision:0,fecha:new Date(now-1800000).toISOString()}],
+    actividades:[{id:21,titulo:'Actividad de prueba',slug:'actividad-prueba'}]
+  };
+  window.eeDb={
+    auth:{
+      getSession:async()=>({data:{session},error:null}),
+      getUser:async()=>({data:{user:session?.user||null},error:null}),
+      onAuthStateChange:cb=>{listener=cb;return {data:{subscription:{unsubscribe(){listener=null}}}}},
+      signInWithPassword:async({email,password})=>{if(email!==user.email||password!=='Cucumber-Login-123!')return {data:{user:null},error:{message:'Invalid login credentials'}};session={user};listener?.('SIGNED_IN',session);return {data:{user,session},error:null}},
+      signOut:async()=>{session=null;listener?.('SIGNED_OUT',null);return {error:null}}
+    },
+    from(table){
+      const query={filters:[],select(){return query},eq(field,value){query.filters.push([field,value]);return query},gte(field,value){query.filters.push([field,value]);return query},in(field,values){query.filters.push([field,values]);return query},order(){return query},limit(){return query},range(){return query},
+        rows(){let rows=tables[table]||[];for(const [field,value] of query.filters){rows=rows.filter(row=>Array.isArray(value)?value.includes(row[field]):row[field]===value)}return rows},
+        then(resolve,reject){const rows=query.rows();return Promise.resolve({data:rows,error:null,count:rows.length}).then(resolve,reject)},
+        maybeSingle:async()=>({data:query.rows()[0]||null,error:null}),
+        single:async()=>({data:query.rows()[0]||null,error:null}),
+        upsert:async()=>({data:null,error:null}),insert:async()=>({data:null,error:null}),delete(){return query}
+      };return query
+    },
+    rpc:async(name)=>name==='racha_actual'?{data:[{racha:2,mejor_racha:3,dias_total:5,hoy_completado:true}],error:null}:{data:[],error:null}
+  };
+ })();`;
+}
+
+Given('que existe un usuario de pruebas',async function(){
+  await this.page.route('**/supabase.min.js*',route=>route.fulfill({status:200,contentType:'application/javascript',body:''}));
+  await this.page.route('**/supabase-config.js*',route=>route.fulfill({status:200,contentType:'application/javascript',body:profileFakeConfig()}));
+  await this.page.goto(BASE+'/perfil.html?cucumberMode=login');
+});
+When('inicia sesión y después la cierra',async function(){
+  await this.page.locator('#authEmail').fill('cucumber-profile@example.invalid');
+  await this.page.locator('#authPass').fill('Cucumber-Login-123!');
+  await this.page.locator('#loginSubmit').click();
+  await this.page.locator('#privateDashboard').waitFor({state:'visible'});
+  await this.page.locator('#signout').click();
+  await this.page.waitForFunction(()=>document.querySelector('#privateDashboard')?.hidden===true);
+});
+Then('desaparecen las estadísticas privadas',async function(){
+  assert.equal(await this.page.locator('#privateDashboard').isHidden(),true);
+  assert.equal(await this.page.locator('#authLayout').isVisible(),true);
+  assert.equal(await this.page.locator('#signout').isHidden(),true);
+});
+
+Given('que el alumno tiene exámenes y actividad guardados',async function(){
+  await this.page.route('**/supabase.min.js*',route=>route.fulfill({status:200,contentType:'application/javascript',body:''}));
+  await this.page.route('**/supabase-config.js*',route=>route.fulfill({status:200,contentType:'application/javascript',body:profileFakeConfig()}));
+  await this.page.goto(BASE+'/perfil.html?cucumberMode=dashboard');
+  await this.page.locator('#privateDashboard').waitFor({state:'visible'});
+});
+When('consulta su perfil',async function(){
+  await this.page.waitForFunction(()=>document.querySelector('#examCount')?.textContent==='2'&&document.querySelector('#learningActivities')?.textContent==='1');
+});
+Then('los gráficos coinciden con sus resultados reales',async function(){
+  assert.equal(await this.page.locator('#examCount').innerText(),'2');
+  assert.equal(await this.page.locator('#bestScore').innerText(),'90%');
+  assert.equal(await this.page.locator('#averageScore').innerText(),'85.0%');
+  assert.equal(await this.page.locator('#learningActivities').innerText(),'1');
+  assert.equal(await this.page.locator('#learningStrengths .skill-trend-bar').count(),2);
+  assert.match(await this.page.locator('#learningStrengths').innerText(),/17 respuestas correctas de 20/);
+});
