@@ -73,11 +73,11 @@ permalink: /examenes.html
    status.textContent='Inicia sesión para consultar tus exámenes en tu perfil.';
    return;
   }
-  status.textContent='Los exámenes generados automáticamente ya no aparecen en la biblioteca general. Puedes encontrarlos en tu perfil, dentro de la pestaña «Progreso».';
-  const link=document.createElement('a');
-  link.className='cta';link.href='/perfil.html#profile-panel-progreso';
-  link.textContent='Ver mis exámenes en mi perfil →';
-  status.insertAdjacentElement('afterend',link);
+  status.textContent='Sesión verificada. Abriendo la biblioteca de exámenes…';
+  const destination=new URL('/practicar.html',location.origin);
+  destination.search=location.search;
+  destination.hash=location.hash;
+  location.replace(destination.href);
  }catch(error){
   status.textContent='No se pudo comprobar tu sesión. Actualiza la página para volver a intentarlo.';
  }
