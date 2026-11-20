@@ -16,7 +16,7 @@ permalink: /perfil.html
 .profile-workspace-header{margin:22px 0 14px}
 .profile-workspace-header h2{margin:.25rem 0 .35rem;font-size:clamp(1.35rem,2.5vw,1.75rem)}
 .profile-workspace-header p{margin:.25rem 0}
-.profile-account-toolbar{display:flex;justify-content:flex-end;margin:0 0 8px}
+.profile-account-toolbar{display:flex;justify-content:flex-end;margin:12px 0 18px}
 .profile-signout{appearance:none;border:1px solid #c8d7ed;border-radius:10px;padding:9px 14px;background:#fff;color:#31547f;font:inherit;font-size:.92rem;font-weight:700;cursor:pointer}
 .profile-signout:hover{background:#f3f7ff;border-color:#9eb8df}
 .profile-signout:focus-visible{outline:3px solid #3474ed;outline-offset:2px}
@@ -112,7 +112,7 @@ permalink: /perfil.html
 </head>
 <body class="ee-site ee-profile">
 {% include header.html %}<main class="container">
-<section class="hero"><div class="profile-account-toolbar"><button class="profile-signout" type="button" id="signout" hidden>↪ Cerrar sesión</button></div><span class="eyebrow">✦ TU ESPACIO DE APRENDIZAJE</span><h1>Mi espacio de aprendizaje</h1><p class="intro">Tu curso, tus objetivos y tus avances, sin distracciones.</p><div class="hero-actions"><a href="/aula-b2.html">📅 Mi sesión de hoy ↗</a><a href="/premium.html">✦ Easy English Premium ↗</a><a href="/mi-vocabulario.html">🧠 Mi vocabulario ↗</a><a href="practicar.html">✎ Hacer un examen ↗</a><a href="practicar.html#cuaderno-fallos">📘 Mi cuaderno de errores ↗</a><a href="#articlesTitle" id="continueLink" hidden>📚 Continuar aprendiendo ↓</a></div></section>
+<section class="hero"><span class="eyebrow">✦ TU ESPACIO DE APRENDIZAJE</span><h1>Mi espacio de aprendizaje</h1><p class="intro">Tu curso, tus objetivos y tus avances, sin distracciones.</p><div class="hero-actions"><a href="/aula-b2.html">📅 Mi sesión de hoy ↗</a><a href="/premium.html">✦ Easy English Premium ↗</a><a href="/mi-vocabulario.html">🧠 Mi vocabulario ↗</a><a href="practicar.html">✎ Hacer un examen ↗</a><a href="practicar.html#cuaderno-fallos">📘 Mi cuaderno de errores ↗</a><a href="#articlesTitle" id="continueLink" hidden>📚 Continuar aprendiendo ↓</a></div></section>
 <div class="auth-layout" id="authLayout" aria-label="Acceso y registro">
 <section class="panel auth-card account-panel" id="accountPanel" aria-labelledby="accountTitle">
 <p class="section-kicker">YA TENGO CUENTA</p><h2 id="accountTitle">Iniciar sesión</h2>
@@ -195,6 +195,7 @@ permalink: /perfil.html
 <p class="muted" role="status" id="weeklyGoalStatus">Comprobando tu objetivo guardado…</p>
 </section></details>
 <details open class="profile-disclosure"><summary><span class="profile-disclosure-title">Mi racha</span><span class="profile-disclosure-sub">Días seguidos y mejor marca</span><span class="profile-disclosure-chevron" aria-hidden="true">⌄</span></summary><section class="panel ee-streak" aria-labelledby="streakTitle"><p class="section-kicker">🔥 CONSTANCIA DIARIA</p><h2 id="streakTitle">Tu racha de aprendizaje</h2><div class="stats"><div class="stat"><strong id="streakCurrent">—</strong><span>🔥 Días seguidos</span></div><div class="stat"><strong id="streakBest">—</strong><span>🏆 Mejor racha</span></div><div class="stat"><strong id="streakDays">—</strong><span>📅 Días estudiados</span></div></div><p id="streakMessage" class="muted" role="status">Consultando tu racha...</p><p class="muted">Completa una lectura, un examen o una actividad interactiva para registrar actividad. Un día solo cuenta una vez.</p></section></details>
+<div class="profile-account-toolbar"><button class="profile-signout" type="button" id="signout" hidden>↪ Cerrar sesión</button></div>
 </div>
 <div class="profile-tab-panel" id="profile-panel-estudiar" role="tabpanel" aria-labelledby="profile-tab-estudiar" hidden>
 <div class="profile-group-heading"><h2>Estudiar</h2><p class="muted">Herramientas para practicar</p></div>
