@@ -1,0 +1,161 @@
+---
+permalink: /listening-lab.html
+---
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#1e5eff">
+<meta name="description" content="Easy English Listening Lab: B2 First listening practice, audio, comprehension questions and speaking prompts.">
+<title>Listening Lab · Easy English</title>
+<link rel="canonical" href="https://jnfz92.github.io/listening-lab.html">
+<link rel="stylesheet" href="/assets/site.css?v=20261030-unified-blue-2">
+<link rel="stylesheet" href="/assets/navigation.css?v=20261030-menu-blue-3">
+<script src="/assets/navigation.js?v=20261030-menu-blue-4" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="/supabase-config.js"></script>
+<style>
+.ee-listening{max-width:1050px;margin:36px auto;padding:0 18px 64px;color:#1f2a44}
+.ll-hero{padding:clamp(26px,5vw,48px);border-radius:24px;background:linear-gradient(140deg,#173d87,#1e5eff);color:white}
+.ll-hero .eyebrow{font-size:11px;font-weight:900;letter-spacing:.14em;color:#d7e6ff}
+.ll-hero h1{font-size:clamp(34px,5vw,52px);line-height:1.08;margin:13px 0;color:white}
+.ll-hero p{max-width:720px;color:#e8f0ff;line-height:1.7}
+.ll-pills{display:flex;gap:8px;flex-wrap:wrap;margin-top:20px}.ll-pills span{font-size:12px;border:1px solid #ffffff55;border-radius:30px;padding:6px 10px;color:#fff}
+.ll-panel{background:#fff;border:1px solid #dce4f0;border-radius:18px;padding:clamp(18px,3vw,26px);margin:20px 0;box-shadow:0 8px 25px #172b4d08}
+.ll-panel h2{margin:0 0 12px;font-size:24px;color:#173d87}
+.ll-muted{color:#5c6980;font-size:14px}
+.ll-audio{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:16px 0}
+.ll-button{border:0;border-radius:10px;padding:11px 16px;min-height:44px;background:#1e5eff;color:white;font:inherit;font-weight:800;cursor:pointer}
+.ll-button.secondary{background:#edf2fb;color:#173d87;border:1px solid #cad7eb}
+.ll-button:disabled{opacity:.55;cursor:not-allowed}
+.ll-select{padding:10px;border:1px solid #cbd5e1;border-radius:9px;font:inherit}
+.ll-transcript{white-space:pre-line;line-height:1.85;color:#26364f;background:#f7f9fc;padding:18px;border-radius:12px;margin-top:14px}
+.ll-question{padding:18px 0;border-bottom:1px solid #e5eaf2}
+.ll-question:last-child{border-bottom:0}
+.ll-question h3{font-size:16px;line-height:1.55;margin:0 0 12px}
+.ll-option{display:flex;align-items:flex-start;gap:10px;padding:11px 13px;margin:8px 0;border:1px solid #dce3ed;border-radius:11px;cursor:pointer}
+.ll-option:has(input:checked){background:#eef3ff;border-color:#1e5eff}
+.ll-option input{margin-top:5px;accent-color:#1e5eff}
+.ll-feedback{background:#f2f5fa;border-radius:10px;padding:12px;margin-top:10px;line-height:1.6}
+.ll-score{font-size:30px;font-weight:900;color:#173d87;margin:12px 0}
+.ll-speaking li{margin:12px 0;line-height:1.65}
+.ll-gate{background:#fff8e8;border:1px solid #ead6a6;border-radius:14px;padding:18px;margin-top:18px}
+.ll-status{min-height:24px;font-weight:700;color:#29456f}
+.ll-progress{height:8px;background:#e8edf5;border-radius:20px;overflow:hidden;margin:12px 0}
+.ll-progress span{display:block;height:100%;width:0;background:#1e5eff}
+[hidden]{display:none!important}
+@media(max-width:600px){.ee-listening{margin:18px auto}.ll-panel{padding:17px}.ll-audio .ll-button{flex:1}}
+</style>
+</head>
+<body class="ee-site">
+{% include header.html %}
+<main class="ee-listening">
+<section class="ll-hero">
+<span class="eyebrow">EASY ENGLISH · CAMBRIDGE B2 FIRST</span>
+<h1>Listening Lab</h1>
+<p>Train your listening skills with authentic-feeling practice, comprehension questions and speaking follow-up. Listen first, answer carefully, then review your result.</p>
+<div class="ll-pills"><span>B1–B2 level</span><span>British English</span><span>Listening + Speaking</span><span>Progress saved</span></div>
+</section>
+
+<section id="accessPanel" class="ll-panel">
+<h2>Your learning session</h2>
+<p id="accessStatus" class="ll-status">Checking your account and course access…</p>
+<div id="accessGate" class="ll-gate" hidden>
+<p>This Listening Lab activity is included in the FCE B2 course. Sign in and activate your subscription to unlock it.</p>
+<a class="ll-button" href="/fce.html">View the FCE course</a>
+<a href="/login.html?next=%2Flistening-lab.html" style="margin-left:12px;font-weight:800">Sign in</a>
+</div>
+</section>
+
+<div id="labContent" hidden>
+<section class="ll-panel">
+<p class="ll-muted">LISTENING PRACTICE · ACTIVITY 01 · APPROX. 4 MINUTES</p>
+<h2 id="exerciseTitle">A beautiful day in Madrid</h2>
+<p id="exerciseDescription"></p>
+<div class="ll-audio">
+<button id="playAudio" class="ll-button" type="button">▶ Listen to the audio</button>
+<button id="pauseAudio" class="ll-button secondary" type="button" disabled>Pause</button>
+<button id="stopAudio" class="ll-button secondary" type="button" disabled>Stop</button>
+<label class="ll-muted" for="speechRate">Speed</label>
+<select id="speechRate" class="ll-select"><option value="0.85">Slow</option><option value="0.95" selected>Normal</option><option value="1.05">Fast</option></select>
+</div>
+<p class="ll-muted">Audio is read aloud using an English voice available on your device. Voice availability depends on your browser and operating system.</p>
+<details>
+<summary style="cursor:pointer;font-weight:800;color:#173d87">Reveal the transcript</summary>
+<div id="transcript" class="ll-transcript"></div>
+</details>
+</section>
+
+<section class="ll-panel">
+<h2>Listening comprehension</h2>
+<p class="ll-muted">Choose one answer for each question. Submit when you have answered all six questions. The answer key and explanations will appear afterwards.</p>
+<div id="questionProgress" class="ll-muted">0 of 6 answered</div>
+<div class="ll-progress"><span id="progressBar"></span></div>
+<form id="listeningForm">
+<div id="questions"></div>
+<button id="submitAnswers" class="ll-button" type="submit" disabled>Submit my answers</button>
+</form>
+<div id="results" hidden aria-live="polite"></div>
+</section>
+
+<section class="ll-panel">
+<h2>Speaking practice</h2>
+<p class="ll-muted">Answer in English. Try to speak for 20–30 seconds for each question. You can record yourself using your phone or computer.</p>
+<ol id="speakingQuestions" class="ll-speaking"></ol>
+</section>
+</div>
+</main>
+<script>
+(function(){
+const $=id=>document.getElementById(id);
+const slug='madrid-a-beautiful-day';
+let exercise=null, questions=[], answers={}, submitted=false, utterance=null;
+function sayStatus(message){$('accessStatus').textContent=message}
+function stopSpeech(){if('speechSynthesis' in window)window.speechSynthesis.cancel();$('pauseAudio').disabled=true;$('stopAudio').disabled=true;$('playAudio').disabled=false}
+function speak(){if(!('speechSynthesis' in window)){sayStatus('Speech audio is not supported by this browser. Try a recent version of Chrome, Edge or Safari.');return}
+stopSpeech();utterance=new SpeechSynthesisUtterance(exercise.transcript);utterance.lang='en-GB';utterance.rate=Number($('speechRate').value);const voices=window.speechSynthesis.getVoices();const voice=voices.find(v=>/^en-GB/i.test(v.lang))||voices.find(v=>/^en/i.test(v.lang));if(voice)utterance.voice=voice;utterance.onend=stopSpeech;utterance.onerror=()=>{stopSpeech();sayStatus('The audio could not be played on this device.')};$('playAudio').disabled=true;$('pauseAudio').disabled=false;$('stopAudio').disabled=false;window.speechSynthesis.speak(utterance)}
+$('playAudio').addEventListener('click',speak);
+$('pauseAudio').addEventListener('click',()=>{if(window.speechSynthesis.paused){window.speechSynthesis.resume();$('pauseAudio').textContent='Pause'}else{window.speechSynthesis.pause();$('pauseAudio').textContent='Resume'}});
+$('stopAudio').addEventListener('click',()=>{stopSpeech();$('pauseAudio').textContent='Pause'});
+$('speechRate').addEventListener('change',()=>{if(window.speechSynthesis.speaking)speak()});
+function renderQuestions(){
+$('questions').innerHTML=questions.map((q,i)=>'<article class="ll-question" data-q="'+q.id+'"><h3>'+(i+1)+'. '+escapeHtml(q.prompt)+'</h3>'+q.options.map((option,j)=>'<label class="ll-option"><input type="radio" name="q_'+q.id+'" value="'+String.fromCharCode(65+j)+'"> <span><strong>'+String.fromCharCode(65+j)+'.</strong> '+escapeHtml(option)+'</span></label>').join('')+'<div class="ll-feedback" data-feedback="'+q.id+'" hidden></div></article>').join('');
+$('questions').addEventListener('change',updateProgress);
+}
+function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function updateProgress(){questions.forEach(q=>{const chosen=document.querySelector('input[name="q_'+q.id+'"]:checked');if(chosen)answers[q.id]=chosen.value;else delete answers[q.id]});const n=Object.keys(answers).length;$('questionProgress').textContent=n+' of '+questions.length+' answered';$('progressBar').style.width=(n/questions.length*100)+'%';$('submitAnswers').disabled=n!==questions.length||submitted}
+function renderSpeaking(list){$('speakingQuestions').innerHTML=list.map(q=>'<li>'+escapeHtml(q)+'</li>').join('')}
+async function init(){
+try{
+let session=null;const {data,error}=await window.eeDb.auth.getSession();if(error)throw error;session=data.session;
+if(!session){sayStatus('Please sign in to check your FCE course access.');$('accessGate').hidden=false;return}
+const {data:subs,error:subError}=await window.eeDb.from('suscripciones').select('estado,periodo_actual_fin').eq('usuario_id',session.user.id).eq('plan','fce').order('actualizado_en',{ascending:false}).limit(5);
+if(subError)throw subError;
+const active=(subs||[]).some(s=>['active','trialing','past_due'].includes(s.estado)&&(!s.periodo_actual_fin||new Date(s.periodo_actual_fin)>new Date()));
+if(!active){sayStatus('Your FCE subscription is not active.');$('accessGate').hidden=false;return}
+const {data:ex,error:exError}=await window.eeDb.from('listening_exercises').select('id,slug,title,description,transcript,speaking_questions,duration_seconds,level,accent').eq('slug',slug).eq('is_published',true).single();
+if(exError)throw exError;exercise=ex;
+const {data:qs,error:qError}=await window.eeDb.from('listening_questions').select('id,question_number,prompt,options').eq('exercise_id',exercise.id).order('question_number');
+if(qError)throw qError;
+questions=qs||[];
+if(!questions.length)throw new Error('No questions are available for this activity yet.');
+$('exerciseTitle').textContent=exercise.title;$('exerciseDescription').textContent=exercise.description;$('transcript').textContent=exercise.transcript;renderQuestions();renderSpeaking(exercise.speaking_questions||[]);
+$('labContent').hidden=false;sayStatus('You have access to the FCE Listening Lab. Your progress will be saved when you submit your answers.');
+}catch(e){sayStatus(e.message||'We could not load this listening activity. Please try again later.');$('accessGate').hidden=false}
+}
+$('listeningForm').addEventListener('submit',async event=>{
+event.preventDefault();if(submitted)return;updateProgress();if(Object.keys(answers).length!==questions.length)return;
+$('submitAnswers').disabled=true;$('submitAnswers').textContent='Checking your answers…';
+const payload=questions.map(q=>({question_id:q.id,option:answers[q.id]}));
+const {data,error}=await window.eeDb.rpc('submit_listening_attempt',{p_exercise_slug:slug,p_answers:payload});
+if(error){$('submitAnswers').disabled=false;$('submitAnswers').textContent='Submit my answers';$('accessStatus').textContent=error.message;return}
+submitted=true;$('results').hidden=false;
+$('results').innerHTML='<div class="ll-score">Your score: '+data.score+' / '+data.total+' ('+data.percentage+'%)</div><p>Your attempt has been saved to your learning history.</p>'+data.feedback.map((f,i)=>{const q=questions.find(x=>x.id===f.question_id);return '<div class="ll-feedback"><strong>'+(i+1)+'. '+(f.is_correct?'Correct ✓':'Not quite. Correct answer: '+f.correct_option)+ '</strong><p>'+escapeHtml(f.explanation)+'</p></div>'}).join('');
+$('submitAnswers').textContent='Answers submitted';
+questions.forEach(q=>{document.querySelectorAll('input[name="q_'+q.id+'"]').forEach(el=>el.disabled=true)});
+});
+init();
+})();
+</script>
+{% include footer.html %}
+</body></html>
