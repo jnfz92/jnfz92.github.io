@@ -300,7 +300,7 @@ permalink: /perfil.html
 <div class="profile-group-heading"><h2>Biblioteca</h2><p class="muted">Primero tus artículos pendientes; después, los que ya has leído</p></div>
 
 <section class="panel reading-library" aria-labelledby="articlesTitle">
-<p class="section-kicker">TU BIBLIOTECA PERSONAL</p><h2 id="articlesTitle">Leídos y pendientes</h2>
+<p class="section-kicker">TU BIBLIOTECA PERSONAL</p><h2 id="articlesTitle">Artículos pendientes de leer</h2>
 <div class="stats" style="margin-bottom:12px"><div class="stat"><strong id="readStat">0</strong><span>Artículos leídos</span></div><div class="stat"><strong id="totalStat">0</strong><span>Artículos disponibles</span></div><div class="stat"><strong id="percentageStat">0%</strong><span>Progreso de lectura</span></div></div>
 <div class="meter" role="progressbar" aria-label="Progreso de lectura" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="readMeter"><span id="readBar"></span></div><p class="muted" id="readProgressText" style="margin-bottom:12px">Cargando artículos…</p>
 <h3 id="progressTitle" style="font-size:1rem;color:#1e426e;margin:12px 0 6px">Buscar artículos</h3>
@@ -312,11 +312,7 @@ permalink: /perfil.html
 <div class="reading-library-toolbar">
 <label for="articleSearch">Buscar artículos por título</label>
 <input id="articleSearch" type="search" placeholder="Buscar artículos…" autocomplete="off">
-<div class="reading-view-controls" role="group" aria-label="Mostrar artículos según su estado">
-<button class="reading-view-button" id="showAllArticles" type="button" aria-pressed="true">Todos</button>
-<button class="reading-view-button" id="onlyPending" type="button" aria-pressed="false">Pendientes</button>
-<button class="reading-view-button" id="onlyRead" type="button" aria-pressed="false">Leídos</button>
-</div></div>
+</div>
 <p id="articleBrowseCount" class="muted" role="status"></p>
 <div id="articleList" class="reading-groups" aria-live="polite"></div>
 </section>
