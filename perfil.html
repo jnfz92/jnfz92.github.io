@@ -318,9 +318,19 @@ permalink: /perfil.html
 <section class="panel" aria-labelledby="openaiProfileTitle">
  <p class="section-kicker">HERRAMIENTAS OPCIONALES</p>
  <h2 id="openaiProfileTitle">Clave personal de OpenAI</h2>
- <p class="muted">Configura tu clave API personal una sola vez. Se guarda cifrada en el servidor, vinculada a tu cuenta, hasta que la sustituyas o elimines.</p>
- <p><a class="primary" href="/clave-openai.html">🔑 Configurar mi clave OpenAI →</a></p>
- <p class="muted">Con tu clave personal guardada podrás corregir Writing con IA y crear un plan personalizado B2, según tu progreso y disponibilidad. Las herramientas solicitan consentimiento antes de enviar datos a OpenAI.</p>
+ <p class="muted">Introduce tu clave API personal aquí mismo. Se valida y guarda cifrada en el servidor, vinculada a tu cuenta de Easy English, hasta que la sustituyas o elimines. No se almacena en este navegador.</p>
+ <p class="muted" id="openaiSessionStatus" role="status" aria-live="polite">Comprobando tu sesión de Easy English…</p>
+ <form id="openaiKeyForm" autocomplete="off" hidden>
+  <label for="openaiApiKey">Clave API de OpenAI</label>
+  <input id="openaiApiKey" type="password" spellcheck="false" autocomplete="off" autocapitalize="off" autocorrect="off" placeholder="sk-…" required minlength="12" style="display:block;width:100%;box-sizing:border-box;min-height:46px;padding:11px 13px;border:1px solid #bbcae0;border-radius:10px;margin:8px 0 12px">
+  <div class="form-row">
+   <button class="primary" type="submit">Validar y guardar clave</button>
+   <button class="secondary" id="openaiDeleteKey" type="button" disabled>Eliminar mi clave</button>
+  </div>
+ </form>
+ <p id="openaiKeyStatus" class="muted" role="status" aria-live="polite">Consultando si ya tienes una clave guardada…</p>
+ <p class="muted">Tu clave permanecerá guardada hasta que la sustituyas o elimines. Nunca se vuelve a mostrar completa. Tu consumo se factura en tu propia cuenta de OpenAI. Puedes obtener o revocar tu clave en <a href="https://platform.openai.com/api-keys" target="_blank" rel="noopener noreferrer">OpenAI API Keys</a>.</p>
+ <p class="muted">Con tu clave personal guardada podrás corregir Writing con IA y crear un plan personalizado B2. Las herramientas solicitan consentimiento antes de enviar datos a OpenAI.</p>
  <div class="form-row"><a class="primary" href="/aula-b2.html#plan">📅 Crear mi planificación B2 con IA →</a><a class="primary" href="/writings.html#editor">✍️ Corregir Writing con IA →</a></div>
 </section>
 <section class="panel" aria-labelledby="nameTitle">
@@ -344,6 +354,8 @@ permalink: /perfil.html
 </main>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script src="supabase-config.js?v=20261106-cache-refresh-1"></script>
+<script src="/assets/ee-ai.js?v=20261120-profile-inline-keys" defer></script>
+<script src="/assets/clave-openai.js?v=20261120-profile-inline-keys" defer></script>
 <script src="/assets/bitacora.js?v=20261106-cache-refresh-1" defer></script><script src="/assets/perfil.js?v=20261117-task-exams-1"></script>
 <script>
 (function(){
