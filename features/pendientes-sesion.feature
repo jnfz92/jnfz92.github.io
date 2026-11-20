@@ -54,7 +54,7 @@ Característica: Exámenes personalizados y datos privados
     Cuando uno crea un mensaje privado
     Entonces únicamente el destinatario autorizado puede leerlo
 
-  @pendiente-sesion
+  @cucumber-aislado
   Escenario: Las actividades de varias modalidades se corrigen
     Dado que el alumno tiene actividades de selección y respuesta abierta
     Cuando completa y entrega ambas modalidades
