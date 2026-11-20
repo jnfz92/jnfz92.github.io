@@ -178,7 +178,7 @@ Completa cada frase con una palabra formada a partir de la palabra en mayúscula
 4. The weather was so ______ that we decided to stay indoors. (STORM)
 5. There are several interesting tourist ______ near the city. (ATTRACT)
 6. It is ______ to learn a language without practising it. (POSSIBLE)
-7. The hotel staff treated all the guests ______. (FRIEND)
+7. The hotel staff were very ______ to all the guests. (FRIEND)
 8. We were surprised by the ______ of the final result. (ACCURATE)
 
 <details>
@@ -190,7 +190,7 @@ Completa cada frase con una palabra formada a partir de la palabra en mayúscula
 4. **STORMY** — adjetivo que describe *weather*.
 5. **ATTRACTIONS** — sustantivo plural después de *several*.
 6. **IMPOSSIBLE** — adjetivo negativo: aprender sin practicar no es posible.
-7. **FRIENDLY** — adverbio/adjetivo: aquí la forma correcta es **IN A FRIENDLY WAY** si se mantiene la frase original. Para una sola palabra derivada de FRIEND, la frase correcta sería: *The hotel staff were very FRIENDLY to all the guests.*
+7. **FRIENDLY** — adjetivo que describe al personal (*staff*).
 8. **ACCURACY** — sustantivo después de *the*.
 
 </details>
