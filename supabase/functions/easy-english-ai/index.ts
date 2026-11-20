@@ -74,7 +74,8 @@ Deno.serve(async (request:Request)=>{
     if(action==="key_save"){
       const supplied=str(body.apiKey,300).trim();
       if(!/^sk-[A-Za-z0-9_-]{9,}$/.test(supplied))return json({error:"La clave no tiene un formato válido de OpenAI."},400);
-      if(!(await validateOpenAIKey(supplied)))return json({error:"OpenAI ha rechazado la clave. Comprueba que sea válida y esté activa."},400);
+      // Guardar no debe depender de que api.openai.com esté disponible en ese instante.
+      // La validez real se comprueba al usar la clave; así un fallo temporal de red no impide persistirla.
       const encrypted=await encryptKey(supplied);
       const {error}=await adminClient().from("openai_user_keys").upsert({user_id:user.id,ciphertext:encrypted.ciphertext,iv:encrypted.iv,updated_at:new Date().toISOString()},{onConflict:"user_id"});
       if(error)return json({error:"No se pudo guardar tu clave cifrada."},500);
