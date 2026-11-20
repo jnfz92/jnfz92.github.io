@@ -196,6 +196,19 @@ permalink: /perfil.html
 </section></details>
 <details open class="profile-disclosure"><summary><span class="profile-disclosure-title">Mi racha</span><span class="profile-disclosure-sub">Días seguidos y mejor marca</span><span class="profile-disclosure-chevron" aria-hidden="true">⌄</span></summary><section class="panel ee-streak" aria-labelledby="streakTitle"><p class="section-kicker">🔥 CONSTANCIA DIARIA</p><h2 id="streakTitle">Tu racha de aprendizaje</h2><div class="stats"><div class="stat"><strong id="streakCurrent">—</strong><span>🔥 Días seguidos</span></div><div class="stat"><strong id="streakBest">—</strong><span>🏆 Mejor racha</span></div><div class="stat"><strong id="streakDays">—</strong><span>📅 Días estudiados</span></div></div><p id="streakMessage" class="muted" role="status">Consultando tu racha...</p><p class="muted">Completa una lectura, un examen o una actividad interactiva para registrar actividad. Un día solo cuenta una vez.</p></section></details>
 <div class="profile-account-toolbar"><button class="profile-signout" type="button" id="signout" hidden>↪ Cerrar sesión</button></div>
+<details class="profile-disclosure"><summary><span class="profile-disclosure-title">Actividad y estadísticas</span><span class="profile-disclosure-sub">Totales, últimos 7 y 30 días</span><span class="profile-disclosure-chevron" aria-hidden="true">⌄</span></summary><section class="panel ee-learning-overview" aria-labelledby="learningOverviewTitle"><span class="section-kicker">TODO TU APRENDIZAJE</span><h2 id="learningOverviewTitle">Mi progreso en un vistazo</h2><p class="muted">Lecturas, exámenes y actividades en un mismo lugar.</p><div class="stats"><div class="stat"><strong id="learningReads">—</strong><span>Lecturas completadas</span></div><div class="stat"><strong id="learningExams">—</strong><span>Exámenes realizados</span></div><div class="stat"><strong id="learningActivities">—</strong><span>Actividades entregadas</span></div><div class="stat"><strong id="learningErrors">—</strong><span>Errores por repasar</span></div></div><p class="muted" id="learningStatus" role="status" aria-live="polite">Consultando tu progreso…</p><p><a class="back" href="practicar.html#cuaderno-fallos">✎ Repasar todos mis errores →</a> · <a class="back" href="actividades.html">Practicar actividades →</a></p>
+<hr style="border:0;border-top:1px solid #e3ebf6;margin:16px 0">
+<h3 id="recentStudyTitle" style="font-size:1rem;color:#1e426e;margin:0 0 8px">Cómo voy últimamente</h3>
+<p class="muted">Compara tu actividad reciente por periodos.</p>
+<div class="stats ee-recent-stats" id="recentStudyPanel">
+<div class="stat"><strong id="recentExam7">—</strong><span>Exámenes · 7 días</span></div>
+<div class="stat"><strong id="recentExam30">—</strong><span>Exámenes · 30 días</span></div>
+<div class="stat"><strong id="recentAverage30">—</strong><span>Nota media · 30 días</span></div>
+<div class="stat"><strong id="recentActivities30">—</strong><span>Actividades · 30 días</span></div>
+</div><p class="muted" id="recentStudyStatus" role="status" aria-live="polite">Consultando los resultados recientes…</p>
+<hr style="border:0;border-top:1px solid #e3ebf6;margin:16px 0">
+<h3>Mis actividades recientes</h3><div id="learningActivityHistory" class="list"></div></section></details>
+
 </div>
 <div class="profile-tab-panel" id="profile-panel-estudiar" role="tabpanel" aria-labelledby="profile-tab-estudiar" hidden>
 <div class="profile-group-heading"><h2>Estudiar</h2><p class="muted">Herramientas para practicar</p></div>
@@ -251,18 +264,6 @@ permalink: /perfil.html
 <div class="ee-home-stat"><strong id="homeExamCount">—</strong><span>Exámenes</span></div>
 <div class="ee-home-stat"><strong id="homeErrorCount">—</strong><span>Errores pendientes</span></div>
 </div>
-<details class="profile-disclosure"><summary><span class="profile-disclosure-title">Actividad y estadísticas</span><span class="profile-disclosure-sub">Totales, últimos 7 y 30 días</span><span class="profile-disclosure-chevron" aria-hidden="true">⌄</span></summary><section class="panel ee-learning-overview" aria-labelledby="learningOverviewTitle"><span class="section-kicker">TODO TU APRENDIZAJE</span><h2 id="learningOverviewTitle">Mi progreso en un vistazo</h2><p class="muted">Lecturas, exámenes y actividades en un mismo lugar.</p><div class="stats"><div class="stat"><strong id="learningReads">—</strong><span>Lecturas completadas</span></div><div class="stat"><strong id="learningExams">—</strong><span>Exámenes realizados</span></div><div class="stat"><strong id="learningActivities">—</strong><span>Actividades entregadas</span></div><div class="stat"><strong id="learningErrors">—</strong><span>Errores por repasar</span></div></div><p class="muted" id="learningStatus" role="status" aria-live="polite">Consultando tu progreso…</p><p><a class="back" href="practicar.html#cuaderno-fallos">✎ Repasar todos mis errores →</a> · <a class="back" href="actividades.html">Practicar actividades →</a></p>
-<hr style="border:0;border-top:1px solid #e3ebf6;margin:16px 0">
-<h3 id="recentStudyTitle" style="font-size:1rem;color:#1e426e;margin:0 0 8px">Cómo voy últimamente</h3>
-<p class="muted">Compara tu actividad reciente por periodos.</p>
-<div class="stats ee-recent-stats" id="recentStudyPanel">
-<div class="stat"><strong id="recentExam7">—</strong><span>Exámenes · 7 días</span></div>
-<div class="stat"><strong id="recentExam30">—</strong><span>Exámenes · 30 días</span></div>
-<div class="stat"><strong id="recentAverage30">—</strong><span>Nota media · 30 días</span></div>
-<div class="stat"><strong id="recentActivities30">—</strong><span>Actividades · 30 días</span></div>
-</div><p class="muted" id="recentStudyStatus" role="status" aria-live="polite">Consultando los resultados recientes…</p>
-<hr style="border:0;border-top:1px solid #e3ebf6;margin:16px 0">
-<h3>Mis actividades recientes</h3><div id="learningActivityHistory" class="list"></div></section></details>
 <section class="panel" aria-labelledby="followupWeekTitle">
 <div class="ee-followup-heading"><div><p class="section-kicker">INFORME SEMANAL</p><h2 id="followupWeekTitle">Tu semana de aprendizaje</h2></div><span class="ee-followup-period">De lunes a domingo</span></div>
 <p class="muted" id="followupStatus" role="status" aria-live="polite">Cargando tus informes semanales…</p>
