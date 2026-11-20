@@ -433,7 +433,7 @@ Given('que el alumno ha completado un examen en una cuenta de pruebas',async fun
   await this.page.locator('#examlist').selectOption('31');
   await this.page.locator('#load').click();
   await this.page.locator('#exam input[name="question-301"][value="0"]').waitFor();
-  await this.page.locator('#exam input[name="question-301"][value="0"]').check();
+  await this.page.locator('#exam input[name="question-301"][value="1"]').check();
   await this.page.locator('#exam input[name="question-302"][value="1"]').check();
   await this.page.locator('#exam button[type="submit"]').click();
   await this.page.locator('.exam-report-pdf-button').waitFor({state:'visible'});
@@ -447,7 +447,7 @@ When('exporta el informe a PDF',async function(){
 Then('el PDF contiene resultados y no crea páginas vacías',async function(){
   const body=await this.pdfPage.locator('body').innerText();
   assert.match(body,/Tu informe personalizado/);
-  assert.match(body,/100,0%|100.0%|Nota: 10,0/);
+  assert.match(body,/50,0%|50.0%|Nota: 5,0/);
   assert.match(body,/La primera opción es correcta/);
   assert.match(body,/La cuarta opción es correcta/);
   assert.ok(await this.pdfPage.locator('.exam-report-chart').count()>0);
