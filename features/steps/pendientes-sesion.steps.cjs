@@ -158,3 +158,62 @@ Then('se aplica su última elección una única vez',async function(){
   await this.page.locator('.suggestion-votes button').nth(1).waitFor();
   assert.equal(await this.page.locator('.suggestion-votes button').nth(1).getAttribute('aria-pressed'),'true');
 });
+
+
+const repasoFakeConfig = String.raw`window.__repasoCalls=[];
+window.eeDb={
+ auth:{
+  getUser:async()=>({data:{user:{id:'user-cucumber',user_metadata:{review_default_topics:['Tiempos verbales']}}},error:null}),
+  onAuthStateChange:()=>({data:{subscription:{unsubscribe(){}}}})
+ },
+ from(table){
+  const rows=table==='preguntas_falladas'?[
+   {pregunta_id:101,veces_fallada:2,ultimo_fallo:'2026-11-19T10:00:00Z',proximo_repaso:null,preguntas:{id:101,orden:1,enunciado:'Choose the correct verb tense',opciones:['has gone','went'],fuente_url:'tenses-present',examen_id:2,examenes:{titulo:'Grammar test',lectura:null}}},
+   {pregunta_id:102,veces_fallada:1,ultimo_fallo:'2026-11-19T09:00:00Z',proximo_repaso:null,preguntas:{id:102,orden:1,enunciado:'Choose the correct environment word',opciones:['pollution','chair'],fuente_url:'environment-vocabulary',examen_id:3,examenes:{titulo:'Vocabulary test',lectura:null}}}
+  ]:[];
+  const query={select(){return query},eq(){return query},order(){return query},limit(){return query},in(){return query},then(resolve,reject){return Promise.resolve({data:rows,error:null}).then(resolve,reject)},maybeSingle:async()=>({data:rows[0]||null,error:null}),insert:async payload=>{window.__repasoCalls.push({table,method:'insert',payload});return {data:payload,error:null}},upsert:async payload=>{window.__repasoCalls.push({table,method:'upsert',payload});return {data:payload,error:null}},delete(){return query}};
+  return query;
+ },
+ rpc:async(name,args)=>{
+  window.__repasoCalls.push({rpc:name,args});
+  if(name==='entregar_repaso_fallos')return {data:{total:1,aciertos:1,correcciones:{'101':{correcta:true,respuesta_correcta:0,explicacion:'Respuesta correcta'}}},error:null};
+  return {data:null,error:{message:'RPC inesperada: '+name}};
+ }
+};`;
+
+async function openRepasoIsolated(page){
+  await page.route('**/supabase.min.js',route=>route.fulfill({status:200,contentType:'application/javascript',body:''}));
+  await page.route('**/supabase-config.js',route=>route.fulfill({status:200,contentType:'application/javascript',body:repasoFakeConfig}));
+  await page.route('**/assets/practicar-app.js*',route=>route.fulfill({status:200,contentType:'application/javascript',body:''}));
+  await page.goto(BASE+'/examenes.html#cuaderno-fallos');
+  await page.locator('#reviewStart').waitFor();
+  await page.waitForFunction(()=>document.querySelector('#reviewPrivateContent')?.hidden===false);
+  await page.waitForFunction(()=>document.querySelector('#reviewTopic')?.querySelectorAll('input').length>0);
+}
+
+Given('que el alumno ha iniciado sesión en una cuenta de pruebas',async function(){
+  await openRepasoIsolated(this.page);
+});
+When('pide un examen de un tema pendiente',async function(){
+  await this.page.locator('#reviewStart').click();
+  await this.page.locator('#reviewForm .review-question').first().waitFor();
+});
+Then('recibe únicamente preguntas falladas de ese tema',async function(){
+  const questions=await this.page.locator('#reviewForm .review-question legend').allTextContents();
+  assert.deepEqual(questions,['1. Choose the correct verb tense']);
+  const selected=await this.page.locator('#reviewTopic input:checked').evaluateAll(nodes=>nodes.map(n=>n.value));
+  assert.deepEqual(selected,['Tiempos verbales']);
+});
+
+When('entrega un repaso de errores',async function(){
+  await this.page.locator('#reviewStart').click();
+  await this.page.locator('#reviewForm input[name="repaso-classic-101"][value="0"]').check();
+  await this.page.locator('#reviewSubmit').click();
+  await this.page.locator('#reviewSummary').waitFor({state:'visible'});
+});
+Then('la calificación histórica permanece intacta',async function(){
+  await this.page.waitForFunction(()=>/1 \/ 1/.test(document.querySelector('#reviewSummary')?.textContent||''));
+  const calls=await this.page.evaluate(()=>window.__repasoCalls);
+  assert.equal(calls.filter(x=>x.rpc==='entregar_repaso_fallos').length,1);
+  assert.equal(calls.some(x=>x.table==='resultados'&&['insert','upsert','update','delete'].includes(x.method)),false);
+});
