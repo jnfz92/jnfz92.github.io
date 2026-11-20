@@ -204,6 +204,10 @@ El asesor informa de 29 funciones. No implica automáticamente una vulnerabilida
 - No retirar índices por el mero hecho de que aparezcan como no usados sin revisar estadísticas, periodo de observación y consultas reales.
 - Avisos de visibilidad en GraphQL deben contrastarse con el diseño intencionado del API: visibilidad del esquema no equivale por sí sola a lectura de filas cuando RLS está correctamente aplicado.
 
+### Deriva entre migraciones registradas y archivos del repositorio
+
+La base de datos registra **66 migraciones** en `supabase_migrations.schema_migrations`. En la rama principal inspeccionada, el directorio `supabase/migrations/` contiene **3 archivos**. El repositorio también contiene scripts SQL históricos fuera de ese directorio, pero no deben tratarse automáticamente como una cadena de migración reproducible. Hay una diferencia documental importante que CONS-005/006 debe resolver: mapear cada versión registrada a su SQL fuente, identificar las versiones ausentes y decidir una estrategia de baseline segura. No generar una migración masiva ni marcar versiones como aplicadas sin comparar el esquema completo.
+
 ## Próximos pasos
 
 1. Obtener definiciones completas de políticas, funciones, vistas, triggers, constraints, índices y grants.
