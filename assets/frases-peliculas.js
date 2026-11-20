@@ -37,6 +37,29 @@ function renderCategoryStats(){
  els.categoryStats.replaceChildren(fragment);
  if(!categories.length)els.categoryStats.textContent='No hay categorías disponibles para esta selección.';
 }
+function subtitleCategory(phrase){
+ const p=phrase.toLocaleLowerCase();
+ if(/\b(can|could|may|might|must|shall|should|will|would|have to|has to|had better)\b/.test(p))return 'Modal Verbs';
+ if(/\b(am|is|are)\s+\w+ing\b/.test(p))return 'Present Continuous';
+ if(/\b(was|were)\s+\w+ing\b/.test(p))return 'Past Continuous';
+ if(/\b(have|has)\s+\w+(ed|en)\b/.test(p))return 'Present Perfect';
+ if(/\b(did|was|were|had)\b/.test(p)||/\b\w+ed\b/.test(p))return 'Past Simple';
+ if(/^(please\s+)?(come|go|look|stop|move|help|run|wait|hold|take|give|keep|don't|do not|let's|lets|shut|get|turn|follow|stay|watch|listen|leave|bring|save|pick|climb|attack|prepare|protect|retrieve)\b/.test(p))return 'Imperatives';
+ if(/\b(i|you|we|they|he|she|it)\s+(am|is|are|do|does|have|has|know|think|want|like|love|need|see|feel|go|got|can|will)\b/.test(p))return 'Present Simple';
+ return 'Fragment / Other';
+}
+function parseIceAgeSubtitles(source){
+ const seen=new Set(),parsed=[];
+ source.replace(/\r/g,'').split(/\n\s*\n/).forEach(block=>{
+  const lines=block.trim().split('\n');
+  if(lines.length<3||!/^\d+$/.test(lines[0].trim())||!lines[1].includes('-->'))return;
+  const number=Number(lines[0].trim()),phrase=lines.slice(2).join(' ').trim();
+  if(number===9999||seen.has(number)||!phrase)return;
+  seen.add(number);
+  parsed.push({id:'ice-age-'+number,movie_slug:'ice-age-2002',movie_title:'Ice Age (2002)',subtitle_number:number,timecode:lines[1].trim(),phrase,tense_labels:subtitleCategory(phrase),notes:'',translation_es:null,learning_note_es:null});
+ });
+ return parsed;
+}
 function makeRow(row){
  const tr=document.createElement('tr');
  const add=(value,cls)=>{const td=document.createElement('td');td.className=cls||'';td.textContent=value??'';tr.append(td)};
@@ -90,6 +113,11 @@ async function loadRows(){
    const batch=await response.json();if(!Array.isArray(batch))throw new Error('La respuesta de Supabase no tiene el formato esperado');
    all.push(...batch);if(batch.length<batchSize)break;from+=batchSize;
   }
+  try{
+   const subtitleResponse=await fetch('/assets/ice-age-subtitles.srt?v=20261120-1',{cache:'no-store'});
+   if(subtitleResponse.ok)all.push(...parseIceAgeSubtitles(await subtitleResponse.text()));
+   else console.warn('No se pudo cargar el archivo SRT de Ice Age:',subtitleResponse.status);
+  }catch(subtitleError){console.warn('No se pudieron incorporar los subtítulos de Ice Age:',subtitleError)}
   rows=all;
   const movies=[...new Map(rows.map(row=>[row.movie_slug,row.movie_title||row.movie_slug])).entries()].sort((a,b)=>a[1].localeCompare(b[1],'es'));
   const tenses=unique(rows.flatMap(labels));
@@ -102,9 +130,11 @@ async function loadRows(){
   movies.forEach(([slug,title])=>{const option=document.createElement('option');option.value=slug;option.textContent=title;els.movie.append(option)});
   addOptions(els.tense,tenses,'Todos los tiempos verbales');
   const requestedMovie=new URLSearchParams(window.location.search).get('movie');
-  if(requestedMovie&&movies.some(([slug])=>slug===requestedMovie)){
-   els.movie.value=requestedMovie;
-   els.categoryMovie.value=requestedMovie;
+  const defaultMovie='ice-age-2002';
+  const initialMovie=requestedMovie||(movies.some(([slug])=>slug===defaultMovie)?defaultMovie:'');
+  if(initialMovie&&movies.some(([slug])=>slug===initialMovie)){
+   els.movie.value=initialMovie;
+   els.categoryMovie.value=initialMovie;
    renderCategoryStats();
   }
   els.phraseCount.textContent=rows.length.toLocaleString('es-ES');
