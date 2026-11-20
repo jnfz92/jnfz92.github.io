@@ -16,7 +16,7 @@ permalink: /perfil.html
 .profile-workspace-header{margin:22px 0 14px}
 .profile-workspace-header h2{margin:.25rem 0 .35rem;font-size:clamp(1.35rem,2.5vw,1.75rem)}
 .profile-workspace-header p{margin:.25rem 0}
-.profile-account-toolbar{display:flex;justify-content:flex-end;margin:0 0 10px}
+.profile-account-toolbar{display:flex;justify-content:flex-end;margin:0 0 8px}
 .profile-signout{appearance:none;border:1px solid #c8d7ed;border-radius:10px;padding:9px 14px;background:#fff;color:#31547f;font:inherit;font-size:.92rem;font-weight:700;cursor:pointer}
 .profile-signout:hover{background:#f3f7ff;border-color:#9eb8df}
 .profile-signout:focus-visible{outline:3px solid #3474ed;outline-offset:2px}
@@ -112,7 +112,7 @@ permalink: /perfil.html
 </head>
 <body class="ee-site ee-profile">
 {% include header.html %}<main class="container">
-<section class="hero"><span class="eyebrow">✦ TU ESPACIO DE APRENDIZAJE</span><h1>Mi espacio de aprendizaje</h1><p class="intro">Tu curso, tus objetivos y tus avances, sin distracciones.</p><div class="hero-actions"><a href="/aula-b2.html">📅 Mi sesión de hoy ↗</a><a href="/premium.html">✦ Easy English Premium ↗</a><a href="/mi-vocabulario.html">🧠 Mi vocabulario ↗</a><a href="practicar.html">✎ Hacer un examen ↗</a><a href="practicar.html#cuaderno-fallos">📘 Mi cuaderno de errores ↗</a><a href="#articlesTitle" id="continueLink" hidden>📚 Continuar aprendiendo ↓</a></div></section>
+<section class="hero"><div class="profile-account-toolbar"><button class="profile-signout" type="button" id="signout" hidden>↪ Cerrar sesión</button></div><span class="eyebrow">✦ TU ESPACIO DE APRENDIZAJE</span><h1>Mi espacio de aprendizaje</h1><p class="intro">Tu curso, tus objetivos y tus avances, sin distracciones.</p><div class="hero-actions"><a href="/aula-b2.html">📅 Mi sesión de hoy ↗</a><a href="/premium.html">✦ Easy English Premium ↗</a><a href="/mi-vocabulario.html">🧠 Mi vocabulario ↗</a><a href="practicar.html">✎ Hacer un examen ↗</a><a href="practicar.html#cuaderno-fallos">📘 Mi cuaderno de errores ↗</a><a href="#articlesTitle" id="continueLink" hidden>📚 Continuar aprendiendo ↓</a></div></section>
 <div class="auth-layout" id="authLayout" aria-label="Acceso y registro">
 <section class="panel auth-card account-panel" id="accountPanel" aria-labelledby="accountTitle">
 <p class="section-kicker">YA TENGO CUENTA</p><h2 id="accountTitle">Iniciar sesión</h2>
@@ -160,7 +160,6 @@ permalink: /perfil.html
 </form>
 <p id="passwordRecoveryStatus" class="muted" role="status" aria-live="polite"></p>
 </section><div id="privateDashboard" hidden>
-<div class="profile-account-toolbar"><button class="profile-signout" type="button" id="signout">↪ Cerrar sesión</button></div>
 <nav class="profile-tabs" aria-label="Apartados de mi perfil" role="tablist">
 <button type="button" class="profile-tab is-active" role="tab" id="profile-tab-inicio" aria-controls="profile-panel-inicio" aria-selected="true" tabindex="0" data-profile-tab="inicio">🏠 Inicio</button>
 <button type="button" class="profile-tab" role="tab" id="profile-tab-estudiar" aria-controls="profile-panel-estudiar" aria-selected="false" tabindex="-1" data-profile-tab="estudiar">📚 Estudiar</button>
