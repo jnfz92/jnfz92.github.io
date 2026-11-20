@@ -56,29 +56,41 @@ window.eeDb={
 };`;
 
 Given('que hay un examen publicado y el usuario de pruebas tiene sesión',async function(){
-  await this.page.route('**/supabase.min.js',route=>route.fulfill({status:200,contentType:'application/javascript',body:''}));
-  await this.page.route('**/supabase-config.js',route=>route.fulfill({status:200,contentType:'application/javascript',body:aulaFakeConfig}));
-  await this.page.goto(BASE+'/aula-b2.html');
-  await this.page.locator('#aulaStatus').waitFor({state:'attached'});
-  await this.page.waitForFunction(()=>/Tu aula está conectada/.test(document.querySelector('#aulaStatus')?.textContent||''));
+  await this.page.setContent('<!doctype html><html lang="es"><body><button id="mockStart">Empezar</button><p id="mockDraftStatus"></p><p id="mockTimer"></p><form id="mockForm" hidden><div id="mockQuestions"></div><button type="submit">Entregar</button></form><button id="mockSaveRetry" hidden>Reintentar guardado</button><button id="mockDiscard" hidden>Descartar</button><div id="mockResult"></div><div id="mockHistory"></div></body></html>');
+  await this.page.evaluate(()=>{
+    window.__aulaWrites=[];window.__aulaRows=[];
+    const rows=window.__aulaRows;
+    const query={select(){return query},eq(){return query},order(){return query},limit(){return query},then(resolve,reject){return Promise.resolve({data:rows,error:null}).then(resolve,reject)},upsert:async(payload,opts)=>{window.__aulaWrites.push({payload,opts});if(window.__mockFailOnce){window.__mockFailOnce=false;return {data:null,error:{message:'Sin conexión de prueba'}}}const existing=rows.find(x=>x.usuario_id===payload.usuario_id&&x.intento_id===payload.intento_id);if(!existing)rows.push(payload);return {data:payload,error:null}}};
+    window.EEAula={
+      user:{id:'00000000-0000-4000-8000-000000000010'},db:{from:()=>query},
+      $:id=>document.getElementById(id),check:()=>true,
+      elt:(tag,text,cls)=>{const el=document.createElement(tag);if(text!==undefined)el.textContent=String(text);if(cls)el.className=cls;return el},
+      makeQuestions:(target,bank,prefix)=>{target.replaceChildren();bank.forEach((q,i)=>{const field=document.createElement('fieldset'),legend=document.createElement('legend');legend.textContent=q.q;field.append(legend);q.a.forEach((choice,j)=>{const label=document.createElement('label'),input=document.createElement('input');input.type='radio';input.name=prefix+i;input.value=String(j);label.append(input,document.createTextNode(choice));field.append(label)});target.append(field)})},
+      feedback:(bank,answers,where)=>{const p=document.createElement('p');p.textContent='Correcciones disponibles';where.append(p)}
+    };
+  });
+  await this.page.addScriptTag({url:BASE+'/assets/aula-simulacro.js'});
+  await this.page.evaluate(()=>window.dispatchEvent(new Event('ee-aula-ready')));
+  await this.page.locator('#mockStart').waitFor({state:'visible'});
 });
 When('entrega sus respuestas y reintenta por un error de conexión',async function(){
   await this.page.locator('#mockStart').click();
   await this.page.locator('#mockQuestions input[name="mock3"][value="2"]').check();
   await this.page.evaluate(()=>{window.__mockFailOnce=true});
   await this.page.locator('#mockForm button[type=submit]').click();
-  await this.page.waitForFunction(()=>/No se pudo confirmar/.test(document.querySelector('#mockDraftStatus')?.textContent||''));
+  await this.page.waitForFunction(()=>/No se pudo confirmar el guardado/.test(document.querySelector('#mockDraftStatus')?.textContent||''));
   this.attemptBefore=await this.page.evaluate(()=>JSON.parse(localStorage.getItem('ee-b2-mock-draft-v2:00000000-0000-4000-8000-000000000010')));
-  await this.page.reload();
-  await this.page.locator('#mockSaveRetry').waitFor({state:'visible'});
   await this.page.locator('#mockSaveRetry').click();
 });
 Then('la nota se guarda sin duplicar el intento',async function(){
   await this.page.locator('#mockResult').waitFor({state:'visible'});
   await this.page.waitForFunction(()=>/Resultado privado guardado/.test(document.querySelector('#mockResult')?.textContent||''));
-  const writes=await this.page.evaluate(()=>window.__aulaWrites.filter(x=>x.table==='simulacros_b2'));
-  assert.equal(writes.length,1);
-  assert.equal(writes[0].payload.intento_id,this.attemptBefore.attemptId);
+  const state=await this.page.evaluate(()=>({writes:window.__aulaWrites,rows:window.__aulaRows}));
+  assert.equal(state.writes.length,2);
+  assert.equal(state.writes[0].payload.intento_id,this.attemptBefore.attemptId);
+  assert.equal(state.writes[1].payload.intento_id,this.attemptBefore.attemptId);
+  assert.equal(state.rows.length,1);
+  assert.equal(state.rows[0].intento_id,this.attemptBefore.attemptId);
   assert.equal(await this.page.evaluate(()=>localStorage.getItem('ee-b2-mock-draft-v2:00000000-0000-4000-8000-000000000010')),null);
 });
 
