@@ -224,3 +224,39 @@ La base de datos registra **66 migraciones** en `supabase_migrations.schema_migr
 3. Revisar primero las cuatro RPC ejecutables por anon y las 29 RPC ejecutables por authenticated.
 4. Probar aislamiento alumno/profesor/admin con identidades de prueba.
 5. Preparar migraciones de corrección y reversión; no ejecutar cambios en producción hasta probarlos en un entorno aislado.
+
+
+## Trazabilidad de SQL en el repositorio (revisión CONS-005)
+
+El árbol de la rama `chore/fase-1-consolidacion` contiene **17 archivos SQL** bajo `supabase/`: 14 scripts históricos en la raíz de esa carpeta y 3 archivos en `supabase/migrations/`. Por tanto, la observación correcta no es que el repositorio solo tenga tres scripts SQL, sino que solo tres están en el directorio canónico de migraciones.
+
+Scripts históricos en `supabase/`:
+- `01_schema.sql`
+- `02_importar_examenes.sql`
+- `03_perfiles_lecturas.sql`
+- `04_examen_repaso_fallos.sql`
+- `05_motor_actividades.sql`
+- `06_demo_actividades.sql`
+- `07_progreso_unificado.sql`
+- `08_racha_actividades.sql`
+- `09_retirar_descargas_pdf.sql`
+- `10_menu_header_responsive.sql`
+- `11_footer_solo_descripcion.sql`
+- `12_sugerencias.sql`
+- `13_archivar_paginas_blog_legacy.sql`
+- `14_comentarios_articulos.sql`
+- `15_restringir_rpc_comentarios_anon.sql`
+- `16_repaso_inteligente_vocabulario.sql`
+- `17_retirar_newsletter.sql`
+
+Los tres archivos de `supabase/migrations/` son `20261104_planes_ia_b2.sql`, `20261105_mensajes_vistos.sql` y `20261106_roles_cursos_profesores.sql`. Los nombres y fechas sugieren correspondencias parciales con versiones aplicadas, pero no bastan para afirmar equivalencia byte a byte ni equivalencia semántica. No mover, renombrar ni volver a ejecutar scripts históricos hasta cotejar cada uno con su migración registrada y con el esquema actual.
+
+## Primera inspección de autenticación y navegación (CONS-015 / CONS-020)
+
+- `assets/login.js` concentra login por contraseña, OAuth Google y recuperación de contraseña. Valida que el parámetro `next` permanezca en el mismo origen y evita rutas de login/registro como destino. La sesión se obtiene mediante el cliente compartido `window.eeDb`.
+- `assets/aula-access.js` es una puerta de presentación para Mi aula: consulta `auth.getUser()` y oculta o muestra enlaces/contenido. Su propio comentario aclara que la autorización real de datos debe residir en RLS; no debe tratarse como control de seguridad suficiente.
+- `assets/perfil.js` reúne lógica amplia de cuenta, lecturas y progreso; requiere revisión por módulos antes de extraer autenticación compartida.
+- `assets/navigation.js` gestiona la cabecera compartida y el menú; `assets/navigation-optimized.js` añade comportamiento móvil (fondo, bloqueo de scroll y gestión de foco). Hay solapamiento funcional potencial, pero no se clasifica como duplicación confirmada hasta verificar qué páginas cargan cada script y en qué orden.
+- La clave pública Supabase visible en los scripts es una clave publishable/anon destinada al cliente; no se debe confundir con una service-role key. La protección depende de RLS, grants y RPC correctamente autorizadas.
+
+Esta revisión es estática y parcial: no se ha modificado JavaScript, configuración de Auth ni base de datos.
