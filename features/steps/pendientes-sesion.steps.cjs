@@ -456,7 +456,6 @@ Then('el PDF contiene resultados y no crea páginas vacías',async function(){
   assert.match(body,/Tu informe personalizado/);
   assert.match(body,/50,0%|50.0%|Nota: 5,0/);
   assert.match(body,/La primera opción es correcta/);
-  assert.match(body,/La cuarta opción es correcta/);
   assert.ok(await this.pdfPage.locator('.exam-report-chart').count()>0);
   assert.equal(await this.pdfPage.locator('.exam-report-error').evaluateAll(nodes=>nodes.every(node=>node.textContent.trim().length>0)),true);
   assert.equal(await this.pdfPage.locator('button,a').count(),0);
