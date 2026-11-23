@@ -1,0 +1,29 @@
+/* Mi progreso: jerarquia visual y agrupacion, sin alterar datos ni funciones */
+.ee-site.ee-profile #profile-panel-progreso{display:grid;gap:16px;align-content:start}
+.ee-site.ee-profile #profile-panel-progreso>.profile-group-heading{position:static;width:auto;height:auto;margin:2px 0 0;overflow:visible;clip:auto;white-space:normal}
+.ee-site.ee-profile #profile-panel-progreso>.profile-group-heading h2{font-size:clamp(23px,3vw,29px);letter-spacing:-.035em;color:#1c3156;margin:0 0 4px}
+.ee-site.ee-profile #profile-panel-progreso>.profile-group-heading p{margin:0;color:#687b95}
+.ee-site.ee-profile #profile-panel-progreso>.ee-home-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:0}
+.ee-site.ee-profile #profile-panel-progreso>.ee-home-stats .ee-home-stat{min-width:0;padding:16px;border:1px solid #dfe7f2;border-radius:15px;background:#fff}
+.ee-site.ee-profile #profile-panel-progreso>.ee-home-stats .ee-home-stat strong{font-size:clamp(23px,3vw,31px);line-height:1.2}
+.ee-site.ee-profile #profile-panel-progreso>.panel{min-width:0;margin:0;padding:clamp(17px,2.5vw,24px);border:1px solid #dfe6f0;border-radius:18px;box-shadow:0 4px 16px #1b35590a}
+.ee-site.ee-profile #profile-panel-progreso>.panel h2{margin:2px 0 8px;font-size:clamp(18px,2.2vw,22px);letter-spacing:-.025em}
+.ee-site.ee-profile #profile-panel-progreso>.panel>.section-kicker{margin:0 0 5px;font-size:10px;letter-spacing:.12em;color:#55719b}
+.ee-site.ee-profile #profile-panel-progreso>.panel[aria-labelledby="followupWeekTitle"]{border-color:#cbdaf0;background:linear-gradient(180deg,#f7faff 0,#fff 125px)}
+.ee-site.ee-profile #profile-panel-progreso .ee-followup-heading{align-items:flex-start;margin-bottom:8px}
+.ee-site.ee-profile #profile-panel-progreso .ee-followup-period{flex:none}
+.ee-site.ee-profile #profile-panel-progreso .ee-followup-history{margin-top:14px;gap:9px}
+.ee-site.ee-profile #profile-panel-progreso .ee-followup-history>div{padding:12px;border-radius:12px;background:#f7f9fc}
+.ee-site.ee-profile #profile-panel-progreso .profile-disclosure{margin:0;border-radius:15px;border-color:#dfe6f0}
+.ee-site.ee-profile #profile-panel-progreso .profile-disclosure summary{padding:15px 17px}
+.ee-site.ee-profile #profile-panel-progreso .profile-disclosure>.panel{padding:17px;border-top-color:#e6edf6}
+.ee-site.ee-profile #profile-panel-progreso #examHistory{margin-top:12px}
+.ee-site.ee-profile #profile-panel-progreso #taskExamList{margin-top:12px}
+@media(max-width:700px){
+ .ee-site.ee-profile #profile-panel-progreso{gap:12px}
+ .ee-site.ee-profile #profile-panel-progreso>.ee-home-stats{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+ .ee-site.ee-profile #profile-panel-progreso>.ee-home-stats .ee-home-stat{padding:13px}
+ .ee-site.ee-profile #profile-panel-progreso>.panel{padding:15px}
+ .ee-site.ee-profile #profile-panel-progreso .ee-followup-heading{display:block}
+ .ee-site.ee-profile #profile-panel-progreso .ee-followup-period{display:inline-flex;margin-top:8px}
+}
