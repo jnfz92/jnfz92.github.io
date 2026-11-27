@@ -2,6 +2,7 @@
 const API='https://wnluofonzteaqtlfshgy.supabase.co/rest/v1/';
 const KEY='sb_publishable_Ef-AXAapcwaPExEFS6kmug_tKLaulM8';
 const PAGE_SIZE=36;
+const DEFAULT_MOVIE_SLUG='vampires-vs-the-bronx-2020';
 const $=id=>document.getElementById(id);
 const els={search:$('phraseSearch'),movie:$('movieFilter'),tense:$('tenseFilter'),reset:$('resetMovieFilters'),count:$('phraseResults'),grid:$('moviePhrasesGrid'),status:$('moviePhrasesStatus'),pagination:$('moviePhrasesPagination'),prev:$('previousPhrases'),next:$('nextPhrases'),pageLabel:$('phrasePageLabel'),phraseCount:$('moviePhraseCount'),movieCount:$('movieCount'),tenseCount:$('tenseCount')};
 let rows=[],filtered=[],page=1;
@@ -66,6 +67,8 @@ async function loadRows(){
   const allMovies=document.createElement('option');allMovies.value='all';allMovies.textContent='Todas las películas';els.movie.append(allMovies);
   movies.forEach(([slug,title])=>{const option=document.createElement('option');option.value=slug;option.textContent=title;els.movie.append(option)});
   addOptions(els.tense,tenses,'Todos los tiempos verbales');
+  // Abrir la biblioteca directamente en la película que estamos estudiando.
+  els.movie.value=movies.some(([slug])=>slug===DEFAULT_MOVIE_SLUG)?DEFAULT_MOVIE_SLUG:(movies[0]?.[0]||'all');
   els.phraseCount.textContent=rows.length.toLocaleString('es-ES');
   els.movieCount.textContent=movies.length.toLocaleString('es-ES');
   els.tenseCount.textContent=tenses.length.toLocaleString('es-ES');
@@ -82,7 +85,8 @@ async function loadRows(){
 els.search.addEventListener('input',applyFilters);
 els.movie.addEventListener('change',applyFilters);
 els.tense.addEventListener('change',applyFilters);
-els.reset.addEventListener('click',()=>{els.search.value='';els.movie.value='all';els.tense.value='all';applyFilters()});
+function moviesDefault(){return [...els.movie.options].some(option=>option.value===DEFAULT_MOVIE_SLUG)?DEFAULT_MOVIE_SLUG:(els.movie.options[1]?.value||'all')}
+els.reset.addEventListener('click',()=>{els.search.value='';els.movie.value=moviesDefault();els.tense.value='all';applyFilters()});
 els.prev.addEventListener('click',()=>{if(page>1){page--;render();window.scrollTo({top:els.grid.getBoundingClientRect().top+window.scrollY-110,behavior:'smooth'})}});
 els.next.addEventListener('click',()=>{if(page<Math.ceil(filtered.length/PAGE_SIZE)){page++;render();window.scrollTo({top:els.grid.getBoundingClientRect().top+window.scrollY-110,behavior:'smooth'})}});
 loadRows();
