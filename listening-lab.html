@@ -64,8 +64,10 @@ permalink: /listening-lab.html
 
 <div id="labContent" hidden>
 <section class="ll-panel">
-<p class="ll-muted">LISTENING PRACTICE · ACTIVITY 01 · APPROX. 4 MINUTES</p>
-<h2 id="exerciseTitle">A beautiful day in Madrid</h2>
+<label for="exerciseSelect" style="display:block;font-weight:800;margin:0 0 14px;color:#173d87">Choose a listening activity</label>
+<select id="exerciseSelect" class="ll-select" style="width:100%;max-width:100%;margin-bottom:18px" aria-label="Choose a listening activity"><option value="">Loading activities…</option></select>
+<p class="ll-muted" id="exerciseMeta">LISTENING PRACTICE · CHOOSE AN ACTIVITY</p>
+<h2 id="exerciseTitle">Choose your listening activity</h2>
 <p id="exerciseDescription"></p>
 <div class="ll-audio">
 <button id="playAudio" class="ll-button" type="button">▶ Listen to the audio</button>
@@ -109,7 +111,7 @@ permalink: /listening-lab.html
 <script>
 (function(){
 const $=id=>document.getElementById(id);
-const slug='madrid-a-beautiful-day';
+let slug='madrid-a-beautiful-day';
 let exercise=null, questions=[], answers={}, submitted=false, utterance=null;
 function sayStatus(message){$('accessStatus').textContent=message}
 function stopSpeech(){if('speechSynthesis' in window)window.speechSynthesis.cancel();$('pauseAudio').disabled=true;$('stopAudio').disabled=true;$('playAudio').disabled=false}
@@ -130,8 +132,18 @@ async function init(){
 try{
 const {data:authData}=await window.eeDb.auth.getSession();
 const session=authData?.session||null;
-const {data:ex,error:exError}=await window.eeDb.from('listening_exercises').select('id,slug,title,description,transcript,speaking_questions,duration_seconds,level,accent').eq('slug',slug).eq('is_published',true).single();
-if(exError)throw exError;exercise=ex;
+const {data:catalog,error:catalogError}=await window.eeDb.from('listening_exercises').select('id,slug,title,description,transcript,speaking_questions,duration_seconds,level,accent').eq('is_published',true).order('created_at',{ascending:true});
+if(catalogError)throw catalogError;
+if(!catalog||!catalog.length)throw new Error('No published listening activities are available yet.');
+const selector=$('exerciseSelect');
+if(!selector.options.length||selector.options[0].value===''){
+ selector.innerHTML=catalog.map(item=>'<option value="'+escapeHtml(item.slug)+'">'+escapeHtml(item.title)+'</option>').join('');
+}
+if(!catalog.some(item=>item.slug===slug))slug=catalog[0].slug;
+selector.value=slug;
+exercise=catalog.find(item=>item.slug===slug);
+if(!exercise)throw new Error('This listening activity is not available.');
+$('exerciseMeta').textContent='LISTENING PRACTICE · '+(exercise.level||'')+' · '+Math.ceil((exercise.duration_seconds||0)/60)+' MINUTES';
 const {data:qs,error:qError}=await window.eeDb.from('listening_questions').select('id,question_number,prompt,options').eq('exercise_id',exercise.id).order('question_number');
 if(qError)throw qError;
 questions=qs||[];
@@ -144,6 +156,15 @@ $('exerciseTitle').textContent=exercise.title;$('exerciseDescription').textConte
 $('labContent').hidden=false;sayStatus('This activity is open to everyone. '+(session?'Your results will be saved to your account.':'Your score will be shown when you finish; sign in to save a personal history.'));
 }catch(e){sayStatus(e.message||'We could not load this listening activity. Please try again later.')}
 }
+$('exerciseSelect').addEventListener('change',()=>{
+ const nextSlug=$('exerciseSelect').value;
+ if(!nextSlug||nextSlug===slug)return;
+ stopSpeech();slug=nextSlug;exercise=null;questions=[];answers={};submitted=false;
+ $('listeningForm').reset();$('questions').replaceChildren();$('results').hidden=true;
+ $('submitAnswers').textContent='Submit my answers';$('submitAnswers').disabled=true;
+ $('labContent').hidden=true;$('historyList').textContent='Loading your results…';
+ sayStatus('Loading the selected listening activity…');init();
+});
 $('listeningForm').addEventListener('submit',async event=>{
 event.preventDefault();if(submitted)return;updateProgress();if(Object.keys(answers).length!==questions.length)return;
 $('submitAnswers').disabled=true;$('submitAnswers').textContent='Checking your answers…';
