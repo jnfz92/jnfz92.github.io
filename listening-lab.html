@@ -123,7 +123,7 @@ $('stopAudio').addEventListener('click',()=>{stopSpeech();$('pauseAudio').textCo
 $('speechRate').addEventListener('change',()=>{if(window.speechSynthesis.speaking)speak()});
 function renderQuestions(){
 $('questions').innerHTML=questions.map((q,i)=>'<article class="ll-question" data-q="'+q.id+'"><h3>'+(i+1)+'. '+escapeHtml(q.prompt)+'</h3>'+q.options.map((option,j)=>'<label class="ll-option"><input type="radio" name="q_'+q.id+'" value="'+String.fromCharCode(65+j)+'"> <span><strong>'+String.fromCharCode(65+j)+'.</strong> '+escapeHtml(option)+'</span></label>').join('')+'<div class="ll-feedback" data-feedback="'+q.id+'" hidden></div></article>').join('');
-$('questions').addEventListener('change',updateProgress);
+$('questions').onchange=updateProgress;
 }
 function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function updateProgress(){questions.forEach(q=>{const chosen=document.querySelector('input[name="q_'+q.id+'"]:checked');if(chosen)answers[q.id]=chosen.value;else delete answers[q.id]});const n=Object.keys(answers).length;$('questionProgress').textContent=n+' of '+questions.length+' answered';$('progressBar').style.width=(n/questions.length*100)+'%';$('submitAnswers').disabled=n!==questions.length||submitted}
