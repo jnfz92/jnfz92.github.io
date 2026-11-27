@@ -499,7 +499,9 @@ async function loadWeeklyFollowup(owner){
  if(!user||user.id!==owner)return;
  const totals=data.reduce((acc,row)=>{const r=row.informe||{};for(const k of ['active_days','readings','units','exams','mock_tests'])acc[k]=(acc[k]||0)+(Number(r[k])||0);return acc},{});
  [['active_days','Días activos'],['readings','Lecturas'],['units','Unidades'],['exams','Exámenes'],['mock_tests','Simulacros B2']].forEach(([key,label])=>{const item=make('div',undefined,'ee-followup-total');item.append(make('strong',String(totals[key]||0)),make('span',label));summary.append(item)});
- status.textContent='Historial desde tu registro · 13 de octubre de 2026. Hay 2 semanas completas, una primera semana parcial y una semana en curso (hasta el 6 de noviembre).';
+ status.textContent='Tienes '+data.length+' informes semanales guardados. Se muestran 4 semanas por página para que el historial sea fácil de consultar.';
+ const weeklyList=make('div',undefined,'ee-followup-week-list');
+ root.append(weeklyList);
  for(const row of data){
   const r=row.informe||{},card=make('article',undefined,'ee-followup-report');
   const head=make('div',undefined,'ee-followup-report-head');
@@ -517,8 +519,9 @@ async function loadWeeklyFollowup(owner){
    r[key].forEach(x=>ul.append(make('li',x)));section.append(h,ul);card.append(section);
   }
   if(r.next_week){const goal=make('p',undefined,'ee-followup-goal');goal.append(make('strong','Objetivo siguiente: '),document.createTextNode(r.next_week));card.append(goal)}
-  root.append(card);
+  weeklyList.append(card);
  }
+ if(data.length)profilePaginate(weeklyList,[...weeklyList.children],4);
  const first=data[data.length-1]?.informe;
  if(first?.average_exam_score!==undefined){
   const lastComplete=[...data].reverse().filter(x=>x.informe?.period_status==='Semana completa.');
